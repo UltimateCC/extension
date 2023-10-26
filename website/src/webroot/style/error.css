@@ -1,0 +1,22 @@
+#error {
+    position: relative;
+    width: fit-content;
+    margin: auto;
+}
+
+#error h2 {
+    color: var(--title);
+    font-size: 48px;
+}
+
+#error h4 {
+    font-size: 40px;
+}
+
+#error img {
+    height: 250px;
+    position: absolute;
+    left: 0;
+    top: -229px;
+    cursor: help;
+}

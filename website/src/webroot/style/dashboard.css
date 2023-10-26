@@ -1,0 +1,452 @@
+:root {
+    --logoSize: 69px; /* 69 because it's a funny number */
+}
+
+#dashboard {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(3, auto);
+    grid-gap: var(--gap);
+}
+
+#dashboard > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+@media (min-width: 1700px) {
+    #dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #dashboard .welcome {
+        grid-column: 1 / 3;
+    }
+}
+
+#dashboard h2 {
+    font-size: 2.1rem;
+}
+
+#dashboard h3 {
+    font-size: 2rem;
+    color: var(--title)
+}
+
+#dashboard .theme-select {
+    position: relative;
+    width: 100%; /* Ajustez la largeur en fonction de vos besoins */
+    font-size: 1.2vw;
+
+}
+
+#dashboard .custom-option {
+    padding: 10px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+}
+
+#dashboard .custom-option:hover {
+    background-color: var(--square);
+    color: var(--text);
+}
+
+#dashboard .step-indication {
+    font-size: 2rem;
+    background-color: var(--title);
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    user-select: none;
+}
+
+#dashboard .api,
+#dashboard .setting,
+#dashboard .languages,
+#dashboard .banned {
+    position: relative;
+}
+
+
+#dashboard .welcome {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#dashboard .welcome h2 {
+    height: var(--logoSize);
+    line-height: var(--logoSize);
+}
+
+#dashboard .welcome .profile-container {
+    width: var(--logoSize);
+    height: var(--logoSize);
+    position: absolute;
+    right: var(--gap);
+
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+#dashboard .welcome .profile-container .profile-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--text);
+}
+
+#dashboard .welcome .profile-container .logout-box {
+    background-color: #D9D9D980;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 1;
+}
+
+#dashboard .welcome .profile-container .logout-box img {
+    width: 65%;
+}
+
+#dashboard .welcome .profile-container:hover .logout-box {
+    opacity: 1;
+}
+
+#dashboard .welcome .profile-container:hover >  img {
+    filter: blur(3px);
+    transition: filter 0.4s;
+}
+
+#dashboard .setting .requestButton {
+    margin-top: 30px;
+}
+
+/* #dashboard .setting .microphone-devices {
+    width: 100%;
+    font-size: 1.2vw;
+}
+
+#dashboard .setting .microphone-devices p {
+    width: 80%;
+    font-size: 1.2vw;
+} */
+
+#dashboard .setting .setting-options {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 30px;
+}
+
+.theme-btn.mute.muted {
+    background-image: linear-gradient(#2B2B2B, #2B2B2B);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.theme-btn.listening.start {
+    background-image: linear-gradient(#2B2B2B, #2B2B2B);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+#dashboard .languages .lang-list {
+    padding: 0.5em 1em 0.5em 0;
+    background-color: var(--text);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+#dashboard .languages .lang-list * {
+    font-family: 'Baloo', sans-serif;
+    overflow: hidden;
+}
+
+#dashboard .languages .lang-list.right {
+    height: 300px;
+}
+
+#dashboard .languages .lang-list > .scroll-theme {
+    height: 100%;
+    overflow: auto;
+    padding: 0;
+}
+
+#dashboard .languages .language-title {
+    font-size: 20px;
+}
+
+#dashboard .languages .search-input {
+    margin: 0.5em 0;
+}
+
+#dashboard .languages .search-input input {
+    color: var(--button);
+    font-family: 'Baloo', sans-serif;
+}
+
+/* For a question of selector weight I don't call #dashboard .languages */
+.search-input label {
+    font-family: 'Baloo', sans-serif;
+    color: #5F5F68;
+    background-image: linear-gradient(180deg, var(--text) 65%, transparent);
+    border-radius: 10px;
+    
+}
+
+.search-input label.MuiInputLabel-shrink {
+    padding: 0 1em;
+    border: 2px solid var(--button);
+}
+
+#dashboard .languages .transfer-list-container .MuiInputBase-input {
+    background-color: var(--text);
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+#dashboard .languages .transfer-list-container .MuiInputBase-formControl {
+    border-radius: 10px;
+}
+
+#dashboard .languages .switch-btn {
+    cursor: pointer;
+}
+
+#dashboard .languages .switch-btn:disabled svg path {
+    fill: #5F5F68;
+}
+
+#dashboard .languages .switch-btn:not(:disabled):hover {
+    background-color: var(--button);
+}
+
+#dashboard .banned .tips-img {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 38px;
+    cursor: pointer;
+}
+
+#dashboard .banned svg {
+    fill: var(--text);
+}
+
+#dashboard .banned svg:hover path {
+    fill: var(--title);
+    transition: all 0.4s
+}
+
+#dashboard .banned .ban-captions {
+    border-radius: 10px;
+    background: var(--text);
+    box-shadow: 10px -10px 20px 5px rgba(0, 0, 0, 0.25) inset;
+    list-style: none;
+    text-align: left;
+    padding: 20px;
+    font-size: 1.75rem;
+}
+
+#dashboard .banned h4 {
+    font-size: 20px;
+}
+
+#dashboard .banned .selectable-languages {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    gap: 1em;
+}
+
+#dashboard .banned .selectable-languages .languages-list {
+    display: flex;
+    align-items: center;
+    gap: max(0.75em, 5px);
+    list-style: none;
+    width: fit-content;
+}
+
+#dashboard .banned .selectable-languages .languages-list .language-btn {
+    color: var(--text);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 0.5em 1em;
+    border: none;
+    cursor: pointer;
+    transition: all .5s;
+    background-color: #751CC2;
+}
+
+#dashboard .banned .selectable-languages .languages-list .language-btn:hover {
+    background-color: var(--title);
+    background-image: none;
+}
+
+#dashboard .banned .selectable-languages .languages-list .language-btn.active {
+    background-color: #1C40C2;
+    cursor: default;
+}
+
+#dashboard .banned .selectable-languages .languages-list .more-btn-container {
+    display: flex;
+    align-items: center;
+}
+
+#dashboard .banned .selectable-languages .responsive-text {
+    display: flex;
+    column-gap: 0.2em;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: fit-content;
+}
+
+#dashboard .banned .selectable-languages .responsive-text p {
+    width: max-content;
+}
+
+#dashboard .banned .selectable-languages .languages-list.must-wrap {
+    flex-wrap: wrap;
+    max-width: 70%;
+}
+
+#dashboard .banned .more-btn {
+    background: transparent;
+    border: none;
+    font-size: 50px;
+    line-height: 32px;
+    height: 32px;
+    font-family: 'Baloo', sans-serif;
+    color: var(--title);
+    cursor: pointer;
+    transition: all .5s;
+    overflow: hidden; /* To hide the hover not needed, todo solve with a better way */
+}
+
+#dashboard .banned .more-btn:hover {
+    color: #751CC2;
+}
+
+#dashboard .banned .ban-captions p {
+    color: var(--placeholder);
+    text-align: center;
+}
+
+#dashboard .banned .ban-captions ul {
+    overflow-y: auto;
+    max-height: 6.5em; /* 5 lines * 1.2em (line-height) */
+    color: var(--square);
+}
+
+#dashboard .banned .ban-captions li {
+    display: flex;
+    align-items: center;
+    column-gap: 0.75em;
+    height: 1.3em;
+}
+
+#dashboard .banned .ban-captions li p {
+    color: var(--square);
+    line-height: 100%;
+    overflow: hidden
+}
+
+#dashboard .banned .ban-captions li p.removing {
+    color: var(--placeholder);
+}
+
+#dashboard .banned .ban-captions li button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+#dashboard .banned .ban-captions .cross {
+    color: #7643A4;
+    font-family: "Press Start 2P", sans-serif;
+    font-size: 0.75em;
+}
+
+
+#dashboard .banned form,
+#dashboard .api form > .api-input,
+#dashboard .api .api-connected {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    margin-right: 0;
+    gap: 1em;
+}
+
+#dashboard .banned form input,
+#dashboard .api form input,
+#dashboard .api .api-connected h4 {
+    width: 100%;
+}
+
+#dashboard .banned form button,
+#dashboard .api form button,
+#dashboard .api .api-connected button {
+    min-width: fit-content;
+}
+
+#dashboard .api .loading-img {
+    height: 100px;
+}
+
+#dashboard .api .api-connected h4 {
+    border-radius: 10px;
+    background: var(--text);
+    box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.53) inset;
+    font-size: 1.55vw;
+    color: #2B2B2B;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#dashboard .api a {
+    font-size: 24px;
+    margin-top: 10px;
+    display: block;
+}
+
+#dashboard .api .api-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 30px;
+}
+
+#dashboard .api .danger-btn {
+    padding: 1em;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    #dashboard .languages .transfer-list-container {
+        flex-direction: column;
+    }
+
+    #dashboard .languages .switch-btn-container {
+        transform: rotate(90deg);
+    }
+}

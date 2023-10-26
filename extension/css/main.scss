@@ -1,0 +1,297 @@
+@import 'fonts';
+
+$caption-settings-distance: 10px;
+$caption-line-height: 1.25em;
+$caption-container-padding: 0.5em;
+$caption-settings-width: 400px;
+$caption-movable-Y: 5rem;
+$caption-movable-X: 0;
+
+$theme-text-color: #D9D9D9;
+$theme-background-color: #37373E;
+$test-color: #1F1F23;
+
+// Convert HEX to RGB
+@function hexToRgb($hex) {
+    @return red($hex), green($hex), blue($hex);
+}
+
+$default-font-color: hexToRgb($theme-text-color);
+$default-font-size: 16px;
+$default-font-family: "Arial";
+$default-max-lines: 2;
+$default-background-color: hexToRgb($theme-background-color);
+$default-background-opacity: 0.5; 
+$default-stroke-color: #000000;
+$default-stroke-size: 0px;
+
+// Default settings
+:root {
+    --caption-font-color: #{$default-font-color};
+    --caption-font-size: #{$default-font-size};
+    --caption-font-family: #{$default-font-family};
+    --caption-max-lines: #{$default-max-lines};
+    --caption-background-color: #{$default-background-color};
+    --caption-background-opacity: #{$default-background-opacity};
+    --caption-stroke-color: #{$default-stroke-color};
+    --caption-stroke-size: #{$default-stroke-size};
+}
+
+// Temporary (to have an idea of the result)
+body {
+    background-image: url("../aypierreStream.png");
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body#ultimate-closed-caption {
+    // Lock scroll
+    max-width: 100vw;
+    max-height: 100vh;
+
+    // Caption container
+    #caption-movable-area {
+        position: relative;
+        
+        // Do calc only if needed
+        width: if($caption-movable-X == 0, 100vw, calc(100vw - #{$caption-movable-X} * 2));
+        height: if($caption-movable-Y == 0, 100vh, calc(100vh - #{$caption-movable-Y} * 2));
+
+        margin: $caption-movable-Y $caption-movable-X; // Advice by twitch 5rem 7rem 5rem 0
+        
+        // Caption box container
+        #caption-box {
+            position: absolute; // To be able to move it
+            width: 60%;
+            
+            // Apply main settings
+            background-color: rgba(var(--caption-background-color), var(--caption-background-opacity));
+            color: rgb(var(--caption-font-color));
+            font-size: var(--caption-font-size);
+            font-family: var(--caption-font-family), sans-serif;
+            -webkit-text-stroke: var(--caption-stroke-size) var(--caption-stroke-color);
+
+            backdrop-filter: blur(5px);
+            
+            // If it's locked, don't show the cursor
+            &:not(.locked) {
+                cursor: move;
+            }
+
+            // Settings wheel
+            &:hover {
+                .caption-content-box button#caption-settings-btn {
+                    opacity: 1;
+                    transition: opacity 0.5s ease-in-out;
+                }
+            }
+
+            .caption-content-box {
+                max-height: calc(#{$caption-line-height} * var(--caption-max-lines));
+                margin: min($caption-container-padding, 1rem);
+                overflow: hidden; // Don't show the rest of the text
+                
+                text-align: left;
+                font-size: 1em;
+                user-select: none;
+
+                p.caption-content { // Apply text settings
+                    line-height: $caption-line-height;
+                    font-size: 1em;
+                    color: inherit;
+                    font-family: inherit;
+                    -webkit-text-stroke: inherit;
+                }
+
+                // Settings wheel
+                #caption-settings-btn {
+                    border: none;
+                    background-color: transparent;
+                    position: absolute;
+                    top: $caption-settings-distance;
+                    right: $caption-settings-distance;
+                    font-size: 30px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: opacity 2s ease-in-out;
+                
+                    &:hover {
+                        transform: scale(1.1);
+                        transition: transform 0.2s ease-in-out;
+                
+                        path {
+                            fill: rgba(var(--caption-font-color), $default-background-opacity);
+                        }
+                    }
+                
+                    &:not(.isOpen) {
+                        opacity: 0;
+                    }
+                
+                    path {
+                        fill: rgb(var(--caption-font-color));
+                        transition: fill 0.2s;
+                    }
+                }
+            }
+        }
+    }
+
+    // Settings box
+    #caption-settings {
+        min-height: 300px;
+        width: $caption-settings-width;
+        padding: 0.5em calc($caption-settings-width * 0.1) 1.25em;
+        
+        position: absolute;
+        right: 0;
+        top: 0;
+        
+        transition: width 0.5s;
+        
+        color: $theme-text-color;
+        background-color: rgba($test-color, 0.85);
+        font-size: $default-font-size;
+        font-family: $default-font-family, sans-serif;
+
+        // Title and close button
+        .caption-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        
+            h3 {
+                font-size: 1.25em;
+                width: 100%;
+                text-align: center;
+                margin: auto;
+            }
+        
+            #caption-settings-close-btn {
+                padding: 0.25em;
+                font-size: 1.5em;
+                cursor: pointer;
+                border: 0;
+                transition: all 0.5s;
+                
+                background-color: rgb(var(--caption-font-color), $default-background-opacity);
+                polygon {
+                    fill: rgb(var(--caption-background-color));
+                }
+        
+                &:hover {
+                    background-color: transparent;
+                    polygon {
+                        fill: rgb(var(--caption-font-color));
+                    }
+                }
+            }
+        }
+
+        // Main content
+        .caption-settings-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            gap: 1em;
+
+            .caption-group {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+
+                &::after {
+                    content: "";
+                    display: block;
+                    width: 100%;
+                    height: 3px;
+                    background-color: rgb(var(--caption-font-color));
+                    border-radius: 100px;
+                }
+
+                label {
+                    font-size: 1em;
+                    width: fit-content;
+                }
+        
+                input, select {
+                    width: 100%;
+                    background-color: rgb(var(--caption-font-color), $default-background-opacity);
+                    border: 0;
+                    font-size: 1em;
+                    line-height: 1em;
+                    font-family: inherit;
+                    color: rgb(var(--caption-background-color));
+                    font-weight: bold;
+                    border-radius: 0.75em;
+                    cursor: pointer;
+                    height: 1.5em;
+                    margin: 0.25em 0;
+                    padding: 0 0.75em;
+        
+                    &:focus, &:active {
+                        outline: none;
+                        box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), $default-background-opacity);
+                        transition: box-shadow 0.5s;
+                    }
+                }
+        
+                input:not(input[type="range"]) {
+                    padding: 0.2em 0.75em;
+        
+                    &::-webkit-color-swatch {
+                        border: none;
+                        border-radius: 0.5em;
+                    }
+                }
+        
+                input[type="range"] {
+                    appearance: none;
+                    
+                    &::-webkit-slider-thumb {
+                        appearance: none;
+                        width: 1em;
+                        height: 1em;
+                        border-radius: 50%;
+                        background-color: rgb(var(--caption-background-color));
+                        transition: background-color 0.5s;
+                    }
+        
+                    &:hover {
+                        &::-webkit-slider-thumb {
+                            background-color: rgb(var(--caption-font-color));
+                        }
+                    }
+        
+                    &::-ms-thumb {
+                        width: 1.5em;
+                        height: 1.5em;
+                        border-radius: 50%;
+                        background-color: rgb(var(--caption-background-color));
+                        cursor: pointer;
+                        transition: all 0.5s;
+                    }
+                }
+            }
+        }
+
+        // Buttons
+        .caption-button-container {
+            display: flex;
+        }
+    }
+}
+
+@each $font in $font-families {
+    option[value="#{$font}"] {
+        font-family: #{$font}, sans-serif;
+    }
+}

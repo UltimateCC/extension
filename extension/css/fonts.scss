@@ -1,0 +1,57 @@
+//arial.ttf
+@font-face {
+    font-family: "Arial";
+    src: url('fonts/arial.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// arilbd.ttf
+@font-face {
+    font-family: "Arial";
+    src: url('fonts/arialbd.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+//calibri.ttf
+@font-face {
+    font-family: "Calibri";
+    src: url('fonts/calibri.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+//OpenDyslexic-Regular.otf
+@font-face {
+    font-family: "OpenDyslexic";
+    src: url('fonts/OpenDyslexic-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+//Roboto-Regular.ttf
+@font-face {
+    font-family: "Roboto";
+    src: url('fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+//times.ttf
+@font-face {
+    font-family: "Times New Roman";
+    src: url('fonts/times.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+//verdana.ttf
+@font-face {
+    font-family: "Verdana";
+    src: url('fonts/verdana.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+$font-families: "Arial", "Calibri", "OpenDyslexic", "Roboto", "Times New Roman", "Verdana";

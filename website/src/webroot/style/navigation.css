@@ -1,0 +1,273 @@
+#navbar {
+    position: absolute;
+    font-size: 0.5em;
+}
+
+#navbar #laptopNavbar {
+    position: fixed;
+    width: calc(25% - 39px);
+    /* Why 39px? I don't know, but it works */
+    right: 50px;
+    bottom: 50px;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 50px;
+    align-items: center;
+}
+
+/* @media (max-height: 700px) {
+    #navbar > div {
+        position: relative;
+    }
+} */
+
+
+
+#navbar .logo-container {
+    width: 100%;
+    margin: 0 auto 1.5em;
+    position: relative;
+}
+
+#navbar .logo-container img {
+    width: 100%;
+}
+
+#navbar .secret {
+    width: 1vw;
+    height: 1vw;
+    position: absolute;
+    top: 48%;
+    left: 28%;
+}
+
+#navbar .theme-box a.main-title {
+    text-decoration: none;
+    font-family: "Press Start 2P", sans-serif;
+    font-size: 2.5em;
+    color: var(--text);
+    margin-bottom: min(5vh);
+}
+
+@media (max-width: 1300px) {
+    #navbar .theme-box a.main-title {
+        font-size: 1.5em;
+        margin-top: 20px;
+    }
+}
+
+#navbar .spacer {
+    height: 3px;
+    width: 75%;
+    margin: 2.5em auto;
+    background-color: var(--text);
+}
+
+@media (max-width: 1300px) {
+    #navbar .spacer {
+        margin-top: 3vh;
+    }
+}
+
+#navbar .main-links,
+#navbar .secondary-links {
+    display: grid;
+    justify-items: center;
+    justify-content: center;
+    font-size: 3em;
+    line-height: 1.5em;
+    margin-bottom: min(1vh);
+}
+
+
+@media (max-width: 1300px) {
+
+    #navbar .main-links,
+    #navbar .secondary-links {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 1500px) {
+
+    #navbar .main-links,
+    #navbar .secondary-links {
+        font-size: 2.5em;
+    }
+}
+
+#navbar .main-links {
+    margin-top: min(1vh);
+    gap: 3vh;
+    line-height: 1.5em;
+}
+
+#navbar .main-links a {
+    font-size: 2em;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+
+#navbar .main-links .dashboard {
+    margin-bottom: min(8vh);
+}
+
+#navbar .secondary-links a {
+    text-decoration: none;
+    transition: all 0.5s;
+}
+
+#navbar .main-links a,
+#navbar .secondary-links a {
+    position: relative;
+    width: fit-content;
+}
+
+#navbar .main-links a:hover,
+#navbar .secondary-links a:hover {
+    transform: scale(1.05);
+}
+
+#navbar .main-links a.active,
+#navbar .secondary-links a.active {
+    text-decoration: underline;
+    text-decoration-color: var(--title);
+    text-decoration-thickness: 3
+    px;
+    color: var(--button);
+    transform: scale(1.05);
+
+}
+
+#navbar .secondary-links {
+    margin-top: auto;
+}
+
+#navbar .main-links a:not(.active):after,
+#navbar .secondary-links a:not(.active):after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    display: block;
+    right: 0;
+    background: var(--title);
+    transition: width .2s ease;
+    -webkit-transition: width .2s ease;
+}
+
+#navbar .secondary-links a:not(.active):after {
+    bottom: 7px;
+}
+
+#navbar .main-links a:not(.active):after {
+    top: 32px;
+}
+
+#navbar .main-links a:not(.active):hover:after,
+#navbar .secondary-links a:not(.active):hover:after {
+    width: 100%;
+    left: 0;
+    background: var(--title);
+}
+
+
+#navbar #burger-menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+
+    gap: 2vw;
+
+    height: fit-content;
+    width: fit-content;
+    padding: 3vw;
+    background-color: #9F4EE5;
+    border: solid 2px var(--square);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#navbar #burger-menu .bar {
+    width: 12vw;
+    height: 3vw;
+    border-radius: 6px;
+    box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.25);
+    background-color: var(--square);
+    transition: all 0.5s;
+}
+
+#navbar #burger-menu:hover .bar {
+    transform: scale(1.05);
+}
+
+#navbar #nonLaptopNavbar .main-img {
+    display: flex;
+    height: 25vw;
+}
+
+#navbar .close {
+    display: none;
+}
+
+#navbar #nonLaptopNavbar {
+    display: none;
+}
+
+@media (max-width: 1000px) {
+    #navbar {
+        position: initial;
+        width: 100%;
+    }
+
+    #navbar #nonLaptopNavbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        width: 100%;
+    }
+
+    #navbar #laptopNavbar {
+        width: fit-content;
+        right: 0;
+        left: auto;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        background: #7643A4;
+        box-shadow: 10px 10px 4px 0px rgba(0, 0, 0, 0.25);
+        z-index: 30;
+        transition: right 1s;
+    }
+
+    #navbar #laptopNavbar:not(.show) {
+        right: -70vw;
+    }
+
+    #navbar #laptopNavbar .logo-container {
+        display: none;
+    }
+
+    #navbar #laptopNavbar .main-title {
+        font-size: 3em;
+        width: 30vw;
+        min-width: min-content;
+    }
+
+    #navbar #laptopNavbar .close {
+        display: block;
+    }
+}
+
+@media (max-width: 500px) {
+    #navbar #laptopNavbar {
+        width: 100vw;
+    }
+
+    #navbar #laptopNavbar:not(.show) {
+        right: -100vw;
+    }
+}
