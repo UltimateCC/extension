@@ -80,3 +80,35 @@ const captionWebSocketManager = new CaptionWebSocketManager();
 export function updateCaptionLanguage(language) {
     captionWebSocketManager.startWebSocket(language);
 }
+
+// #group-text .caption-group-header 
+const textMenu = document.getElementById("group-text");
+const textMenuHeader = textMenu.getElementsByClassName("caption-group-header")[0];
+// const textMenuIsOpen = false;
+
+const backgroundMenu = document.getElementById("group-background");
+const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-group-header")[0];
+// const backgroundMenuIsOpen = false;
+
+textMenuHeader.addEventListener("click", () => {
+    if (!textMenu.classList.contains("isOpen")) {
+        textMenu.classList.add("isOpen");
+    } else {
+        textMenu.classList.remove("isOpen");
+    }
+    backgroundMenu.classList.remove("isOpen");
+});
+
+backgroundMenuHeader.addEventListener("click", () => {
+    if (!backgroundMenu.classList.contains("isOpen")) {
+        backgroundMenu.classList.add("isOpen");
+    } else {
+        backgroundMenu.classList.remove("isOpen");
+    }
+    textMenu.classList.remove("isOpen");
+});
+
+export function closeAllMenu() {
+    textMenu.classList.remove("isOpen");
+    backgroundMenu.classList.remove("isOpen");
+}

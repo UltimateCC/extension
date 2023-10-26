@@ -1,5 +1,6 @@
 @import 'fonts';
 
+// Caption variables
 $caption-settings-distance: 10px;
 $caption-line-height: 1.25em;
 $caption-container-padding: 0.5em;
@@ -7,9 +8,18 @@ $caption-settings-width: 400px;
 $caption-movable-Y: 5rem;
 $caption-movable-X: 0;
 
+// Settings variables
+$settings-font-size: 26px;
+$settings-font-family: "Arial";
+$settings-inside-padding: 20px;
+
+// Ultimate CC theme
 $theme-text-color: #D9D9D9;
 $theme-background-color: #37373E;
-$test-color: #1F1F23;
+
+$settings-text-color: #CECED1;
+$settings-button-color: #4C4C5A;
+$settings-background-color: #1F1F23;
 
 // Convert HEX to RGB
 @function hexToRgb($hex) {
@@ -147,7 +157,7 @@ body#ultimate-closed-caption {
     #caption-settings {
         min-height: 300px;
         width: $caption-settings-width;
-        padding: 0.5em calc($caption-settings-width * 0.1) 1.25em;
+        padding: 0.2em 0.5em 1em;
         
         position: absolute;
         right: 0;
@@ -155,10 +165,13 @@ body#ultimate-closed-caption {
         
         transition: width 0.5s;
         
-        color: $theme-text-color;
-        background-color: rgba($test-color, 0.85);
-        font-size: $default-font-size;
-        font-family: $default-font-family, sans-serif;
+        color: $settings-text-color;
+        background-color: rgba($settings-background-color, 0.95);
+        font-size: $settings-font-size;
+        font-family: $settings-font-family, sans-serif;
+
+        flex-direction: column;
+        justify-content: space-between;
 
         // Title and close button
         .caption-header-container {
@@ -166,30 +179,26 @@ body#ultimate-closed-caption {
             justify-content: space-between;
             align-items: start;
         
-            h3 {
-                font-size: 1.25em;
+            h2 {
+                font-size: 1em;
+                font-weight: normal;
                 width: 100%;
                 text-align: center;
                 margin: auto;
             }
         
-            #caption-settings-close-btn {
-                padding: 0.25em;
+            button#caption-settings-close-btn {
+                border: none;
+                background-color: transparent;
+                polygon {
+                    fill: $theme-text-color;
+                }
                 font-size: 1.5em;
                 cursor: pointer;
-                border: 0;
-                transition: all 0.5s;
-                
-                background-color: rgb(var(--caption-font-color), $default-background-opacity);
-                polygon {
-                    fill: rgb(var(--caption-background-color));
-                }
+                transition: transform 0.2s ease-in-out;
         
                 &:hover {
-                    background-color: transparent;
-                    polygon {
-                        fill: rgb(var(--caption-font-color));
-                    }
+                    transform: scale(1.1);
                 }
             }
         }
@@ -200,13 +209,77 @@ body#ultimate-closed-caption {
             justify-content: space-between;
             align-items: center;
             flex-direction: column;
-            gap: 1em;
 
             .caption-group {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
                 flex-direction: column;
+                
+                &:not(.isOpen) .caption-group-content {
+                    display: none;
+                }
+
+                // If it's the language group, change the direction
+                &#language .caption-group-header {
+                    flex-direction: column;
+                }
+
+                // Else
+                &:not(#language) .caption-group-header {
+                    cursor: pointer;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .caption-group-header {
+                    display: flex;
+                    
+                    width: 100%;
+                    padding-top: 0.75em;
+                    padding-bottom: 0.75em;
+                    user-select: none;
+                    font-size: 1.5em;
+
+
+                    &:focus {
+                        outline: none;
+                    }
+
+                    h3 {
+                        font-size: 1em;
+                        font-weight: normal;
+                        text-align: left;
+                        // margin: auto;
+                    }
+
+                    button.chevron {
+                        border: none;
+                        background-color: transparent;
+                        font-size: 1em;
+                        cursor: pointer;
+                        transition: transform 0.2s ease-in-out;
+                        transform: rotate(0deg);
+                        padding: 0;
+                        margin: 0;
+                        width: 1em;
+                        height: 1em;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 50%;
+                        svg {
+                            width: 1em;
+                            height: 1em;
+                            fill: $theme-text-color;
+                        }
+                    }
+                }
+
+                > div {
+                    padding-right: $settings-inside-padding;
+                    padding-left: $settings-inside-padding;
+                }
 
                 &::after {
                     content: "";
@@ -216,7 +289,7 @@ body#ultimate-closed-caption {
                     background-color: rgb(var(--caption-font-color));
                     border-radius: 100px;
                 }
-
+/*
                 label {
                     font-size: 1em;
                     width: fit-content;
@@ -280,12 +353,41 @@ body#ultimate-closed-caption {
                         transition: all 0.5s;
                     }
                 }
+                */
+                
             }
         }
 
         // Buttons
         .caption-button-container {
             display: flex;
+            flex-direction: column;
+            padding: 0 $settings-inside-padding;
+
+            div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                gap: 1em;
+                margin: 1em 0;
+            }
+            
+            button {
+                padding: 0.2em 1em;
+                border: 0;
+                border-radius: 0.5em;
+                font-size: 1em;
+                font-family: inherit;
+                line-height: 1em;
+                background-color: $settings-button-color;
+                color: inherit;
+                cursor: pointer;
+                width: 100%;
+                &#caption-lock-position {
+                    padding: 0.5em 0;
+                }
+            }
         }
     }
 }

@@ -24,7 +24,7 @@
         </div>
         <div id="caption-settings" style="display: none;">
             <div class="caption-header-container">
-                <h3>Closed Caption settings</h3>
+                <h2>Ultimate CC</h2>
                 <button type="button" id="caption-settings-close-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
                         <polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
@@ -35,22 +35,23 @@
                 <!-- Language -->
                 <div class="caption-group" id="language">
                     <div class="caption-group-header">
-                        <h4>Language</h4>
-                    </div>
-                    <div class="caption-group-content">
-                        <div class="caption-group-content-item">
-                            <label for="language-input">Select Language</label>
-                            <select id="language-input">
-                                <option disabled selected value> Loading </option>
-                            </select>
-                        </div>
+                        <h3>Language</h3>
+                        <select id="language-input">
+                            <option disabled selected value> Loading </option>
+                        </select>
                     </div>
                 </div>
             
                 <!-- Text -->
-                <div class="caption-group" id="text">
+                <div class="caption-group" id="group-text">
                     <div class="caption-group-header">
-                        <h4>Text</h4>
+                        <h3>Text</h3>
+                        <button type="button" class="chevron">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                            </svg>
+                        </button>
                     </div>
                     <div class="caption-group-content">
                         <div class="caption-group-content-item">
@@ -79,33 +80,32 @@
                             <label for="max-lines-input">Max Lines</label>
                             <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
                         </div>
-                    </div>
-                </div>
-            
-                <!-- Stroke -->
-                <div class="caption-group" id="stroke">
-                    <div class="caption-group-header">
-                        <h4>Stroke</h4>
-                    </div>
-                    <div class="caption-group-content">
-                        <div class="caption-group-content-item">
-                            <label for="stroke-color-input">Stroke Color</label>
-                            <input type="color" id="stroke-color-input" value="#000000" />
-                        </div>
-                        <div class="caption-group-content-item">
-                            <label for="stroke-size-input">Stroke Size</label>
-                            <div class="caption-number-container">
-                                <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
-                                <span class="caption-span">px</span>
+                        <div class="caption-group-content">
+                            <div class="caption-group-content-item">
+                                <label for="stroke-color-input">Stroke Color</label>
+                                <input type="color" id="stroke-color-input" value="#000000" />
+                            </div>
+                            <div class="caption-group-content-item">
+                                <label for="stroke-size-input">Stroke Size</label>
+                                <div class="caption-number-container">
+                                    <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
+                                    <span class="caption-span">px</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             
                 <!-- Background -->
-                <div class="caption-group" id="background">
+                <div class="caption-group" id="group-background">
                     <div class="caption-group-header">
-                        <h4>Background</h4>
+                        <h3>Background</h3>
+                        <button type="button" class="chevron">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                            </svg>
+                        </button>
                     </div>
                     <div class="caption-group-content">
                         <div class="caption-group-content-item">
@@ -125,8 +125,10 @@
             </div>
             <!-- Reset -->
             <div class="caption-button-container">
-                <button type="button" id="caption-reset-settings">Reset settings</button>
-                <button type="button" id="caption-reset-position">Reset position</button>
+                <div>
+                    <button type="button" id="caption-reset-settings">Reset settings</button>
+                    <button type="button" id="caption-reset-position">Reset position</button>
+                </div>
                 <button type="button" id="caption-lock-position">Lock position</button>
             </div>
         </div>

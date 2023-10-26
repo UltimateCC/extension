@@ -136,56 +136,173 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
 body#ultimate-closed-caption #caption-settings {
   min-height: 300px;
   width: 400px;
-  padding: 0.5em 40px 1.25em;
+  padding: 0.2em 0.5em 1em;
   position: absolute;
   right: 0;
   top: 0;
   transition: width 0.5s;
-  color: #D9D9D9;
-  background-color: rgba(31, 31, 35, 0.85);
-  font-size: 16px;
+  color: #CECED1;
+  background-color: rgba(31, 31, 35, 0.95);
+  font-size: 26px;
   font-family: "Arial", sans-serif;
+  flex-direction: column;
+  justify-content: space-between;
 }
 body#ultimate-closed-caption #caption-settings .caption-header-container {
   display: flex;
   justify-content: space-between;
   align-items: start;
 }
-body#ultimate-closed-caption #caption-settings .caption-header-container h3 {
-  font-size: 1.25em;
+body#ultimate-closed-caption #caption-settings .caption-header-container h2 {
+  font-size: 1em;
+  font-weight: normal;
   width: 100%;
   text-align: center;
   margin: auto;
 }
-body#ultimate-closed-caption #caption-settings .caption-header-container #caption-settings-close-btn {
-  padding: 0.25em;
+body#ultimate-closed-caption #caption-settings .caption-header-container button#caption-settings-close-btn {
+  border: none;
+  background-color: transparent;
   font-size: 1.5em;
   cursor: pointer;
-  border: 0;
-  transition: all 0.5s;
-  background-color: rgb(var(--caption-font-color), 0.5);
+  transition: transform 0.2s ease-in-out;
 }
-body#ultimate-closed-caption #caption-settings .caption-header-container #caption-settings-close-btn polygon {
-  fill: rgb(var(--caption-background-color));
+body#ultimate-closed-caption #caption-settings .caption-header-container button#caption-settings-close-btn polygon {
+  fill: #D9D9D9;
 }
-body#ultimate-closed-caption #caption-settings .caption-header-container #caption-settings-close-btn:hover {
-  background-color: transparent;
-}
-body#ultimate-closed-caption #caption-settings .caption-header-container #caption-settings-close-btn:hover polygon {
-  fill: rgb(var(--caption-font-color));
+body#ultimate-closed-caption #caption-settings .caption-header-container button#caption-settings-close-btn:hover {
+  transform: scale(1.1);
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  gap: 1em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group {
   width: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  /*
+                  label {
+                      font-size: 1em;
+                      width: fit-content;
+                  }
+
+                  input, select {
+                      width: 100%;
+                      background-color: rgb(var(--caption-font-color), $default-background-opacity);
+                      border: 0;
+                      font-size: 1em;
+                      line-height: 1em;
+                      font-family: inherit;
+                      color: rgb(var(--caption-background-color));
+                      font-weight: bold;
+                      border-radius: 0.75em;
+                      cursor: pointer;
+                      height: 1.5em;
+                      margin: 0.25em 0;
+                      padding: 0 0.75em;
+
+                      &:focus, &:active {
+                          outline: none;
+                          box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), $default-background-opacity);
+                          transition: box-shadow 0.5s;
+                      }
+                  }
+
+                  input:not(input[type="range"]) {
+                      padding: 0.2em 0.75em;
+
+                      &::-webkit-color-swatch {
+                          border: none;
+                          border-radius: 0.5em;
+                      }
+                  }
+
+                  input[type="range"] {
+                      appearance: none;
+
+                      &::-webkit-slider-thumb {
+                          appearance: none;
+                          width: 1em;
+                          height: 1em;
+                          border-radius: 50%;
+                          background-color: rgb(var(--caption-background-color));
+                          transition: background-color 0.5s;
+                      }
+
+                      &:hover {
+                          &::-webkit-slider-thumb {
+                              background-color: rgb(var(--caption-font-color));
+                          }
+                      }
+
+                      &::-ms-thumb {
+                          width: 1.5em;
+                          height: 1.5em;
+                          border-radius: 50%;
+                          background-color: rgb(var(--caption-background-color));
+                          cursor: pointer;
+                          transition: all 0.5s;
+                      }
+                  }
+                  */
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group:not(.isOpen) .caption-group-content {
+  display: none;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group#language .caption-group-header {
+  flex-direction: column;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group:not(#language) .caption-group-header {
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header {
+  display: flex;
+  width: 100%;
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  font-size: 1.5em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header:focus {
+  outline: none;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header h3 {
+  font-size: 1em;
+  font-weight: normal;
+  text-align: left;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header button.chevron {
+  border: none;
+  background-color: transparent;
+  font-size: 1em;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  transform: rotate(0deg);
+  padding: 0;
+  margin: 0;
+  width: 1em;
+  height: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header button.chevron svg {
+  width: 1em;
+  height: 1em;
+  fill: #D9D9D9;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group > div {
+  padding-right: 20px;
+  padding-left: 20px;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group::after {
   content: "";
@@ -195,67 +312,33 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   background-color: rgb(var(--caption-font-color));
   border-radius: 100px;
 }
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group label {
-  font-size: 1em;
-  width: -moz-fit-content;
-  width: fit-content;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select {
-  width: 100%;
-  background-color: rgb(var(--caption-font-color), 0.5);
-  border: 0;
-  font-size: 1em;
-  line-height: 1em;
-  font-family: inherit;
-  color: rgb(var(--caption-background-color));
-  font-weight: bold;
-  border-radius: 0.75em;
-  cursor: pointer;
-  height: 1.5em;
-  margin: 0.25em 0;
-  padding: 0 0.75em;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input:active, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:active {
-  outline: none;
-  box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), 0.5);
-  transition: box-shadow 0.5s;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input:not(input[type=range]) {
-  padding: 0.2em 0.75em;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input:not(input[type=range])::-webkit-color-swatch {
-  border: none;
-  border-radius: 0.5em;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input[type=range] {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-          appearance: none;
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  background-color: rgb(var(--caption-background-color));
-  -webkit-transition: background-color 0.5s;
-  transition: background-color 0.5s;
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input[type=range]:hover::-webkit-slider-thumb {
-  background-color: rgb(var(--caption-font-color));
-}
-body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group input[type=range]::-ms-thumb {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50%;
-  background-color: rgb(var(--caption-background-color));
-  cursor: pointer;
-  -ms-transition: all 0.5s;
-  transition: all 0.5s;
-}
 body#ultimate-closed-caption #caption-settings .caption-button-container {
   display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+}
+body#ultimate-closed-caption #caption-settings .caption-button-container div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1em;
+  margin: 1em 0;
+}
+body#ultimate-closed-caption #caption-settings .caption-button-container button {
+  padding: 0.2em 1em;
+  border: 0;
+  border-radius: 0.5em;
+  font-size: 1em;
+  font-family: inherit;
+  line-height: 1em;
+  background-color: #4C4C5A;
+  color: inherit;
+  cursor: pointer;
+  width: 100%;
+}
+body#ultimate-closed-caption #caption-settings .caption-button-container button#caption-lock-position {
+  padding: 0.5em 0;
 }
 
 option[value=Arial] {

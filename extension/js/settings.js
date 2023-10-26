@@ -1,6 +1,6 @@
 import { setCookie, getCookie, deleteCookie, convertHexToRGB, setSettingProperty } from "./utils.js";
 import { initPosition, saveIfLocked, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
-import { updateCaptionLanguage } from "./main.js";
+import { updateCaptionLanguage, closeAllMenu } from "./main.js";
 
 export function loadSettings() {
     // Buttons to open and close the settings menu
@@ -215,36 +215,33 @@ export function loadSettings() {
         // Open and close settings menu
         mainContainer.addEventListener("click", handleSettingsContainerClick);
         settingsCloseBtn.addEventListener("click", closeSettings);
-        showSettings();
+        
+        // Show settings
+        settingsContainer.style.display = "flex";
+        settingsBtn.classList.add("isOpen");
     }
 
     function closeSettings() {
         settingsIsOpen = false;
 
-        // languageInput.removeEventListener("change", handleLanguageInput);
+        languageInput.removeEventListener("change", handleLanguageInput);
 
-        // fontColorInput.removeEventListener("input", handleFontColorInput);
-        // fontSizeInput.removeEventListener("change", handleFontSizeInput);
-        // fontFamilyInput.removeEventListener("change", handleFontFamilyInput);
-        // maxLinesInput.removeEventListener("change", handleMaxLinesInput);
-        // bgColorInput.removeEventListener("input", handleBgColorInput);
-        // bgOpacityNumberInput.removeEventListener("input", handleBgOpacityInput);
-        // bgOpacityRangeInput.removeEventListener("input", handleBgOpacityRange);
-        // strokeColorInput.removeEventListener("input", handleStrokeColorInput);
-        // strokeSizeInput.removeEventListener("input", handleStrokeSizeInput);
+        fontColorInput.removeEventListener("input", handleFontColorInput);
+        fontSizeInput.removeEventListener("change", handleFontSizeInput);
+        fontFamilyInput.removeEventListener("change", handleFontFamilyInput);
+        maxLinesInput.removeEventListener("change", handleMaxLinesInput);
+        bgColorInput.removeEventListener("input", handleBgColorInput);
+        bgOpacityNumberInput.removeEventListener("input", handleBgOpacityInput);
+        bgOpacityRangeInput.removeEventListener("input", handleBgOpacityRange);
+        strokeColorInput.removeEventListener("input", handleStrokeColorInput);
+        strokeSizeInput.removeEventListener("input", handleStrokeSizeInput);
 
-        // resetSettings.removeEventListener("click", handleResetSettings);
-        // resetPosition.removeEventListener("click", handleResetPosition);
-        // lockPosition.removeEventListener("click", handleLockPosition);
-        hideSettings();
-    }
-
-    function showSettings() {
-        settingsContainer.style.display = "block";
-        settingsBtn.classList.add("isOpen");
-    }
-
-    function hideSettings() {
+        resetSettings.removeEventListener("click", handleResetSettings);
+        resetPosition.removeEventListener("click", handleResetPosition);
+        lockPosition.removeEventListener("click", handleLockPosition);
+        
+        //Hide settings
+        closeAllMenu();
         settingsContainer.style.display = "none";
         settingsBtn.classList.remove("isOpen");
     }
