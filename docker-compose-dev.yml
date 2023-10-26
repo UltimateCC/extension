@@ -1,0 +1,29 @@
+
+version: '3.3'
+services:
+
+  website:
+    ports:
+      - 8000:8000
+
+  back:
+    build:
+      context: ./back
+      target: base
+    command: npm run dev
+    volumes:
+      - ./back/src:/app/src
+      - ./back/secrets:/app/secrets
+      - ./back/nodemon.json:/app/nodemon.json
+    ports:
+      - 8080:8080
+    environment:
+      - NODE_ENV=
+
+  captionsdb:
+    volumes: 
+      - 'captionsdb:/var/lib/mysql'
+
+volumes: 
+  captionsdb:
+    external: true

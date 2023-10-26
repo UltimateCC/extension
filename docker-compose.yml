@@ -1,0 +1,65 @@
+
+version: '3.3'
+
+services:
+
+  website:
+    build: ./website
+    container_name: captions-website
+    links:
+      - back
+    networks: 
+      - default
+    environment: 
+      - LISTEN_PORT=8000
+      - API_HOST=back
+      - API_PORT=8080
+
+  back:
+    build: ./back
+    container_name: captions-back
+    user: "node"
+    depends_on:
+      - captionsdb
+    #    condition: service_healthy
+    
+    networks: 
+      - default
+
+    volumes:
+      - ./data:/app/data
+
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - DB_URL=mariadb://root:${DB_PASSWORD}@captionsdb:3306/captions
+      - SESSION_REDIS_URL=redis://captions-session
+
+      - SESSION_SECRET=${SESSION_SECRET}
+      - TWITCH_OWNERID=${TWITCH_OWNERID}
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - TWITCH_CLIENTSECRET=${TWITCH_CLIENTSECRET}
+      - TWITCH_SECRET=${TWITCH_SECRET}
+      - TWITCH_REDIRECT_URI=${TWITCH_REDIRECT_URI}
+
+  captionsdb:
+    image: mariadb
+    container_name: captions-db
+    environment:
+      - MARIADB_DATABASE=captions
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+
+    healthcheck:
+      test: ["CMD", "healthcheck.sh" ,"--connect"]
+      timeout: 3s
+      retries: 20
+
+
+
+
+
+
+
+
+
+
