@@ -4,23 +4,23 @@ import { loadSettings, loadLanguageOptions } from "./settings.js";
 // We wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function () {
     // We listen for the Twitch API to be ready
-    window.Twitch.ext.onAuthorized((auth) => {
-        if(streamerId) return;
-        console.log('got auth');
-        // Get the channel ID
-        const streamerId = auth.channelId;
-        loadLanguage(streamerId); // Load the language for settings
-    });
+    // window.Twitch.ext.onAuthorized((auth) => {
+    //     if(streamerId) return;
+    //     console.log('got auth');
+    //     // Get the channel ID
+    //     const streamerId = auth.channelId;
+    //     loadLanguage(streamerId); // Load the language for settings
+    // });
 
-    loadLanguageOptions(246852061)
-        .then(currentLanguage => {
-            if(currentLanguage == "empty") return;
-            updateCaptionLanguage(currentLanguage);
-        })
-        .catch(error => {
-            console.log(error);
-            return;
-        });
+    // loadLanguageOptions(246852061)
+    //     .then(currentLanguage => {
+    //         if(currentLanguage == "empty") return;
+    //         updateCaptionLanguage(currentLanguage);
+    //     })
+    //     .catch(error => {
+    //         console.log(error);
+    //         return;
+    //     });
 
     initPosition();
     loadSettings();
@@ -81,30 +81,20 @@ export function updateCaptionLanguage(language) {
     captionWebSocketManager.startWebSocket(language);
 }
 
-// #group-text .caption-group-header 
+// Menu
 const textMenu = document.getElementById("group-text");
 const textMenuHeader = textMenu.getElementsByClassName("caption-group-header")[0];
-// const textMenuIsOpen = false;
 
 const backgroundMenu = document.getElementById("group-background");
 const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-group-header")[0];
-// const backgroundMenuIsOpen = false;
 
 textMenuHeader.addEventListener("click", () => {
-    if (!textMenu.classList.contains("isOpen")) {
-        textMenu.classList.add("isOpen");
-    } else {
-        textMenu.classList.remove("isOpen");
-    }
+    textMenu.classList.toggle("isOpen");
     backgroundMenu.classList.remove("isOpen");
 });
 
 backgroundMenuHeader.addEventListener("click", () => {
-    if (!backgroundMenu.classList.contains("isOpen")) {
-        backgroundMenu.classList.add("isOpen");
-    } else {
-        backgroundMenu.classList.remove("isOpen");
-    }
+    backgroundMenu.classList.toggle("isOpen");
     textMenu.classList.remove("isOpen");
 });
 

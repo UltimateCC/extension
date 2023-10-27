@@ -152,15 +152,20 @@ body#ultimate-closed-caption #caption-settings .caption-header-container {
   display: flex;
   justify-content: space-between;
   align-items: start;
+  position: relative;
 }
 body#ultimate-closed-caption #caption-settings .caption-header-container h2 {
   font-size: 1em;
+  line-height: 1.5em;
   font-weight: normal;
   width: 100%;
   text-align: center;
   margin: auto;
 }
 body#ultimate-closed-caption #caption-settings .caption-header-container button#caption-settings-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
   border: none;
   background-color: transparent;
   font-size: 1.5em;
@@ -184,77 +189,55 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  /*
-                  label {
-                      font-size: 1em;
-                      width: fit-content;
-                  }
-
-                  input, select {
-                      width: 100%;
-                      background-color: rgb(var(--caption-font-color), $default-background-opacity);
-                      border: 0;
-                      font-size: 1em;
-                      line-height: 1em;
-                      font-family: inherit;
-                      color: rgb(var(--caption-background-color));
-                      font-weight: bold;
-                      border-radius: 0.75em;
-                      cursor: pointer;
-                      height: 1.5em;
-                      margin: 0.25em 0;
-                      padding: 0 0.75em;
-
-                      &:focus, &:active {
-                          outline: none;
-                          box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), $default-background-opacity);
-                          transition: box-shadow 0.5s;
-                      }
-                  }
-
-                  input:not(input[type="range"]) {
-                      padding: 0.2em 0.75em;
-
-                      &::-webkit-color-swatch {
-                          border: none;
-                          border-radius: 0.5em;
-                      }
-                  }
-
-                  input[type="range"] {
-                      appearance: none;
-
-                      &::-webkit-slider-thumb {
-                          appearance: none;
-                          width: 1em;
-                          height: 1em;
-                          border-radius: 50%;
-                          background-color: rgb(var(--caption-background-color));
-                          transition: background-color 0.5s;
-                      }
-
-                      &:hover {
-                          &::-webkit-slider-thumb {
-                              background-color: rgb(var(--caption-font-color));
-                          }
-                      }
-
-                      &::-ms-thumb {
-                          width: 1.5em;
-                          height: 1.5em;
-                          border-radius: 50%;
-                          background-color: rgb(var(--caption-background-color));
-                          cursor: pointer;
-                          transition: all 0.5s;
-                      }
-                  }
-                  */
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select {
+  width: 150px;
+  height: 1.5em;
+  border: 0;
+  border-radius: 0.6em;
+  padding-left: 0.5em;
+  padding-right: 2em;
+  font-size: 0.9em;
+  text-align: left;
+  color: rgba(31, 31, 35, 0.85);
+  background-color: #D9D9D9;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  box-shadow: 0px 3.3px 3.3px 0px rgba(0, 0, 0, 0.25) inset;
+  /* Remove arrow */
+  appearance: none;
+  /* Add my customisable arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" fill="%231F1F23D9"/></svg>');
+  background-repeat: no-repeat;
+  background-position-x: 97.5%;
+  background-position-y: 50%;
+  background-size: 30px;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:not(:disabled) {
+  cursor: pointer;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:active {
+  outline: none;
+  box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), 0.5);
+  transition: box-shadow 0.5s;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group.isOpen .caption-group-header button.chevron {
+  transform: rotate(-90deg);
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group:not(.isOpen) .caption-group-content {
   display: none;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group#language .caption-group-header {
   flex-direction: column;
+  font-size: 1em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group#language .caption-group-header h3 {
+  font-size: 1.5em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group#language .caption-group-header select {
+  width: 100%;
+  margin-top: 0.375em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group:not(#language) .caption-group-header {
   cursor: pointer;
@@ -282,7 +265,7 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header button.chevron {
   border: none;
   background-color: transparent;
-  font-size: 1em;
+  font-size: 0.75em;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
   transform: rotate(0deg);
@@ -309,8 +292,110 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   display: block;
   width: 100%;
   height: 3px;
-  background-color: rgb(var(--caption-font-color));
+  background-color: #D9D9D9;
   border-radius: 100px;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 0.75em;
+  margin-bottom: 0.9375em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family {
+  flex-direction: column;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > div, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > div {
+  display: flex;
+  justify-content: space-between;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > select, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > select {
+  width: 100%;
+  margin-top: 0.375em;
+  line-height: 1.1em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > input[type=range], body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > input[type=range] {
+  margin-top: 0.75em;
+  margin-bottom: calc((1em - 6px) / 2);
+  width: 100%;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  height: 6px;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > input[type=range]:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > input[type=range]:focus {
+  outline: none;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > input[type=range]::-webkit-slider-thumb, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: #4C4C5A;
+  border: 0.25em solid #CECED1;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container {
+  position: relative;
+  color: rgba(31, 31, 35, 0.85);
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container input {
+  padding-right: 0.5em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container .units {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 1em;
+  height: 1.5em;
+  width: 150px;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.5em;
+  pointer-events: none;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container .units span.invisible {
+  visibility: hidden;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item label {
+  font-size: 1em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input {
+  height: 1.5em;
+  width: 150px;
+  border: 0;
+  border-radius: 0.6em;
+  padding: 0;
+  margin: 0;
+  background-color: #D9D9D9;
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 1em;
+  color: rgba(31, 31, 35, 0.85);
+  text-align: center;
+  box-shadow: 0px 3.3px 3.3px 0px rgba(0, 0, 0, 0.25) inset;
+  cursor: pointer;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:active {
+  outline: none;
+  box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), 0.5);
+  transition: box-shadow 0.5s;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:not(input[type=range])::-webkit-color-swatch {
+  border: none;
+  border-radius: 0.6em;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:not(input[type=range])::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
 body#ultimate-closed-caption #caption-settings .caption-button-container {
   display: flex;

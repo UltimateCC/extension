@@ -36,8 +36,8 @@
                 <div class="caption-group" id="language">
                     <div class="caption-group-header">
                         <h3>Language</h3>
-                        <select id="language-input">
-                            <option disabled selected value> Loading </option>
+                        <select id="language-input" disabled>
+                            <option selected value> Waiting for translations</option>
                         </select>
                     </div>
                 </div>
@@ -62,10 +62,13 @@
                             <label for="font-size-input">Text Size</label>
                             <div class="caption-number-container">
                                 <input type="number" id="font-size-input" value="8" min="6" max="100" step="1" />
-                                <span class="caption-span">px</span>
+                                <div class="units">
+                                    <span class="invisible" id="font-size-unit">8</span>
+                                    <span class="caption-unit">px</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="caption-group-content-item">
+                        <div class="caption-group-content-item group-font-family">
                             <label for="font-family-input">Font family</label>
                             <select id="font-family-input">
                                 <option value="Arial" selected>Arial</option>
@@ -77,19 +80,20 @@
                             </select>
                         </div>
                         <div class="caption-group-content-item">
-                            <label for="max-lines-input">Max Lines</label>
+                            <label for="max-lines-input">Max lines</label>
                             <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
                         </div>
-                        <div class="caption-group-content">
-                            <div class="caption-group-content-item">
-                                <label for="stroke-color-input">Stroke Color</label>
-                                <input type="color" id="stroke-color-input" value="#000000" />
-                            </div>
-                            <div class="caption-group-content-item">
-                                <label for="stroke-size-input">Stroke Size</label>
-                                <div class="caption-number-container">
-                                    <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
-                                    <span class="caption-span">px</span>
+                        <div class="caption-group-content-item">
+                            <label for="stroke-color-input">Stroke color</label>
+                            <input type="color" id="stroke-color-input" value="#000000" />
+                        </div>
+                        <div class="caption-group-content-item">
+                            <label for="stroke-size-input">Stroke size</label>
+                            <div class="caption-number-container">
+                                <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
+                                <div class="units">
+                                    <span class="invisible" id="stroke-size-unit">0</span>
+                                    <span class="caption-unit">px</span>
                                 </div>
                             </div>
                         </div>
@@ -109,16 +113,21 @@
                     </div>
                     <div class="caption-group-content">
                         <div class="caption-group-content-item">
-                            <label for="bg-color-input">Background Color</label>
+                            <label for="bg-color-input">Color</label>
                             <input type="color" id="bg-color-input" value="#37373E" />
                         </div>
-                        <div class="caption-group-content-item">
-                            <label for="bg-opacity-number-input">Background Opacity</label>
-                            <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
-                            <div class="caption-number-container">
-                                <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
-                                <span class="caption-span">%</span>
+                        <div class="caption-group-content-item group-opacity">
+                            <div>
+                                <label for="bg-opacity-number-input">Opacity</label>
+                                <div class="caption-number-container">
+                                    <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
+                                    <div class="units">
+                                        <span class="invisible" id="bg-opacity-unit">50</span>
+                                        <span class="caption-unit">%</span>
+                                    </div>
+                                </div>
                             </div>
+                            <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
                         </div>
                     </div>
                 </div>

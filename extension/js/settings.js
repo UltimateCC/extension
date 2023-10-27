@@ -24,6 +24,11 @@ export function loadSettings() {
     const bgOpacityNumberInput = document.getElementById("bg-opacity-number-input");
     const bgOpacityRangeInput = document.getElementById("bg-opacity-range-input");
 
+    // Units
+    const unitFontSize = document.getElementById("font-size-unit");
+    const unitStrokeSize = document.getElementById("stroke-size-unit");
+    const unitBgOpacity = document.getElementById("bg-opacity-unit");
+
     // Buttons
     const resetSettings = document.getElementById("caption-reset-settings");
     const resetPosition = document.getElementById("caption-reset-position");
@@ -74,12 +79,18 @@ export function loadSettings() {
             fontColorInput.value = settingsContent.fontColor;
             fontSizeInput.value = settingsContent.fontSize;
             fontFamilyInput.value = settingsContent.fontFamily;
+            fontFamilyInput.style.fontFamily = settingsContent.fontFamily;
             maxLinesInput.value = settingsContent.maxLines;
             bgColorInput.value = settingsContent.backgroundColor;
             bgOpacityNumberInput.value = settingsContent.backgroundOpacity;
             bgOpacityRangeInput.value = settingsContent.backgroundOpacity;
             strokeColorInput.value = settingsContent.strokeColor;
             strokeSizeInput.value = settingsContent.strokeSize;
+
+            // Number for units
+            unitFontSize.innerText = settingsContent.fontSize;
+            unitStrokeSize.innerText = settingsContent.strokeSize;
+            unitBgOpacity.innerText = settingsContent.backgroundOpacity;
         }
     }
 
@@ -97,10 +108,12 @@ export function loadSettings() {
         if (fontSizeInput.value < 8) fontSizeInput.value = 8;
         if (fontSizeInput.value > 100) fontSizeInput.value = 100;
         updateSetting("font-size", fontSizeInput.value + "px", true);
+        unitFontSize.innerText = fontSizeInput.value;
     }
 
     function handleFontFamilyInput() {
         updateSetting("font-family", fontFamilyInput.value, true);
+        fontFamilyInput.style.fontFamily = fontFamilyInput.value;
     }
 
     function handleMaxLinesInput() {
@@ -123,6 +136,7 @@ export function loadSettings() {
     }
     function changeBgOpacity() {
         updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
+        unitBgOpacity.innerText = bgOpacityNumberInput.value;
     }
 
     function handleStrokeColorInput() {
@@ -131,6 +145,7 @@ export function loadSettings() {
 
     function handleStrokeSizeInput() {
         updateSetting("stroke-size", strokeSizeInput.value + "px");
+        unitStrokeSize.innerText = strokeSizeInput.value;
     }
 
     function updateSetting(variableName, newValue, updatePosition = false) {
