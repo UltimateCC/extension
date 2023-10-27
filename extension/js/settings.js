@@ -52,7 +52,7 @@ export function loadSettings() {
         } else {
             // Default settings
             settingsContent = {
-                "fontColor": "#D9D9D9",
+                "fontColor": "#ffffff",
                 "fontSize": 16,
                 "fontFamily": "Arial",
                 "maxLines": 2,
@@ -91,6 +91,9 @@ export function loadSettings() {
             unitFontSize.innerText = settingsContent.fontSize;
             unitStrokeSize.innerText = settingsContent.strokeSize;
             unitBgOpacity.innerText = settingsContent.backgroundOpacity;
+
+            // Set blur with opacity
+            captionBox.style.backdropFilter = "blur(" + (settingsContent.backgroundOpacity * 0.1) + "px)";
         }
     }
 
@@ -135,6 +138,9 @@ export function loadSettings() {
         changeBgOpacity();
     }
     function changeBgOpacity() {
+        if(bgOpacityNumberInput.value < 0) bgOpacityNumberInput.value = 0;
+        if(bgOpacityNumberInput.value > 100) bgOpacityNumberInput.value = 100;
+        captionBox.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
         updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
         unitBgOpacity.innerText = bgOpacityNumberInput.value;
     }

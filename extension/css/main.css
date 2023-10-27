@@ -5,12 +5,6 @@
   font-style: normal;
 }
 @font-face {
-  font-family: "Arial";
-  src: url("fonts/arialbd.ttf") format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
-@font-face {
   font-family: "Calibri";
   src: url("fonts/calibri.ttf") format("truetype");
   font-weight: normal;
@@ -41,7 +35,7 @@
   font-style: normal;
 }
 :root {
-  --caption-font-color: 217, 217, 217;
+  --caption-font-color: 255, 255, 255;
   --caption-font-size: 16px;
   --caption-font-family: Arial;
   --caption-max-lines: 2;
@@ -114,7 +108,7 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 30px;
+  font-size: 1.9rem;
   border-radius: 50%;
   cursor: pointer;
   transition: opacity 2s ease-in-out;
@@ -134,19 +128,32 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
   transition: fill 0.2s;
 }
 body#ultimate-closed-caption #caption-settings {
-  min-height: 300px;
-  width: 400px;
+  min-height: 16em;
+  max-height: 100vh;
+  width: 16em;
   padding: 0.2em 0.5em 1em;
   position: absolute;
-  right: 0;
+  left: 0;
   top: 0;
   transition: width 0.5s;
-  color: #CECED1;
+  color: #D9D9D9;
   background-color: rgba(31, 31, 35, 0.95);
-  font-size: 26px;
+  font-size: 24px;
   font-family: "Arial", sans-serif;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden auto;
+}
+body#ultimate-closed-caption #caption-settings::-webkit-scrollbar {
+  width: 0.5em;
+}
+body#ultimate-closed-caption #caption-settings::-webkit-scrollbar-track {
+  background-color: #D9D9D9;
+}
+body#ultimate-closed-caption #caption-settings::-webkit-scrollbar-thumb {
+  background-color: #1F1F23;
+  border-radius: 0.5em;
+  border: 0.15em solid #D9D9D9;
 }
 body#ultimate-closed-caption #caption-settings .caption-header-container {
   display: flex;
@@ -155,7 +162,7 @@ body#ultimate-closed-caption #caption-settings .caption-header-container {
   position: relative;
 }
 body#ultimate-closed-caption #caption-settings .caption-header-container h2 {
-  font-size: 1em;
+  font-size: 1.5em;
   line-height: 1.5em;
   font-weight: normal;
   width: 100%;
@@ -168,7 +175,7 @@ body#ultimate-closed-caption #caption-settings .caption-header-container button#
   right: 0;
   border: none;
   background-color: transparent;
-  font-size: 1.5em;
+  font-size: 2em;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
@@ -191,7 +198,7 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   flex-direction: column;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select {
-  width: 150px;
+  width: 7em;
   height: 1.5em;
   border: 0;
   border-radius: 0.6em;
@@ -204,7 +211,7 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  box-shadow: 0px 3.3px 3.3px 0px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0 3.3px 3.3px 0 rgba(31, 31, 35, 0.25) inset;
   /* Remove arrow */
   appearance: none;
   /* Add my customisable arrow */
@@ -212,14 +219,14 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   background-repeat: no-repeat;
   background-position-x: 97.5%;
   background-position-y: 50%;
-  background-size: 30px;
+  background-size: 1.25rem;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:not(:disabled) {
   cursor: pointer;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group select:active {
   outline: none;
-  box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), 0.5);
+  box-shadow: 0 0 3px 2px rgba(217, 217, 217, 0.4);
   transition: box-shadow 0.5s;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group.isOpen .caption-group-header button.chevron {
@@ -252,20 +259,19 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
-  font-size: 1.5em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header:focus {
   outline: none;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header h3 {
-  font-size: 1em;
+  font-size: 1.5em;
   font-weight: normal;
   text-align: left;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-header button.chevron {
   border: none;
   background-color: transparent;
-  font-size: 0.75em;
+  font-size: 1.25em;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
   transform: rotate(0deg);
@@ -284,16 +290,16 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   fill: #D9D9D9;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group > div {
-  padding-right: 20px;
-  padding-left: 20px;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group::after {
   content: "";
   display: block;
   width: 100%;
-  height: 3px;
+  height: 0.125em;
   background-color: #D9D9D9;
-  border-radius: 100px;
+  border-radius: 0.25em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content {
   display: flex;
@@ -324,12 +330,13 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > input[type=range], body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > input[type=range] {
   margin-top: 0.75em;
-  margin-bottom: calc((1em - 6px) / 2);
+  margin-bottom: 0.35em;
   width: 100%;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  height: 6px;
+  height: 0.3em;
+  box-shadow: none;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-opacity > input[type=range]:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item.group-font-family > input[type=range]:focus {
   outline: none;
@@ -341,14 +348,14 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   height: 1em;
   border-radius: 50%;
   background-color: #4C4C5A;
-  border: 0.25em solid #CECED1;
+  border: 0.25em solid #D9D9D9;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container {
   position: relative;
   color: rgba(31, 31, 35, 0.85);
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container input {
-  padding-right: 0.5em;
+  padding-right: 1.2em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container .units {
   position: absolute;
@@ -356,10 +363,12 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   top: 0;
   font-size: 1em;
   height: 1.5em;
-  width: 150px;
-  display: inline-block;
-  text-align: center;
+  width: 7em;
   line-height: 1.5em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.1em;
   pointer-events: none;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item .caption-number-container .units span.invisible {
@@ -370,7 +379,7 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input {
   height: 1.5em;
-  width: 150px;
+  width: 7em;
   border: 0;
   border-radius: 0.6em;
   padding: 0;
@@ -382,12 +391,24 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
   line-height: 1em;
   color: rgba(31, 31, 35, 0.85);
   text-align: center;
-  box-shadow: 0px 3.3px 3.3px 0px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0 3.3px 3.3px 0 rgba(31, 31, 35, 0.25) inset;
   cursor: pointer;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input::-webkit-outer-spin-button, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input[type=number] {
+  -webkit-appearance: textfield;
+          appearance: textfield;
+  -moz-appearance: textfield;
+}
+body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input[type=color]::-moz-color-swatch {
+  border-radius: 0.6em;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:focus, body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:active {
   outline: none;
-  box-shadow: 0 0 5px 2px rgba(var(--caption-background-color), 0.5);
+  box-shadow: 0 0 3px 2px rgba(217, 217, 217, 0.4);
   transition: box-shadow 0.5s;
 }
 body#ultimate-closed-caption #caption-settings .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:not(input[type=range])::-webkit-color-swatch {
@@ -400,7 +421,7 @@ body#ultimate-closed-caption #caption-settings .caption-settings-container .capt
 body#ultimate-closed-caption #caption-settings .caption-button-container {
   display: flex;
   flex-direction: column;
-  padding: 0 20px;
+  padding: 0 1.25rem;
 }
 body#ultimate-closed-caption #caption-settings .caption-button-container div {
   display: flex;
@@ -421,9 +442,14 @@ body#ultimate-closed-caption #caption-settings .caption-button-container button 
   color: inherit;
   cursor: pointer;
   width: 100%;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 body#ultimate-closed-caption #caption-settings .caption-button-container button#caption-lock-position {
   padding: 0.5em 0;
+}
+body#ultimate-closed-caption #caption-settings .caption-button-container button:hover {
+  background-color: rgba(217, 217, 217, 0.95);
+  color: #4C4C5A;
 }
 
 option[value=Arial] {
