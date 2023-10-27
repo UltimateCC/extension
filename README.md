@@ -22,6 +22,7 @@ Roadmap maybe later:
 ## Development
 
 #### Twitch config
+(Instructions not updated)
 - Go to https://dev.twitch.tv/console/ and create an extension
 - Config asset hosting:
   - Base test uri: https://localhost:5174/
@@ -35,8 +36,9 @@ Roadmap maybe later:
 - This will start the backend in dev mode, with a static version of the website
 - Address: http://localhost:8000
 - nodemon will restart server after any modifications in backend code
+- for local backend dev, run `npm install` in back folder to get types working
 
-#### Website / Extension
-- `cd website` or `cd extension`
-- Install: `npm install`
-- Start local dev server: `npm run dev`
+#### Website
+- `cd website`
+- Install: `yarn`
+- Start local dev server: `yarn dev`

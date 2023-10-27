@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import TransferList from '../../components/TransferList';
@@ -14,6 +14,7 @@ import LogoutImg from '../../assets/logout.svg';
 import LoadingImg from '../../assets/loading.svg';
 
 import api from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 
 interface banCaptionsProps {
     lang: string;
@@ -22,8 +23,10 @@ interface banCaptionsProps {
 }
 
 function Dashboard() {
+    const { user } = useContext(AuthContext);
+
     // Request to get the user's username
-    const [username, setUsername] = useState<string>('loading...');
+    //const [username, setUsername] = useState<string>('loading...');
     const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [selectedLanguageCode, setSelectedLanguageCode] = useState<string[]>([]);
     const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
@@ -34,10 +37,17 @@ function Dashboard() {
     const [micLoaded, setMicLoaded] = useState<boolean>(false);
 
     useEffect(() => {
+        if(!user?.connected && user?.url) {
+            window.location.replace(user.url);
+        }
+    }, [ user ]);
+
+    useEffect(() => {
         // Fetch user infos
+        if(!user?.connected) return;
         api('user')
             .then(response => {
-                setUsername(response.name);
+                //setUsername(response.name);
                 setAllBanCaptions(response.ban_captions);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
@@ -48,11 +58,9 @@ function Dashboard() {
                 setMicLoaded(true);
             })
             .catch(err => {
-                alert("Error : " + err.message);
-                window.location.replace('/');
+                console.error('Loading error', err);
             })
-            
-    }, []);
+    }, [user]);
 
     const handleSelectedLanguageCodeChange = (newLanguageCode: (string)[]) => {
         setSelectedLanguageCode(newLanguageCode);
@@ -69,7 +77,7 @@ function Dashboard() {
     return (
         <section id="dashboard">
             <div className="welcome theme-box">
-                <h2>Welcome, <strong>{username}</strong></h2>
+                <h2>Welcome, <strong>{user?.login}</strong></h2>
                 <Link to="/logout" className="profile-container">
                     {profilePicture !== LoadingImg && (
                         <div className='logout-box'>

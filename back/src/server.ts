@@ -11,7 +11,7 @@ import { initSocketioServer } from './socketioServer';
 const app = express();
 app.set('trust proxy', 1);
 
-const sessionTime = 3600*24
+const sessionTime = 3600*24;
 const FileStore = fileStore(session);
 const sessionMiddleware = session({
 	proxy: true,

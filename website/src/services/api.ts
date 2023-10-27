@@ -1,3 +1,4 @@
+
 export default async function api(
     path: string,
     options: {
@@ -7,7 +8,7 @@ export default async function api(
     } = {},
     withCredentials = true
 ) {
-    let url = path.startsWith('http') ? path : 'http://localhost:5000/v1/' + path;
+    let url = path.startsWith('http') ? path : '/api/' + path;
     if (options.params) {
         const params = new URLSearchParams();
         for (const key in options.params) {
@@ -26,7 +27,8 @@ export default async function api(
     if (!res.ok) {
         const err = await res.json();
         if (err.code === 401) { // Unauthorized
-            window.location.replace((path === 'auth/logout') ? '/' : 'http://localhost:5000/v1/auth/login');
+            throw new Error('Unauthorized');
+            //window.location.replace('/');
             return new Promise(() => {}); // Never resolve because we're redirecting
         }
         throw err;

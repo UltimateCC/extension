@@ -20,8 +20,8 @@ services:
     container_name: captions-back
     user: "node"
     depends_on:
-      - captionsdb
-    #    condition: service_healthy
+      captionsdb:
+        condition: service_healthy
     
     networks: 
       - default
@@ -33,7 +33,6 @@ services:
       - NODE_ENV=production
       - PORT=8080
       - DB_URL=mariadb://root:${DB_PASSWORD}@captionsdb:3306/captions
-      - SESSION_REDIS_URL=redis://captions-session
 
       - SESSION_SECRET=${SESSION_SECRET}
       - TWITCH_OWNERID=${TWITCH_OWNERID}

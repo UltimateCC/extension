@@ -1,19 +1,17 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useRef } from 'react';
 
-import api from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 
 function Logout() {
-    const navigate = useNavigate();
+    const { logout } = useContext(AuthContext);
+    const ran = useRef<boolean>(false);
 
     useEffect(() => {
-        api('auth/logout', { method: 'POST' })
-            .then(() => navigate('/')) // Redirect to home page
-            .catch(error => {
-                console.error('Logout error:', error);
-                navigate('/');
-            });
-    }, [navigate]);
+        if(!ran.current) {
+            ran.current = true;
+            logout();
+        }
+    }, []);
 
     return null; 
 }

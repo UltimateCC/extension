@@ -1,7 +1,7 @@
 
 import { Router } from "express";
 import { dataSource } from "../database";
-import { User, UserConfigSchema, UserSecrets, UserSecretsSchema } from "../entity/User";
+import { User, UserConfigSchema, UserSecretsSchema } from "../entity/User";
 import { authMiddleware } from "./auth";
 
 

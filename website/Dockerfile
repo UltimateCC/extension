@@ -4,15 +4,16 @@ FROM node:18-alpine3.18 as build
 WORKDIR /app
 
 #copy config
-COPY *.json vite.config.ts svelte.config.js ./
-RUN npm ci
+COPY *.json vite.config.ts ./
+RUN yarn install --frozen-lockfile
 
 #copy src files
+COPY index.html ./
 COPY src ./src/
-COPY static ./static/
+COPY public ./public/
 
-RUN npm run build
+RUN yarn build
 
 FROM nginx:1.23-alpine
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
