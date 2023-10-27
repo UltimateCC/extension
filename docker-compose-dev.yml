@@ -12,9 +12,11 @@ services:
       target: base
     command: npm run dev
     volumes:
+      # Mount source code to restart app on change
       - ./back/src:/app/src
-      - ./back/secrets:/app/secrets
       - ./back/nodemon.json:/app/nodemon.json
+      # Persist data (user sessions) between restarts
+      - ./data:/app/data
     ports:
       - 8080:8080
     environment:
@@ -22,7 +24,7 @@ services:
 
   captionsdb:
     volumes: 
-      - 'captionsdb:/var/lib/mysql'
+      - 'captionsdb:/data/db'
 
 volumes: 
   captionsdb:

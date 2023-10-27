@@ -25,8 +25,7 @@ interface banCaptionsProps {
 function Dashboard() {
     const { user } = useContext(AuthContext);
 
-    // Request to get the user's username
-    //const [username, setUsername] = useState<string>('loading...');
+    // Request to get the user's config
     const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [selectedLanguageCode, setSelectedLanguageCode] = useState<string[]>([]);
     const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
@@ -45,9 +44,9 @@ function Dashboard() {
     useEffect(() => {
         // Fetch user infos
         if(!user?.connected) return;
-        api('user')
+        api('config')
             .then(response => {
-                //setUsername(response.name);
+                return;
                 setAllBanCaptions(response.ban_captions);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
@@ -56,6 +55,7 @@ function Dashboard() {
                 setProfilePicture(response.profile_picture_url);
                 setDefaultSelectedMic(response.mic_settings);
                 setMicLoaded(true);
+                
             })
             .catch(err => {
                 console.error('Loading error', err);
@@ -77,7 +77,7 @@ function Dashboard() {
     return (
         <section id="dashboard">
             <div className="welcome theme-box">
-                <h2>Welcome, <strong>{user?.login}</strong></h2>
+                <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
                 <Link to="/logout" className="profile-container">
                     {profilePicture !== LoadingImg && (
                         <div className='logout-box'>

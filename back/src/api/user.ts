@@ -4,15 +4,6 @@ import { dataSource } from "../database";
 import { User, UserConfigSchema, UserSecretsSchema } from "../entity/User";
 import { authMiddleware } from "./auth";
 
-
-declare module 'express-session' {
-	interface SessionData {
-		userid: string;
-		login: string;
-		connected: boolean;
-	}
-}
-
 export const apiRouter = Router();
 
 apiRouter.get('/api/config', authMiddleware, async (req, res, next)=>{

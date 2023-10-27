@@ -20,19 +20,15 @@ services:
     container_name: captions-back
     user: "node"
     depends_on:
-      captionsdb:
-        condition: service_healthy
+      - captionsdb
     
     networks: 
       - default
 
-    volumes:
-      - ./data:/app/data
-
     environment:
       - NODE_ENV=production
       - PORT=8080
-      - DB_URL=mariadb://root:${DB_PASSWORD}@captionsdb:3306/captions
+      - DB_URL=mongodb://captions:${DB_PASSWORD}@captionsdb:27017/
 
       - SESSION_SECRET=${SESSION_SECRET}
       - TWITCH_OWNERID=${TWITCH_OWNERID}
@@ -42,16 +38,12 @@ services:
       - TWITCH_REDIRECT_URI=${TWITCH_REDIRECT_URI}
 
   captionsdb:
-    image: mariadb
+    image: mongo
     container_name: captions-db
     environment:
-      - MARIADB_DATABASE=captions
-      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=captions
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
 
-    healthcheck:
-      test: ["CMD", "healthcheck.sh" ,"--connect"]
-      timeout: 3s
-      retries: 20
 
 
 

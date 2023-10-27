@@ -1,11 +1,14 @@
 
 import { z } from "zod";
-import { Entity, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn, ObjectIdColumn, ObjectId } from "typeorm"
 import { AccessToken } from "@twurple/auth";
 
 @Entity()
 export class User {
-	@PrimaryColumn()
+	@ObjectIdColumn()
+	id: ObjectId;
+
+	@Column({unique: true})
 	twitchId: string;
 
 	@Column()
@@ -18,11 +21,11 @@ export class User {
 	config: UserConfig = {
 		stt: {
 			type: '',	
-			lang: 'en-US',		
+			lang: 'en-US',
 		},
 		translation: {
 			type: '',
-			langs: ['fr-FR', 'en-US'],
+			langs: ['fr', 'en'],
 		}
 	};
 
@@ -39,7 +42,8 @@ export const UserConfigSchema = z.object({
 			z.literal('azure'),
 		]),
 		lang: z.string(),
-		langs: z.array(z.string()).optional()
+		langs: z.array(z.string()).optional(),
+		microphone: z.string().optional()
 	}),
 	translation: z.object({
 		type: z.union([

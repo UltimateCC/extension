@@ -5,6 +5,14 @@ import { dataSource } from "../database";
 import { User } from "../entity/User";
 
 
+declare module 'express-session' {
+	interface SessionData {
+		userid: string;
+		login: string;
+		connected: boolean;
+	}
+}
+
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
 	if(!req.session.userid) {
 		res.status(401).json({message: 'Missing authorization'});
@@ -15,7 +23,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 
 export const authRouter = Router();
 
-authRouter.get('/api/auth', (req, res, next)=>{
+authRouter.get('', (req, res, next)=>{
 	res.json({
 		connected: req.session.connected,
 		userid: req.session.userid,
@@ -24,7 +32,7 @@ authRouter.get('/api/auth', (req, res, next)=>{
 	});
 });
 
-authRouter.post('/api/auth',async (req, res, next)=>{
+authRouter.post('',async (req, res, next)=>{
 	try{
 		if(!req.body || !req.body.code || typeof req.body.code !=='string') {
 			return res.status(400).send('Missing code');
@@ -49,7 +57,7 @@ authRouter.post('/api/auth',async (req, res, next)=>{
 	}
 });
 
-authRouter.delete('/api/auth', authMiddleware, (req, res, next)=>{
+authRouter.delete('', authMiddleware, (req, res, next)=>{
 	req.session.destroy((err)=>{
 		if(err) next(err);
 		else res.status(200).send({message: 'Disconnected'});

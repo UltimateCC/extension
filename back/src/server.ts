@@ -3,7 +3,7 @@ import express from 'express';
 import session from 'express-session';
 import fileStore from 'session-file-store';
 import { authRouter } from './api/auth';
-import { apiRouter } from './api/config';
+import { apiRouter } from './api/user';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { initSocketioServer } from './socketioServer';
@@ -30,8 +30,9 @@ const sessionMiddleware = session({
 });
 app.use(sessionMiddleware);
 app.use(express.json());
-//Auth routes
-app.use(authRouter);
+
+//Auth
+app.use('/api/auth', authRouter);
 //Api routes
 app.use(apiRouter);
 
