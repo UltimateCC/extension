@@ -1,11 +1,14 @@
 
 import { z } from "zod";
-import { Entity, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, ObjectIdColumn, ObjectId } from "typeorm";
 import { AccessToken } from "@twurple/auth";
 
 @Entity()
 export class User {
-	@PrimaryColumn()
+	@ObjectIdColumn()
+	id: ObjectId;
+
+	@Column({unique: true})
 	twitchId: string;
 
 	@Column()
@@ -16,14 +19,11 @@ export class User {
 
 	@Column('json')
 	config: UserConfig = {
-		stt: {
-			type: '',	
-			lang: 'en-US',		
-		},
-		translation: {
-			type: '',
-			langs: ['fr-FR', 'en-US'],
-		}
+		transcribe: 'browser',	
+		spokenLangs: ['en-US'],
+		translateService: '',
+		translateLangs: [],
+		banWords: []
 	};
 
 	@Column('json')
@@ -31,25 +31,26 @@ export class User {
 }
 
 export const UserConfigSchema = z.object({
-	stt: z.object({
-		type: z.union([
-			z.literal(''),
-			z.literal('whisper'),
-			z.literal('deepgram'),
-			z.literal('azure'),
-		]),
+	transcribe: z.union([
+		z.literal('browser'),
+		z.literal('whisper'),
+		z.literal('deepgram'),
+		z.literal('azure'),
+	]),
+	//spokenLang: z.string(),
+	spokenLangs: z.array(z.string()),
+	microphone: z.string().optional(),
+	translateService: z.union([
+		z.literal(''),
+		z.literal('azure'),
+		z.literal('libre'),
+		z.literal('gcp')
+	]),
+	translateLangs: z.array(z.string()),
+	banWords: z.array(z.object({
 		lang: z.string(),
-		langs: z.array(z.string()).optional()
-	}),
-	translation: z.object({
-		type: z.union([
-			z.literal(''),
-			z.literal('azure'),
-			z.literal('libre'),
-			z.literal('gcp')
-		]),
-		langs: z.array(z.string()),
-	})
+		text: z.string()
+	}))
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;

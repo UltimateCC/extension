@@ -32,6 +32,7 @@ Roadmap maybe later:
 
 #### Back
 - Copy exemple.env to .env and fill env variables
+- Create a docker volume for database persistence: `docker volume create captionsdb`
 - Start : `docker compose -f docker-compose.yml -f docker-compose-dev.yml up --build --attach back`
 - This will start the backend in dev mode, with a static version of the website
 - Address: http://localhost:8000

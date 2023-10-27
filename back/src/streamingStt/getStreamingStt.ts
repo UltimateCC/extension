@@ -5,7 +5,7 @@ import { AzureStt } from "./AzureStt";
 
 export function getStreamingStt(u: User) {
 
-	switch(u.config.stt.type) {
+	switch(u.config.transcribe) {
 
 		case 'azure':
 			return new AzureStt(u.config, u.secrets);

@@ -5,7 +5,8 @@ export abstract class Translator {
 
 	protected langs: string[]
 	constructor(protected config: UserConfig, protected secrets: UserSecrets) {
-		this.langs = config.translation.langs.map(l=>l.substring(0,2));
+		// Just remove ?
+		this.langs = config.translateLangs.map(l=>l.substring(0,2));
 	}
 
 	abstract ready(): boolean;

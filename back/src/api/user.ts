@@ -4,15 +4,6 @@ import { dataSource } from "../database";
 import { User, UserConfigSchema, UserSecretsSchema } from "../entity/User";
 import { authMiddleware } from "./auth";
 
-
-declare module 'express-session' {
-	interface SessionData {
-		userid: string;
-		login: string;
-		connected: boolean;
-	}
-}
-
 export const apiRouter = Router();
 
 apiRouter.get('/api/config', authMiddleware, async (req, res, next)=>{
@@ -27,7 +18,8 @@ apiRouter.get('/api/config', authMiddleware, async (req, res, next)=>{
 apiRouter.post('/api/config', authMiddleware, async (req, res, next)=>{
 	try{
 		const user = await dataSource.manager.findOneByOrFail(User, {twitchId: req.session.userid});
-		user.config = UserConfigSchema.parse(req.body);
+		const config = UserConfigSchema.partial().parse(req.body);
+		Object.assign(user.config, config);
 		await dataSource.manager.save(user);
 		res.json(user.config);
 	}catch(e) {

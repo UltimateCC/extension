@@ -6,7 +6,7 @@ import { WhisperOpenAIStt } from "./WhisperOpenAIStt";
 
 export function getStt(u: User) {
 
-	switch(u.config.stt.type) {
+	switch(u.config.transcribe) {
 
 		case 'whisper':
 			return new WhisperOpenAIStt(u.config, u.secrets);
