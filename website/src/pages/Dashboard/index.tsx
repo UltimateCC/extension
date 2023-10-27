@@ -33,7 +33,6 @@ function Dashboard() {
     const [apiLoader, setApiLoader] = useState<string | undefined>(LoadingImg);
     const [profilePicture, setProfilePicture] = useState<string>(LoadingImg);
     const [defaultSelectedMic, setDefaultSelectedMic] = useState<string | undefined>(undefined);
-    const [micLoaded, setMicLoaded] = useState<boolean>(false);
 
     useEffect(() => {
         if(!user?.connected && user?.url) {
@@ -54,7 +53,6 @@ function Dashboard() {
                 setLanguageCodeLoaded(true);
                 setProfilePicture(response.profile_picture_url);
                 setDefaultSelectedMic(response.mic_settings);
-                setMicLoaded(true);
                 
             })
             .catch(err => {
@@ -124,7 +122,6 @@ function Dashboard() {
                     <h3>Mic setting</h3>
                     <MicrophoneApp 
                         defaultSelectedMic={defaultSelectedMic}
-                        micLoaded={micLoaded}
                     />
                 </div>
                 <Footer />

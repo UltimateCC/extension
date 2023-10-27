@@ -18,7 +18,8 @@ apiRouter.get('/api/config', authMiddleware, async (req, res, next)=>{
 apiRouter.post('/api/config', authMiddleware, async (req, res, next)=>{
 	try{
 		const user = await dataSource.manager.findOneByOrFail(User, {twitchId: req.session.userid});
-		user.config = UserConfigSchema.parse(req.body);
+		const config = UserConfigSchema.partial().parse(req.body);
+		Object.assign(user.config, config);
 		await dataSource.manager.save(user);
 		res.json(user.config);
 	}catch(e) {

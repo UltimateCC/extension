@@ -14,7 +14,7 @@ export class AzureStt extends StreamingSpeechToText {
 	async start() {
 		this.stop();
 		try {
-			if( !this.ready() || !this.config.stt.langs?.length ) {
+			if( !this.ready() || !this.config.spokenLangs?.length ) {
 				this.emit('info', {
 					type: 'error',
 					message: 'Invalid speech to text configuration'
@@ -24,7 +24,7 @@ export class AzureStt extends StreamingSpeechToText {
 
 			const speechConfig = SpeechConfig.fromSubscription(this.secrets.azureSttKey!, this.secrets.azureSttRegion!);
 			
-			const langsConfig = AutoDetectSourceLanguageConfig.fromLanguages(this.config.stt.langs!);
+			const langsConfig = AutoDetectSourceLanguageConfig.fromLanguages(this.config.spokenLangs);
 			langsConfig.mode = LanguageIdMode.Continuous;
 
 			this.pushStream = AudioInputStream.createPushStream();
