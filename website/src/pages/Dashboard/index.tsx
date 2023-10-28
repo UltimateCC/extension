@@ -27,17 +27,17 @@ function Dashboard() {
 
     // Request to get the user's config
     const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
-    const [selectedLanguageCode, setSelectedLanguageCode] = useState<string[]>([]);
+    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
     const [apiKeyIsWorking, setApiKeyIsWorking] = useState<boolean>(false);
     const [apiLoader, setApiLoader] = useState<string | undefined>(LoadingImg);
     const [profilePicture, setProfilePicture] = useState<string>(LoadingImg);
-    const [defaultSelectedMic, setDefaultSelectedMic] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if(!user?.connected && user?.url) {
             window.location.replace(user.url);
         }
+        setProfilePicture('TODO');
     }, [ user ]);
 
     useEffect(() => {
@@ -45,15 +45,12 @@ function Dashboard() {
         if(!user?.connected) return;
         api('config')
             .then(response => {
-                return;
-                setAllBanCaptions(response.ban_captions);
+                setAllBanCaptions(response.banWords);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
-                setSelectedLanguageCode(response.selected_languages);
+                //setTranslationLangs(response.translateLangs);
                 setLanguageCodeLoaded(true);
-                setProfilePicture(response.profile_picture_url);
-                setDefaultSelectedMic(response.mic_settings);
-                
+                return;
             })
             .catch(err => {
                 console.error('Loading error', err);
@@ -61,7 +58,7 @@ function Dashboard() {
     }, [user]);
 
     const handleSelectedLanguageCodeChange = (newLanguageCode: (string)[]) => {
-        setSelectedLanguageCode(newLanguageCode);
+        setTranslationLangs(newLanguageCode);
     };
 
     const handleApiKeyChange = (isWorking: boolean) => {
@@ -99,7 +96,7 @@ function Dashboard() {
                     <span className="step-indication">2</span>
                     <h3>Languages</h3>
                     <TransferList
-                        selectedLanguageCode={selectedLanguageCode}
+                        selectedLanguageCode={translationLangs}
                         onLanguageCodeChange={handleSelectedLanguageCodeChange}
                         languageCodeLoaded={languageCodeLoaded}
                     />
@@ -112,17 +109,15 @@ function Dashboard() {
                     <BannedCaptions
                         allBanCaptions={allBanCaptions}
                         onAllBanCaptionsChange={handleAllBanCaptionsChange}
-                        selectedLanguageCode={selectedLanguageCode}
+                        selectedLanguageCode={translationLangs}
                         languageCodeLoaded={languageCodeLoaded}
                         LoadingImg={LoadingImg}
                     />
                 </div>
                 <div className="setting theme-box">
                     <span className="step-indication">4</span>
-                    <h3>Mic setting</h3>
-                    <MicrophoneApp 
-                        defaultSelectedMic={defaultSelectedMic}
-                    />
+                    <h3>Speech</h3>
+                    <MicrophoneApp />
                 </div>
                 <Footer />
             </div>

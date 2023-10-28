@@ -10,7 +10,7 @@ services:
     build:
       context: ./back
       target: base
-    command: npm run dev
+    command: yarn dev
     volumes:
       # Mount source code to restart app on change
       - ./back/src:/app/src
@@ -18,7 +18,7 @@ services:
       # Persist data (user sessions) between restarts
       - ./data:/app/data
     ports:
-      - 8080:8080
+      - 8001:8001
     environment:
       - NODE_ENV=
 

@@ -6,16 +6,16 @@ RUN apk add --no-cache ffmpeg
 WORKDIR /app
 
 #copy config
-COPY *.json ./
+COPY *.json yarn.lock ./
 
-RUN npm ci
+RUN yarn install --frozen-lockfile
 
 #copy src files
 COPY src /app/src
 
 FROM base as production
 
-RUN npm run build
+RUN yarn build
 
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]
 

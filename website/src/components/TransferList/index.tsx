@@ -89,9 +89,9 @@ export default function TransferList({ selectedLanguageCode, onLanguageCodeChang
             return;
         }
 
-        api('user', {
+        api('config', {
             method: 'POST',
-            body: { selected_languages: selectedLanguageCodes }
+            body: { translateLangs: selectedLanguageCodes }
         })
         .then((response) => {
             console.log(response);
