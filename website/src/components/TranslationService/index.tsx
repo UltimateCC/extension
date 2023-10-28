@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react';
 
 import api from '../../services/api';
 
-import FormResponse from '../../components/FormResponse';
-import DelayedDisplay from '../../components/DelayedDisplay';
+import FormResponse from '../FormResponse';
+import DelayedDisplay from '../DelayedDisplay';
 
 interface ApiProps {
     apiKeyIsWorking: boolean;
@@ -11,7 +11,7 @@ interface ApiProps {
     onApiKeyChange: (newApiKey: boolean) => void;
 }
 
-function Api({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiProps) {
+function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiProps) {
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isLoadingSend, setIsLoadingSend] = useState<boolean>(false);
@@ -141,4 +141,4 @@ function Api({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiProps) {
     );
 }
 
-export default Api;
+export default TranslationService;

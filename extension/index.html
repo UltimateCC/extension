@@ -21,124 +21,124 @@
                     </p>
                 </div>
             </div>
-        </div>
-        <div id="caption-settings" style="display: none;">
-            <div class="caption-header-container">
-                <h2>Ultimate CC</h2>
-                <button type="button" id="caption-settings-close-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                        <polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
-                    </svg>
-                </button>
-            </div>
-            <div class="caption-settings-container">
-                <!-- Language -->
-                <div class="caption-group" id="language">
-                    <div class="caption-group-header">
-                        <h3>Language</h3>
-                        <select id="language-input" disabled>
-                            <option selected value> Waiting for translations</option>
-                        </select>
-                    </div>
+            <div id="caption-settings" style="display: none;">
+                <div class="caption-header-container">
+                    <h2>Ultimate CC</h2>
+                    <button type="button" id="caption-settings-close-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
+                            <polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+                        </svg>
+                    </button>
                 </div>
-            
-                <!-- Text -->
-                <div class="caption-group" id="group-text">
-                    <div class="caption-group-header">
-                        <h3>Text</h3>
-                        <button type="button" class="chevron">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="caption-group-content">
-                        <div class="caption-group-content-item">
-                            <label for="font-color-input">Text Color</label>
-                            <input type="color" id="font-color-input" value="#ffffff" />
-                        </div>
-                        <div class="caption-group-content-item">
-                            <label for="font-size-input">Text Size</label>
-                            <div class="caption-number-container">
-                                <input type="number" id="font-size-input" value="8" min="6" max="100" step="1" />
-                                <div class="units">
-                                    <span class="invisible" id="font-size-unit">8</span>
-                                    <span class="caption-unit">px</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="caption-group-content-item group-font-family">
-                            <label for="font-family-input">Font family</label>
-                            <select id="font-family-input">
-                                <option value="Arial" selected>Arial</option>
-                                <option value="Calibri">Calibri</option>
-                                <option value="OpenDyslexic">OpenDyslexic</option>
-                                <option value="Roboto">Roboto</option>
-                                <option value="Times New Roman">Times New Roman</option>
-                                <option value="Verdana">Verdana</option>
+                <div class="caption-settings-container">
+                    <!-- Language -->
+                    <div class="caption-group" id="language">
+                        <div class="caption-group-header">
+                            <h3>Language</h3>
+                            <select id="language-input" disabled>
+                                <option selected value> Waiting for translations</option>
                             </select>
                         </div>
-                        <div class="caption-group-content-item">
-                            <label for="max-lines-input">Max lines</label>
-                            <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
+                    </div>
+                
+                    <!-- Text -->
+                    <div class="caption-group" id="group-text">
+                        <div class="caption-group-header">
+                            <h3>Text</h3>
+                            <button type="button" class="chevron">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="caption-group-content-item">
-                            <label for="stroke-color-input">Stroke color</label>
-                            <input type="color" id="stroke-color-input" value="#000000" />
-                        </div>
-                        <div class="caption-group-content-item">
-                            <label for="stroke-size-input">Stroke size</label>
-                            <div class="caption-number-container">
-                                <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
-                                <div class="units">
-                                    <span class="invisible" id="stroke-size-unit">0</span>
-                                    <span class="caption-unit">px</span>
-                                </div>
+                        <div class="caption-group-content">
+                            <div class="caption-group-content-item">
+                                <label for="font-color-input">Text Color</label>
+                                <input type="color" id="font-color-input" value="#ffffff" />
                             </div>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Background -->
-                <div class="caption-group" id="group-background">
-                    <div class="caption-group-header">
-                        <h3>Background</h3>
-                        <button type="button" class="chevron">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="caption-group-content">
-                        <div class="caption-group-content-item">
-                            <label for="bg-color-input">Color</label>
-                            <input type="color" id="bg-color-input" value="#37373E" />
-                        </div>
-                        <div class="caption-group-content-item group-opacity">
-                            <div>
-                                <label for="bg-opacity-number-input">Opacity</label>
+                            <div class="caption-group-content-item">
+                                <label for="font-size-input">Text Size</label>
                                 <div class="caption-number-container">
-                                    <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
+                                    <input type="number" id="font-size-input" value="8" min="6" max="100" step="1" />
                                     <div class="units">
-                                        <span class="invisible" id="bg-opacity-unit">50</span>
-                                        <span class="caption-unit">%</span>
+                                        <span class="invisible" id="font-size-unit">8</span>
+                                        <span class="caption-unit">px</span>
                                     </div>
                                 </div>
                             </div>
-                            <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
+                            <div class="caption-group-content-item group-font-family">
+                                <label for="font-family-input">Font family</label>
+                                <select id="font-family-input">
+                                    <option value="Arial" selected>Arial</option>
+                                    <option value="Calibri">Calibri</option>
+                                    <option value="OpenDyslexic">OpenDyslexic</option>
+                                    <option value="Roboto">Roboto</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Verdana">Verdana</option>
+                                </select>
+                            </div>
+                            <div class="caption-group-content-item">
+                                <label for="max-lines-input">Max lines</label>
+                                <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
+                            </div>
+                            <div class="caption-group-content-item">
+                                <label for="stroke-color-input">Stroke color</label>
+                                <input type="color" id="stroke-color-input" value="#000000" />
+                            </div>
+                            <div class="caption-group-content-item">
+                                <label for="stroke-size-input">Stroke size</label>
+                                <div class="caption-number-container">
+                                    <input type="number" id="stroke-size-input" value="0" min="0" max="10" step="0.5" />
+                                    <div class="units">
+                                        <span class="invisible" id="stroke-size-unit">0</span>
+                                        <span class="caption-unit">px</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- Background -->
+                    <div class="caption-group" id="group-background">
+                        <div class="caption-group-header">
+                            <h3>Background</h3>
+                            <button type="button" class="chevron">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="caption-group-content">
+                            <div class="caption-group-content-item">
+                                <label for="bg-color-input">Color</label>
+                                <input type="color" id="bg-color-input" value="#37373E" />
+                            </div>
+                            <div class="caption-group-content-item group-opacity">
+                                <div>
+                                    <label for="bg-opacity-number-input">Opacity</label>
+                                    <div class="caption-number-container">
+                                        <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
+                                        <div class="units">
+                                            <span class="invisible" id="bg-opacity-unit">50</span>
+                                            <span class="caption-unit">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Reset -->
-            <div class="caption-button-container">
-                <div>
-                    <button type="button" id="caption-reset-settings">Reset settings</button>
-                    <button type="button" id="caption-reset-position">Reset position</button>
+                <!-- Reset -->
+                <div class="caption-button-container">
+                    <div>
+                        <button type="button" id="caption-reset-settings">Reset settings</button>
+                        <button type="button" id="caption-reset-position">Reset position</button>
+                    </div>
+                    <button type="button" id="caption-lock-position">Lock position</button>
                 </div>
-                <button type="button" id="caption-lock-position">Lock position</button>
             </div>
         </div>
     </body>

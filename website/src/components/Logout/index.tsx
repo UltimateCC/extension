@@ -4,14 +4,14 @@ import { AuthContext } from '../../context/AuthContext';
 
 function Logout() {
     const { logout } = useContext(AuthContext);
-    const ran = useRef<boolean>(false);
+    const alreadyRan = useRef<boolean>(false);
 
     useEffect(() => {
-        if(!ran.current) {
-            ran.current = true;
+        if(!alreadyRan.current) {
+            alreadyRan.current = true;
             logout();
         }
-    }, []);
+    }, [ logout ]);
 
     return null; 
 }

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import TransferList from '../../components/TransferList';
 import MicrophoneApp from '../../components/MicrophoneApp';
-import Api from '../../components/Api';
-import BannedCaptions from '../../components/BannedCaptions';
+import TranslationService from '../../components/TranslationService';
+// import BannedCaptions from '../../components/BannedCaptions';
 
 import Footer from '../../components/Footer';
 
@@ -16,17 +16,17 @@ import LoadingImg from '../../assets/loading.svg';
 import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 
-interface banCaptionsProps {
-    lang: string;
-    text: string;
-    id: string;
-}
+// interface banCaptionsProps {
+//     lang: string;
+//     text: string;
+//     id: string;
+// }
 
 function Dashboard() {
     const { user } = useContext(AuthContext);
 
     // Request to get the user's config
-    const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
+    // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
     const [apiKeyIsWorking, setApiKeyIsWorking] = useState<boolean>(false);
@@ -45,7 +45,7 @@ function Dashboard() {
         if(!user?.connected) return;
         api('config')
             .then(response => {
-                setAllBanCaptions(response.banWords);
+                // setAllBanCaptions(response.banWords);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
                 //setTranslationLangs(response.translateLangs);
@@ -65,9 +65,9 @@ function Dashboard() {
         setApiKeyIsWorking(isWorking);
     };
 
-    const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
-        setAllBanCaptions(newBanCaptions);
-    };
+    // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
+    //     setAllBanCaptions(newBanCaptions);
+    // };
 
     return (
         <section id="dashboard">
@@ -86,7 +86,7 @@ function Dashboard() {
                 <div className="api theme-box">
                     <span className="step-indication">1</span>
                     <h3>API Connection</h3>
-                    <Api
+                    <TranslationService
                         apiKeyIsWorking={apiKeyIsWorking}
                         apiLoader={apiLoader}
                         onApiKeyChange={handleApiKeyChange}
@@ -103,7 +103,7 @@ function Dashboard() {
                 </div>
             </div>
             <div>
-                <div className="banned theme-box">
+                {/* <div className="banned theme-box">
                     <span className="step-indication">3</span>
                     <h3>Banned captions</h3>
                     <BannedCaptions
@@ -113,9 +113,9 @@ function Dashboard() {
                         languageCodeLoaded={languageCodeLoaded}
                         LoadingImg={LoadingImg}
                     />
-                </div>
+                </div> */}
                 <div className="setting theme-box">
-                    <span className="step-indication">4</span>
+                    <span className="step-indication">3</span>
                     <h3>Speech</h3>
                     <MicrophoneApp />
                 </div>

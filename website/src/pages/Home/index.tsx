@@ -7,6 +7,8 @@ import InterfaceDescImg from '../../assets/interface.png';
 
 import '../../webroot/style/home.css';
 
+import { NavLink } from 'react-router-dom';
+
 function Home() {
     return (
         <section id='home'>
@@ -15,7 +17,9 @@ function Home() {
             </div>
             <div className='start-extension'>
                 <h4>Ready to use it ? </h4>
-                <button className='theme-btn'><span>CLICK HERE to START!</span></button>
+                <NavLink to="/dashboard">
+                    <button className='theme-btn'><span>CLICK HERE to START!</span></button>
+                </NavLink>
             </div>
             <div className='about-header-container'>
                 <AboutHeader emoji="⚡" title="Instant translation" id="translation" />
