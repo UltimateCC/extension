@@ -162,13 +162,13 @@ body#ultimate-closed-caption {
     // Settings box
     #caption-settings {
         min-height: $settings-width;
-        max-height: 100vh;
+        max-height: calc(100vh - 10rem);
         width: $settings-width;
         padding: 0.2em 0.5em 1em;
         
         position: absolute;
         left: 0;
-        top: 0;
+        top: 5rem;
         
         transition: width 0.5s;
         

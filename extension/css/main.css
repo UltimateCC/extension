@@ -129,12 +129,12 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
 }
 body#ultimate-closed-caption #caption-settings {
   min-height: 16em;
-  max-height: 100vh;
+  max-height: calc(100vh - 10rem);
   width: 16em;
   padding: 0.2em 0.5em 1em;
   position: absolute;
   left: 0;
-  top: 0;
+  top: 5rem;
   transition: width 0.5s;
   color: #D9D9D9;
   background-color: rgba(31, 31, 35, 0.95);
