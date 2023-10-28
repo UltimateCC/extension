@@ -19,7 +19,7 @@ export class User {
 
 	@Column('json')
 	config: UserConfig = {
-		transcribe: 'browser',	
+		transcribe: '',	
 		spokenLangs: ['en-US'],
 		translateService: '',
 		translateLangs: [],
@@ -32,14 +32,13 @@ export class User {
 
 export const UserConfigSchema = z.object({
 	transcribe: z.union([
-		z.literal('browser'),
+		z.literal(''),
 		z.literal('whisper'),
 		z.literal('deepgram'),
 		z.literal('azure'),
 	]),
 	//spokenLang: z.string(),
 	spokenLangs: z.array(z.string()),
-	microphone: z.string().optional(),
 	translateService: z.union([
 		z.literal(''),
 		z.literal('azure'),

@@ -9,12 +9,12 @@ export default defineConfig({
 		// Config dev server to proxy socketio requests to backend
 		proxy: {
 			'/socket.io': {
-				target: 'ws://localhost:8080',
+				target: 'ws://localhost:8001',
 				ws: true
 			},
 
 			'/api': {
-				target: 'http://localhost:8080'
+				target: 'http://localhost:8001'
 			}
 		}
 	}
