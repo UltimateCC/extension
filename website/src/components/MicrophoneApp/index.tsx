@@ -46,14 +46,23 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
     return (
         <div>
             <div className="setting-options">
-                <select value={spokenLang} onChange={ handleSpokenLang }>
+                <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
                     { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }
                 </select>
-                <button className={`theme-btn listening ${listening ? 'start' : ''}`} onClick={()=>{ setListening(!listening) }}>
+                <button className={`theme-btn listening ${listening ? '' : 'start-btn'}`} onClick={()=>{ setListening(!listening) }}>
                     <span>{listening ? 'Stop listening' : 'Start listening'}</span>
                 </button>
             </div>
-            <div>{ recognized?.text ?? ''}</div>
+
+            {listening && (
+                <>
+                    <h4>Spoken text</h4>
+                    <div className="spoken-text">
+                        <p>{ recognized?.text ?? 'Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum'}</p>
+                    </div>
+                </>
+            )}
+            
         </div>
     );
 }

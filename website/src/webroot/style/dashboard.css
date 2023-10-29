@@ -36,7 +36,6 @@
 
 #dashboard .theme-select {
     position: relative;
-    width: 100%; /* Ajustez la largeur en fonction de vos besoins */
     font-size: 1.2vw;
 
 }
@@ -133,9 +132,9 @@
     transition: filter 0.4s;
 }
 
-#dashboard .setting .requestButton {
+/* #dashboard .setting .requestButton {
     margin-top: 30px;
-}
+} */
 
 /* #dashboard .setting .microphone-devices {
     width: 100%;
@@ -147,9 +146,29 @@
     font-size: 1.2vw;
 } */
 
+#dashboard .setting h4 {
+    font-size: 25px;
+    margin-top: 30px;
+    text-decoration: underline;
+}
+
+#dashboard .setting .spoken-text {
+    margin-top: 15px;
+    background-color: var(--text);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
+    border-radius: 10px;
+    color: var(--square);
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding: 1em 0.75em;
+    text-align: left;
+    min-height: calc(1em * 2 + 1.2em * 2); /* 2 lines min */
+}
+
 #dashboard .setting .setting-options {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
+    justify-content: space-between;
     gap: 1em;
     margin-top: 30px;
 }
@@ -159,7 +178,7 @@
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
-.theme-btn.listening.start {
+.theme-btn.listening:not(.start-btn) {
     background-image: linear-gradient(#2B2B2B, #2B2B2B);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
 }
@@ -170,6 +189,7 @@
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
     border-radius: 10px;
     margin-top: 5px;
+    color: var(--square);
 }
 
 #dashboard .languages .lang-list * {
