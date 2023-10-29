@@ -75,7 +75,6 @@ async function sendStatus(socket: TypedSocket) {
 
 async function handleCaptions(socket: TypedSocket, transcript: CaptionsData ) {
 	try {
-		console.log('handling captions');
 		socket.emit('transcript', transcript.captions[0]);
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
