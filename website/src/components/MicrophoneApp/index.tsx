@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { startSpeechRecognition } from "../../record/speechRecognition";
-import { speechLanguages } from '../../record/speechLanguages';
+import React, { useState } from 'react';
+import { useSpeechRecognition } from "../../hooks/record/useSpeechRecognition";
+import { speechLanguages } from '../../hooks/record/speechLanguages';
 import api from '../../services/api';
 
 
@@ -15,25 +15,7 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
 
     const [listening, setListening] = useState<boolean>(false);
 
-    //todo maybe: useSpeechRecognition Hook
-    useEffect(()=>{
-        let stopFunc = ()=>{};
-        let stopped = false;
-        if(listening && spokenLang) {
-            startSpeechRecognition(handleText, spokenLang)
-            .then((cb)=>{
-                if(stopped) {
-                    cb();
-                }else{
-                    stopFunc = cb;
-                }
-            }).catch(e=>console.error('Error starting speech recogniton', e));
-        }
-        return ()=>{
-            stopped = true;
-            stopFunc();
-        }
-    }, [listening, spokenLang, handleText]);
+    useSpeechRecognition(handleText, spokenLang!, listening);
 
     function handleSpokenLang(event: React.ChangeEvent<HTMLSelectElement>) {
         setSpokenLang(event.target.value);
@@ -44,7 +26,7 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
     }
 
     return (
-        <div>
+        <>
             <div className="setting-options">
                 <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
                     { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }
@@ -63,7 +45,7 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
                 </>
             )}
             
-        </div>
+        </>
     );
 }
 
