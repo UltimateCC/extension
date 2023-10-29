@@ -58,7 +58,7 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
                 <>
                     <h4>Spoken text</h4>
                     <div className="spoken-text">
-                        <p>{ recognized?.text ?? 'Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum'}</p>
+                        <p>{ recognized?.text ?? ''}</p>
                     </div>
                 </>
             )}
