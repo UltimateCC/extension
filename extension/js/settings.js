@@ -280,4 +280,5 @@ export function setSelectOptions(options) {
     }
 
     languageInput.value = getCurrentLang();
+    languageInput.disabled = false;
 }

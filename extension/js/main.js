@@ -21,23 +21,39 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const captionContent = document.getElementById("caption-content");
 
+    let content = "";
+
     // We listen for the Twitch pubsub event
     window.Twitch.ext.listen('broadcast', (target, contentType, rawBody) => {
         console.log('Received broadcast message');
+        
         if (contentType === 'application/json') {
             const body = JSON.parse(rawBody);
+            const allCaptions = body.captions;
 
             // On the first message, we get the list of languages
             if(notStarted) {
                 notStarted = false;
+                content = "";
 
                 const jsonLangPath = "../storage/languages.json";
                 fetch(jsonLangPath)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
-
-                        const languagesCodes = body.languages;
+                        /*
+                            rawBody = {
+                                delay: 3101,
+                                duration: 3101,
+                                captions: [
+                                    {
+                                    text: "après ce que c'est dans le mail où est-ce que c'est dans settings j'hésite",
+                                    lang: 'fr-FR'
+                                    }
+                                ]
+                            }
+                        */
+                        // Get the list of languages from allCaptions
+                        const languagesCodes = allCaptions.map(caption => caption.lang);
                         const languageOptions = [];
                         for (let i = 0; i < languagesCodes.length; ++i) {
                             const languageCode = languagesCodes[i];
@@ -55,17 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
             }
 
-            const allCaptions = body.message;
             if(allCaptions) {
-                if (currentLanguageCode === "") currentLanguageCode = body[0]; // TODO: prendre la première langue de la liste
-                const caption = allCaptions[currentLanguageCode];
-                if (caption) captionContent.innerHTML = caption;
+                if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang;
+                const caption = allCaptions.find(caption => caption.lang == currentLanguageCode);
+                if (caption && caption.text) content += " " + caption.text;
+                captionContent.innerHTML = content;
             }
         }
-    });
-
-    window.Twitch.ext.onAuthorized((auth) => {
-        console.log('got auth', auth);
     });
 });
 

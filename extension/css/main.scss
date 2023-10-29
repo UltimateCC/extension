@@ -4,7 +4,7 @@
 $caption-settings-distance: 10px;
 $caption-line-height: 1.25em;
 $caption-container-padding: 0.5em;
-$caption-movable-Y: 5rem;
+$caption-movable-Y: 0rem;
 $caption-movable-X: 0;
 
 // Ultimate CC theme
@@ -54,11 +54,11 @@ $default-stroke-size: 0px;
 }
 
 // Temporary (to have an idea of the result)
-html {
-    background-image: url("../aypierreStream.png");
-    background-repeat: no-repeat;
-    background-size: 100vw 100vh;
-}
+// html {
+//     background-image: url("../aypierreStream.png");
+//     background-repeat: no-repeat;
+//     background-size: 100vw 100vh;
+// }
 
 * {
     box-sizing: border-box;

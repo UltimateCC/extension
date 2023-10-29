@@ -83,6 +83,8 @@ export function startDraggable() {
         mouseX = e.clientX;
         mouseY = e.clientY;
 
+        // Check if the mouse is click
+        if (e.buttons !== 1) return closeDragElement();
         setNewPosition(captionBox.offsetTop - deltaY, captionBox.offsetLeft - deltaX);
     }
 

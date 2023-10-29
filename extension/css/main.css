@@ -45,12 +45,6 @@
   --caption-stroke-size: 0px;
 }
 
-html {
-  background-image: url("../aypierreStream.png");
-  background-repeat: no-repeat;
-  background-size: 100vw 100vh;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -64,8 +58,8 @@ body#ultimate-closed-caption {
 body#ultimate-closed-caption #caption-movable-area {
   position: relative;
   width: 100vw;
-  height: calc(100vh - 5rem * 2);
-  margin: 5rem 0;
+  height: calc(100vh - 0rem * 2);
+  margin: 0rem 0;
 }
 body#ultimate-closed-caption #caption-movable-area #caption-box {
   position: absolute;
@@ -129,7 +123,7 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
 }
 body#ultimate-closed-caption #caption-movable-area #caption-settings {
   min-height: 16em;
-  max-height: calc(100vh - 5rem * 2);
+  max-height: calc(100vh - 0rem * 2);
   width: 16em;
   padding: 0.2em 0.5em 1em;
   position: absolute;
