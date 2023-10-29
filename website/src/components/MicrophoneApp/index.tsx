@@ -14,8 +14,7 @@ interface MicrophoneAppProps {
 function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: MicrophoneAppProps) {
 
     const [listening, setListening] = useState<boolean>(false);
-
-    useSpeechRecognition(handleText, spokenLang!, listening);
+    const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
 
     function handleSpokenLang(event: React.ChangeEvent<HTMLSelectElement>) {
         setSpokenLang(event.target.value);
@@ -27,6 +26,7 @@ function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: Mi
 
     return (
         <>
+            { error }
             <div className="setting-options">
                 <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
                     { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }

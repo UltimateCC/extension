@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 
 /** Speech recognition using Web Speech API */
-export async function useSpeechRecognition(
+export function useSpeechRecognition(
 	handleText: (transcript: { text: string, lang: string, duration: number }) => void,
 	lang: string,
 	listening: boolean
@@ -16,7 +16,9 @@ export async function useSpeechRecognition(
 			const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 			if(!SpeechRecognition) {
 				setError('Speech recognition not supported in this browser, try using Chrome or Edge');
+				return;
 			}
+			setError(undefined);
 
 			const recognition = new SpeechRecognition();
 			recognition.lang = lang;
