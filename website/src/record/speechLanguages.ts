@@ -1,0 +1,26 @@
+
+// Speech recognition available languages
+export const speechLanguages = [
+	{ code: 'cs-CZ', name: 'Czech' },
+	{ code: 'da-DK', name: 'Danish' },
+	{ code: 'de-DE', name: 'German' },
+	{ code: 'en-AU', name: 'English (Australia)' },
+	{ code: 'en-GB', name: 'English (United Kingdom)' },
+	{ code: 'en-US', name: 'English (United States)' },
+	{ code: 'es-ES', name: 'Spanish' },
+	{ code: 'fi-FI', name: 'Finnish' },
+	{ code: 'fr-FR', name: 'French' },
+	{ code: 'hi-IN', name: 'Hindi' },
+	{ code: 'it-IT', name: 'Italian' },
+	{ code: 'ja-JP', name: 'Japanese' },
+	{ code: 'ko-KR', name: 'Korean' },
+	{ code: 'nl-NL', name: 'Dutch' },
+	{ code: 'pl-PL', name: 'Polish' },
+	{ code: 'pt-BR', name: 'Portuguese (Brazil)' },
+	{ code: 'pt-PT', name: 'Portuguese (Portugal)' },
+	{ code: 'ru-RU', name: 'Russian' },
+	{ code: 'sk-SK', name: 'Slovak' },
+	{ code: 'sv-SE', name: 'Swedish' },
+	{ code: 'th-TH', name: 'Thai' },
+	{ code: 'tr-TR', name: 'Turkish' },
+];

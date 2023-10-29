@@ -1,21 +1,26 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { startSpeechRecognition } from "../../record/speechRecognition";
+import { speechLanguages } from '../../record/speechLanguages';
+import api from '../../services/api';
 
 
 interface MicrophoneAppProps {
+    spokenLang?: string
+    setSpokenLang: (spokenLang: string) => void
     handleText: (transcript: { text: string, lang: string, duration: number }) => void
     recognized?: { text: string, lang: string }
 }
 
-function MicrophoneApp({ handleText, recognized }: MicrophoneAppProps) {
+function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: MicrophoneAppProps) {
 
     const [listening, setListening] = useState<boolean>(false);
 
+    //todo maybe: useSpeechRecognition Hook
     useEffect(()=>{
         let stopFunc = ()=>{};
         let stopped = false;
-        if(listening) {
-            startSpeechRecognition(handleText, 'fr-FR')
+        if(listening && spokenLang) {
+            startSpeechRecognition(handleText, spokenLang)
             .then((cb)=>{
                 if(stopped) {
                     cb();
@@ -28,16 +33,23 @@ function MicrophoneApp({ handleText, recognized }: MicrophoneAppProps) {
             stopped = true;
             stopFunc();
         }
-    }, [listening, handleText]);
+    }, [listening, spokenLang, handleText]);
 
-    const toggleListening = () => {
-        setListening(!listening);
-    };
+    function handleSpokenLang(event: React.ChangeEvent<HTMLSelectElement>) {
+        setSpokenLang(event.target.value);
+        api('config', {
+            method: 'POST',
+            body: { spokenLang: event.target.value }
+        }).catch(e=>console.error('Error updating spoken language',e));
+    }
 
     return (
         <div>
             <div className="setting-options">
-                <button className={`theme-btn listening ${listening ? 'start' : ''}`} onClick={toggleListening}>
+                <select value={spokenLang} onChange={ handleSpokenLang }>
+                    { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }
+                </select>
+                <button className={`theme-btn listening ${listening ? 'start' : ''}`} onClick={()=>{ setListening(!listening) }}>
                     <span>{listening ? 'Stop listening' : 'Start listening'}</span>
                 </button>
             </div>

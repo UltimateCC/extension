@@ -30,6 +30,7 @@ function Dashboard() {
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
+    const [spokenLang, setSpokenLang] = useState<string>();
     const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
     const [apiKeyIsWorking, setApiKeyIsWorking] = useState<boolean>(false);
     const [apiLoader, setApiLoader] = useState<string | undefined>(LoadingImg);
@@ -47,6 +48,8 @@ function Dashboard() {
         if(!user?.connected) return;
         api('config')
             .then(response => {
+                setSpokenLang(response.spokenLang);
+
                 // setAllBanCaptions(response.banWords);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
@@ -119,7 +122,7 @@ function Dashboard() {
                 <div className="setting theme-box">
                     <span className="step-indication">3</span>
                     <h3>Speech</h3>
-                    <MicrophoneApp handleText={handleText} recognized={recognized} />
+                    <MicrophoneApp handleText={handleText} recognized={recognized} spokenLang={spokenLang} setSpokenLang={setSpokenLang} />
                 </div>
                 <Footer />
             </div>

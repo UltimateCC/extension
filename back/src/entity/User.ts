@@ -20,6 +20,7 @@ export class User {
 	@Column('json')
 	config: UserConfig = {
 		transcribe: '',	
+		spokenLang: 'en-US',
 		spokenLangs: ['en-US'],
 		translateService: '',
 		translateLangs: [],
@@ -37,7 +38,7 @@ export const UserConfigSchema = z.object({
 		z.literal('deepgram'),
 		z.literal('azure'),
 	]),
-	//spokenLang: z.string(),
+	spokenLang: z.string(),
 	spokenLangs: z.array(z.string()),
 	translateService: z.union([
 		z.literal(''),
