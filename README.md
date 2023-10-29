@@ -37,7 +37,7 @@ Roadmap maybe later:
 - This will start the backend in dev mode, with a static version of the website
 - Address: http://localhost:8000
 - nodemon will restart server after any modifications in backend code
-- for local backend dev, run `npm install` in back folder to get types working
+- for local backend dev, run `yarn` in back folder to get types working
 
 #### Website
 - `cd website`

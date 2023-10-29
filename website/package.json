@@ -16,9 +16,11 @@
     "@mui/material": "^5.14.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0"
+    "react-router-dom": "^6.15.0",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
+    "@types/dom-speech-recognition": "^0.0.3",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

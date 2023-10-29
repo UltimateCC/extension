@@ -1,33 +1,47 @@
+import { useState, useEffect } from 'react';
+import { startSpeechRecognition } from "../../record/speechRecognition";
 
 
 interface MicrophoneAppProps {
-
+    handleText: (transcript: { text: string, lang: string, duration: number }) => void
+    recognized?: { text: string, lang: string }
 }
 
-function MicrophoneApp({}: MicrophoneAppProps) {
+function MicrophoneApp({ handleText, recognized }: MicrophoneAppProps) {
 
-    const isListening = false;
+    const [listening, setListening] = useState<boolean>(false);
 
-    const stopListening = () => {
-
-    };
-
-    const startListening = () => {
-        
-    };
+    useEffect(()=>{
+        let stopFunc = ()=>{};
+        let stopped = false;
+        if(listening) {
+            startSpeechRecognition(handleText, 'fr-FR')
+            .then((cb)=>{
+                if(stopped) {
+                    cb();
+                }else{
+                    stopFunc = cb;
+                }
+            }).catch(e=>console.error('Error starting speech recogniton', e));
+        }
+        return ()=>{
+            stopped = true;
+            stopFunc();
+        }
+    }, [listening, handleText]);
 
     const toggleListening = () => {
-        isListening ? stopListening() : startListening();
+        setListening(!listening);
     };
 
     return (
         <div>
             <div className="setting-options">
-                <button className={`theme-btn listening ${isListening ? 'start' : ''}`} onClick={toggleListening}>
-                    <span>{isListening ? 'Stop listening' : 'Start listening'}</span>
+                <button className={`theme-btn listening ${listening ? 'start' : ''}`} onClick={toggleListening}>
+                    <span>{listening ? 'Stop listening' : 'Start listening'}</span>
                 </button>
             </div>
-            <div>Detected text</div>
+            <div>{ recognized?.text ?? ''}</div>
         </div>
     );
 }

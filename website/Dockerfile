@@ -4,7 +4,7 @@ FROM node:18-alpine3.18 as build
 WORKDIR /app
 
 #copy config
-COPY *.json vite.config.ts ./
+COPY *.json vite.config.ts yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 #copy src files

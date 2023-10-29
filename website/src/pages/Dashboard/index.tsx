@@ -15,6 +15,7 @@ import LoadingImg from '../../assets/loading.svg';
 
 import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
+import useCaptions from '../../hooks/UseCaptions';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -24,6 +25,7 @@ import { AuthContext } from '../../context/AuthContext';
 
 function Dashboard() {
     const { user } = useContext(AuthContext);
+    const { handleText, recognized } = useCaptions();
 
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
@@ -48,7 +50,7 @@ function Dashboard() {
                 // setAllBanCaptions(response.banWords);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
                 setApiLoader(undefined);
-                //setTranslationLangs(response.translateLangs);
+                setTranslationLangs(response.translateLangs);
                 setLanguageCodeLoaded(true);
                 return;
             })
@@ -117,7 +119,7 @@ function Dashboard() {
                 <div className="setting theme-box">
                     <span className="step-indication">3</span>
                     <h3>Speech</h3>
-                    <MicrophoneApp />
+                    <MicrophoneApp handleText={handleText} recognized={recognized} />
                 </div>
                 <Footer />
             </div>
