@@ -5,17 +5,19 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 
-#copy config
-COPY *.json yarn.lock ./
+RUN corepack enable
 
-RUN yarn install --frozen-lockfile
+#copy config
+COPY *.json pnpm-lock.yaml ./
+
+RUN pnpm i --frozen-lockfile
 
 #copy src files
 COPY src /app/src
 
 FROM base as production
 
-RUN yarn build
+RUN pnpm build
 
 CMD [ "yarn", "start" ]
 

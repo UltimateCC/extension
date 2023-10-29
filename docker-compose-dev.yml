@@ -10,7 +10,7 @@ services:
     build:
       context: ./back
       target: base
-    command: yarn dev
+    command: pnpm dev
     volumes:
       # Mount source code to restart app on change
       - ./back/src:/app/src
