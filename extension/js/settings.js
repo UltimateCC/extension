@@ -1,6 +1,6 @@
 import { setCookie, getCookie, deleteCookie, convertHexToRGB, setSettingProperty } from "./utils.js";
 import { initPosition, saveIfLocked, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
-import { updateCaptionLanguage, closeAllMenu } from "./main.js";
+import { setCurrentLang, getCurrentLang, closeAllMenu } from "./main.js";
 
 export function loadSettings() {
     // Buttons to open and close the settings menu
@@ -99,7 +99,7 @@ export function loadSettings() {
 
     // Handle root variables on input change
     function handleLanguageInput() {
-        updateCaptionLanguage(languageInput.value);
+        setCurrentLang(languageInput.value);
         setCookie("captionSettingsLanguage", languageInput.value, 365); // Save language for 1 year
     }
 
@@ -176,6 +176,7 @@ export function loadSettings() {
         setCookie("captionSettingsContent", JSON.stringify(settings), 365); // Save settings for 1 year
     }
 
+    // Buttons
     function handleResetSettings() {
         deleteCookie("captionSettingsContent");
         initSettings();
@@ -268,52 +269,15 @@ export function loadSettings() {
     }
 }
 
-export async function loadLanguageOptions(streamerId) {
-    const selectLanguage = document.getElementById("language-input");
-
-    try {
-        const response = await fetch(`http://localhost:5000/v1/user/languages/${streamerId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "text/plain",
-            }
-        });
-        const languages = await response.json();
-
-        if (!languages) throw new Error("No languages available");
-
-        const availableLanguages = Object.values(languages)[0];
-
-        if (!availableLanguages || availableLanguages.length === 0) {
-            throw new Error("No languages available");
-        }
-
-        selectLanguage.innerHTML = ""; // Remove old content
-        availableLanguages.forEach(language => {
-            const option = document.createElement("option");
-            option.text = language;
-            option.value = language;
-            selectLanguage.add(option);
-        });
-
-        // Select the option selected in the cookie
-        const cookieLanguage = getCookie("captionSettingsLanguage");
-        if (cookieLanguage) {
-            selectLanguage.value = cookieLanguage;
-            return cookieLanguage;
-        } else {
-            selectLanguage.value = availableLanguages[0];
-            return availableLanguages[0];
-        }
-    } catch (error) {
-        console.error(error);
-        selectLanguage.innerHTML = ""; // Remove old content
-        const option = document.createElement("option");
-        option.text = "No languages available sorry :(";
-        option.value = "empty";
-        option.disabled = true;
-        selectLanguage.add(option);
-        selectLanguage.value = "empty";
-        return "empty";
+export function setSelectOptions(options) {
+    const languageInput = document.getElementById("language-input");
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        const optionElement = document.createElement("option");
+        optionElement.value = option.value;
+        optionElement.innerText = option.label;
+        languageInput.appendChild(optionElement);
     }
+
+    languageInput.value = getCurrentLang();
 }

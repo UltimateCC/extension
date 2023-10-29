@@ -45,7 +45,7 @@
   --caption-stroke-size: 0px;
 }
 
-body {
+html {
   background-image: url("../aypierreStream.png");
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
@@ -95,7 +95,7 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
      -moz-user-select: none;
           user-select: none;
 }
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box p.caption-content {
+body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box p#caption-content {
   line-height: 1.25em;
   font-size: 1em;
   color: inherit;

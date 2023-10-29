@@ -1,84 +1,79 @@
-import { initPosition, toggleLockPosition } from "./draggable.js";
-import { loadSettings, loadLanguageOptions } from "./settings.js";
+import { getCookie } from "./utils.js";
+import { initPosition } from "./draggable.js";
+import { loadSettings, setSelectOptions } from "./settings.js";
+
+let currentLanguageCode = getCookie("captionLanguage");
+
+export function setCurrentLang(language) {
+    currentLanguageCode = language;
+}
+
+export function getCurrentLang() {
+    return currentLanguageCode;
+}
 
 // We wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function () {
-    // We listen for the Twitch API to be ready
-    // window.Twitch.ext.onAuthorized((auth) => {
-    //     if(streamerId) return;
-    //     console.log('got auth');
-    //     // Get the channel ID
-    //     const streamerId = auth.channelId;
-    //     loadLanguage(streamerId); // Load the language for settings
-    // });
-
-    // loadLanguageOptions(246852061)
-    //     .then(currentLanguage => {
-    //         if(currentLanguage == "empty") return;
-    //         updateCaptionLanguage(currentLanguage);
-    //     })
-    //     .catch(error => {
-    //         console.log(error);
-    //         return;
-    //     });
-
+    let notStarted = true;
+    
     initPosition();
     loadSettings();
     
-    showExtension();
+    const captionContent = document.getElementById("caption-content");
+
+    // We listen for the Twitch pubsub event
+    window.Twitch.ext.listen('broadcast', (target, contentType, rawBody) => {
+        console.log('Received broadcast message');
+        if (contentType === 'application/json') {
+            const body = JSON.parse(rawBody);
+
+            // On the first message, we get the list of languages
+            if(notStarted) {
+                notStarted = false;
+
+                const jsonLangPath = "../storage/languages.json";
+                fetch(jsonLangPath)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        const languagesCodes = body.languages;
+                        const languageOptions = [];
+                        for (let i = 0; i < languagesCodes.length; ++i) {
+                            const languageCode = languagesCodes[i];
+                            
+                            // Get the language name from the json file (if it exists) else use the language code
+                            const languageName = data[languageCode] ? data[languageCode] : languageCode;
+                            languageOptions.push({ value: languageCode, label: languageName });
+                        }
+
+                        setSelectOptions(languageOptions);
+                    })
+                    .catch(error => console.error("Error while fetching languages", error))
+                    .finally(() => {
+                        showExtension(); // Show the extension on the first message)
+                    });
+            }
+
+            const allCaptions = body.message;
+            if(allCaptions) {
+                if (currentLanguageCode === "") currentLanguageCode = body[0]; // TODO: prendre la première langue de la liste
+                const caption = allCaptions[currentLanguageCode];
+                if (caption) captionContent.innerHTML = caption;
+            }
+        }
+    });
+
+    window.Twitch.ext.onAuthorized((auth) => {
+        console.log('got auth', auth);
+    });
 });
+
 
 function showExtension() {
     // Show the extension body
     const extension = document.getElementById("ultimate-closed-caption");
     extension.style.display = "block";
-}
-
-class CaptionWebSocketManager {
-    constructor() {
-        this.currentWebSocket = null;
-    }
-
-    // Public methods
-    startWebSocket(languageCode) {
-        console.log("Connecting to WebSocket...");
-        if (this.currentWebSocket) {
-            this.currentWebSocket.close();
-            console.log("Connection closed. New connection in progress...");
-        }
-
-        const newWebSocket = new WebSocket("ws://127.0.0.1:8080/?lang=" + languageCode);
-
-        newWebSocket.onopen = () => {
-            console.log("Connected to WebSocket");
-            this.currentWebSocket = newWebSocket;
-        }
-
-        newWebSocket.onmessage = (event) => {
-            this._updateContent(JSON.parse(event.data));
-        }
-
-        newWebSocket.onerror = (event) => {
-            console.error("Error WebSocket :", event);
-        }
-
-        newWebSocket.onclose = (event) => {
-            console.log("Connection WebSocket closed :", event);
-            this.currentWebSocket = null;
-        }
-    }
-
-    // Private methods
-    _updateContent(newContent) {
-        const newMsg = newContent.message;
-        document.getElementById("second-caption").innerHTML = newMsg;
-    }
-}
-
-// A global instance of the WebSocket manager
-const captionWebSocketManager = new CaptionWebSocketManager();
-export function updateCaptionLanguage(language) {
-    captionWebSocketManager.startWebSocket(language);
 }
 
 // Menu

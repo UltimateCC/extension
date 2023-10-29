@@ -54,7 +54,7 @@ $default-stroke-size: 0px;
 }
 
 // Temporary (to have an idea of the result)
-body {
+html {
     background-image: url("../aypierreStream.png");
     background-repeat: no-repeat;
     background-size: 100vw 100vh;
@@ -117,7 +117,7 @@ body#ultimate-closed-caption {
                 font-size: 1em;
                 user-select: none;
 
-                p.caption-content { // Apply text settings
+                p#caption-content { // Apply text settings
                     line-height: $caption-line-height;
                     font-size: 1em;
                     color: inherit;
