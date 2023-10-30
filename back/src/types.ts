@@ -1,4 +1,5 @@
 
+/** Utility type to allow returning an error without throwing it */
 export type Result<T> = {
 	isError: true,
 	message: string
@@ -23,9 +24,15 @@ export type TranscriptAlt = {
 	lang: string
 }
 
-export type CaptionsData = {
+type Metadata = {
 	delay: number
 	duration: number
+	final: boolean
+}
+
+export type TranscriptData = Metadata & TranscriptAlt
+
+export type CaptionsData = Metadata & {
 	captions: TranscriptAlt[]
 }
 

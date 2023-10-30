@@ -4,17 +4,16 @@ import api from '../../services/api';
 
 import FormResponse from '../FormResponse';
 import DelayedDisplay from '../DelayedDisplay';
-import { CaptionsContext } from '../../context/SocketContext';
+import { SocketContext } from '../../context/SocketContext';
 
 interface TranslationServiceProps {
-    apiKeyIsWorking: boolean;
-    onApiKeyChange: (newApiKey: boolean) => void;
-    configLoaded: boolean;
-    LoadingImg: string;
+    translateService?: string
+    configLoaded: boolean
+    loadingImg: string
 }
 
-function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, LoadingImg }: TranslationServiceProps) {
-    const { captionsStatus } = useContext(CaptionsContext);
+function TranslationService({ translateService, configLoaded, loadingImg }: TranslationServiceProps) {
+    const { captionsStatus, reloadConfig } = useContext(SocketContext);
 
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -48,7 +47,7 @@ function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, Loa
             errorMessage: "An error occurred",
             setIsLoading: setIsLoadingSend,
             setResponse: setResponse,
-            setSuccessAction: () => onApiKeyChange(true),
+            setSuccessAction: () => reloadConfig(),
             apiRequest: async () => {
                 await Promise.all([
                     api('secrets', { method: 'POST', body: { gcpKey: newApiKey } }),
@@ -77,7 +76,7 @@ function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, Loa
             setIsLoading: setIsLoadingRemove,
             setResponse: setResponse,
             setSuccessAction: () => {
-                onApiKeyChange(false);
+                reloadConfig();
                 setIsEditing(false);
             }
         });
@@ -88,11 +87,11 @@ function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, Loa
     };
 
     if (!configLoaded) return (
-        <img src={LoadingImg} alt="loading" className="loading-img" />
+        <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
     
-    if(captionsStatus?.translation && !isEditing) return (
+    if(translateService && captionsStatus?.translation && !isEditing) return (
         <>
             {response && (
                 <FormResponse
@@ -131,7 +130,8 @@ function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, Loa
                 </div>
             </form>
             <div className='api-info'>
-                <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank" rel="noreferrer">&rarr; Get your Google API key
+                <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank" rel="noreferrer">
+                    &rarr; Get your Google API key
                 </a>
                 
                 {isEditing && (

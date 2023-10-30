@@ -2,19 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { speechLanguages } from './speechLanguages';
 import api from '../../services/api';
-import { CaptionsContext } from '../../context/SocketContext';
+import { SocketContext } from '../../context/SocketContext';
 
 
 interface MicrophoneAppProps {
     spokenLang?: string
     setSpokenLang: (spokenLang: string) => void
     configLoaded: boolean
-    LoadingImg: string
+    loadingImg: string
 }
 
-function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, LoadingImg }: MicrophoneAppProps) {
-
-    const { handleText, recognized, info, reloadConfig } = useContext(CaptionsContext);
+function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: MicrophoneAppProps) {
+    const { handleText, recognized, info, reloadConfig } = useContext(SocketContext);
     const [listening, setListening] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>();
     const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
@@ -34,11 +33,11 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, LoadingImg }: 
             body: { spokenLang: event.target.value }
         })
         .then(reloadConfig)
-        .catch(e=>console.error('Error updating spoken language',e));
+        .catch(e=>console.error('Error updating spoken language', e));
     }
 
     if (!configLoaded) return (
-        <img src={LoadingImg} alt="loading" className="loading-img" />
+        <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
     return (
@@ -46,6 +45,7 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, LoadingImg }: 
             { errorMessage }
             <div className="setting-options">
                 <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
+                    <option value="">Spoken language</option>
                     { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }
                 </select>
                 <button className={`theme-btn listening ${listening ? '' : 'start-btn'}`} onClick={()=>{ setListening(!listening) }}>
@@ -57,7 +57,7 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, LoadingImg }: 
                 <>
                     <h4>Spoken text</h4>
                     <div className="spoken-text">
-                        <p>{ recognized?.text ?? ''}</p>
+                        <p>{ recognized?.text ?? '' } </p>
                     </div>
                 </>
             )}

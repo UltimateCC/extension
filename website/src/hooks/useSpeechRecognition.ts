@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
+import { TranscriptData } from "../context/SocketContext";
 
 
 /** Speech recognition using Web Speech API */
 export function useSpeechRecognition(
-	handleText: (transcript: { text: string, lang: string, duration: number }) => void,
+	handleText: (transcript: TranscriptData) => void,
 	lang: string,
 	listening: boolean
 ) {
 	const [error, setError] = useState<string>();
 
 	useEffect(()=>{
+
 		let stopFunc = ()=>{};
 		let stopped = false;
 		if(listening) {
@@ -49,12 +51,10 @@ export function useSpeechRecognition(
 				const result = event.results[event.resultIndex];
 				const text = result[0].transcript.trim();
 				if(text) {
+					const duration = Date.now() - start;
+					handleText({text, lang, duration, delay: duration, final: result.isFinal });
 					if(result.isFinal) {
-						// recognizing ''
-						handleText({text, lang, duration: Date.now() - start});
 						start = Date.now();
-					}else{
-						// recognizing text
 					}
 				}
 			}

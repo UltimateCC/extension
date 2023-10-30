@@ -1,10 +1,10 @@
 import { EventEmitter } from "stream";
 import { UserConfig, UserSecrets } from "../entity/User";
-import { CaptionsData, Info } from "../types";
+import { Info, TranscriptData } from "../types";
 
 
 interface SttEvents {
-	transcript: (transcript: CaptionsData) => void;
+	transcript: (transcript: TranscriptData) => void;
 	info: ( info: Info )=>void;
 }
 

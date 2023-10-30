@@ -54,8 +54,12 @@ export class AzureStt extends StreamingSpeechToText {
 			this.ffmpeg.stdin.on('error', e=>{});
 			
 			this.speechRecognizer.recognizing = (s, e) => {
-				// Non final result (maybe useful later)
-				console.log(e.result.text);
+				const duration = e.result.duration;
+				const lang = e.result.language;
+				const text = e.result.text.trim();
+				if(text) {
+					this.emit('transcript', { delay: duration, duration, lang, text, final: false });
+				}
 			};
 			
 			this.speechRecognizer.recognized = (s, e) => {
@@ -64,8 +68,7 @@ export class AzureStt extends StreamingSpeechToText {
 					const lang = e.result.language;
 					const text = e.result.text.trim();
 					if(text) {
-						console.log('final: ' +  e.result.text);
-						this.emit('transcript', { delay: duration, duration, captions: [{lang, text}]});
+						this.emit('transcript', { delay: duration, duration, lang, text, final: true });
 					}
 				}
 			};

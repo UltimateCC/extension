@@ -57,7 +57,6 @@ export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCo
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
 
-
     useEffect(() => {
         const selectedLanguages: string[] = [];
         const nonSelectedLanguages: string[] = [];

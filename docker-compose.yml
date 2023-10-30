@@ -18,9 +18,9 @@ services:
   back:
     build: ./back
     container_name: captions-back
-    user: "node"
-    depends_on:
+    links:
       - captionsdb
+    user: "node"
     
     networks: 
       - default
