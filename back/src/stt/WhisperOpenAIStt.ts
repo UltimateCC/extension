@@ -1,5 +1,5 @@
 
-import { CaptionsData, Result } from "../types";
+import { Result, TranscriptData } from "../types";
 import { SpeechToText } from "./SpeechToText";
 
 
@@ -18,7 +18,7 @@ export class WhisperOpenAIStt extends SpeechToText {
 		return !!this.secrets.openaiKey
 	}
 
-	async transcribe(data: Buffer, duration: number): Promise<Result<CaptionsData | null>> {
+	async transcribe(data: Buffer, duration: number): Promise<Result<TranscriptData | null>> {
 		if(!this.ready()) return  { isError: true, message: 'Missing OpenAI API key' };
 
 		const start = Date.now();
@@ -56,8 +56,10 @@ export class WhisperOpenAIStt extends SpeechToText {
 			data: {
 				delay: duration + Date.now() - start,
 				duration,
-				captions: [{ lang, text: out.text }]
-			} 
+				lang,
+				text: out.text,
+				final: true
+			}
 		} 
 	}
 

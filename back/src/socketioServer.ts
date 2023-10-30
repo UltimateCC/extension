@@ -1,8 +1,8 @@
 import { Server, Socket } from "socket.io";
-import { CaptionsData, CaptionsStatus, Info, LangList, TranscriptAlt } from "./types";
+import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
-import { sendPubsub } from "./twitch";
+import { isExtensionInstalled, sendPubsub } from "./twitch";
 import { dataSource } from "./database";
 import { Translator } from "./translate/Translator";
 import { getStt } from "./stt/getStt";
@@ -15,12 +15,12 @@ interface ServerToClientEvents {
 	translateLangs: (langs: LangList) => void;
 	status: ( status: CaptionsStatus ) => void;
 	info: ( info: Info )=>void;
-	transcript: ( transcript: TranscriptAlt )=>void;
+	transcript: ( transcript: TranscriptData )=>void;
 }
 
 interface ClientToServerEvents {
 	reloadConfig: () => void;
-	text: (text: CaptionsData) => void;
+	text: (text: TranscriptData) => void;
 	audio: (data: Buffer, duration: number)  => void;
 	audioStart: ()  => void;
 	audioData: (data: Buffer)  => void;
@@ -69,19 +69,24 @@ async function sendStatus(socket: TypedSocket) {
 	socket.emit('status', {
 		stt: socket.data.streamingStt?.ready() ?? socket.data.stt?.ready() ?? false,
 		translation: socket.data.translator.ready(),
-		twitch: true // todo: check if extension is installed
+		twitch: await isExtensionInstalled(socket.data.twitchId)
 	});
 }
 
-async function handleCaptions(socket: TypedSocket, transcript: CaptionsData ) {
+async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) {
 	try {
-		socket.emit('transcript', transcript.captions[0]);
-		const out = await socket.data.translator.translate(transcript);
-		if(out.isError) {
-			socket.emit('info', { type: 'warn', message: out.message });
-		}else{
-			console.log('Sending pubsub', out.data);
-			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
+		socket.emit('transcript', transcript );
+
+		// Todo: Kind of "rate limiter" to show some non-final transcripts depending on config
+		if(transcript.final) {
+
+			const out = await socket.data.translator.translate(transcript);
+			if(out.isError) {
+				socket.emit('info', { type: 'warn', message: out.message });
+			}else{
+				console.log('Sending pubsub', out.data);
+				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
+			}		
 		}
 	}catch(e) {
 		console.error('Error handling captions', e);

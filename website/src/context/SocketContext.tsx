@@ -22,13 +22,22 @@ export type TranscriptAlt = {
     lang: string
 }
 
+type Metadata = {
+	delay: number
+	duration: number
+    final: boolean
+}
+
+export type TranscriptData = Metadata & TranscriptAlt
+
 export interface SocketContextType {
     info?: Info
     captionsStatus?: CaptionsStatus
     recognized?: TranscriptAlt
+    recognizing?: TranscriptAlt
     translateLangs: LangList
     reloadConfig: () => void
-    handleText: (transcript: { text: string, lang: string, duration: number } ) => void
+    handleText: (transcript: TranscriptData ) => void
 } 
 
 export const SocketContext = createContext<SocketContextType>(

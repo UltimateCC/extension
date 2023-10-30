@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import { io, type Socket } from "socket.io-client";
-import { CaptionsStatus, Info, LangList, TranscriptAlt } from "../context/SocketContext";
-
-type CaptionsData = {
-    delay: number
-    duration: number
-    captions: TranscriptAlt[]
-}
+import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "../context/SocketContext";
 
 interface ServerToClientEvents {
     translateLangs: (langs: LangList) => void;
     info: ( info: Info ) => void;
     status: ( status: CaptionsStatus ) => void;
-    transcript: ( transcript: TranscriptAlt )=>void;
+    transcript: ( transcript: TranscriptData )=>void;
 }
 
 interface ClientToServerEvents {
     reloadConfig: () => void;
-    text: (text: CaptionsData) => void;
+    text: (text: TranscriptData) => void;
     audio: (data: Blob, duration: number) => void;
     audioStart: () => void;
     audioData: (data: Blob) => void;
@@ -50,7 +44,7 @@ export function useSocket() {
         });
 
         socket.on('transcript', transcript=>{
-            setRecognized(transcript);
+            setRecognized({ lang: transcript.lang, text: transcript.text });
         });
 
         socket.on('translateLangs', translateLangs=>{
@@ -68,11 +62,8 @@ export function useSocket() {
     }
 
     // Handle text from speech recognition
-    function handleText(transcript: { text: string, lang: string, duration: number } ) {
-        socket.emit('text', {
-            delay: transcript.duration, duration: transcript.duration,
-            captions: [ { text: transcript.text, lang: transcript.lang } ]
-        });
+    function handleText(transcript: TranscriptData ) {
+        socket.emit('text', transcript);
     }
 
     /*

@@ -1,5 +1,5 @@
 import { UserConfig, UserSecrets } from "../entity/User";
-import { CaptionsData, LangList, Result, TranscriptAlt } from "../types";
+import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
 export abstract class Translator {
 
@@ -12,7 +12,7 @@ export abstract class Translator {
 		return [];
 	}
 
-	async translate(data: CaptionsData): Promise<Result<CaptionsData>> {
+	async translate(data: TranscriptData): Promise<Result<CaptionsData>> {
 		if(!this.ready()) {
 			return {
 				isError: true,
@@ -20,9 +20,9 @@ export abstract class Translator {
 			}
 		}
 		const start = Date.now();
-		const lang = data.captions[0].lang.split('-')[0];
+		const lang = data.lang.split('-')[0];
 		const result = await this.translateAll(
-			{ text: data.captions[0].text, lang },
+			{ text: data.text, lang },
 			// Exclude source language
 			this.config.translateLangs.filter(t=>t!==lang)
 		);
@@ -34,7 +34,8 @@ export abstract class Translator {
 				data: {
 					delay: data.delay + ( Date.now() - start ),
 					duration: data.duration,
-					captions: result.data
+					captions: result.data,
+					final: data.final
 				}
 			}
 		}
