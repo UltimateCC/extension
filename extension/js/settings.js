@@ -53,7 +53,7 @@ export function loadSettings() {
             // Default settings
             settingsContent = {
                 "fontColor": "#ffffff",
-                "fontSize": 16,
+                "fontSize": 24,
                 "fontFamily": "Arial",
                 "maxLines": 2,
                 "backgroundColor": "#37373E",

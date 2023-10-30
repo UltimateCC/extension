@@ -1,22 +1,21 @@
 @import 'fonts';
 
 // Caption variables
-$caption-settings-distance: 10px;
 $caption-line-height: 1.25em;
 $caption-container-padding: 0.5em;
-$caption-movable-Y: 0rem;
+$caption-movable-Y: 1rem;
 $caption-movable-X: 0;
 
 // Ultimate CC theme
 $theme-text-color: #D9D9D9;
 $theme-background-color: #37373E;
 
+// Settings variables
 $settings-text-color: $theme-text-color;
 $settings-button-color: #4C4C5A;
 $settings-background-color: #1F1F23;
-
-// Settings variables
-$settings-font-size: 1.5em;
+$settings-movable-Y: 5rem;
+$settings-font-size: clamp(1em, 2.25vh, 3em);
 $settings-width: 16em;
 $settings-font-family: "Arial";
 $settings-inside-padding: 1.25rem;
@@ -26,6 +25,8 @@ $settings-input-size: 7em;
 $settings-input-shadow: 0 3.3px 3.3px 0 rgba($settings-background-color, 0.25) inset;
 $settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
 
+// Buttons variables
+$settings-wheel-size: clamp(2rem, 1.5vw, 3rem);
 
 // Convert HEX to RGB
 @function hexToRgb($hex) {
@@ -33,7 +34,7 @@ $settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
 }
 
 $default-font-color: hexToRgb(#fff);
-$default-font-size: 16px;
+$default-font-size: 24px;
 $default-font-family: "Arial";
 $default-max-lines: 2;
 $default-background-color: hexToRgb($theme-background-color);
@@ -54,11 +55,11 @@ $default-stroke-size: 0px;
 }
 
 // Temporary (to have an idea of the result)
-// html {
-//     background-image: url("../aypierreStream.png");
-//     background-repeat: no-repeat;
-//     background-size: 100vw 100vh;
-// }
+html {
+    background-image: url("../aypierreStream.png");
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+}
 
 * {
     box-sizing: border-box;
@@ -70,17 +71,16 @@ body#ultimate-closed-caption {
     // Lock scroll
     max-width: 100vw;
     max-height: 100vh;
+    padding: $caption-movable-Y $caption-movable-X; // Advice by twitch 5rem 7rem 5rem 0
+    position: relative; // Not necessary, just to show what is the container of position: absolute
 
     // Caption container
     #caption-movable-area {
-        position: relative;
         
         // Do calc only if needed
         width: if($caption-movable-X == 0, 100vw, calc(100vw - #{$caption-movable-X} * 2));
         height: if($caption-movable-Y == 0, 100vh, calc(100vh - #{$caption-movable-Y} * 2));
 
-        margin: $caption-movable-Y $caption-movable-X; // Advice by twitch 5rem 7rem 5rem 0
-        
         // Caption box container
         #caption-box {
             position: absolute; // To be able to move it
@@ -100,15 +100,10 @@ body#ultimate-closed-caption {
                 cursor: move;
             }
 
-            // Settings wheel
-            &:hover {
-                .caption-content-box button#caption-settings-btn {
-                    opacity: 1;
-                    transition: opacity 0.5s ease-in-out;
-                }
-            }
-
             .caption-content-box {
+                display: flex;
+                flex-direction: column-reverse;
+
                 max-height: calc(#{$caption-line-height} * var(--caption-max-lines));
                 margin: min($caption-container-padding, 1rem);
                 overflow: hidden; // Don't show the rest of the text
@@ -124,50 +119,29 @@ body#ultimate-closed-caption {
                     font-family: inherit;
                     -webkit-text-stroke: inherit;
                 }
-
-                // Settings wheel
-                #caption-settings-btn {
-                    border: none;
-                    background-color: transparent;
-                    position: absolute;
-                    top: $caption-settings-distance;
-                    right: $caption-settings-distance;
-                    font-size: 1.9rem;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    transition: opacity 2s ease-in-out;
-                
-                    &:hover {
-                        transform: scale(1.1);
-                        transition: transform 0.2s ease-in-out;
-                
-                        path {
-                            fill: rgba(var(--caption-font-color), $default-background-opacity);
-                        }
-                    }
-                
-                    &:not(.isOpen) {
-                        opacity: 0;
-                    }
-                
-                    path {
-                        fill: rgb(var(--caption-font-color));
-                        transition: fill 0.2s;
-                    }
-                }
             }
         }
 
         // Settings box
         #caption-settings {
-            min-height: $settings-width;
-            max-height: calc(100vh - #{$caption-movable-Y} * 2);
-            width: $settings-width;
-            padding: 0.2em 0.5em 1em;
-            
             position: absolute;
             left: 0;
-            top: 0;
+            top: $settings-movable-Y;
+            z-index: 1;
+
+            min-height: $settings-width;
+            
+            max-height: calc(100vh - #{$settings-movable-Y} * 2 - #{$settings-wheel-size} - 1rem - 1.5rem);
+            /*
+                100vh = 100% of the height of the screen
+                - #{$settings-movable-Y} * 2 = 2 times the margin of the settings box
+                - #{$settings-wheel-size} = the size of the settings wheel
+                - 1rem = the margin of the settings wheel
+                - 1.5rem = the gap between the settings wheel and the settings box
+            */
+            
+            width: $settings-width;
+            padding: 0.2em 0.5em 1em;
             
             transition: width 0.5s;
             
@@ -550,6 +524,41 @@ body#ultimate-closed-caption {
                         background-color: rgba($settings-text-color, 0.95);
                         color: $settings-button-color;
                     }
+                }
+            }
+        }
+
+        // Button container
+        #caption-btn-container {
+            position: absolute;
+            left: 0;
+            bottom: $settings-movable-Y;
+            z-index: 2;
+
+            width: fit-content;
+            padding: 0.5rem 1rem;
+            background-color: rgba($settings-background-color, 0.95);
+
+            // Settings wheel
+            #caption-settings-btn {
+                border: none;
+                background-color: transparent;
+                font-size: $settings-wheel-size;
+                border-radius: 50%;
+                cursor: pointer;
+
+                &:hover {
+                    transform: scale(1.1);
+                    transition: transform 0.2s ease-in-out;
+
+                    path {
+                        fill: rgba(var(--caption-font-color), $default-background-opacity);
+                    }
+                }
+
+                path {
+                    fill: rgb(var(--caption-font-color));
+                    transition: fill 0.2s;
                 }
             }
         }

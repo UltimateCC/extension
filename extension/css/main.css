@@ -36,13 +36,19 @@
 }
 :root {
   --caption-font-color: 255, 255, 255;
-  --caption-font-size: 16px;
+  --caption-font-size: 24px;
   --caption-font-family: Arial;
   --caption-max-lines: 2;
   --caption-background-color: 55, 55, 62;
   --caption-background-opacity: 0.5;
   --caption-stroke-color: #000000;
   --caption-stroke-size: 0px;
+}
+
+html {
+  background-image: url("../aypierreStream.png");
+  background-repeat: no-repeat;
+  background-size: 100vw 100vh;
 }
 
 * {
@@ -54,12 +60,12 @@
 body#ultimate-closed-caption {
   max-width: 100vw;
   max-height: 100vh;
+  padding: 1rem 0;
+  position: relative;
 }
 body#ultimate-closed-caption #caption-movable-area {
-  position: relative;
   width: 100vw;
-  height: calc(100vh - 0rem * 2);
-  margin: 0rem 0;
+  height: calc(100vh - 1rem * 2);
 }
 body#ultimate-closed-caption #caption-movable-area #caption-box {
   position: absolute;
@@ -75,11 +81,9 @@ body#ultimate-closed-caption #caption-movable-area #caption-box {
 body#ultimate-closed-caption #caption-movable-area #caption-box:not(.locked) {
   cursor: move;
 }
-body#ultimate-closed-caption #caption-movable-area #caption-box:hover .caption-content-box button#caption-settings-btn {
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out;
-}
 body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box {
+  display: flex;
+  flex-direction: column-reverse;
   max-height: calc(1.25em * var(--caption-max-lines));
   margin: min(0.5em, 1rem);
   overflow: hidden;
@@ -96,43 +100,26 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
   font-family: inherit;
   -webkit-text-stroke: inherit;
 }
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box #caption-settings-btn {
-  border: none;
-  background-color: transparent;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.9rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 2s ease-in-out;
-}
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box #caption-settings-btn:hover {
-  transform: scale(1.1);
-  transition: transform 0.2s ease-in-out;
-}
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box #caption-settings-btn:hover path {
-  fill: rgba(var(--caption-font-color), 0.5);
-}
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box #caption-settings-btn:not(.isOpen) {
-  opacity: 0;
-}
-body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content-box #caption-settings-btn path {
-  fill: rgb(var(--caption-font-color));
-  transition: fill 0.2s;
-}
 body#ultimate-closed-caption #caption-movable-area #caption-settings {
-  min-height: 16em;
-  max-height: calc(100vh - 0rem * 2);
-  width: 16em;
-  padding: 0.2em 0.5em 1em;
   position: absolute;
   left: 0;
-  top: 0;
+  top: 5rem;
+  z-index: 1;
+  min-height: 16em;
+  max-height: calc(100vh - 5rem * 2 - clamp(2rem, 1.5vw, 3rem) - 1rem - 1.5rem);
+  /*
+      100vh = 100% of the height of the screen
+      - 5rem * 2 = 2 times the margin of the settings box
+      - clamp(2rem, 1.5vw, 3rem) = the size of the settings wheel
+      - 1rem = the margin of the settings wheel
+      - 1.5rem = the gap between the settings wheel and the settings box
+  */
+  width: 16em;
+  padding: 0.2em 0.5em 1em;
   transition: width 0.5s;
   color: #D9D9D9;
   background-color: rgba(31, 31, 35, 0.95);
-  font-size: 1.5em;
+  font-size: clamp(1em, 2.25vh, 3em);
   font-family: "Arial", sans-serif;
   flex-direction: column;
   justify-content: space-between;
@@ -444,6 +431,34 @@ body#ultimate-closed-caption #caption-movable-area #caption-settings .caption-bu
 body#ultimate-closed-caption #caption-movable-area #caption-settings .caption-button-container button:hover {
   background-color: rgba(217, 217, 217, 0.95);
   color: #4C4C5A;
+}
+body#ultimate-closed-caption #caption-movable-area #caption-btn-container {
+  position: absolute;
+  left: 0;
+  bottom: 5rem;
+  z-index: 2;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  background-color: rgba(31, 31, 35, 0.95);
+}
+body#ultimate-closed-caption #caption-movable-area #caption-btn-container #caption-settings-btn {
+  border: none;
+  background-color: transparent;
+  font-size: clamp(2rem, 1.5vw, 3rem);
+  border-radius: 50%;
+  cursor: pointer;
+}
+body#ultimate-closed-caption #caption-movable-area #caption-btn-container #caption-settings-btn:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+body#ultimate-closed-caption #caption-movable-area #caption-btn-container #caption-settings-btn:hover path {
+  fill: rgba(var(--caption-font-color), 0.5);
+}
+body#ultimate-closed-caption #caption-movable-area #caption-btn-container #caption-settings-btn path {
+  fill: rgb(var(--caption-font-color));
+  transition: fill 0.2s;
 }
 
 option[value=Arial] {

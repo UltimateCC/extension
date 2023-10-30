@@ -25,66 +25,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // We listen for the Twitch pubsub event
     window.Twitch.ext.listen('broadcast', (target, contentType, rawBody) => {
-        console.log('Received broadcast message');
-        
-        if (contentType === 'application/json') {
-            const body = JSON.parse(rawBody);
-            const allCaptions = body.captions;
+        if (contentType !== 'application/json') {
+            console.error('Ultimate CC : Received broadcast message but content-type is not JSON');
+            return;
+        }
 
-            // On the first message, we get the list of languages
-            if(notStarted) {
-                notStarted = false;
-                content = "";
+        const body = JSON.parse(rawBody);
+        const allCaptions = body.captions;
 
-                const jsonLangPath = "../storage/languages.json";
-                fetch(jsonLangPath)
-                    .then(response => response.json())
-                    .then(data => {
-                        /*
-                            rawBody = {
-                                delay: 3101,
-                                duration: 3101,
-                                captions: [
-                                    {
-                                    text: "après ce que c'est dans le mail où est-ce que c'est dans settings j'hésite",
-                                    lang: 'fr-FR'
-                                    }
-                                ]
-                            }
-                        */
-                        // Get the list of languages from allCaptions
-                        const languagesCodes = allCaptions.map(caption => caption.lang);
-                        const languageOptions = [];
-                        for (let i = 0; i < languagesCodes.length; ++i) {
-                            const languageCode = languagesCodes[i];
-                            
-                            // Get the language name from the json file (if it exists) else use the language code
-                            const languageName = data[languageCode] ? data[languageCode] : languageCode;
-                            languageOptions.push({ value: languageCode, label: languageName });
+        // On the first message, we get the list of languages
+        if(notStarted) {
+            notStarted = false;
+            content = "";
+
+            const jsonLangPath = "../storage/languages.json";
+            fetch(jsonLangPath)
+                .then(response => response.json())
+                .then(data => {
+                    /*
+                        rawBody = {
+                            delay: 3101,
+                            duration: 3101,
+                            captions: [
+                                {
+                                text: "après ce que c'est dans le mail où est-ce que c'est dans settings j'hésite",
+                                lang: 'fr-FR'
+                                }
+                            ]
                         }
+                    */
+                    // Get the list of languages from allCaptions
+                    const languagesCodes = allCaptions.map(caption => caption.lang);
+                    const languageOptions = [];
+                    for (let i = 0; i < languagesCodes.length; ++i) {
+                        const languageCode = languagesCodes[i];
+                        
+                        // Get the language name from the json file (if it exists) else use the language code
+                        const languageName = data[languageCode] ? data[languageCode] : languageCode;
+                        languageOptions.push({ value: languageCode, label: languageName });
+                    }
 
-                        setSelectOptions(languageOptions);
-                    })
-                    .catch(error => console.error("Error while fetching languages", error))
-                    .finally(() => {
-                        showExtension(); // Show the extension on the first message)
-                    });
-            }
+                    setSelectOptions(languageOptions);
+                })
+                .catch(error => console.error("Ultimate CC : Error while fetching languages", error))
+                .finally(() => {
+                    showCaptions(); // Show the captions on the first message)
+                });
+        }
 
-            if(allCaptions) {
-                if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang;
-                const caption = allCaptions.find(caption => caption.lang == currentLanguageCode);
-                if (caption && caption.text) content += " " + caption.text;
-                captionContent.innerHTML = content;
-            }
+        if(allCaptions) {
+            if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang;
+            const caption = allCaptions.find(caption => caption.lang == currentLanguageCode);
+            if (caption && caption.text) content += " " + caption.text;
+            captionContent.innerHTML = content;
+            // We limit the number of words to 400
+            content = content.split(" ").slice(-400).join(" ");
+        } else {
+            console.error("Ultimate CC : No captions found");
         }
     });
 });
 
 
-function showExtension() {
+function showCaptions() {
     // Show the extension body
-    const extension = document.getElementById("ultimate-closed-caption");
+    const captions = document.getElementById("caption-box");
     extension.style.display = "block";
 }
 
