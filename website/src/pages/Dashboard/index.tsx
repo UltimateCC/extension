@@ -27,7 +27,7 @@ import { SocketContext } from '../../context/SocketContext';
 // }
 
 function Dashboard() {
-    const { user } = useContext(AuthContext);
+    const { user, error } = useContext(AuthContext);
     const socketCtx = useSocket();
 
     // Request to get the user's config
@@ -37,7 +37,7 @@ function Dashboard() {
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
-    const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
+    const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
 
     useEffect(() => {
         if(!user?.connected && user?.url) {
@@ -45,6 +45,14 @@ function Dashboard() {
         }
         if(user?.img) {
             setProfilePicture(user.img);
+        }
+
+        if(error) {
+            setResponse({ isSuccess: false, message: "An error occurred while authenticating, please reload", hideRestOfPage: true });
+        }
+
+        if(socketCtx.captionsStatus?.twitch === false) {
+            setResponse({ isSuccess: false, message: "You need to be streaming on Twitch to use this service" });
         }
 
         if(user?.connected) {
@@ -59,15 +67,11 @@ function Dashboard() {
                 })
                 .catch(err => {
                     console.error(err);
-                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload" });
+                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload", hideRestOfPage: true });
                 })
         }
         
-    }, [ user, socketCtx.captionsStatus ]);
-
-    const handleSelectedLanguageCodeChange = (newLanguageCode: (string)[]) => {
-        setTranslationLangs(newLanguageCode);
-    };
+    }, [ user, socketCtx.captionsStatus, error ]);
 
     // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
     //     setAllBanCaptions(newBanCaptions);
@@ -76,6 +80,14 @@ function Dashboard() {
     const closeResponse = () => {
         setResponse(null);
     };
+
+    if(response?.hideRestOfPage) return (
+        <FormResponse
+            isSucceed={response.isSuccess}
+            message={response.message}
+            onClose={closeResponse}
+        />
+    );
 
     return (
         <SocketContext.Provider value={socketCtx}>
@@ -113,7 +125,7 @@ function Dashboard() {
                         <h3>Languages</h3>
                         <LanguageOutSelector
                             selectedLanguageCode={translationLangs}
-                            onLanguageCodeChange={handleSelectedLanguageCodeChange}
+                            setTranslationLangs={setTranslationLangs}
                             configLoaded={configLoaded}
                         />
                     </div>

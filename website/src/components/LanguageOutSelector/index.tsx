@@ -11,12 +11,13 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import api from '../../services/api.ts';
-
 import languageNames from '../../services/languageNames.ts';
+
+import FormResponse from '../FormResponse';
 
 interface LanguageOutSelectorProps {
     selectedLanguageCode: string[];
-    onLanguageCodeChange: (newLanguageCode: (string)[]) => void;
+    setTranslationLangs: (translationLangs: string[]) => void;
     configLoaded: boolean;
 }
 
@@ -46,7 +47,7 @@ function getCodeFromLanguage(language: string): string | undefined {
     return "";
 }
 
-export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCodeChange, configLoaded }: LanguageOutSelectorProps) {
+export default function LanguageOutSelector({ selectedLanguageCode, setTranslationLangs, configLoaded }: LanguageOutSelectorProps) {
     const [checked, setChecked] = useState<string[]>([]);
     const [left, setLeft] = useState<string[]>(Object.values(languageNames));
     const [right, setRight] = useState<string[]>([]);
@@ -56,6 +57,8 @@ export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCo
 
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
+
+    const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
     useEffect(() => {
         const selectedLanguages: string[] = [];
@@ -84,6 +87,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCo
 
         if (selectedLanguageCodes.includes("")) {
             alert('Error: one of the selected languages is invalid');
+            setResponse({ isSuccess: false, message: 'One of the selected languages is invalid' });
             return;
         }
 
@@ -91,13 +95,17 @@ export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCo
             method: 'POST',
             body: { translateLangs: selectedLanguageCodes }
         })
-        .then((response) => {
-            console.log(response);
-            onLanguageCodeChange(selectedLanguageCodes);
+        .then(() => {
+            setTranslationLangs(selectedLanguageCodes);
         })
         .catch((error) => {
+            setResponse({ isSuccess: false, message: 'An error occurred while updating your languages' });
             console.error('Language update error:', error);
         });
+    };
+
+    const closeResponse = () => {
+        setResponse(null);
     };
 
     const handleToggle = (value: string) => () => {
@@ -160,70 +168,79 @@ export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCo
     );
 
     return (
-        <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
-            className='transfer-list-container'
-        >
-            <Grid item>
-                <h4 className="language-title">Available languages</h4>
-                <ThemeProvider theme={theme}>
-                    <TextField
-                        inputRef={searchInput}
-                        label="Search"
-                        sx={{ width: 200 }}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        color="secondary"
-                        className='search-input'
-                    />
-                </ThemeProvider>
-                {customList(left, true)}
-            </Grid>
-            <Grid item>
-                <Grid
-                    container
-                    direction="column"
-                    alignItems="center"
-                    className="switch-btn-container"
-                >
-                    <Button
-                        sx={{ my: 0.5 }}
-                        onClick={handleCheckedRight}
-                        disabled={leftChecked.length === 0}
-                        aria-label="move selected right"
-                        className='switch-btn'
+        <>
+            {response && (
+                <FormResponse
+                    isSucceed={response.isSuccess}
+                    message={response.message}
+                    onClose={closeResponse}
+                />
+            )}        
+            <Grid
+                container
+                spacing={2}
+                justifyContent="center"
+                alignItems="center"
+                className='transfer-list-container'
+            >
+                <Grid item>
+                    <h4 className="language-title">Available languages</h4>
+                    <ThemeProvider theme={theme}>
+                        <TextField
+                            inputRef={searchInput}
+                            label="Search"
+                            sx={{ width: 200 }}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            color="secondary"
+                            className='search-input'
+                        />
+                    </ThemeProvider>
+                    {customList(left, true)}
+                </Grid>
+                <Grid item>
+                    <Grid
+                        container
+                        direction="column"
+                        alignItems="center"
+                        className="switch-btn-container"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="18" viewBox="0 0 34 18" fill="none">
-                            <path
-                                d="M34 9L19 0.339744L19 17.6603L34 9ZM1.31134e-07 10.5L20.5 10.5L20.5 7.5L-1.31134e-07 7.5L1.31134e-07 10.5Z"
-                                fill="#D9D9D9"
-                            />
-                        </svg>
-                    </Button>
-                    <Button
-                        sx={{ my: 0.5 }}
-                        onClick={handleCheckedLeft}
-                        disabled={rightChecked.length === 0}
-                        aria-label="move selected left"
-                        className='switch-btn'
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="18" viewBox="0 0 34 18" fill="none">
-                            <path
-                                d="M0 9L15 17.6603V0.339746L0 9ZM34 7.5L13.5 7.5V10.5L34 10.5V7.5Z"
-                                fill="#D9D9D9"
-                            />
-                        </svg>
-                    </Button>
+                        <Button
+                            sx={{ my: 0.5 }}
+                            onClick={handleCheckedRight}
+                            disabled={leftChecked.length === 0}
+                            aria-label="move selected right"
+                            className='switch-btn'
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="18" viewBox="0 0 34 18" fill="none">
+                                <path
+                                    d="M34 9L19 0.339744L19 17.6603L34 9ZM1.31134e-07 10.5L20.5 10.5L20.5 7.5L-1.31134e-07 7.5L1.31134e-07 10.5Z"
+                                    fill="#D9D9D9"
+                                />
+                            </svg>
+                        </Button>
+                        <Button
+                            sx={{ my: 0.5 }}
+                            onClick={handleCheckedLeft}
+                            disabled={rightChecked.length === 0}
+                            aria-label="move selected left"
+                            className='switch-btn'
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="18" viewBox="0 0 34 18" fill="none">
+                                <path
+                                    d="M0 9L15 17.6603V0.339746L0 9ZM34 7.5L13.5 7.5V10.5L34 10.5V7.5Z"
+                                    fill="#D9D9D9"
+                                />
+                            </svg>
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <Grid item>
+                    <h4 className="language-title">Selected languages</h4>
+                    {customList(right, false)}
                 </Grid>
             </Grid>
-
-            <Grid item>
-                <h4 className="language-title">Selected languages</h4>
-                {customList(right, false)}
-            </Grid>
-        </Grid>
+        </>
     );
 }

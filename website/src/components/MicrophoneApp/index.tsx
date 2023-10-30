@@ -4,6 +4,7 @@ import { speechLanguages } from './speechLanguages';
 import api from '../../services/api';
 import { SocketContext } from '../../context/SocketContext';
 
+import FormResponse from '../FormResponse';
 
 interface MicrophoneAppProps {
     spokenLang?: string
@@ -15,14 +16,14 @@ interface MicrophoneAppProps {
 function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: MicrophoneAppProps) {
     const { handleText, recognized, info, reloadConfig } = useContext(SocketContext);
     const [listening, setListening] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>();
+    const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
     const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
 
     useEffect(()=>{
-        if(info?.type === 'error') {
-            setListening(false);
-        }
-        setErrorMessage(error ?? info?.message);
+        if(info?.type === 'error') setListening(false);
+        
+        const errorMessage : string | undefined = error ?? info?.message;
+        if(errorMessage) setResponse({ isSuccess: false, message: errorMessage });
 
     }, [info, error]);
 
@@ -33,16 +34,29 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: 
             body: { spokenLang: event.target.value }
         })
         .then(reloadConfig)
-        .catch(e=>console.error('Error updating spoken language', e));
+        .catch((error) => {
+            console.error('Error updating spoken language', error);
+            setResponse({ isSuccess: false, message: 'An error occurred while updating your spoken language' });
+        });
     }
 
     if (!configLoaded) return (
         <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
+    const closeResponse = () => {
+        setResponse(null);
+    };
+
     return (
         <>
-            { errorMessage }
+            {response && (
+                <FormResponse
+                    isSucceed={response.isSuccess}
+                    message={response.message}
+                    onClose={closeResponse}
+                />
+            )}
             <div className="setting-options">
                 <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
                     <option value="">Spoken language</option>
