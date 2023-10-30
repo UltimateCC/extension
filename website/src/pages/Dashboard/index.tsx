@@ -13,11 +13,12 @@ import Footer from '../../components/Footer';
 import '../../webroot/style/dashboard.css';
 
 import LogoutImg from '../../assets/logout.svg';
-import LoadingImg from '../../assets/loading.svg';
+import loadingImg from '../../assets/loading.svg';
 
 import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
-import { SocketProvider } from '../../context/SocketContext';
+import { useSocket } from '../../hooks/useSocket';
+import { SocketContext } from '../../context/SocketContext';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -27,14 +28,15 @@ import { SocketProvider } from '../../context/SocketContext';
 
 function Dashboard() {
     const { user } = useContext(AuthContext);
+    const socketCtx = useSocket();
 
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
-    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [spokenLang, setSpokenLang] = useState<string>();
-    const [apiKeyIsWorking, setApiKeyIsWorking] = useState<boolean>(false);
+    const [translateService, setTranslateService] = useState<string>();
+    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
-    const [profilePicture, setProfilePicture] = useState<string>(LoadingImg);
+    const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
     useEffect(() => {
@@ -44,33 +46,27 @@ function Dashboard() {
         if(user?.img) {
             setProfilePicture(user.img);
         }
-        
-    }, [ user ]);
 
-    useEffect(() => {
-        // Fetch user infos
-        if(!user?.connected) return; // TODO : Show error message no ?
-        api('config')
-            .then(response => {
-                setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
-                // setAllBanCaptions(response.banWords);
-                setSpokenLang(response.spokenLang);
-                setTranslationLangs(response.translateLangs);
-                setConfigLoaded(true);
-                return;
-            })
-            .catch(err => {
-                console.error(err);
-                setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload" });
-            })
-    }, [user]);
+        if(user?.connected) {
+            api('config')
+                .then(response => {
+                    // setAllBanCaptions(response.banWords);
+                    setSpokenLang(response.spokenLang);
+                    setTranslateService(response.translateService);
+                    setTranslationLangs(response.translateLangs);
+                    setConfigLoaded(true);
+                    return;
+                })
+                .catch(err => {
+                    console.error(err);
+                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload" });
+                })
+        }
+        
+    }, [ user, socketCtx.captionsStatus ]);
 
     const handleSelectedLanguageCodeChange = (newLanguageCode: (string)[]) => {
         setTranslationLangs(newLanguageCode);
-    };
-
-    const handleApiKeyChange = (isWorking: boolean) => {
-        setApiKeyIsWorking(isWorking);
     };
 
     // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
@@ -82,7 +78,7 @@ function Dashboard() {
     };
 
     return (
-        <SocketProvider>
+        <SocketContext.Provider value={socketCtx}>
             {response && (
                 <FormResponse
                     isSucceed={response.isSuccess}
@@ -94,7 +90,7 @@ function Dashboard() {
                 <div className="welcome theme-box">
                     <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
                     <Link to="/logout" className="profile-container">
-                        {profilePicture !== LoadingImg && (
+                        {profilePicture !== loadingImg && (
                             <div className='logout-box'>
                                 <img src={LogoutImg} alt="logout" />
                             </div>
@@ -105,12 +101,11 @@ function Dashboard() {
                 <div>
                     <div className="api theme-box">
                         <span className="step-indication">1</span>
-                        <h3>Transaltion API Connection</h3>
+                        <h3>Translation API Connection</h3>
                         <TranslationService
-                            apiKeyIsWorking={apiKeyIsWorking}
-                            onApiKeyChange={handleApiKeyChange}
+                            translateService={translateService}
                             configLoaded={configLoaded}
-                            LoadingImg={LoadingImg}
+                            loadingImg={loadingImg}
                         />
                     </div>
                     <div className="languages theme-box">
@@ -142,13 +137,13 @@ function Dashboard() {
                             spokenLang={spokenLang}
                             setSpokenLang={setSpokenLang}
                             configLoaded={configLoaded}
-                            LoadingImg={LoadingImg}
+                            loadingImg={loadingImg}
                         />
                     </div>
                     <Footer />
                 </div>
             </section>
-        </SocketProvider>
+        </SocketContext.Provider>
     );
 }
 
