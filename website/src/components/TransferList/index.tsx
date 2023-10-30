@@ -84,8 +84,7 @@ export default function TransferList({ selectedLanguageCode, onLanguageCodeChang
         });
 
         if (selectedLanguageCodes.includes("")) {
-            alert('Error: one of the selected languages is not in the database');
-            window.location.replace('/');
+            alert('Error: one of the selected languages is invalid');
             return;
         }
 

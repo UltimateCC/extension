@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { speechLanguages } from './speechLanguages';
 import api from '../../services/api';
@@ -12,21 +12,32 @@ interface MicrophoneAppProps {
 
 function MicrophoneApp({ spokenLang, setSpokenLang }: MicrophoneAppProps) {
 
-    const { handleText, recognized } = useContext(CaptionsContext);
+    const { handleText, recognized, info, reloadConfig } = useContext(CaptionsContext);
     const [listening, setListening] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>();
     const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
+
+    useEffect(()=>{
+        if(info?.type === 'error') {
+            setListening(false);
+        }
+        setErrorMessage(error ?? info?.message);
+
+    }, [info, error]);
 
     function handleSpokenLang(event: React.ChangeEvent<HTMLSelectElement>) {
         setSpokenLang(event.target.value);
         api('config', {
             method: 'POST',
             body: { spokenLang: event.target.value }
-        }).catch(e=>console.error('Error updating spoken language',e));
+        })
+        .then(reloadConfig)
+        .catch(e=>console.error('Error updating spoken language',e));
     }
 
     return (
         <>
-            { error }
+            { errorMessage }
             <div className="setting-options">
                 <select className="theme-select" value={spokenLang} onChange={ handleSpokenLang }>
                     { speechLanguages.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }

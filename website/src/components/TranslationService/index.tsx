@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 
 import api from '../../services/api';
 
 import FormResponse from '../FormResponse';
 import DelayedDisplay from '../DelayedDisplay';
+import { CaptionsContext } from '../../context/SocketContext';
 
 interface ApiProps {
     apiKeyIsWorking: boolean;
@@ -11,7 +12,9 @@ interface ApiProps {
     onApiKeyChange: (newApiKey: boolean) => void;
 }
 
-function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiProps) {
+function TranslationService({ apiLoader, onApiKeyChange }: ApiProps) {
+    const { captionsStatus } = useContext(CaptionsContext);
+
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isLoadingSend, setIsLoadingSend] = useState<boolean>(false);
@@ -63,10 +66,10 @@ function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiP
 
         DelayedDisplay({
             requestFn: async () => {
-                await api('secrets', {
-                    method: 'POST',
-                    body: { gcpKey: "" }
-                });
+                await Promise.all([
+                    api('secrets', { method: 'POST', body: { gcpKey: '' } }),
+                    api('config', {method: 'POST', body: { translateService: '' }})
+                ]);
             },
             successMessage: "The API key has been removed", 
             errorMessage: "An error occurred",
@@ -88,7 +91,7 @@ function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiP
     );
 
     
-    if(apiKeyIsWorking && !isEditing) return (
+    if(captionsStatus?.translation && !isEditing) return (
         <>
             {response && (
                 <FormResponse

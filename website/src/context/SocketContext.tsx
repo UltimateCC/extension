@@ -54,6 +54,7 @@ interface SocketContextType {
     info?: Info
     captionsStatus?: CaptionsStatus
     recognized?: TranscriptAlt
+    translateLangs: LangList
     reloadConfig: () => void
     handleText: (transcript: { text: string, lang: string, duration: number } ) => void
 } 
@@ -66,6 +67,7 @@ export function SocketProvider({ children }: { children: ReactNode; }): React.JS
 
     const [info, setInfo] = useState<Info>();
     const [captionsStatus, setCaptionsStatus] = useState<CaptionsStatus>();
+    const [translateLangs, setTranslateLangs] = useState<LangList>([]);
     // Recognized text
     const [recognized, setRecognized] = useState<TranscriptAlt>();
 
@@ -88,6 +90,10 @@ export function SocketProvider({ children }: { children: ReactNode; }): React.JS
             setRecognized(transcript);
         });
 
+        socket.on('translateLangs', translateLangs=>{
+            setTranslateLangs(translateLangs);
+        });
+
         return () => {
             socket.disconnect();
         }
@@ -96,6 +102,7 @@ export function SocketProvider({ children }: { children: ReactNode; }): React.JS
 
     function reloadConfig() {
         socket.emit('reloadConfig');
+        setInfo(undefined);
     }
 
     // Handle text from speech recognition
@@ -131,9 +138,10 @@ export function SocketProvider({ children }: { children: ReactNode; }): React.JS
         <CaptionsContext.Provider value={{
             info,
             captionsStatus,
+            translateLangs,
             recognized,
             reloadConfig,
-            handleText
+            handleText,
         }}>
             { children }
         </CaptionsContext.Provider>

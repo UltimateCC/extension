@@ -9,7 +9,7 @@ const thanksMain =  [
     ["184375239843643394", "Back-end developer (site)", "Kranack", "https://cdn.discordapp.com/avatars/184375239843643394/861902e16660b0b0203142295ee74ef3?size=1024"],
     ["325353577281355798", "Designer (site & extension)", "Coco", "https://cdn.discordapp.com/avatars/325353577281355798/f833307ad0e2762e5b4a4f1a312074c0?size=1024"],
     ["110151716124520448", "Voice recording developer", "Theondrus", "https://cdn.discordapp.com/avatars/110151716124520448/427fafd2ee319fb2e6f732885ba50586?size=1024"],
-    ["179672144131653642", "Voice recording developer", "Salutations Distinguées", "https://cdn.discordapp.com/avatars/179672144131653642/60baa9d4203c556e81a9d64ae5bc471b?size=1024"],
+    ["179672144131653642", "Back-end developer", "Salutations Distinguées", "https://cdn.discordapp.com/avatars/179672144131653642/60baa9d4203c556e81a9d64ae5bc471b?size=1024"],
 ];
 
 // Sort by username
