@@ -16,8 +16,6 @@ export function loadSettings() {
     const fontSizeInput = document.getElementById("font-size-input");
     const fontFamilyInput = document.getElementById("font-family-input");
     const maxLinesInput = document.getElementById("max-lines-input");
-    const strokeColorInput = document.getElementById("stroke-color-input");
-    const strokeSizeInput = document.getElementById("stroke-size-input");
 
     // Background
     const bgColorInput = document.getElementById("bg-color-input");
@@ -26,7 +24,6 @@ export function loadSettings() {
 
     // Units
     const unitFontSize = document.getElementById("font-size-unit");
-    const unitStrokeSize = document.getElementById("stroke-size-unit");
     const unitBgOpacity = document.getElementById("bg-opacity-unit");
 
     // Buttons
@@ -58,8 +55,6 @@ export function loadSettings() {
                 "maxLines": 2,
                 "backgroundColor": "#37373E",
                 "backgroundOpacity": 50,
-                "strokeColor": "#000000",
-                "strokeSize": 0
             };
         }
         if (settingsContent) {
@@ -70,8 +65,6 @@ export function loadSettings() {
             setSettingProperty("max-lines", settingsContent.maxLines);
             setSettingProperty("background-color", convertHexToRGB(settingsContent.backgroundColor));
             setSettingProperty("background-opacity", (settingsContent.backgroundOpacity * 0.01).toFixed(2));
-            setSettingProperty("stroke-color", settingsContent.strokeColor);
-            setSettingProperty("stroke-size", settingsContent.strokeSize + "px");
 
             // Set input values
             if (settingsContent.language) languageInput.value = settingsContent.language;
@@ -84,12 +77,9 @@ export function loadSettings() {
             bgColorInput.value = settingsContent.backgroundColor;
             bgOpacityNumberInput.value = settingsContent.backgroundOpacity;
             bgOpacityRangeInput.value = settingsContent.backgroundOpacity;
-            strokeColorInput.value = settingsContent.strokeColor;
-            strokeSizeInput.value = settingsContent.strokeSize;
 
             // Number for units
             unitFontSize.innerText = settingsContent.fontSize;
-            unitStrokeSize.innerText = settingsContent.strokeSize;
             unitBgOpacity.innerText = settingsContent.backgroundOpacity;
 
             // Set blur with opacity
@@ -145,15 +135,6 @@ export function loadSettings() {
         unitBgOpacity.innerText = bgOpacityNumberInput.value;
     }
 
-    function handleStrokeColorInput() {
-        updateSetting("stroke-color", strokeColorInput.value);
-    }
-
-    function handleStrokeSizeInput() {
-        updateSetting("stroke-size", strokeSizeInput.value + "px");
-        unitStrokeSize.innerText = strokeSizeInput.value;
-    }
-
     function updateSetting(variableName, newValue, updatePosition = false) {
         setSettingProperty(variableName, newValue);
         updateSettingData();
@@ -169,8 +150,6 @@ export function loadSettings() {
             "maxLines": maxLinesInput.value,
             "backgroundColor": bgColorInput.value,
             "backgroundOpacity": bgOpacityNumberInput.value,
-            "strokeColor": strokeColorInput.value,
-            "strokeSize": strokeSizeInput.value
         };
 
         setCookie("captionSettingsContent", JSON.stringify(settings), 365); // Save settings for 1 year
@@ -227,8 +206,6 @@ export function loadSettings() {
         bgColorInput.addEventListener("input", handleBgColorInput);
         bgOpacityNumberInput.addEventListener("input", handleBgOpacityInput);
         bgOpacityRangeInput.addEventListener("input", handleBgOpacityRange);
-        strokeColorInput.addEventListener("input", handleStrokeColorInput);
-        strokeSizeInput.addEventListener("input", handleStrokeSizeInput);
 
         resetSettings.addEventListener("click", handleResetSettings);
         resetPosition.addEventListener("click", handleResetPosition);
@@ -255,8 +232,6 @@ export function loadSettings() {
         bgColorInput.removeEventListener("input", handleBgColorInput);
         bgOpacityNumberInput.removeEventListener("input", handleBgOpacityInput);
         bgOpacityRangeInput.removeEventListener("input", handleBgOpacityRange);
-        strokeColorInput.removeEventListener("input", handleStrokeColorInput);
-        strokeSizeInput.removeEventListener("input", handleStrokeSizeInput);
 
         resetSettings.removeEventListener("click", handleResetSettings);
         resetPosition.removeEventListener("click", handleResetPosition);

@@ -41,8 +41,6 @@
   --caption-max-lines: 2;
   --caption-background-color: 55, 55, 62;
   --caption-background-opacity: 0.5;
-  --caption-stroke-color: #000000;
-  --caption-stroke-size: 0px;
 }
 
 html {
@@ -74,7 +72,6 @@ body#ultimate-closed-caption #caption-movable-area #caption-box {
   color: rgb(var(--caption-font-color));
   font-size: var(--caption-font-size);
   font-family: var(--caption-font-family), sans-serif;
-  -webkit-text-stroke: var(--caption-stroke-size) var(--caption-stroke-color);
   -webkit-backdrop-filter: blur(5px);
           backdrop-filter: blur(5px);
 }
@@ -98,7 +95,6 @@ body#ultimate-closed-caption #caption-movable-area #caption-box .caption-content
   font-size: 1em;
   color: inherit;
   font-family: inherit;
-  -webkit-text-stroke: inherit;
 }
 body#ultimate-closed-caption #caption-movable-area #caption-settings {
   position: absolute;

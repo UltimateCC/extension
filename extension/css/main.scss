@@ -39,8 +39,6 @@ $default-font-family: "Arial";
 $default-max-lines: 2;
 $default-background-color: hexToRgb($theme-background-color);
 $default-background-opacity: 0.5; 
-$default-stroke-color: #000000;
-$default-stroke-size: 0px;
 
 // Default settings
 :root {
@@ -50,8 +48,6 @@ $default-stroke-size: 0px;
     --caption-max-lines: #{$default-max-lines};
     --caption-background-color: #{$default-background-color};
     --caption-background-opacity: #{$default-background-opacity};
-    --caption-stroke-color: #{$default-stroke-color};
-    --caption-stroke-size: #{$default-stroke-size};
 }
 
 // Temporary (to have an idea of the result)
@@ -91,7 +87,6 @@ body#ultimate-closed-caption {
             color: rgb(var(--caption-font-color));
             font-size: var(--caption-font-size);
             font-family: var(--caption-font-family), sans-serif;
-            -webkit-text-stroke: var(--caption-stroke-size) var(--caption-stroke-color);
 
             backdrop-filter: blur(5px);
             
@@ -117,7 +112,6 @@ body#ultimate-closed-caption {
                     font-size: 1em;
                     color: inherit;
                     font-family: inherit;
-                    -webkit-text-stroke: inherit;
                 }
             }
         }
