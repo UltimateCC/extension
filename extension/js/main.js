@@ -1,8 +1,8 @@
-import { getCookie } from "./utils.js";
+import { getData } from "./utils.js";
 import { initPosition } from "./draggable.js";
-import { loadSettings, setSelectOptions } from "./settings.js";
+import { initSettings, toggleSettings, setSelectOptions } from "./settings.js";
 
-let currentLanguageCode = getCookie("captionLanguage");
+let currentLanguageCode = getData("language"); // Global variable to store the current language code
 
 export function setCurrentLang(language) {
     currentLanguageCode = language;
@@ -17,9 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let notStarted = true;
     
     initPosition();
-    loadSettings();
+    initSettings();
     
     const captionContent = document.getElementById("caption-content");
+    const captionsContainer = document.getElementById("caption-container");
+    const toggleCaptionBtn = document.getElementById("toggle-captions");
+    const toggleSettingsBtn = document.getElementById("toggle-settings");
 
     let content = "";
 
@@ -37,80 +40,46 @@ document.addEventListener("DOMContentLoaded", function () {
         if(notStarted) {
             notStarted = false;
             content = "";
-
-            const jsonLangPath = "../storage/languages.json";
-            fetch(jsonLangPath)
-                .then(response => response.json())
-                .then(data => {
-                    /*
-                        rawBody = {
-                            delay: 3101,
-                            duration: 3101,
-                            captions: [
-                                {
-                                text: "après ce que c'est dans le mail où est-ce que c'est dans settings j'hésite",
-                                lang: 'fr-FR'
-                                }
-                            ]
-                        }
-                    */
-                    // Get the list of languages from allCaptions
-                    const languagesCodes = allCaptions.map(caption => caption.lang);
-                    const languageOptions = [];
-                    for (let i = 0; i < languagesCodes.length; ++i) {
-                        const languageCode = languagesCodes[i];
-                        
-                        // Get the language name from the json file (if it exists) else use the language code
-                        const languageName = data[languageCode] ? data[languageCode] : languageCode;
-                        languageOptions.push({ value: languageCode, label: languageName });
-                    }
-
-                    setSelectOptions(languageOptions);
-                })
-                .catch(error => console.error("Ultimate CC : Error while fetching languages", error))
-                .finally(() => {
-                    showCaptions(); // Show the captions on the first message)
-                });
+            setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
+            toggleCaptions(toggleCaptionBtn.classList.contains("isShow")); // Show the captions on the first message
         }
 
         if(allCaptions) {
-            if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang;
+            if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang; // Get the spoken language
             const caption = allCaptions.find(caption => caption.lang == currentLanguageCode);
             if (caption && caption.text) content += " " + caption.text;
-            captionContent.innerHTML = content;
+            captionContent.innerText = content;
             // We limit the number of words to 400
             content = content.split(" ").slice(-400).join(" ");
         } else {
             console.error("Ultimate CC : No captions found");
         }
     });
+
+    // We check if arePlayerControlsVisible
+    window.Twitch.ext.onContext((context, changed) => {
+        if (changed.includes('arePlayerControlsVisible')) {
+            toggleButtons(context.arePlayerControlsVisible === true);
+        }
+    });
+
+    function toggleButtons(willBeShow) {
+        const captionBtnContainer = document.getElementById("buttons-container");
+        if(!willBeShow) toggleSettings(false);
+        captionBtnContainer.style.display = willBeShow ? "flex" : "none";
+    }
+    
+    // == Buttons container ==
+    function toggleCaptions(willBeShow = null) {
+        if(willBeShow == null) willBeShow = !toggleCaptionBtn.classList.contains("isShow");
+        if(!notStarted) captionsContainer.style.display = willBeShow ? "block" : "none";
+        toggleCaptionBtn.classList.toggle("isShow", willBeShow);
+    }
+    toggleCaptionBtn.addEventListener("click", function() {
+        toggleCaptions();
+    });
+
+    toggleSettingsBtn.addEventListener("click", function() {
+        toggleSettings();
+    });
 });
-
-
-function showCaptions() {
-    // Show the extension body
-    const captions = document.getElementById("caption-box");
-    extension.style.display = "block";
-}
-
-// Menu
-const textMenu = document.getElementById("group-text");
-const textMenuHeader = textMenu.getElementsByClassName("caption-group-header")[0];
-
-const backgroundMenu = document.getElementById("group-background");
-const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-group-header")[0];
-
-textMenuHeader.addEventListener("click", () => {
-    textMenu.classList.toggle("isOpen");
-    backgroundMenu.classList.remove("isOpen");
-});
-
-backgroundMenuHeader.addEventListener("click", () => {
-    backgroundMenu.classList.toggle("isOpen");
-    textMenu.classList.remove("isOpen");
-});
-
-export function closeAllMenu() {
-    textMenu.classList.remove("isOpen");
-    backgroundMenu.classList.remove("isOpen");
-}

@@ -7,7 +7,8 @@
 
     <body id="ultimate-closed-caption">
         <div id="caption-movable-area">
-            <div id="caption-box" style="display: none;">
+            <!-- Caption box -->
+            <div id="caption-container" style="display: none;">
                 <div class="caption-content-box">
                     <p id="caption-content">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur rutrum sapien ut tincidunt tempus. Ut tristique sagittis dictum. Maecenas mattis volutpat eros, sit amet porttitor massa congue non. Maecenas lectus ex, elementum non ipsum ut, elementum congue lacus. Maecenas finibus rutrum leo nec pulvinar. Donec semper rutrum dictum. Praesent consectetur mi sit amet orci pretium, at rhoncus dui consectetur. Suspendisse feugiat elementum mi vitae luctus. Aenean ut massa suscipit, luctus sem pretium, bibendum est. In vulputate tincidunt lacinia. Nulla ut elementum magna, id maximus est. Nunc in laoreet eros.
@@ -20,120 +21,130 @@
                     </p>
                 </div>
             </div>
-            <div id="caption-settings" style="display: none;">
-                <div class="caption-header-container">
-                    <h2>Ultimate CC</h2>
-                    <button type="button" id="caption-settings-close-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                            <polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="caption-settings-container">
-                    <!-- Language -->
-                    <div class="caption-group" id="language">
-                        <div class="caption-group-header">
-                            <h3>Language</h3>
-                            <select id="language-input" disabled>
-                                <option selected value> Waiting for translations</option>
-                            </select>
-                        </div>
-                    </div>
-                
-                    <!-- Text -->
-                    <div class="caption-group" id="group-text">
-                        <div class="caption-group-header">
-                            <h3>Text</h3>
-                            <button type="button" class="chevron">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="caption-group-content">
-                            <div class="caption-group-content-item">
-                                <label for="font-color-input">Text Color</label>
-                                <input type="color" id="font-color-input" value="#ffffff" />
-                            </div>
-                            <div class="caption-group-content-item">
-                                <label for="font-size-input">Text Size</label>
-                                <div class="caption-number-container">
-                                    <input type="number" id="font-size-input" value="8" min="6" max="100" step="1" />
-                                    <div class="units">
-                                        <span class="invisible" id="font-size-unit">8</span>
-                                        <span class="caption-unit">px</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="caption-group-content-item group-font-family">
-                                <label for="font-family-input">Font family</label>
-                                <select id="font-family-input">
-                                    <option value="Arial" selected>Arial</option>
-                                    <option value="Calibri">Calibri</option>
-                                    <option value="OpenDyslexic">OpenDyslexic</option>
-                                    <option value="Roboto">Roboto</option>
-                                    <option value="Times New Roman">Times New Roman</option>
-                                    <option value="Verdana">Verdana</option>
-                                </select>
-                            </div>
-                            <div class="caption-group-content-item">
-                                <label for="max-lines-input">Max lines</label>
-                                <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- Background -->
-                    <div class="caption-group" id="group-background">
-                        <div class="caption-group-header">
-                            <h3>Background</h3>
-                            <button type="button" class="chevron">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="caption-group-content">
-                            <div class="caption-group-content-item">
-                                <label for="bg-color-input">Color</label>
-                                <input type="color" id="bg-color-input" value="#37373E" />
-                            </div>
-                            <div class="caption-group-content-item group-opacity">
-                                <div>
-                                    <label for="bg-opacity-number-input">Opacity</label>
-                                    <div class="caption-number-container">
-                                        <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
-                                        <div class="units">
-                                            <span class="invisible" id="bg-opacity-unit">50</span>
-                                            <span class="caption-unit">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Reset -->
-                <div class="caption-button-container">
-                    <div>
-                        <button type="button" id="caption-reset-settings">Reset settings</button>
-                        <button type="button" id="caption-reset-position">Reset position</button>
-                    </div>
-                    <button type="button" id="caption-lock-position">Lock position</button>
-                </div>
-            </div>
-            <div id="caption-btn-container">
-                <button id="caption-settings-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
-                        <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                        <path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z" />
+        </div>
+        
+        <!-- Caption settings -->
+        <div id="settings-container" style="display: none;">
+            <div class="caption-header-container">
+                <h2>Ultimate CC</h2>
+                <button type="button" id="close-settings-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
+                        <polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
                     </svg>
                 </button>
             </div>
+            <div class="caption-settings-container">
+                <!-- Language -->
+                <div class="caption-group" id="language">
+                    <div class="caption-group-header">
+                        <h3>Language</h3>
+                        <select id="language-input" disabled>
+                            <option selected value> Waiting for translations</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- Text -->
+                <div class="caption-group" id="group-text">
+                    <div class="caption-group-header">
+                        <h3>Text</h3>
+                        <button type="button" class="chevron">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="caption-group-content">
+                        <div class="caption-group-content-item">
+                            <label for="font-color-input">Text Color</label>
+                            <input type="color" id="font-color-input" value="#ffffff" />
+                        </div>
+                        <div class="caption-group-content-item">
+                            <label for="font-size-input">Text Size</label>
+                            <div class="caption-number-container">
+                                <input type="number" id="font-size-input" value="8" min="6" max="100" step="1" />
+                                <div class="units">
+                                    <span class="invisible" id="font-size-unit">8</span>
+                                    <span class="caption-unit">px</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="caption-group-content-item group-font-family">
+                            <label for="font-family-input">Font family</label>
+                            <select id="font-family-input">
+                                <option value="Arial" selected>Arial</option>
+                                <option value="Calibri">Calibri</option>
+                                <option value="OpenDyslexic">OpenDyslexic</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+                        <div class="caption-group-content-item">
+                            <label for="max-lines-input">Max lines</label>
+                            <input type="number" id="max-lines-input" value="2" min="1" max="20" step="1" />
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Background -->
+                <div class="caption-group" id="group-background">
+                    <div class="caption-group-header">
+                        <h3>Background</h3>
+                        <button type="button" class="chevron">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                                <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="caption-group-content">
+                        <div class="caption-group-content-item">
+                            <label for="bg-color-input">Color</label>
+                            <input type="color" id="bg-color-input" value="#37373E" />
+                        </div>
+                        <div class="caption-group-content-item group-opacity">
+                            <div>
+                                <label for="bg-opacity-number-input">Opacity</label>
+                                <div class="caption-number-container">
+                                    <input type="number" id="bg-opacity-number-input" value="50" min="0" max="100" step="1" />
+                                    <div class="units">
+                                        <span class="invisible" id="bg-opacity-unit">50</span>
+                                        <span class="caption-unit">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="range" id="bg-opacity-range-input" value="50" min="0" max="100" step="1" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reset -->
+            <div class="caption-button-container">
+                <div>
+                    <button type="button" id="caption-reset-settings">Reset settings</button>
+                    <button type="button" id="caption-reset-position">Reset position</button>
+                </div>
+                <button type="button" id="caption-lock-position">Lock position</button>
+            </div>
+        </div>
+
+        <!-- Caption buttons -->
+        <div id="buttons-container" style="display: flex;">
+            <button id="toggle-captions" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path d="M512 80c8.8 0 16 7.2 16 16V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V96c0-8.8 7.2-16 16-16H512zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM200 208c14.2 0 27 6.1 35.8 16c8.8 9.9 24 10.7 33.9 1.9s10.7-24 1.9-33.9c-17.5-19.6-43.1-32-71.5-32c-53 0-96 43-96 96s43 96 96 96c28.4 0 54-12.4 71.5-32c8.8-9.9 8-25-1.9-33.9s-25-8-33.9 1.9c-8.8 9.9-21.6 16-35.8 16c-26.5 0-48-21.5-48-48s21.5-48 48-48zm144 48c0-26.5 21.5-48 48-48c14.2 0 27 6.1 35.8 16c8.8 9.9 24 10.7 33.9 1.9s10.7-24 1.9-33.9c-17.5-19.6-43.1-32-71.5-32c-53 0-96 43-96 96s43 96 96 96c28.4 0 54-12.4 71.5-32c8.8-9.9 8-25-1.9-33.9s-25-8-33.9 1.9c-8.8 9.9-21.6 16-35.8 16c-26.5 0-48-21.5-48-48z"/>
+                </svg>
+            </button>
+            <button id="toggle-settings" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                    <path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z" />
+                </svg>
+            </button>
         </div>
     </body>
 

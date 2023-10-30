@@ -1,256 +1,276 @@
-import { setCookie, getCookie, deleteCookie, convertHexToRGB, setSettingProperty } from "./utils.js";
-import { initPosition, saveIfLocked, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
-import { setCurrentLang, getCurrentLang, closeAllMenu } from "./main.js";
+import { setData, getData, deleteData, convertHexToRGB, setSettingProperty } from "./utils.js";
+import { initPosition, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
+import { setCurrentLang, getCurrentLang } from "./main.js";
 
-export function loadSettings() {
-    // Buttons to open and close the settings menu
-    const settingsBtn = document.getElementById("caption-settings-btn");
-    const settingsCloseBtn = document.getElementById("caption-settings-close-btn");
+// Header
+const closeSettingsButton = document.getElementById("close-settings-button");
 
-    // == Input fields ==
-    // Language
-    const languageInput = document.getElementById("language-input");
+// == Input fields ==
+// Language
+const languageInput = document.getElementById("language-input");
 
-    // Text
-    const fontColorInput = document.getElementById("font-color-input");
-    const fontSizeInput = document.getElementById("font-size-input");
-    const fontFamilyInput = document.getElementById("font-family-input");
-    const maxLinesInput = document.getElementById("max-lines-input");
+// Text
+const fontColorInput = document.getElementById("font-color-input");
+const fontSizeInput = document.getElementById("font-size-input");
+const fontFamilyInput = document.getElementById("font-family-input");
+const maxLinesInput = document.getElementById("max-lines-input");
 
-    // Background
-    const bgColorInput = document.getElementById("bg-color-input");
-    const bgOpacityNumberInput = document.getElementById("bg-opacity-number-input");
-    const bgOpacityRangeInput = document.getElementById("bg-opacity-range-input");
+// Background
+const bgColorInput = document.getElementById("bg-color-input");
+const bgOpacityNumberInput = document.getElementById("bg-opacity-number-input");
+const bgOpacityRangeInput = document.getElementById("bg-opacity-range-input");
 
-    // Units
-    const unitFontSize = document.getElementById("font-size-unit");
-    const unitBgOpacity = document.getElementById("bg-opacity-unit");
+// Units
+const unitFontSize = document.getElementById("font-size-unit");
+const unitBgOpacity = document.getElementById("bg-opacity-unit");
 
-    // Buttons
-    const resetSettings = document.getElementById("caption-reset-settings");
-    const resetPosition = document.getElementById("caption-reset-position");
-    const lockPosition = document.getElementById("caption-lock-position");
+// Buttons
+const resetSettings = document.getElementById("caption-reset-settings");
+const resetPosition = document.getElementById("caption-reset-position");
+const lockPosition = document.getElementById("caption-lock-position");
 
-    // == Container ==
-    const mainContainer = document.getElementById("caption-movable-area");
-    const settingsContainer = document.getElementById("caption-settings");
-    const captionBox = document.getElementById("caption-box");
+// == Container ==
+const mainContainer = document.getElementById("caption-movable-area");
+const settingsContainer = document.getElementById("settings-container");
+const captionBox = document.getElementById("caption-container");
 
-    // Setting menu open or closed
-    let settingsIsOpen = false;
+// == Menu ==
+const textMenu = document.getElementById("group-text");
+const textMenuHeader = textMenu.getElementsByClassName("caption-group-header")[0];
+const backgroundMenu = document.getElementById("group-background");
+const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-group-header")[0];
 
-    initSettings();
+const defaultSettingsContent = {
+    "font-color": "#ffffff",
+    "font-size": 24,
+    "font-family": "Arial",
+    "max-lines": 2,
+    "background-color": "#37373E",
+    "background-opacity": 50
+};
 
-    function initSettings() {
-        const cookieSettingsContent = getCookie("captionSettingsContent");
-        var settingsContent;
-        if (cookieSettingsContent) {
-            settingsContent = JSON.parse(cookieSettingsContent);
-        } else {
-            // Default settings
-            settingsContent = {
-                "fontColor": "#ffffff",
-                "fontSize": 24,
-                "fontFamily": "Arial",
-                "maxLines": 2,
-                "backgroundColor": "#37373E",
-                "backgroundOpacity": 50,
-            };
-        }
-        if (settingsContent) {
-            // Set CSS variables
-            setSettingProperty("font-color", convertHexToRGB(settingsContent.fontColor));
-            setSettingProperty("font-size", settingsContent.fontSize + "px");
-            setSettingProperty("font-family", settingsContent.fontFamily);
-            setSettingProperty("max-lines", settingsContent.maxLines);
-            setSettingProperty("background-color", convertHexToRGB(settingsContent.backgroundColor));
-            setSettingProperty("background-opacity", (settingsContent.backgroundOpacity * 0.01).toFixed(2));
-
-            // Set input values
-            if (settingsContent.language) languageInput.value = settingsContent.language;
-            
-            fontColorInput.value = settingsContent.fontColor;
-            fontSizeInput.value = settingsContent.fontSize;
-            fontFamilyInput.value = settingsContent.fontFamily;
-            fontFamilyInput.style.fontFamily = settingsContent.fontFamily;
-            maxLinesInput.value = settingsContent.maxLines;
-            bgColorInput.value = settingsContent.backgroundColor;
-            bgOpacityNumberInput.value = settingsContent.backgroundOpacity;
-            bgOpacityRangeInput.value = settingsContent.backgroundOpacity;
-
-            // Number for units
-            unitFontSize.innerText = settingsContent.fontSize;
-            unitBgOpacity.innerText = settingsContent.backgroundOpacity;
-
-            // Set blur with opacity
-            captionBox.style.backdropFilter = "blur(" + (settingsContent.backgroundOpacity * 0.1) + "px)";
-        }
+export function initSettings() {
+    const settingsContent = {};
+    // Get data from local storage or set default values
+    for (const [key, value] of Object.entries(defaultSettingsContent)) {
+        const data = getData(key);
+        settingsContent[key] = data ? data : value;
     }
 
-    // Handle root variables on input change
-    function handleLanguageInput() {
-        setCurrentLang(languageInput.value);
-        setCookie("captionSettingsLanguage", languageInput.value, 365); // Save language for 1 year
-    }
+    // Set CSS variables
+    setSettingProperty("font-color", convertHexToRGB(settingsContent["font-color"]));
+    setSettingProperty("font-size", settingsContent["font-size"] + "px");
+    setSettingProperty("font-family", settingsContent["font-family"]);
+    setSettingProperty("max-lines", settingsContent["max-lines"]);
+    setSettingProperty("background-color", convertHexToRGB(settingsContent["background-color"]));
+    setSettingProperty("background-opacity", (settingsContent["background-opacity"] * 0.01).toFixed(2));
+    setSettingProperty("background-blur", "blur(" + (settingsContent["background-opacity"] * 0.1).toFixed(1) + "px)");
 
-    function handleFontColorInput() {
-        updateSetting("font-color", convertHexToRGB(fontColorInput.value));
-    }
+    fontColorInput.value = settingsContent["font-color"];
+    fontSizeInput.value = settingsContent["font-size"];
+    fontFamilyInput.value = settingsContent["font-family"];
+    fontFamilyInput.style.fontFamily = settingsContent["font-family"];
+    maxLinesInput.value = settingsContent["max-lines"];
+    bgColorInput.value = settingsContent["background-color"];
+    bgOpacityNumberInput.value = settingsContent["background-opacity"];
+    bgOpacityRangeInput.value = settingsContent["background-opacity"];
 
-    function handleFontSizeInput() {
-        if (fontSizeInput.value < 8) fontSizeInput.value = 8;
-        if (fontSizeInput.value > 100) fontSizeInput.value = 100;
-        updateSetting("font-size", fontSizeInput.value + "px", true);
-        unitFontSize.innerText = fontSizeInput.value;
-    }
-
-    function handleFontFamilyInput() {
-        updateSetting("font-family", fontFamilyInput.value, true);
-        fontFamilyInput.style.fontFamily = fontFamilyInput.value;
-    }
-
-    function handleMaxLinesInput() {
-        if (maxLinesInput.value < 1) maxLinesInput.value = 1;
-        if (maxLinesInput.value > 20) maxLinesInput.value = 20;
-        updateSetting("max-lines", maxLinesInput.value, true);
-    }
-
-    function handleBgColorInput() {
-        updateSetting("background-color", convertHexToRGB(bgColorInput.value));
-    }
-
-    function handleBgOpacityInput() {
-        bgOpacityRangeInput.value = bgOpacityNumberInput.value;
-        changeBgOpacity();
-    }
-    function handleBgOpacityRange() {
-        bgOpacityNumberInput.value = bgOpacityRangeInput.value;
-        changeBgOpacity();
-    }
-    function changeBgOpacity() {
-        if(bgOpacityNumberInput.value < 0) bgOpacityNumberInput.value = 0;
-        if(bgOpacityNumberInput.value > 100) bgOpacityNumberInput.value = 100;
-        captionBox.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
-        updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
-        unitBgOpacity.innerText = bgOpacityNumberInput.value;
-    }
-
-    function updateSetting(variableName, newValue, updatePosition = false) {
-        setSettingProperty(variableName, newValue);
-        updateSettingData();
-        if (updatePosition) setNewPosition();
-    }
-
-    // Update cookie with new settings
-    function updateSettingData() {
-        const settings = {
-            "fontColor": fontColorInput.value,
-            "fontSize": fontSizeInput.value,
-            "fontFamily": fontFamilyInput.value,
-            "maxLines": maxLinesInput.value,
-            "backgroundColor": bgColorInput.value,
-            "backgroundOpacity": bgOpacityNumberInput.value,
-        };
-
-        setCookie("captionSettingsContent", JSON.stringify(settings), 365); // Save settings for 1 year
-    }
-
-    // Buttons
-    function handleResetSettings() {
-        deleteCookie("captionSettingsContent");
-        initSettings();
-    }
-
-    function handleResetPosition() {
-        deleteCookie("captionSettingsPosition");
-        initPosition();
-    }
-
-    function handleLockPosition() {
-        var isLocked;
-        if (captionBox.classList.contains("locked")) {
-            // Stop locked
-            captionBox.classList.remove("locked");
-            lockPosition.innerText = "Lock position";
-            startDraggable();
-            isLocked = false;
-        } else {
-            // Start locked
-            captionBox.classList.add("locked");
-            lockPosition.innerText = "Unlock position";
-            stopDraggable();
-            isLocked = true;
-        }
-        saveIfLocked(isLocked);
-    }
-
-    function handleSettingsContainerClick(event) {
-        if (event.target === mainContainer) closeSettings();
-    }
-
-
-    // Open and close settings menu
-    settingsBtn.addEventListener("click", function () {
-        (settingsIsOpen) ? closeSettings() : openSettings();
-    });
-    
-    function openSettings() {
-        settingsIsOpen = true;
-
-        languageInput.addEventListener("change", handleLanguageInput);
-
-        fontColorInput.addEventListener("input", handleFontColorInput);
-        fontSizeInput.addEventListener("change", handleFontSizeInput);
-        fontFamilyInput.addEventListener("change", handleFontFamilyInput);
-        maxLinesInput.addEventListener("change", handleMaxLinesInput);
-        bgColorInput.addEventListener("input", handleBgColorInput);
-        bgOpacityNumberInput.addEventListener("input", handleBgOpacityInput);
-        bgOpacityRangeInput.addEventListener("input", handleBgOpacityRange);
-
-        resetSettings.addEventListener("click", handleResetSettings);
-        resetPosition.addEventListener("click", handleResetPosition);
-        lockPosition.addEventListener("click", handleLockPosition);
-
-        // Open and close settings menu
-        mainContainer.addEventListener("click", handleSettingsContainerClick);
-        settingsCloseBtn.addEventListener("click", closeSettings);
-        
-        // Show settings
-        settingsContainer.style.display = "flex";
-        settingsBtn.classList.add("isOpen");
-    }
-
-    function closeSettings() {
-        settingsIsOpen = false;
-
-        languageInput.removeEventListener("change", handleLanguageInput);
-
-        fontColorInput.removeEventListener("input", handleFontColorInput);
-        fontSizeInput.removeEventListener("change", handleFontSizeInput);
-        fontFamilyInput.removeEventListener("change", handleFontFamilyInput);
-        maxLinesInput.removeEventListener("change", handleMaxLinesInput);
-        bgColorInput.removeEventListener("input", handleBgColorInput);
-        bgOpacityNumberInput.removeEventListener("input", handleBgOpacityInput);
-        bgOpacityRangeInput.removeEventListener("input", handleBgOpacityRange);
-
-        resetSettings.removeEventListener("click", handleResetSettings);
-        resetPosition.removeEventListener("click", handleResetPosition);
-        lockPosition.removeEventListener("click", handleLockPosition);
-        
-        //Hide settings
-        closeAllMenu();
-        settingsContainer.style.display = "none";
-        settingsBtn.classList.remove("isOpen");
-    }
+    // Number for units
+    unitFontSize.innerText = settingsContent["font-size"];
+    unitBgOpacity.innerText = settingsContent["background-opacity"];
 }
 
-export function setSelectOptions(options) {
+// Menu
+textMenuHeader.addEventListener("click", () => {
+    textMenu.classList.toggle("isOpen");
+    backgroundMenu.classList.remove("isOpen");
+});
+
+backgroundMenuHeader.addEventListener("click", () => {
+    backgroundMenu.classList.toggle("isOpen");
+    textMenu.classList.remove("isOpen");
+});
+
+function closeAllMenu() {
+    textMenu.classList.remove("isOpen");
+    backgroundMenu.classList.remove("isOpen");
+}
+
+// Handle root variables on input change
+function handleLanguageInput() {
+    setCurrentLang(languageInput.value);
+    setData("language", languageInput.value);
+}
+
+function handleFontColorInput() {
+    updateSetting("font-color", convertHexToRGB(fontColorInput.value));
+}
+
+function handleFontSizeInput() {
+    if (fontSizeInput.value < 8) fontSizeInput.value = 8;
+    if (fontSizeInput.value > 100) fontSizeInput.value = 100;
+    updateSetting("font-size", parseInt(fontSizeInput.value), true);
+    unitFontSize.innerText = fontSizeInput.value;
+}
+
+function handleFontFamilyInput() {
+    updateSetting("font-family", fontFamilyInput.value, true);
+    fontFamilyInput.style.fontFamily = fontFamilyInput.value;
+}
+
+function handleMaxLinesInput() {
+    if (maxLinesInput.value < 1) maxLinesInput.value = 1;
+    if (maxLinesInput.value > 20) maxLinesInput.value = 20;
+    updateSetting("max-lines", parseInt(maxLinesInput.value), true);
+}
+
+function handleBgColorInput() {
+    updateSetting("background-color", convertHexToRGB(bgColorInput.value));
+}
+
+function handleBgOpacityInput() {
+    bgOpacityRangeInput.value = bgOpacityNumberInput.value;
+    changeBgOpacity();
+}
+function handleBgOpacityRange() {
+    bgOpacityNumberInput.value = bgOpacityRangeInput.value;
+    changeBgOpacity();
+}
+function changeBgOpacity() {
+    if(bgOpacityNumberInput.value < 0) bgOpacityNumberInput.value = 0;
+    if(bgOpacityNumberInput.value > 100) bgOpacityNumberInput.value = 100;
+    captionBox.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
+    updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
+    unitBgOpacity.innerText = bgOpacityNumberInput.value;
+}
+
+function updateSetting(variableName, newValue, updatePosition = false) {
+    setSettingProperty(variableName, newValue);
+    setData(variableName, newValue);
+    if (updatePosition) setNewPosition();
+}
+
+// Buttons
+function handleResetSettings() {
+    // Delete for each key of defaultSettingsContent
+    for (const [key, _] of Object.entries(defaultSettingsContent)) {
+        deleteData(key); // Delete all local storage
+    }
+    initSettings();
+}
+
+function handleResetPosition() {
+    deleteData("isLocked");
+    initPosition();
+}
+
+export function handleLockPosition(event = null) {
+    console.log(event);
+
+    var isLocked;
+    if (captionBox.classList.contains("locked")) {
+        // Stop locked
+        captionBox.classList.remove("locked");
+        lockPosition.innerText = "Lock position";
+        startDraggable();
+        isLocked = false;
+    } else {
+        // Start locked
+        captionBox.classList.add("locked");
+        lockPosition.innerText = "Unlock position";
+        stopDraggable();
+        isLocked = true;
+    }
+    if(event != null) setData("isLocked", isLocked);
+}
+
+function handleSettingsContainerClick(event) {
+    if (event.target === mainContainer) toggleSettings(false);
+}
+
+function openSettings() {
+    languageInput.addEventListener("change", handleLanguageInput);
+
+    fontColorInput.addEventListener("input", handleFontColorInput);
+    fontSizeInput.addEventListener("change", handleFontSizeInput);
+    fontFamilyInput.addEventListener("change", handleFontFamilyInput);
+    maxLinesInput.addEventListener("change", handleMaxLinesInput);
+    bgColorInput.addEventListener("input", handleBgColorInput);
+    bgOpacityNumberInput.addEventListener("input", handleBgOpacityInput);
+    bgOpacityRangeInput.addEventListener("input", handleBgOpacityRange);
+
+    resetSettings.addEventListener("click", handleResetSettings);
+    resetPosition.addEventListener("click", handleResetPosition);
+    lockPosition.addEventListener("click", handleLockPosition);
+
+    // Close settings menu with 2 methods
+    mainContainer.addEventListener("click", handleSettingsContainerClick);
+    closeSettingsButton.addEventListener("click", function () {
+        toggleSettings(false);
+    });
+
+    // Show settings
+    settingsContainer.style.display = "flex";
+}
+
+function closeSettings() {
+    languageInput.removeEventListener("change", handleLanguageInput);
+
+    fontColorInput.removeEventListener("input", handleFontColorInput);
+    fontSizeInput.removeEventListener("change", handleFontSizeInput);
+    fontFamilyInput.removeEventListener("change", handleFontFamilyInput);
+    maxLinesInput.removeEventListener("change", handleMaxLinesInput);
+    bgColorInput.removeEventListener("input", handleBgColorInput);
+    bgOpacityNumberInput.removeEventListener("input", handleBgOpacityInput);
+    bgOpacityRangeInput.removeEventListener("input", handleBgOpacityRange);
+
+    resetSettings.removeEventListener("click", handleResetSettings);
+    resetPosition.removeEventListener("click", handleResetPosition);
+    lockPosition.removeEventListener("click", handleLockPosition);
+    
+    //Hide settings
+    closeAllMenu();
+    settingsContainer.style.display = "none";
+}
+
+export function toggleSettings(willBeShow = null) {
+    const toggleSettingsBtn = document.getElementById("toggle-settings");
+
+    if(willBeShow == null) willBeShow = settingsContainer.style.display === "none";
+    toggleSettingsBtn.classList.toggle("isOpen", willBeShow);
+    (willBeShow ? openSettings : closeSettings)();
+}
+
+export async function setSelectOptions(languagesCodes) {
     const languageInput = document.getElementById("language-input");
-    for (let i = 0; i < options.length; i++) {
-        const option = options[i];
+    const jsonLangPath = "../storage/languages.json";
+
+    let languageDictionary = null;
+
+    try {
+        const response = await fetch(jsonLangPath);
+        if (!response.ok) throw new Error("Failed to fetch language data");
+
+        languageDictionary = await response.json();
+    } catch (error) {
+        console.error("Ultimate CC: Error while fetching languages", error);
+    }
+
+    // Clear the select options
+    languageInput.innerHTML = "";
+
+    const optionElement = document.createElement("option");
+    optionElement.value = "";
+    optionElement.innerText = "Speech recognition";
+    languageInput.appendChild(optionElement);
+
+    for (let i = 0; i < languagesCodes.length; ++i) {
+        const languageCode = languagesCodes[i];
+        const languageName = languageDictionary[languageCode] ? languageDictionary[languageCode] : languageCode;
+
         const optionElement = document.createElement("option");
-        optionElement.value = option.value;
-        optionElement.innerText = option.label;
+        optionElement.value = languageCode;
+        optionElement.innerText = languageName;
         languageInput.appendChild(optionElement);
     }
 

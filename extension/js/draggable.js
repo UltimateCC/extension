@@ -1,36 +1,23 @@
-import { getCookie, setCookie } from "./utils.js";
+import { getData, setData } from "./utils.js";
+import { handleLockPosition, toggleSettings } from "./settings.js";
 
-const captionBox = document.getElementById("caption-box");
+const captionBox = document.getElementById("caption-container");
 
-export function saveIfLocked(isLocked) {
-    saveCookiePosition(null, null, isLocked);
-}
-
-function saveCookiePosition(top = null, left = null, isLocked = null) {
-    const cookieSettingsPosition = getCookie("captionSettingsPosition"); // Get cookie
-    if (cookieSettingsPosition) {
-        const cookieContent = JSON.parse(cookieSettingsPosition);
-        if (top == null) top = cookieContent.top;
-        if (left == null) left = cookieContent.left;
-        if (isLocked == null) isLocked = cookieContent.locked;
-    } else {
-        if (top == null) top = captionBox.offsetTop;
-        if (left == null) left = captionBox.offsetLeft;
-        if (isLocked == null) isLocked = false;
-    }
+function saveDataPosition(top = null, left = null) {
+    top = (top == null) ? captionBox.offsetTop : top;
+    left = (left == null) ? captionBox.offsetLeft : left;
 
     // Save the new position
-    setCookie("captionSettingsPosition", JSON.stringify({ top: top, left: left, locked: isLocked }), 365);
+    setData("position", top + "," + left);
 }
 
 export function initPosition() {
-    const cookieSettingsPosition = getCookie("captionSettingsPosition");
-    var newTop = 0, newLeft = 0, positionLocked = false;
-    if (cookieSettingsPosition) {
-        const settingsPosition = JSON.parse(cookieSettingsPosition);
-        newTop = settingsPosition.top;
-        newLeft = settingsPosition.left;
-        positionLocked = settingsPosition.locked;
+    const rawPosition = getData("position");
+    var newTop = 0, newLeft = 0;
+    if (rawPosition) {
+        const settingsPosition = rawPosition.split(",");
+        newTop = settingsPosition[0];
+        newLeft = settingsPosition[1];
     } else {
         const bodyDOM = document.getElementById("ultimate-closed-caption");
 
@@ -43,21 +30,21 @@ export function initPosition() {
         if (bodyWasHidden) {
             bodyDOM.style.opacity = 0;
             bodyDOM.style.display = "block";
+        }
+
+        // Center
+        newLeft = (window.innerWidth - captionBox.offsetWidth) / 2;
+        newTop = window.innerHeight < 100 ? window.innerHeight : window.innerHeight - 100;
         
-            newLeft = (window.innerWidth - captionBox.offsetWidth) / 2;
-            newTop = window.innerHeight < 100 ? window.innerHeight : window.innerHeight - 100;
-        
+        if (bodyWasHidden) {
             bodyDOM.style.display = "none";
             bodyDOM.style.opacity = "";
-        } else {
-            // Center
-            newLeft = (window.innerWidth - captionBox.offsetWidth) / 2;
-            newTop = window.innerHeight < 100 ? window.innerHeight : window.innerHeight - 100;
-        }        
+        }     
     }
 
     setNewPosition(newTop, newLeft);
-    toggleLockPosition(positionLocked);
+
+    (getData("isLocked") == "true") ? handleLockPosition() : startDraggable();
 }
 
 export function startDraggable() {
@@ -68,6 +55,7 @@ export function startDraggable() {
     // Credits: W3Schools how to make a draggable element
     function dragMouseDown(e) {
         e.preventDefault();
+        toggleSettings(false);
         mouseX = e.clientX;
         mouseY = e.clientY;
         document.onmouseup = closeDragElement;
@@ -93,7 +81,7 @@ export function startDraggable() {
         document.onmousemove = null;
         
         // Save the new position when the user stops dragging
-        saveCookiePosition(captionBox.offsetTop, captionBox.offsetLeft);
+        saveDataPosition();
     }
 }
 
@@ -152,25 +140,11 @@ export function setNewPosition(newTop = null, newLeft = null) {
     captionBox.style.top = newTop + "px";
     captionBox.style.left = newLeft + "px";
 
-    // Update the cookie
-    if(mustSave) saveCookiePosition(newTop, newLeft);
+    // Update the data
+    if(mustSave) saveDataPosition(newTop, newLeft);
 }
 
 // On resize, reposition the caption box
 window.addEventListener("resize", () => {
     setNewPosition();
 });
-
-export function toggleLockPosition(isLocked = false) {
-    const lockPosition = document.getElementById("caption-lock-position");
-
-    if (isLocked) {
-        captionBox.classList.add("locked");
-        lockPosition.innerText = "Unlock position";
-        stopDraggable();
-    } else {
-        captionBox.classList.remove("locked");
-        lockPosition.innerText = "Lock position";
-        startDraggable();
-    }
-}
