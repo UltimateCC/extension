@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "../context/SocketContext";
 
@@ -52,19 +52,21 @@ export function useSocket() {
         });
 
         return () => {
+            socket.removeAllListeners();
             socket.disconnect();
         }
     }, []);
 
-    function reloadConfig() {
+    // Trigger a server side config reload
+    const reloadConfig = useCallback(()=>{
         socket.emit('reloadConfig');
         setInfo(undefined);
-    }
+    }, []);
 
     // Handle text from speech recognition
-    function handleText(transcript: TranscriptData ) {
+    const handleText = useCallback((transcript: TranscriptData ) => {
         socket.emit('text', transcript);
-    }
+    }, []);
 
     /*
     // Handle sending audio as recording
@@ -87,14 +89,12 @@ export function useSocket() {
     }
     */
 
-    return (
-        {
+    return {
             info,
             captionsStatus,
             translateLangs,
             recognized,
             reloadConfig,
             handleText,
-        }
-    );
+    };
 }

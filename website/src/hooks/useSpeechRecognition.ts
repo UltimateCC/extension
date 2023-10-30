@@ -11,7 +11,6 @@ export function useSpeechRecognition(
 	const [error, setError] = useState<string>();
 
 	useEffect(()=>{
-		console.log('truc');
 
 		let stopFunc = ()=>{};
 		let stopped = false;
