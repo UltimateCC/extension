@@ -15,6 +15,8 @@ interface SessionData {
     userid?: string
     /** Twitch login */
     login?: string
+    /** Image */
+    img?: string
     /** Auth url */
     url?: string
 }

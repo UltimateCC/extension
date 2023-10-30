@@ -1,5 +1,5 @@
 
-import { CaptionsData, Result } from "../types";
+import { CaptionsData, Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
 /** Stub translator not doing any translation */
@@ -9,10 +9,10 @@ export class NullTranslator extends Translator {
 		return true;
 	}
 
-	async translate(data: CaptionsData): Promise<Result<CaptionsData>> {
+	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
 		return {
 			isError: false,
-			data: data
+			data: [transcript]
 		}
 	}
 }

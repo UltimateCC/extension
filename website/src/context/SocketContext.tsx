@@ -1,4 +1,6 @@
 import {
+    ReactNode,
+    createContext,
     useEffect, useState,
 } from "react";
 import { io, type Socket } from "socket.io-client";
@@ -40,18 +42,31 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
     reloadConfig: () => void;
     text: (text: CaptionsData) => void;
-    audio: (data: Blob, duration: number)  => void;
-    audioStart: ()  => void;
-    audioData: (data: Blob)  => void;
-    audioEnd: ()  => void;
+    audio: (data: Blob, duration: number) => void;
+    audioStart: () => void;
+    audioData: (data: Blob) => void;
+    audioEnd: () => void;
 }
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io({autoConnect: false});
 
-export default function useCaptions() {
+interface SocketContextType {
+    info?: Info
+    captionsStatus?: CaptionsStatus
+    recognized?: TranscriptAlt
+    reloadConfig: () => void
+    handleText: (transcript: { text: string, lang: string, duration: number } ) => void
+} 
+
+export const CaptionsContext = createContext<SocketContextType>(
+    {} as SocketContextType
+);
+
+export function SocketProvider({ children }: { children: ReactNode; }): React.JSX.Element {
 
     const [info, setInfo] = useState<Info>();
     const [captionsStatus, setCaptionsStatus] = useState<CaptionsStatus>();
+    // Recognized text
     const [recognized, setRecognized] = useState<TranscriptAlt>();
 
     useEffect(() => {
@@ -77,6 +92,7 @@ export default function useCaptions() {
             socket.disconnect();
         }
     }, []);
+
 
     function reloadConfig() {
         socket.emit('reloadConfig');
@@ -111,11 +127,15 @@ export default function useCaptions() {
     }
     */
 
-    return {
-        info,
-        captionsStatus,
-        recognized,
-        reloadConfig,
-        handleText,
-    };
+    return (
+        <CaptionsContext.Provider value={{
+            info,
+            captionsStatus,
+            recognized,
+            reloadConfig,
+            handleText
+        }}>
+            { children }
+        </CaptionsContext.Provider>
+    );
 }

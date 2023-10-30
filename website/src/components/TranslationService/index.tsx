@@ -46,13 +46,12 @@ function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiP
             setResponse: setResponse,
             setSuccessAction: () => onApiKeyChange(true),
             apiRequest: async () => {
-                await api('user', {
-                    method: 'POST',
-                    body: { api_token: newApiKey }
-                });
+                await Promise.all([
+                    api('secrets', { method: 'POST', body: { gcpKey: newApiKey } }),
+                    api('config', {method: 'POST', body: { translateService: 'gcp' }})
+                ]);
             }
         });
-        
     };
 
     const removeApiKey = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,9 +63,9 @@ function TranslationService({ apiKeyIsWorking, apiLoader, onApiKeyChange }: ApiP
 
         DelayedDisplay({
             requestFn: async () => {
-                await api('user', {
+                await api('secrets', {
                     method: 'POST',
-                    body: { api_token: "" }
+                    body: { gcpKey: "" }
                 });
             },
             successMessage: "The API key has been removed", 

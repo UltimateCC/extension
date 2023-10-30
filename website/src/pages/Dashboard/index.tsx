@@ -15,7 +15,7 @@ import LoadingImg from '../../assets/loading.svg';
 
 import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
-import useCaptions from '../../hooks/UseCaptions';
+import { SocketProvider } from '../../context/SocketContext';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -25,7 +25,6 @@ import useCaptions from '../../hooks/UseCaptions';
 
 function Dashboard() {
     const { user } = useContext(AuthContext);
-    const { handleText, recognized } = useCaptions();
 
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
@@ -40,7 +39,10 @@ function Dashboard() {
         if(!user?.connected && user?.url) {
             window.location.replace(user.url);
         }
-        setProfilePicture('TODO');
+        if(user?.img) {
+            setProfilePicture(user.img);
+        }
+        
     }, [ user ]);
 
     useEffect(() => {
@@ -75,58 +77,60 @@ function Dashboard() {
     // };
 
     return (
-        <section id="dashboard">
-            <div className="welcome theme-box">
-                <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
-                <Link to="/logout" className="profile-container">
-                    {profilePicture !== LoadingImg && (
-                        <div className='logout-box'>
-                            <img src={LogoutImg} alt="logout" />
-                        </div>
-                    )}
-                    <img src={profilePicture} alt="profile picture" className="profile-image"/>
-                </Link>
-            </div>
-            <div>
-                <div className="api theme-box">
-                    <span className="step-indication">1</span>
-                    <h3>API Connection</h3>
-                    <TranslationService
-                        apiKeyIsWorking={apiKeyIsWorking}
-                        apiLoader={apiLoader}
-                        onApiKeyChange={handleApiKeyChange}
-                    />
+        <SocketProvider>
+            <section id="dashboard">
+                <div className="welcome theme-box">
+                    <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
+                    <Link to="/logout" className="profile-container">
+                        {profilePicture !== LoadingImg && (
+                            <div className='logout-box'>
+                                <img src={LogoutImg} alt="logout" />
+                            </div>
+                        )}
+                        <img src={profilePicture} alt="profile picture" className="profile-image"/>
+                    </Link>
                 </div>
-                <div className="languages theme-box">
-                    <span className="step-indication">2</span>
-                    <h3>Languages</h3>
-                    <TransferList
-                        selectedLanguageCode={translationLangs}
-                        onLanguageCodeChange={handleSelectedLanguageCodeChange}
-                        languageCodeLoaded={languageCodeLoaded}
-                    />
+                <div>
+                    <div className="api theme-box">
+                        <span className="step-indication">1</span>
+                        <h3>Transaltion API Connection</h3>
+                        <TranslationService
+                            apiKeyIsWorking={apiKeyIsWorking}
+                            apiLoader={apiLoader}
+                            onApiKeyChange={handleApiKeyChange}
+                        />
+                    </div>
+                    <div className="languages theme-box">
+                        <span className="step-indication">2</span>
+                        <h3>Languages</h3>
+                        <TransferList
+                            selectedLanguageCode={translationLangs}
+                            onLanguageCodeChange={handleSelectedLanguageCodeChange}
+                            languageCodeLoaded={languageCodeLoaded}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div>
-                {/* <div className="banned theme-box">
-                    <span className="step-indication">3</span>
-                    <h3>Banned captions</h3>
-                    <BannedCaptions
-                        allBanCaptions={allBanCaptions}
-                        onAllBanCaptionsChange={handleAllBanCaptionsChange}
-                        selectedLanguageCode={translationLangs}
-                        languageCodeLoaded={languageCodeLoaded}
-                        LoadingImg={LoadingImg}
-                    />
-                </div> */}
-                <div className="setting theme-box">
-                    <span className="step-indication">3</span>
-                    <h3>Speech</h3>
-                    <MicrophoneApp handleText={handleText} recognized={recognized} spokenLang={spokenLang} setSpokenLang={setSpokenLang} />
+                <div>
+                    {/* <div className="banned theme-box">
+                        <span className="step-indication">3</span>
+                        <h3>Banned captions</h3>
+                        <BannedCaptions
+                            allBanCaptions={allBanCaptions}
+                            onAllBanCaptionsChange={handleAllBanCaptionsChange}
+                            selectedLanguageCode={translationLangs}
+                            languageCodeLoaded={languageCodeLoaded}
+                            LoadingImg={LoadingImg}
+                        />
+                    </div> */}
+                    <div className="setting theme-box">
+                        <span className="step-indication">3</span>
+                        <h3>Speech</h3>
+                        <MicrophoneApp spokenLang={spokenLang} setSpokenLang={setSpokenLang} />
+                    </div>
+                    <Footer />
                 </div>
-                <Footer />
-            </div>
-        </section>
+            </section>
+        </SocketProvider>
     );
 }
 

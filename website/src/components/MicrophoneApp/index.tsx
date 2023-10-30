@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useSpeechRecognition } from "../../hooks/record/useSpeechRecognition";
-import { speechLanguages } from '../../hooks/record/speechLanguages';
+import React, { useContext, useState } from 'react';
+import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
+import { speechLanguages } from './speechLanguages';
 import api from '../../services/api';
+import { CaptionsContext } from '../../context/SocketContext';
 
 
 interface MicrophoneAppProps {
     spokenLang?: string
     setSpokenLang: (spokenLang: string) => void
-    handleText: (transcript: { text: string, lang: string, duration: number }) => void
-    recognized?: { text: string, lang: string }
 }
 
-function MicrophoneApp({ handleText, recognized, spokenLang, setSpokenLang }: MicrophoneAppProps) {
+function MicrophoneApp({ spokenLang, setSpokenLang }: MicrophoneAppProps) {
 
+    const { handleText, recognized } = useContext(CaptionsContext);
     const [listening, setListening] = useState<boolean>(false);
     const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
 

@@ -73,7 +73,5 @@ export function useSpeechRecognition(
 
 	}, [ listening, lang, handleText ]);
 
-	return {
-		error
-	}
+	return { error };
 }

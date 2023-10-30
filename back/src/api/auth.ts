@@ -7,9 +7,10 @@ import { User } from "../entity/User";
 
 declare module 'express-session' {
 	interface SessionData {
-		userid: string;
-		login: string;
-		connected: boolean;
+		userid: string
+		login: string
+		img: string
+		connected: boolean
 	}
 }
 
@@ -28,6 +29,7 @@ authRouter.get('', (req, res, next)=>{
 		connected: req.session.connected,
 		userid: req.session.userid,
 		login: req.session.login,
+		img: req.session.img,
 		url: authURL
 	});
 });
@@ -37,21 +39,23 @@ authRouter.post('',async (req, res, next)=>{
 		if(!req.body || !req.body.code || typeof req.body.code !=='string') {
 			return res.status(400).send('Missing code');
 		}
-		const { login, userid, token } = await auth(req.body.code);
+		const { login, userId, token, img } = await auth(req.body.code);
 
-		let user = await dataSource.manager.findOneBy(User, { twitchId: userid });
+		let user = await dataSource.manager.findOneBy(User, { twitchId: userId });
 		if(!user) {
 			user = new User();
 		}
-		user.twitchId = userid;
+		user.twitchId = userId;
 		user.twitchLogin = login;
 		user.twitchToken = token;
+
 		await dataSource.manager.save(user);
 		req.session.connected = true;
-		req.session.userid = userid;
+		req.session.userid = userId;
 		req.session.login = login;
+		req.session.img = img;
 		console.info(login + ' authenticated');
-		return res.json({login, userid, connected: true, url: authURL});
+		return res.json({login, userid: userId, img, connected: true, url: authURL});
 	}catch(e) {
 		next(e);
 	}

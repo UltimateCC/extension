@@ -12,6 +12,7 @@ export class GCPTranslator extends Translator {
 
 	async getLangs() {
 		if(this.ready()) {
+			// Just hardcode language list ...?
 			const params = new URLSearchParams({ key: this.secrets.gcpKey! });
 			const res =  await fetch('https://translation.googleapis.com/language/translate/v2/languages?'+params);
 

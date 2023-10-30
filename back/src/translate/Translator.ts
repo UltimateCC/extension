@@ -3,11 +3,7 @@ import { CaptionsData, LangList, Result, TranscriptAlt } from "../types";
 
 export abstract class Translator {
 
-	protected langs: string[]
-	constructor(protected config: UserConfig, protected secrets: UserSecrets) {
-		// Just remove ?
-		this.langs = config.translateLangs.map(l=>l.substring(0,2));
-	}
+	constructor(protected config: UserConfig, protected secrets: UserSecrets) {}
 
 	abstract ready(): boolean;
 
@@ -24,11 +20,11 @@ export abstract class Translator {
 			}
 		}
 		const start = Date.now();
-		// Exclude source language
-		const lang = data.captions[0].lang.substring(0,2);
+		const lang = data.captions[0].lang.split('-')[0];
 		const result = await this.translateAll(
 			{ text: data.captions[0].text, lang },
-			this.langs.filter(t=>t!==lang)
+			// Exclude source language
+			this.config.translateLangs.filter(t=>t!==lang)
 		);
 		if(result.isError) {
 			return result;

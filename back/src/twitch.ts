@@ -1,5 +1,5 @@
 
-import { exchangeCode, getTokenInfo, RefreshingAuthProvider } from "@twurple/auth";
+import { exchangeCode, getTokenInfo, RefreshingAuthProvider, StaticAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "./entity/User";
 import { dataSource } from "./database";
@@ -18,12 +18,6 @@ export const authURL = 'https://id.twitch.tv/oauth2/authorize?response_type=code
 	+'&scope=user:read:broadcast';
 
 
-export async function auth(code: string) {
-	const token = await exchangeCode(clientId, clientSecret, code, redirectUri);
-	const info = await getTokenInfo(token.accessToken);
-	return { userid: info.userId!, login: info.userName!, token };
-}
-
 const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
 authProvider.onRefresh((user, token)=>{
 	dataSource.manager.update(User, {
@@ -37,6 +31,19 @@ authProvider.onRefreshFailure((user)=>{
 });
 
 const api = new ApiClient({authProvider});
+
+
+export async function auth(code: string) {
+	const token = await exchangeCode(clientId, clientSecret, code, redirectUri);
+	const userId = await authProvider.addUserForToken(token);
+	const user = await api.users.getAuthenticatedUser(userId);
+	return {
+		userId,
+		login: user.displayName,
+		img: user.profilePictureUrl,
+		token
+	};
+}
 
 export async function isExtensionInstalled(user: string) {
 	return true;
