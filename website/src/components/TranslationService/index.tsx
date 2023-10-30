@@ -6,13 +6,14 @@ import FormResponse from '../FormResponse';
 import DelayedDisplay from '../DelayedDisplay';
 import { CaptionsContext } from '../../context/SocketContext';
 
-interface ApiProps {
+interface TranslationServiceProps {
     apiKeyIsWorking: boolean;
-    apiLoader: string | undefined;
     onApiKeyChange: (newApiKey: boolean) => void;
+    configLoaded: boolean;
+    LoadingImg: string;
 }
 
-function TranslationService({ apiLoader, onApiKeyChange }: ApiProps) {
+function TranslationService({ apiKeyIsWorking, onApiKeyChange, configLoaded, LoadingImg }: TranslationServiceProps) {
     const { captionsStatus } = useContext(CaptionsContext);
 
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
@@ -86,8 +87,8 @@ function TranslationService({ apiLoader, onApiKeyChange }: ApiProps) {
         setResponse(null);
     };
 
-    if (apiLoader) return (
-        <img src={apiLoader} alt="loading" className="loading-img" />
+    if (!configLoaded) return (
+        <img src={LoadingImg} alt="loading" className="loading-img" />
     );
 
     

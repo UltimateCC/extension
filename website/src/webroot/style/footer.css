@@ -7,3 +7,7 @@ footer h6 {
 footer a {
     color: var(--square);
 }
+
+footer a:hover {
+    color: var(--text);
+}

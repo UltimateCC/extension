@@ -8,9 +8,11 @@ import { CaptionsContext } from '../../context/SocketContext';
 interface MicrophoneAppProps {
     spokenLang?: string
     setSpokenLang: (spokenLang: string) => void
+    configLoaded: boolean
+    LoadingImg: string
 }
 
-function MicrophoneApp({ spokenLang, setSpokenLang }: MicrophoneAppProps) {
+function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, LoadingImg }: MicrophoneAppProps) {
 
     const { handleText, recognized, info, reloadConfig } = useContext(CaptionsContext);
     const [listening, setListening] = useState<boolean>(false);
@@ -34,6 +36,10 @@ function MicrophoneApp({ spokenLang, setSpokenLang }: MicrophoneAppProps) {
         .then(reloadConfig)
         .catch(e=>console.error('Error updating spoken language',e));
     }
+
+    if (!configLoaded) return (
+        <img src={LoadingImg} alt="loading" className="loading-img" />
+    );
 
     return (
         <>

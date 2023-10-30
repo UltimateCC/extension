@@ -14,10 +14,10 @@ import api from '../../services/api.ts';
 
 import languageNames from '../../services/languageNames.ts';
 
-interface TransferListProps {
+interface LanguageOutSelectorProps {
     selectedLanguageCode: string[];
     onLanguageCodeChange: (newLanguageCode: (string)[]) => void;
-    languageCodeLoaded: boolean;
+    configLoaded: boolean;
 }
 
 function not<T>(a: T[], b: T[]): T[] {
@@ -46,7 +46,7 @@ function getCodeFromLanguage(language: string): string | undefined {
     return "";
 }
 
-export default function TransferList({ selectedLanguageCode, onLanguageCodeChange, languageCodeLoaded }: TransferListProps) {
+export default function LanguageOutSelector({ selectedLanguageCode, onLanguageCodeChange, configLoaded }: LanguageOutSelectorProps) {
     const [checked, setChecked] = useState<string[]>([]);
     const [left, setLeft] = useState<string[]>(Object.values(languageNames));
     const [right, setRight] = useState<string[]>([]);
@@ -131,7 +131,7 @@ export default function TransferList({ selectedLanguageCode, onLanguageCodeChang
     const customList = (items: string[], isLeft: boolean) => (
         <Paper sx={{ width: 200, height: 230 }} className={`lang-list${isLeft ? ' left' : ' right'}`}>
             <List dense component="div" role="list" className='scroll-theme'>
-                {languageCodeLoaded || isLeft ? items
+                {configLoaded || isLeft ? items
                     .filter((item) =>
                         isLeft ? item.toLowerCase().includes(searchTerm.toLowerCase()) : true
                     )

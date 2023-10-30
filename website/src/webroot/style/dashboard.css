@@ -164,7 +164,7 @@
 }
 
 #dashboard .setting .spoken-text p {
-    line-height: 1.2em;
+    line-height: 1.5em;
     text-align: left;
 }
 
@@ -426,10 +426,6 @@
 #dashboard .api form button,
 #dashboard .api .api-connected button {
     min-width: fit-content;
-}
-
-#dashboard .api .loading-img {
-    height: 100px;
 }
 
 #dashboard .api .api-connected h4 {

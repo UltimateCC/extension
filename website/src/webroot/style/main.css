@@ -58,8 +58,7 @@ body::-webkit-scrollbar-thumb:active {
 a {
     text-decoration: underline;
     color: var(--text);
-    transition: 0.2s;
-
+    transition: color 0.2s;
 }
 
 a:hover {
@@ -243,6 +242,10 @@ strong {
 .form-response .close {
     font-size: 3em;
     color: var(--square);
+}
+
+.loading-img {
+    height: 100px;
 }
 
 /* Display page */

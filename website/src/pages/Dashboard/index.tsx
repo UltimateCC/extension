@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import TransferList from '../../components/TransferList';
+import LanguageOutSelector from '../../components/LanguageOutSelector';
 import MicrophoneApp from '../../components/MicrophoneApp';
 import TranslationService from '../../components/TranslationService';
+import FormResponse from '../../components/FormResponse';
+
 // import BannedCaptions from '../../components/BannedCaptions';
 
 import Footer from '../../components/Footer';
@@ -30,10 +32,10 @@ function Dashboard() {
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [spokenLang, setSpokenLang] = useState<string>();
-    const [languageCodeLoaded, setLanguageCodeLoaded] = useState<boolean>(false);
     const [apiKeyIsWorking, setApiKeyIsWorking] = useState<boolean>(false);
-    const [apiLoader, setApiLoader] = useState<string | undefined>(LoadingImg);
+    const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(LoadingImg);
+    const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
     useEffect(() => {
         if(!user?.connected && user?.url) {
@@ -47,20 +49,19 @@ function Dashboard() {
 
     useEffect(() => {
         // Fetch user infos
-        if(!user?.connected) return;
+        if(!user?.connected) return; // TODO : Show error message no ?
         api('config')
             .then(response => {
-                setSpokenLang(response.spokenLang);
-
-                // setAllBanCaptions(response.banWords);
                 setApiKeyIsWorking(response.api_token && response.api_token.trim().length !== 0);
-                setApiLoader(undefined);
+                // setAllBanCaptions(response.banWords);
+                setSpokenLang(response.spokenLang);
                 setTranslationLangs(response.translateLangs);
-                setLanguageCodeLoaded(true);
+                setConfigLoaded(true);
                 return;
             })
             .catch(err => {
-                console.error('Loading error', err);
+                console.error(err);
+                setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload" });
             })
     }, [user]);
 
@@ -76,8 +77,19 @@ function Dashboard() {
     //     setAllBanCaptions(newBanCaptions);
     // };
 
+    const closeResponse = () => {
+        setResponse(null);
+    };
+
     return (
         <SocketProvider>
+            {response && (
+                <FormResponse
+                    isSucceed={response.isSuccess}
+                    message={response.message}
+                    onClose={closeResponse}
+                />
+            )}
             <section id="dashboard">
                 <div className="welcome theme-box">
                     <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
@@ -96,17 +108,18 @@ function Dashboard() {
                         <h3>Transaltion API Connection</h3>
                         <TranslationService
                             apiKeyIsWorking={apiKeyIsWorking}
-                            apiLoader={apiLoader}
                             onApiKeyChange={handleApiKeyChange}
+                            configLoaded={configLoaded}
+                            LoadingImg={LoadingImg}
                         />
                     </div>
                     <div className="languages theme-box">
                         <span className="step-indication">2</span>
                         <h3>Languages</h3>
-                        <TransferList
+                        <LanguageOutSelector
                             selectedLanguageCode={translationLangs}
                             onLanguageCodeChange={handleSelectedLanguageCodeChange}
-                            languageCodeLoaded={languageCodeLoaded}
+                            configLoaded={configLoaded}
                         />
                     </div>
                 </div>
@@ -125,7 +138,12 @@ function Dashboard() {
                     <div className="setting theme-box">
                         <span className="step-indication">3</span>
                         <h3>Speech</h3>
-                        <MicrophoneApp spokenLang={spokenLang} setSpokenLang={setSpokenLang} />
+                        <MicrophoneApp 
+                            spokenLang={spokenLang}
+                            setSpokenLang={setSpokenLang}
+                            configLoaded={configLoaded}
+                            LoadingImg={LoadingImg}
+                        />
                     </div>
                     <Footer />
                 </div>
