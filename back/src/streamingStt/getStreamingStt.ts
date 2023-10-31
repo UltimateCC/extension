@@ -1,14 +1,17 @@
 
 import { User } from "../entity/User";
 import { AzureStt } from "./AzureStt";
+import { StreamingSpeechToText } from "./StreamingSpeechToText";
 
 
-export function getStreamingStt(u: User) {
+export function getStreamingStt(u: User): StreamingSpeechToText | null {
 
 	switch(u.config.transcribe) {
 
+		/*
 		case 'azure':
 			return new AzureStt(u.config, u.secrets);
+		*/
 
 		default:
 			return null;
