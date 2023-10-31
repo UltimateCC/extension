@@ -166,8 +166,6 @@ function handleResetPosition() {
 }
 
 export function handleLockPosition(event = null) {
-    console.log(event);
-
     var isLocked;
     if (captionsContainer.classList.contains("locked")) {
         // Stop locked
@@ -282,7 +280,6 @@ export async function setSelectOptions(languagesCodes) {
         languageInput.appendChild(optionElement);
     }
 
-    console.log("Ultimate CC: Select options set", getCurrentLang());
     languageInput.value = getCurrentLang();
     languageInput.disabled = false;
 }

@@ -26,12 +26,15 @@ function loadExtension() {
     initPosition();
     initSettings();
     
-    const captionContent = document.getElementById("caption-content");
+    const finishedContent = document.getElementById("finished-content");
+    const unfinishedContent = document.getElementById("unfinished-content");
+    // 
     const captionsContainer = document.getElementById("caption-container");
     const toggleCaptionBtn = document.getElementById("toggle-captions");
     const toggleSettingsBtn = document.getElementById("toggle-settings");
 
     let content = "";
+    let notFinishedContent = "";
     let lastAllCaptions;
 
     // We listen for the Twitch pubsub event
@@ -42,7 +45,11 @@ function loadExtension() {
         }
 
         const body = JSON.parse(rawBody);
-        const allCaptions = body.captions;
+        const allCaptions = body?.captions;
+        if(!allCaptions) {
+            console.error("Ultimate CC : No captions found");
+            return;
+        }
 
         // On the first message, we get the list of languages
         if(notStarted) {
@@ -54,18 +61,22 @@ function loadExtension() {
             }
         }
 
-        if(allCaptions) {
-            const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : allCaptions[0].lang;
+        const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : allCaptions[0].lang;
+        if(body.final) {
             const caption = allCaptions.find(caption => caption.lang == newLanguageCode);
             if (caption && caption.text) content += " " + caption.text;
-            captionContent.innerText = content;
-
-            // We limit the number of words to 400
-            content = content.split(" ").slice(-400).join(" ");
-            lastAllCaptions = allCaptions;
+            finishedContent.innerText = content;
+            notFinishedContent = "";
         } else {
-            console.error("Ultimate CC : No captions found");
+            const notFinishedCaption = allCaptions.find(caption => caption.lang == newLanguageCode);
+            if (caption && caption.text) notFinishedContent += " " + notFinishedCaption.text;
+            unfinishedContent.innerText = notFinishedContent;
         }
+
+        // We limit the number of words to approximately 400
+        content = content.split(" ").slice(-400).join(" ");
+        lastAllCaptions = allCaptions;
+        
     });
 
     window.addEventListener('languageChanged', function() {
@@ -73,7 +84,7 @@ function loadExtension() {
         const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : lastAllCaptions[0].lang;
         const caption = lastAllCaptions.find(caption => caption.lang == newLanguageCode);
         if (caption && caption.text) content = caption.text;
-        captionContent.innerText = content;
+        finishedContent.innerText = content;
     });
 
     // We check if arePlayerControlsVisible

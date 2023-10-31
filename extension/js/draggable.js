@@ -13,7 +13,6 @@ function saveDataPosition(top = null, left = null) {
 
 export function initPosition() {
     const rawPosition = getData("position");
-    console.log(rawPosition);
 
     var newTop = 0, newLeft = 0;
     if (rawPosition) {
@@ -33,8 +32,6 @@ export function initPosition() {
         newLeft = (captionMovableArea.offsetWidth - captionBox.offsetWidth) / 2;
         newTop = captionMovableArea.offsetHeight < 100 ? captionMovableArea.offsetHeight : captionMovableArea.offsetHeight - 100;
         newTop -= captionBox.offsetHeight;
-        console.log(newTop, captionMovableArea.offsetHeight, captionBox.offsetWidth, captionMovableArea.getBoundingClientRect());
-        console.log(document.getElementById("ultimate-closed-caption").offsetHeight);
 
         if(captionBoxIsHidden) {
             captionBox.style.display = "none";
@@ -42,7 +39,6 @@ export function initPosition() {
         }
     }
 
-    console.log("Init at pos : ", newTop, newLeft);
     setNewPosition(newTop, newLeft);
 
     (getData("isLocked") == "true") ? handleLockPosition() : startDraggable();
@@ -111,8 +107,6 @@ export function setNewPosition(newTop, newLeft) {
         captionBox.style.opacity = 1;
     }
 
-    console.log("Rects : ", captionMovableAreaRect, captionBoxRect);
-
     // Check if the new position is inside the container 
     if (newTop < 0) {
         newTop = 0;
@@ -134,8 +128,7 @@ export function setNewPosition(newTop, newLeft) {
 
 // On resize, reposition the caption box
 window.addEventListener("resize", () => {
-    console.log("resize");
     const newTop = captionBox.style.top;
     const newLeft = captionBox.style.left;
-    setNewPosition(parseInt(newTop), parseInt(newLeft));
+    setNewPosition(parseInt(newTop), parseInt(newLeft)); // Send and remove px
 });
