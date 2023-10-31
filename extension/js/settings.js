@@ -32,7 +32,7 @@ const lockPosition = document.getElementById("caption-lock-position");
 // == Container ==
 const mainContainer = document.getElementById("caption-movable-area");
 const settingsContainer = document.getElementById("settings-container");
-const captionBox = document.getElementById("caption-container");
+const captionsContainer = document.getElementById("caption-container");
 
 // == Menu ==
 const textMenu = document.getElementById("group-text");
@@ -99,6 +99,7 @@ function closeAllMenu() {
 // Handle root variables on input change
 function handleLanguageInput() {
     setCurrentLang(languageInput.value);
+    window.dispatchEvent(new Event('languageChanged'));
     setData("language", languageInput.value);
 }
 
@@ -139,7 +140,7 @@ function handleBgOpacityRange() {
 function changeBgOpacity() {
     if(bgOpacityNumberInput.value < 0) bgOpacityNumberInput.value = 0;
     if(bgOpacityNumberInput.value > 100) bgOpacityNumberInput.value = 100;
-    captionBox.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
+    captionsContainer.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
     updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
     unitBgOpacity.innerText = bgOpacityNumberInput.value;
 }
@@ -160,7 +161,7 @@ function handleResetSettings() {
 }
 
 function handleResetPosition() {
-    deleteData("isLocked");
+    deleteData("position");
     initPosition();
 }
 
@@ -168,15 +169,15 @@ export function handleLockPosition(event = null) {
     console.log(event);
 
     var isLocked;
-    if (captionBox.classList.contains("locked")) {
+    if (captionsContainer.classList.contains("locked")) {
         // Stop locked
-        captionBox.classList.remove("locked");
+        captionsContainer.classList.remove("locked");
         lockPosition.innerText = "Lock position";
         startDraggable();
         isLocked = false;
     } else {
         // Start locked
-        captionBox.classList.add("locked");
+        captionsContainer.classList.add("locked");
         lockPosition.innerText = "Unlock position";
         stopDraggable();
         isLocked = true;
@@ -209,6 +210,9 @@ function openSettings() {
         toggleSettings(false);
     });
 
+    // Show captions
+    captionsContainer.style.display = "flex";
+
     // Show settings
     settingsContainer.style.display = "flex";
 }
@@ -228,6 +232,10 @@ function closeSettings() {
     resetPosition.removeEventListener("click", handleResetPosition);
     lockPosition.removeEventListener("click", handleLockPosition);
     
+    // Hide captions if is cc is disabled
+    const toggleCaptionBtn = document.getElementById("toggle-captions");
+    if(!toggleCaptionBtn.classList.contains("isShow")) captionsContainer.style.display = "none";
+
     //Hide settings
     closeAllMenu();
     settingsContainer.style.display = "none";
@@ -260,7 +268,7 @@ export async function setSelectOptions(languagesCodes) {
     languageInput.innerHTML = "";
 
     const optionElement = document.createElement("option");
-    optionElement.value = "";
+    optionElement.value = "stt";
     optionElement.innerText = "Speech recognition";
     languageInput.appendChild(optionElement);
 
@@ -274,6 +282,7 @@ export async function setSelectOptions(languagesCodes) {
         languageInput.appendChild(optionElement);
     }
 
+    console.log("Ultimate CC: Select options set", getCurrentLang());
     languageInput.value = getCurrentLang();
     languageInput.disabled = false;
 }

@@ -2,7 +2,7 @@ import { getData } from "./utils.js";
 import { initPosition } from "./draggable.js";
 import { initSettings, toggleSettings, setSelectOptions } from "./settings.js";
 
-let currentLanguageCode = getData("language"); // Global variable to store the current language code
+let currentLanguageCode = getData("language") || "stt"; // Global variable to store the current language code
 
 export function setCurrentLang(language) {
     currentLanguageCode = language;
@@ -14,6 +14,13 @@ export function getCurrentLang() {
 
 // We wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function () {
+    // TODO: Find a better way to check if the dom is fully loaded
+    setTimeout(function() {
+        loadExtension();
+    }, 200);
+});
+
+function loadExtension() {
     let notStarted = true;
     
     initPosition();
@@ -25,9 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const toggleSettingsBtn = document.getElementById("toggle-settings");
 
     let content = "";
+    let lastAllCaptions;
 
     // We listen for the Twitch pubsub event
-    window.Twitch.ext.listen('broadcast', (target, contentType, rawBody) => {
+    window.Twitch.ext.listen('broadcast', (_, contentType, rawBody) => {
         if (contentType !== 'application/json') {
             console.error('Ultimate CC : Received broadcast message but content-type is not JSON');
             return;
@@ -41,19 +49,31 @@ document.addEventListener("DOMContentLoaded", function () {
             notStarted = false;
             content = "";
             setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
-            toggleCaptions(toggleCaptionBtn.classList.contains("isShow")); // Show the captions on the first message
+            if (toggleCaptionBtn.classList.contains("isShow")) {
+                toggleCaptions(true); // Show the captions on the first message
+            }
         }
 
         if(allCaptions) {
-            if (currentLanguageCode === "") currentLanguageCode = allCaptions[0].lang; // Get the spoken language
-            const caption = allCaptions.find(caption => caption.lang == currentLanguageCode);
+            const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : allCaptions[0].lang;
+            const caption = allCaptions.find(caption => caption.lang == newLanguageCode);
             if (caption && caption.text) content += " " + caption.text;
             captionContent.innerText = content;
+
             // We limit the number of words to 400
             content = content.split(" ").slice(-400).join(" ");
+            lastAllCaptions = allCaptions;
         } else {
             console.error("Ultimate CC : No captions found");
         }
+    });
+
+    window.addEventListener('languageChanged', function() {
+        if(lastAllCaptions == null) return;
+        const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : lastAllCaptions[0].lang;
+        const caption = lastAllCaptions.find(caption => caption.lang == newLanguageCode);
+        if (caption && caption.text) content = caption.text;
+        captionContent.innerText = content;
     });
 
     // We check if arePlayerControlsVisible
@@ -65,14 +85,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function toggleButtons(willBeShow) {
         const captionBtnContainer = document.getElementById("buttons-container");
-        if(!willBeShow) toggleSettings(false);
+        // if(!willBeShow) toggleSettings(false);
         captionBtnContainer.style.display = willBeShow ? "flex" : "none";
     }
     
     // == Buttons container ==
     function toggleCaptions(willBeShow = null) {
         if(willBeShow == null) willBeShow = !toggleCaptionBtn.classList.contains("isShow");
-        if(!notStarted) captionsContainer.style.display = willBeShow ? "block" : "none";
+        if(!toggleSettingsBtn.classList.contains("isOpen")) captionsContainer.style.display = willBeShow ? "block" : "none";
         toggleCaptionBtn.classList.toggle("isShow", willBeShow);
     }
     toggleCaptionBtn.addEventListener("click", function() {
@@ -82,4 +102,4 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleSettingsBtn.addEventListener("click", function() {
         toggleSettings();
     });
-});
+}

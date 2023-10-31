@@ -13,35 +13,36 @@ function saveDataPosition(top = null, left = null) {
 
 export function initPosition() {
     const rawPosition = getData("position");
+    console.log(rawPosition);
+
     var newTop = 0, newLeft = 0;
     if (rawPosition) {
         const settingsPosition = rawPosition.split(",");
         newTop = settingsPosition[0];
         newLeft = settingsPosition[1];
     } else {
-        const bodyDOM = document.getElementById("ultimate-closed-caption");
+        const captionMovableArea = document.getElementById("caption-movable-area");
 
-        /*
-        The idea of the following block is to center it on the X-axis and place it at the bottom of the screen - 100px on the Y-axis.
-        To achieve this, we need to temporarily set the body's display property to "block" to calculate its width, then set it back to "none". 
-        We also set the opacity to 0 to avoid the user seeing the body hide and show.
-        */
-        const bodyWasHidden = bodyDOM.style.display === "none";
-        if (bodyWasHidden) {
-            bodyDOM.style.opacity = 0;
-            bodyDOM.style.display = "block";
+        const captionBoxIsHidden = captionBox.style.display == "none";
+        if(captionBoxIsHidden) {
+            captionBox.style.opacity = 0;
+            captionBox.style.display = "block";
         }
 
         // Center
-        newLeft = (window.innerWidth - captionBox.offsetWidth) / 2;
-        newTop = window.innerHeight < 100 ? window.innerHeight : window.innerHeight - 100;
-        
-        if (bodyWasHidden) {
-            bodyDOM.style.display = "none";
-            bodyDOM.style.opacity = "";
-        }     
+        newLeft = (captionMovableArea.offsetWidth - captionBox.offsetWidth) / 2;
+        newTop = captionMovableArea.offsetHeight < 100 ? captionMovableArea.offsetHeight : captionMovableArea.offsetHeight - 100;
+        newTop -= captionBox.offsetHeight;
+        console.log(newTop, captionMovableArea.offsetHeight, captionBox.offsetWidth, captionMovableArea.getBoundingClientRect());
+        console.log(document.getElementById("ultimate-closed-caption").offsetHeight);
+
+        if(captionBoxIsHidden) {
+            captionBox.style.display = "none";
+            captionBox.style.opacity = 1;
+        }
     }
 
+    console.log("Init at pos : ", newTop, newLeft);
     setNewPosition(newTop, newLeft);
 
     (getData("isLocked") == "true") ? handleLockPosition() : startDraggable();
@@ -55,7 +56,7 @@ export function startDraggable() {
     // Credits: W3Schools how to make a draggable element
     function dragMouseDown(e) {
         e.preventDefault();
-        toggleSettings(false);
+        // toggleSettings(false);
         mouseX = e.clientX;
         mouseY = e.clientY;
         document.onmouseup = closeDragElement;
@@ -91,36 +92,26 @@ export function stopDraggable() {
     document.onmousemove = null;
 }
 
-export function setNewPosition(newTop = null, newLeft = null) {
+export function setNewPosition(newTop, newLeft) {
     const captionMovableArea = document.getElementById("caption-movable-area");
-    
-    // Check if we need to save the new position if its just a check of the position
-    var mustSave = false;
-    if(newTop == null && newLeft == null) {
-        newTop = captionBox.offsetTop;
-        newLeft = captionBox.offsetLeft;
-        mustSave = true;
-    }
 
     // Get information about the element and the box
-    var captionMovableAreaRect, captionBoxRect
-    const bodyDOM = document.getElementById("ultimate-closed-caption");
-    const bodyWasHidden = bodyDOM.style.display === "none";
-    // If the body is hidden, we need to temporarily set the display 
-    // property to "block" to calculate the element's position, then set it back to "none".
-    if (bodyWasHidden) {
-        bodyDOM.style.opacity = 0;
-        bodyDOM.style.display = "block";
+    const captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
 
-        captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
-        captionBoxRect = captionBox.getBoundingClientRect();
-
-        bodyDOM.style.display = "none";
-        bodyDOM.style.opacity = "";
-    } else {
-        captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
-        captionBoxRect = captionBox.getBoundingClientRect();
+    const captionBoxIsHidden = captionBox.style.display == "none";
+    if(captionBoxIsHidden) {
+        captionBox.style.opacity = 0;
+        captionBox.style.display = "block";
     }
+
+    const captionBoxRect = captionBox.getBoundingClientRect();
+
+    if(captionBoxIsHidden) {
+        captionBox.style.display = "none";
+        captionBox.style.opacity = 1;
+    }
+
+    console.log("Rects : ", captionMovableAreaRect, captionBoxRect);
 
     // Check if the new position is inside the container 
     if (newTop < 0) {
@@ -139,12 +130,12 @@ export function setNewPosition(newTop = null, newLeft = null) {
     // Set the new position
     captionBox.style.top = newTop + "px";
     captionBox.style.left = newLeft + "px";
-
-    // Update the data
-    if(mustSave) saveDataPosition(newTop, newLeft);
 }
 
 // On resize, reposition the caption box
 window.addEventListener("resize", () => {
-    setNewPosition();
+    console.log("resize");
+    const newTop = captionBox.style.top;
+    const newLeft = captionBox.style.left;
+    setNewPosition(parseInt(newTop), parseInt(newLeft));
 });

@@ -43,12 +43,6 @@
   --caption-background-opacity: 0.5;
 }
 
-html {
-  background-image: url("../aypierreStream.png");
-  background-repeat: no-repeat;
-  background-size: 100vw 100vh;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
