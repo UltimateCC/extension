@@ -8,16 +8,26 @@ Translation possible with multiple services using your own API keys
 - Google Translation API (Probably best results)
 - Microsoft Azure Translator (Cheaper than google)
 
-Roadmap maybe later:
-- Automatically check if extension is installed
-- Send captions to OBS (with obs-websocket)
+
+## Roadmap
+
 - Send non-final versions of captions (will help with longer sentences)
-- Setup translation server working without further configuration (free ? limited ? paid ?)
-- Additional settings
-  - Stop captions at the end of the stream
-  - Allow streamer to choose if captions are shown to viewers by default or not
-  - Add custom delay to captions (may be necessary if streaming with delay..?)
-  - Banned words
+- Dashboard controls via streamdeck
+- Extension: Rewrite in svelte
+- Website:
+  - Dashboard redesign ?
+  - Support changing translation services
+  - Support other speech to text services (interesting ? often expensive)
+  - Send captions to OBS (with obs-websocket)
+  - Streamer tutorial / info page
+- Check if extension is installed
+- Setting to stop recording voice when stream ends
+- Setup translation server working without further configuration (free ? limited ? paid ? with bits?)
+- Allow streamer to choose if captions are shown to viewers by default or not
+- Customisable captions delay (may be necessary if streaming with additional delay..?)
+- Banned words (before/after translation?)
+- Detect used translation to enable only necessary ones
+
 
 ## Development
 
