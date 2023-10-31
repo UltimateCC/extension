@@ -3,10 +3,12 @@ import express from 'express';
 import session from 'express-session';
 import fileStore from 'session-file-store';
 import { authRouter } from './api/auth';
-import { apiRouter } from './api/user';
+import { secretsRouter } from './api/secrets';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { initSocketioServer } from './socketioServer';
+import { thanksRouter } from './api/thanks';
+import { configRouter } from './api/config';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -31,10 +33,15 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 app.use(express.json());
 
-//Auth
+// API Routes 
+// Auth
 app.use('/api/auth', authRouter);
-//Api routes
-app.use(apiRouter);
+// Config
+app.use('/api/config', configRouter);
+// Secrets
+app.use('/api/config', secretsRouter);
+// Thanks page
+app.use('/api/thanks', thanksRouter);
 
 // socket.io on same server
 const server = createServer(app);
