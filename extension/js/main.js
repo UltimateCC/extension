@@ -15,9 +15,9 @@ export function getCurrentLang() {
 // We wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function () {
     // TODO: Find a better way to check if the dom is fully loaded
-    setTimeout(function() {
+    // setTimeout(function() {
         loadExtension();
-    }, 200);
+    // }, 200);
 });
 
 let notStarted = true;
@@ -32,6 +32,7 @@ function loadExtension() {
     let content = "";
     let notFinishedContent = "";
     let lastAllCaptions;
+    let hlsLatencyBroadcaster = 0;
 
     initPosition();
     initSettings();
@@ -51,32 +52,39 @@ function loadExtension() {
             return;
         }
 
-        // On the first message, we get the list of languages
-        if(notStarted) {
-            notStarted = false;
-            content = "";
-            setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
-            if (toggleCaptionBtn.classList.contains("isShow")) {
-                toggleCaptions(true); // Show the captions on the first message
+        const timeToWait = hlsLatencyBroadcaster * 1000 - allCaptions.delay;
+        setTimeout(function() {
+            updateContent();
+        }, timeToWait);
+
+        function updateContent() {
+            // On the first message, we get the list of languages
+            if(notStarted) {
+                notStarted = false;
+                content = "";
+                setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
+                if (toggleCaptionBtn.classList.contains("isShow")) {
+                    toggleCaptions(true); // Show the captions on the first message
+                }
             }
-        }
 
-        const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : allCaptions[0].lang;
-        if(body.final) {
-            const caption = allCaptions.find(caption => caption.lang == newLanguageCode);
-            if (caption && caption.text) content += " " + caption.text;
-            finishedContent.innerText = content;
-            notFinishedContent = "";
-        } else {
-            const notFinishedCaption = allCaptions.find(caption => caption.lang == newLanguageCode);
-            if (caption && caption.text) notFinishedContent += " " + notFinishedCaption.text;
-            unfinishedContent.innerText = notFinishedContent;
-        }
+            const newLanguageCode = (currentLanguageCode !== "stt") ? currentLanguageCode : allCaptions[0].lang;
+            if(body.final) {
+                const caption = allCaptions.find(caption => caption.lang == newLanguageCode);
+                if (caption && caption.text) content += " " + caption.text;
+                finishedContent.innerText = content;
+                notFinishedContent = "";
+                unfinishedContent.innerText = notFinishedContent;
+            } else {
+                const notFinishedCaption = allCaptions.find(caption => caption.lang == newLanguageCode);
+                if (caption && caption.text) notFinishedContent += " " + notFinishedCaption.text;
+                unfinishedContent.innerText = notFinishedContent;
+            }
 
-        // We limit the number of words to approximately 400
-        content = content.split(" ").slice(-400).join(" ");
-        lastAllCaptions = allCaptions;
-        
+            // We limit the number of words to approximately 400
+            content = content.split(" ").slice(-400).join(" ");
+            lastAllCaptions = allCaptions;
+        }
     });
 
     window.addEventListener('languageChanged', function() {
@@ -90,7 +98,10 @@ function loadExtension() {
     // We check if arePlayerControlsVisible
     window.Twitch.ext.onContext((context, changed) => {
         if (changed.includes('arePlayerControlsVisible')) {
-            toggleButtons(context.arePlayerControlsVisible === true);
+            if(!toggleSettingsBtn.classList.contains("isOpen")) toggleButtons(context.arePlayerControlsVisible === true);
+        } 
+        if (changed.includes('hlsLatencyBroadcaster')) {
+            hlsLatencyBroadcaster = context.hlsLatencyBroadcaster;
         }
     });
 

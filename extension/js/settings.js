@@ -43,10 +43,10 @@ const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-grou
 const defaultSettingsContent = {
     "font-color": "#ffffff",
     "font-size": 24,
-    "font-family": "Arial",
+    "font-family": "Arial, Helvetica, sans-serif",
     "max-lines": 2,
     "background-color": "#37373E",
-    "background-opacity": 50
+    "background-opacity": 0.5
 };
 
 export function initSettings() {

@@ -17,7 +17,7 @@ $settings-background-color: #1F1F23;
 $settings-movable-Y: 5rem;
 $settings-font-size: clamp(1em, 2.25vh, 3em);
 $settings-width: 16em;
-$settings-font-family: "Arial";
+$settings-font-family: Arial, Helvetica, sans-serif;
 $settings-inside-padding: 1em;
 $settings-gap-between-group: 0.75em;
 $settings-input-border-radius: 0.6em;
@@ -37,7 +37,7 @@ $settings-wheel-setting-min-gap: 1.5em;
 
 $default-font-color: hexToRgb(#fff);
 $default-font-size: 24px;
-$default-font-family: "Arial";
+$default-font-family: Arial, Helvetica, sans-serif;
 $default-max-lines: 2;
 $default-background-color: hexToRgb($theme-background-color);
 $default-background-opacity: 0.5; 
@@ -92,7 +92,7 @@ body#ultimate-closed-caption {
             background-color: rgba(var(--caption-background-color), var(--caption-background-opacity));
             color: rgb(var(--caption-font-color));
             font-size: var(--caption-font-size);
-            font-family: var(--caption-font-family), sans-serif;
+            font-family: var(--caption-font-family);
 
             backdrop-filter: var(--caption-background-blur);
             
@@ -152,7 +152,7 @@ body#ultimate-closed-caption {
         
         color: $settings-text-color;
         background-color: rgba($settings-background-color, 0.95);
-        font-family: $settings-font-family, sans-serif;
+        font-family: $settings-font-family;
 
         display: flex;
         flex-direction: column;
@@ -499,7 +499,7 @@ body#ultimate-closed-caption {
 
                         @each $font in $font-families {
                             option[value="#{$font}"] {
-                                font-family: #{$font}, sans-serif;
+                                font-family: #{$font};
                             }
                         }
                     }

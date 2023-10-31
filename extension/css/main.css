@@ -1,10 +1,4 @@
 @font-face {
-  font-family: "Arial";
-  src: url("fonts/arial.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
   font-family: "Calibri";
   src: url("fonts/calibri.ttf") format("truetype");
   font-weight: normal;
@@ -22,22 +16,10 @@
   font-weight: normal;
   font-style: normal;
 }
-@font-face {
-  font-family: "Times New Roman";
-  src: url("fonts/times.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Verdana";
-  src: url("fonts/verdana.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 :root {
   --caption-font-color: 255, 255, 255;
   --caption-font-size: 24px;
-  --caption-font-family: Arial;
+  --caption-font-family: Arial, Helvetica, sans-serif;
   --caption-max-lines: 2;
   --caption-background-color: 55, 55, 62;
   --caption-background-opacity: 0.5;
@@ -68,7 +50,7 @@ body#ultimate-closed-caption #caption-movable-area #caption-container {
   background-color: rgba(var(--caption-background-color), var(--caption-background-opacity));
   color: rgb(var(--caption-font-color));
   font-size: var(--caption-font-size);
-  font-family: var(--caption-font-family), sans-serif;
+  font-family: var(--caption-font-family);
   -webkit-backdrop-filter: var(--caption-background-blur);
           backdrop-filter: var(--caption-background-blur);
   transition: opacity 0.5s;
@@ -116,7 +98,7 @@ body#ultimate-closed-caption #settings-container {
   padding: 0.2em 0.5em 1em;
   color: #D9D9D9;
   background-color: rgba(31, 31, 35, 0.95);
-  font-family: "Arial", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -403,22 +385,25 @@ body#ultimate-closed-caption #settings-container .caption-settings-container .ca
 body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item input:not(input[type=range])::-webkit-color-swatch-wrapper {
   padding: 0;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value=Arial] {
-  font-family: Arial, sans-serif;
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Arial, Helvetica, sans-serif"] {
+  font-family: Arial, Helvetica, sans-serif;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value=Calibri] {
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Calibri, sans-serif"] {
   font-family: Calibri, sans-serif;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value=OpenDyslexic] {
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Courier New, Courier, monospace"] {
+  font-family: Courier New, Courier, monospace;
+}
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="OpenDyslexic, sans-serif"] {
   font-family: OpenDyslexic, sans-serif;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value=Roboto] {
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Roboto, sans-serif"] {
   font-family: Roboto, sans-serif;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Times New Roman"] {
-  font-family: Times New Roman, sans-serif;
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Times New Roman, Times, serif"] {
+  font-family: Times New Roman, Times, serif;
 }
-body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value=Verdana] {
+body#ultimate-closed-caption #settings-container .caption-settings-container .caption-group .caption-group-content .caption-group-content-item option[value="Verdana, sans-serif"] {
   font-family: Verdana, sans-serif;
 }
 body#ultimate-closed-caption #settings-container .caption-button-container {

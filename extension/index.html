@@ -3,6 +3,11 @@
         <link rel="stylesheet" type="text/css" href="css/main.css">
         <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script src="js/main.js" type="module"></script>
+        <script src="js/settings.js" type="module"></script>
+        <script src="js/utils.js" type="module"></script>
+        <script src="js/draggable.js" type="module"></script>
     </head>
 
     <body id="ultimate-closed-caption">
@@ -74,12 +79,13 @@
                         <div class="caption-group-content-item group-font-family">
                             <label for="font-family-input">Font family</label>
                             <select id="font-family-input">
-                                <option value="Arial" selected>Arial</option>
-                                <option value="Calibri">Calibri</option>
-                                <option value="OpenDyslexic">OpenDyslexic</option>
-                                <option value="Roboto">Roboto</option>
-                                <option value="Times New Roman">Times New Roman</option>
-                                <option value="Verdana">Verdana</option>
+                                <option value="Arial, Helvetica, sans-serif" selected>Arial</option>
+                                <option value="Calibri, sans-serif">Calibri</option>
+                                <option value="Courier New, Courier, monospace">Courier New</option>
+                                <option value="OpenDyslexic, sans-serif">OpenDyslexic</option>
+                                <option value="Roboto, sans-serif">Roboto</option>
+                                <option value="Times New Roman, Times, serif">Times New Roman</option>
+                                <option value="Verdana, sans-serif">Verdana</option>
                             </select>
                         </div>
                         <div class="caption-group-content-item">
@@ -152,9 +158,4 @@
             </button>
         </div>
     </body>
-
-    <script src="js/main.js" type="module"></script>
-    <script src="js/settings.js" type="module"></script>
-    <script src="js/utils.js" type="module"></script>
-    <script src="js/draggable.js" type="module"></script>
 </html>

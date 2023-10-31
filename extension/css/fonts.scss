@@ -1,11 +1,3 @@
-//arial.ttf
-@font-face {
-    font-family: "Arial";
-    src: url('fonts/arial.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 //calibri.ttf
 @font-face {
     font-family: "Calibri";
@@ -30,20 +22,4 @@
     font-style: normal;
 }
 
-//times.ttf
-@font-face {
-    font-family: "Times New Roman";
-    src: url('fonts/times.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-//verdana.ttf
-@font-face {
-    font-family: "Verdana";
-    src: url('fonts/verdana.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-$font-families: "Arial", "Calibri", "OpenDyslexic", "Roboto", "Times New Roman", "Verdana";
+$font-families: "Arial, Helvetica, sans-serif", "Calibri, sans-serif", "Courier New, Courier, monospace", "OpenDyslexic, sans-serif", "Roboto, sans-serif", "Times New Roman, Times, serif", "Verdana, sans-serif";
