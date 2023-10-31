@@ -29,4 +29,22 @@ function setSettingProperty(variableName, newValue = "") {
     document.documentElement.style.setProperty(`--caption-${variableName}`, newValue);
 }
 
-export { setData, getData, deleteData, convertHexToRGB, setSettingProperty };
+const FADE_IN_OUT = 100;
+
+function fadeIn(element) {
+    element.classList.add('show');
+    element.classList.add('fade-in');
+    setTimeout(() => {
+        element.classList.remove('fade-in');
+    }, FADE_IN_OUT);
+}
+
+function fadeOut(element) {
+    element.classList.add('fade-out');
+    setTimeout(() => {
+        element.classList.remove('show');
+        element.classList.remove('fade-out');
+    }, FADE_IN_OUT);
+}
+
+export { setData, getData, deleteData, convertHexToRGB, setSettingProperty, fadeIn, fadeOut };

@@ -1,6 +1,6 @@
-import { setData, getData, deleteData, convertHexToRGB, setSettingProperty } from "./utils.js";
+import { setData, getData, deleteData, convertHexToRGB, setSettingProperty, fadeIn, fadeOut } from "./utils.js";
 import { initPosition, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
-import { setCurrentLang, getCurrentLang } from "./main.js";
+import { setCurrentLang, getCurrentLang, getNotStarted } from "./main.js";
 
 // Header
 const closeSettingsButton = document.getElementById("close-settings-button");
@@ -63,8 +63,8 @@ export function initSettings() {
     setSettingProperty("font-family", settingsContent["font-family"]);
     setSettingProperty("max-lines", settingsContent["max-lines"]);
     setSettingProperty("background-color", convertHexToRGB(settingsContent["background-color"]));
-    setSettingProperty("background-opacity", (settingsContent["background-opacity"] * 0.01).toFixed(2));
-    setSettingProperty("background-blur", "blur(" + (settingsContent["background-opacity"] * 0.1).toFixed(1) + "px)");
+    setSettingProperty("background-opacity", settingsContent["background-opacity"]);
+    setSettingProperty("background-blur", "blur(" + (settingsContent["background-opacity"] * 10) + "px)");
 
     fontColorInput.value = settingsContent["font-color"];
     fontSizeInput.value = settingsContent["font-size"];
@@ -72,12 +72,12 @@ export function initSettings() {
     fontFamilyInput.style.fontFamily = settingsContent["font-family"];
     maxLinesInput.value = settingsContent["max-lines"];
     bgColorInput.value = settingsContent["background-color"];
-    bgOpacityNumberInput.value = settingsContent["background-opacity"];
-    bgOpacityRangeInput.value = settingsContent["background-opacity"];
+    bgOpacityNumberInput.value = settingsContent["background-opacity"] * 100;
+    bgOpacityRangeInput.value = settingsContent["background-opacity"] * 100;
 
     // Number for units
     unitFontSize.innerText = settingsContent["font-size"];
-    unitBgOpacity.innerText = settingsContent["background-opacity"];
+    unitBgOpacity.innerText = settingsContent["background-opacity"] * 100;
 }
 
 // Menu
@@ -140,8 +140,8 @@ function handleBgOpacityRange() {
 function changeBgOpacity() {
     if(bgOpacityNumberInput.value < 0) bgOpacityNumberInput.value = 0;
     if(bgOpacityNumberInput.value > 100) bgOpacityNumberInput.value = 100;
-    captionsContainer.style.backdropFilter = "blur(" + (bgOpacityNumberInput.value * 0.1) + "px)";
     updateSetting("background-opacity", (bgOpacityNumberInput.value * 0.01).toFixed(2));
+    setSettingProperty("background-blur", "blur(" + (bgOpacityNumberInput.value * 0.1).toFixed(1) + "px)");
     unitBgOpacity.innerText = bgOpacityNumberInput.value;
 }
 
@@ -208,11 +208,11 @@ function openSettings() {
         toggleSettings(false);
     });
 
-    // Show captions
-    captionsContainer.style.display = "flex";
+    // Show captions add class show
+    fadeIn(captionsContainer);
 
     // Show settings
-    settingsContainer.style.display = "flex";
+    fadeIn(settingsContainer);
 }
 
 function closeSettings() {
@@ -232,17 +232,17 @@ function closeSettings() {
     
     // Hide captions if is cc is disabled
     const toggleCaptionBtn = document.getElementById("toggle-captions");
-    if(!toggleCaptionBtn.classList.contains("isShow")) captionsContainer.style.display = "none";
+    if(!toggleCaptionBtn.classList.contains("isShow") || getNotStarted()) fadeOut(captionsContainer);
 
     //Hide settings
     closeAllMenu();
-    settingsContainer.style.display = "none";
+    fadeOut(settingsContainer);
 }
 
 export function toggleSettings(willBeShow = null) {
     const toggleSettingsBtn = document.getElementById("toggle-settings");
 
-    if(willBeShow == null) willBeShow = settingsContainer.style.display === "none";
+    if(willBeShow == null) willBeShow = !toggleSettingsBtn.classList.contains("isOpen");
     toggleSettingsBtn.classList.toggle("isOpen", willBeShow);
     (willBeShow ? openSettings : closeSettings)();
 }

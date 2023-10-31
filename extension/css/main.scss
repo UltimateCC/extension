@@ -41,6 +41,7 @@ $default-font-family: "Arial";
 $default-max-lines: 2;
 $default-background-color: hexToRgb($theme-background-color);
 $default-background-opacity: 0.5; 
+$default-background-blur: blur(#{$default-background-opacity * 10}px);
 
 // Default settings
 :root {
@@ -50,14 +51,15 @@ $default-background-opacity: 0.5;
     --caption-max-lines: #{$default-max-lines};
     --caption-background-color: #{$default-background-color};
     --caption-background-opacity: #{$default-background-opacity};
+    --caption-background-blur: #{$default-background-blur};
 }
 
 // Temporary (to have an idea of the result)
-// html {
-//     background-image: url("../aypierreStream.png");
-//     background-repeat: no-repeat;
-//     background-size: 100vw 100vh;
-// }
+html {
+    background-image: url("../aypierreStream.png");
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+}
 
 * {
     box-sizing: border-box;
@@ -92,11 +94,18 @@ body#ultimate-closed-caption {
             font-size: var(--caption-font-size);
             font-family: var(--caption-font-family), sans-serif;
 
-            backdrop-filter: blur(5px);
+            backdrop-filter: var(--caption-background-blur);
             
             // If it's locked, don't show the cursor
             &:not(.locked) {
                 cursor: move;
+            }
+
+            transition: opacity 0.5s;
+            display: block;
+
+            &:not(.show) {
+                display: none;
             }
 
             .caption-content-box {
@@ -145,8 +154,12 @@ body#ultimate-closed-caption {
         background-color: rgba($settings-background-color, 0.95);
         font-family: $settings-font-family, sans-serif;
 
+        display: flex;
         flex-direction: column;
         justify-content: space-between;
+        &:not(.show) {
+            display: none;
+        }
 
         overflow: hidden auto;
 
@@ -163,6 +176,11 @@ body#ultimate-closed-caption {
             background-color: $settings-background-color;
             border-radius: 0.5em;
             border: 0.15em solid $settings-text-color;
+        }
+
+        direction: rtl;
+        > * {
+            direction: ltr;
         }
 
         // Title and close button
@@ -229,12 +247,12 @@ body#ultimate-closed-caption {
 
                     &:not(:disabled) {
                         cursor: pointer;
-                    }
 
-                    &:focus, &:active {
-                        outline: none;
-                        box-shadow: $settings-input-shadow-out;
-                        transition: box-shadow 0.5s;
+                        &:focus, &:active {
+                            outline: none;
+                            box-shadow: $settings-input-shadow-out;
+                            transition: box-shadow 0.5s;
+                        }
                     }
 
                     /* Remove arrow */
@@ -542,7 +560,12 @@ body#ultimate-closed-caption {
         border-top-right-radius: 0.25em;
         border-bottom-right-radius: 0.25em;
 
+        display: flex;
         gap: 0.6em;
+
+        &:not(.show) {
+            display: none;
+        }
 
         // Settings wheel
         > button {
@@ -579,4 +602,32 @@ body#ultimate-closed-caption {
             }
         }
     }
+
+
+}
+
+@keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+}
+  
+@keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+}
+  
+.fade-in {
+    animation: fade-in 0.15s ease-in;
+}
+
+.fade-out {
+    animation: fade-out 0.15s ease-out;
 }

@@ -1,4 +1,4 @@
-import { getData } from "./utils.js";
+import { getData, fadeIn, fadeOut } from "./utils.js";
 import { initPosition } from "./draggable.js";
 import { initSettings, toggleSettings, setSelectOptions } from "./settings.js";
 
@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200);
 });
 
+let notStarted = true;
 function loadExtension() {
-    let notStarted = true;
     
     initPosition();
     initSettings();
@@ -97,13 +97,20 @@ function loadExtension() {
     function toggleButtons(willBeShow) {
         const captionBtnContainer = document.getElementById("buttons-container");
         // if(!willBeShow) toggleSettings(false);
-        captionBtnContainer.style.display = willBeShow ? "flex" : "none";
+        captionBtnContainer.classList.toggle("show", willBeShow);
     }
     
     // == Buttons container ==
     function toggleCaptions(willBeShow = null) {
         if(willBeShow == null) willBeShow = !toggleCaptionBtn.classList.contains("isShow");
-        if(!toggleSettingsBtn.classList.contains("isOpen")) captionsContainer.style.display = willBeShow ? "block" : "none";
+        if(!toggleSettingsBtn.classList.contains("isOpen") && !notStarted) {
+            // captionsContainer.classList.toggle("show", willBeShow);
+            if(willBeShow) {
+                fadeIn(captionsContainer);
+            } else {
+                fadeOut(captionsContainer);
+            }
+        }
         toggleCaptionBtn.classList.toggle("isShow", willBeShow);
     }
     toggleCaptionBtn.addEventListener("click", function() {
@@ -113,4 +120,8 @@ function loadExtension() {
     toggleSettingsBtn.addEventListener("click", function() {
         toggleSettings();
     });
+}
+
+export function getNotStarted() {
+    return notStarted;
 }

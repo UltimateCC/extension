@@ -1,5 +1,5 @@
 import { getData, setData } from "./utils.js";
-import { handleLockPosition, toggleSettings } from "./settings.js";
+import { handleLockPosition } from "./settings.js";
 
 const captionBox = document.getElementById("caption-container");
 
@@ -88,8 +88,11 @@ export function stopDraggable() {
     document.onmousemove = null;
 }
 
-export function setNewPosition(newTop, newLeft) {
+export function setNewPosition(newTop = null, newLeft = null) {
     const captionMovableArea = document.getElementById("caption-movable-area");
+
+    if(newTop == null) newTop = parseInt(captionBox.style.top);
+    if(newLeft == null) newLeft = parseInt(captionBox.style.left);
 
     // Get information about the element and the box
     const captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
@@ -128,7 +131,5 @@ export function setNewPosition(newTop, newLeft) {
 
 // On resize, reposition the caption box
 window.addEventListener("resize", () => {
-    const newTop = captionBox.style.top;
-    const newLeft = captionBox.style.left;
-    setNewPosition(parseInt(newTop), parseInt(newLeft)); // Send and remove px
+    setNewPosition();
 });
