@@ -9,6 +9,7 @@ export function getTranslator(u: User) {
 
 	switch(u.config.translateService) {
 
+		/*
 		case 'azure':
 			return new AzureTranslator(u.config, u.secrets);
 		/*

@@ -1,5 +1,5 @@
 
-import { CaptionsData, Result, TranscriptAlt } from "../types";
+import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
 /** Stub translator not doing any translation */
