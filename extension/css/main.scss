@@ -55,11 +55,11 @@ $default-background-blur: blur(#{$default-background-opacity * 10}px);
 }
 
 // Temporary (to have an idea of the result)
-html {
-    background-image: url("../aypierreStream.png");
-    background-repeat: no-repeat;
-    background-size: 100vw 100vh;
-}
+// html {
+//     background-image: url("../aypierreStream.png");
+//     background-repeat: no-repeat;
+//     background-size: 100vw 100vh;
+// }
 
 * {
     box-sizing: border-box;
@@ -590,12 +590,6 @@ body#ultimate-closed-caption {
             }
 
             &.isOpen {
-                path {
-                    fill: red;
-                }
-            }
-
-            &.isShow {
                 path {
                     fill: red;
                 }

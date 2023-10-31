@@ -44,12 +44,6 @@
   --caption-background-blur: blur(5px);
 }
 
-html {
-  background-image: url("../aypierreStream.png");
-  background-repeat: no-repeat;
-  background-size: 100vw 100vh;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -496,9 +490,6 @@ body#ultimate-closed-caption #buttons-container > button path {
   transition: fill 0.2s;
 }
 body#ultimate-closed-caption #buttons-container > button.isOpen path {
-  fill: red;
-}
-body#ultimate-closed-caption #buttons-container > button.isShow path {
   fill: red;
 }
 
