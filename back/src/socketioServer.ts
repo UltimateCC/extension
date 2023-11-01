@@ -9,7 +9,7 @@ import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
-import { rateLimit } from "./captionsLimit";
+import { captionsLimit } from "./captionsLimit";
 
 
 interface ServerToClientEvents {
@@ -79,9 +79,10 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	try {
 		socket.emit('transcript', transcript );
 
-		if(rateLimit(socket.data.twitchId, transcript.final)) {
-			return;
-		}
+		// Ignore partial captions until after 3sec
+		if(!transcript.final && transcript.duration < 3000) return;
+		// Limit captions quantity
+		if(captionsLimit(socket.data.twitchId, transcript.final)) return;
 
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
