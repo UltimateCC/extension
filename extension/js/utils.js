@@ -32,6 +32,7 @@ function setSettingProperty(variableName, newValue = "") {
 const FADE_IN_OUT = 100;
 
 function fadeIn(element) {
+    if(element.classList.contains('show')) return;
     element.classList.add('show');
     element.classList.add('fade-in');
     setTimeout(() => {
@@ -40,6 +41,7 @@ function fadeIn(element) {
 }
 
 function fadeOut(element) {
+    if(!element.classList.contains('show')) return;
     element.classList.add('fade-out');
     setTimeout(() => {
         element.classList.remove('show');

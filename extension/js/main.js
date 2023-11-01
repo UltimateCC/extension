@@ -52,7 +52,7 @@ function loadExtension() {
             return;
         }
 
-        const timeToWait = hlsLatencyBroadcaster * 1000 - allCaptions.delay;
+        const timeToWait = hlsLatencyBroadcaster * 1000 - body.delay;
         setTimeout(function() {
             updateContent();
         }, timeToWait);
@@ -77,7 +77,7 @@ function loadExtension() {
                 unfinishedContent.innerText = notFinishedContent;
             } else {
                 const notFinishedCaption = allCaptions.find(caption => caption.lang == newLanguageCode);
-                if (caption && caption.text) notFinishedContent += " " + notFinishedCaption.text;
+                if (notFinishedCaption && notFinishedCaption.text) notFinishedContent += " " + notFinishedCaption.text;
                 unfinishedContent.innerText = notFinishedContent;
             }
 
