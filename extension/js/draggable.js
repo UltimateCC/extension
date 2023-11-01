@@ -3,21 +3,29 @@ import { handleLockPosition } from "./settings.js";
 
 const captionBox = document.getElementById("caption-container");
 
-function saveDataPosition(top = null, left = null) {
-    top = (top == null) ? captionBox.offsetTop : top;
-    left = (left == null) ? captionBox.offsetLeft : left;
+function getBottom() {
+    return captionBox.style.bottom ? parseInt(captionBox.style.bottom) : 0;
+}
+
+function getLeft() {
+    return captionBox.style.left ? parseInt(captionBox.style.left) : 0;
+}
+
+function saveDataPosition(bottom = null, left = null) {
+    bottom = (bottom == null) ? getBottom() : bottom;
+    left = (left == null) ? getLeft() : left;
 
     // Save the new position
-    setData("position", top + "," + left);
+    setData("position", bottom + "," + left);
 }
 
 export function initPosition() {
     const rawPosition = getData("position");
 
-    var newTop = 0, newLeft = 0;
+    var newBottom = 0, newLeft = 0;
     if (rawPosition) {
         const settingsPosition = rawPosition.split(",");
-        newTop = settingsPosition[0];
+        newBottom = settingsPosition[0];
         newLeft = settingsPosition[1];
     } else {
         const captionMovableArea = document.getElementById("caption-movable-area");
@@ -30,8 +38,8 @@ export function initPosition() {
 
         // Center
         newLeft = (captionMovableArea.offsetWidth - captionBox.offsetWidth) / 2;
-        newTop = captionMovableArea.offsetHeight < 100 ? captionMovableArea.offsetHeight : captionMovableArea.offsetHeight - 100;
-        newTop -= captionBox.offsetHeight;
+        newBottom = captionMovableArea.offsetHeight < 100 ? captionMovableArea.offsetHeight : captionMovableArea.offsetHeight - 100;
+        newBottom -= captionBox.offsetHeight;
 
         if(captionBoxIsHidden) {
             captionBox.style.display = "none";
@@ -39,7 +47,7 @@ export function initPosition() {
         }
     }
 
-    setNewPosition(newTop, newLeft);
+    setNewPosition(newBottom, newLeft);
 
     (getData("isLocked") == "true") ? handleLockPosition() : startDraggable();
 }
@@ -70,7 +78,7 @@ export function startDraggable() {
 
         // Check if the mouse is click
         if (e.buttons !== 1) return closeDragElement();
-        setNewPosition(captionBox.offsetTop - deltaY, captionBox.offsetLeft - deltaX);
+        setNewPosition(getBottom() + deltaY, getLeft() - deltaX);
     }
 
     function closeDragElement() {
@@ -88,11 +96,11 @@ export function stopDraggable() {
     document.onmousemove = null;
 }
 
-export function setNewPosition(newTop = null, newLeft = null) {
+export function setNewPosition(newBottom = null, newLeft = null) {
     const captionMovableArea = document.getElementById("caption-movable-area");
 
-    if(newTop == null) newTop = parseInt(captionBox.style.top);
-    if(newLeft == null) newLeft = parseInt(captionBox.style.left);
+    if(newBottom == null) newBottom = getBottom();
+    if(newLeft == null) newLeft = getLeft();
 
     // Get information about the element and the box
     const captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
@@ -111,10 +119,10 @@ export function setNewPosition(newTop = null, newLeft = null) {
     }
 
     // Check if the new position is inside the container 
-    if (newTop < 0) {
-        newTop = 0;
-    } else if (newTop > captionMovableAreaRect.height - captionBoxRect.height) {
-        newTop = captionMovableAreaRect.height - captionBoxRect.height;
+    if (newBottom < 0) {
+        newBottom = 0;
+    } else if (newBottom > captionMovableAreaRect.height - captionBoxRect.height) {
+        newBottom = captionMovableAreaRect.height - captionBoxRect.height;
     }
 
     // Check if the new position is inside the container
@@ -125,7 +133,7 @@ export function setNewPosition(newTop = null, newLeft = null) {
     }
 
     // Set the new position
-    captionBox.style.top = newTop + "px";
+    captionBox.style.bottom = newBottom + "px";
     captionBox.style.left = newLeft + "px";
 }
 
