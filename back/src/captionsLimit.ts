@@ -1,34 +1,36 @@
 
 
-const limits = new Map<string, NodeJS.Timeout>();
+const partialLimits = new Map<string, NodeJS.Timeout>();
+const finalLimits = new Map<string, NodeJS.Timeout>();
 
-// Limit final captions to one each 2 seconds
+// Minimum delay between each final captions
 const finalDelay = 2000;
 
-// Limit partial captions to one each 5 seconds
-const partialDelay = 5000;
+// Minimum delay between each partial captions
+const partialDelay = 3000;
 
 /** Return true if captions should be ignored */
-export function rateLimit(id: string, final: boolean) {
+export function captionsLimit(id: string, final: boolean) {
 
 	if(final) {
 		// Final captions ratelimit
-		if(limits.has('f'+id)) {
+		if(finalLimits.has(id)) {
 			return true;
 		}
-		const x = setTimeout(() => limits.delete('f'+id), finalDelay);
-		limits.set('f'+id, x);
+		const x = setTimeout(() => finalLimits.delete(id), finalDelay);
+		finalLimits.set(id, x);
 		// Clear previous timeout for partial captions
-		clearTimeout(limits.get('p'+id));
+		clearTimeout(partialLimits.get(id));
 
 	// Partial captions ratelimit
-	}else if(limits.has('p'+id)) {
-		return true;
+	}else{
+		if(partialLimits.has(id)) {
+			return true;
+		}
 	}
-
 	// Set time before allowing next partial captions
-	const x = setTimeout(() => limits.delete('p'+id), partialDelay);
-	limits.set('p'+id, x);
+	const x = setTimeout(() => partialLimits.delete(id), partialDelay);
+	partialLimits.set(id, x);
 
 	return false;
 }
