@@ -10,7 +10,7 @@ type Contributor = {
 const contributors: Contributor[] = [
 	{
 		discordId: "207935292995403777",
-		role: "For the original idea",
+		role: "For the original idea and the testing",
 		name: "aypierre",
 		img: "https://cdn.discordapp.com/avatars/207935292995403777/c0a365f3ce2109b5f5b327b4ef182249?size=1024"
 	},
@@ -49,6 +49,12 @@ const contributors: Contributor[] = [
 		role: "Back-end developer",
 		name: "Salutations Distinguées",
 		img: "https://cdn.discordapp.com/avatars/179672144131653642/60baa9d4203c556e81a9d64ae5bc471b?size=1024"
+	},
+	{
+		discordId: "342750918556778498",
+		role: "Designer (extension)",
+		name: "Velie",
+		img: "https://cdn.discordapp.com/avatars/342750918556778498/eec29a0e6ffe86ade3f0a5ffe53c4315?size=1024"
 	},
 ];
 
