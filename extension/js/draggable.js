@@ -2,13 +2,14 @@ import { getData, setData } from "./utils.js";
 import { handleLockPosition } from "./settings.js";
 
 const captionBox = document.getElementById("caption-container");
+const captionMovableArea = document.getElementById("caption-movable-area");
 
 function getBottom() {
-    return captionBox.style.bottom ? parseInt(captionBox.style.bottom) : 0;
+    return captionBox.style.bottom ? parseFloat(captionBox.style.bottom) : 0;
 }
 
 function getLeft() {
-    return captionBox.style.left ? parseInt(captionBox.style.left) : 0;
+    return captionBox.style.left ? parseFloat(captionBox.style.left) : 0;
 }
 
 function saveDataPosition(bottom = null, left = null) {
@@ -28,22 +29,25 @@ export function initPosition() {
         newBottom = settingsPosition[0];
         newLeft = settingsPosition[1];
     } else {
-        const captionMovableArea = document.getElementById("caption-movable-area");
 
         const captionBoxIsHidden = captionBox.style.display == "none";
-        if(captionBoxIsHidden) {
+        const captionMovableAreaIsHidden = captionMovableArea.style.display == "none";
+        if(captionBoxIsHidden || captionMovableAreaIsHidden) {
             captionBox.style.opacity = 0;
             captionBox.style.display = "block";
+            captionMovableAreaIsHidden.style.opacity = 0;
+            captionMovableAreaIsHidden.style.display = "block";
         }
 
         // Center
-        newLeft = (captionMovableArea.offsetWidth - captionBox.offsetWidth) / 2;
-        newBottom = captionMovableArea.offsetHeight < 100 ? captionMovableArea.offsetHeight : captionMovableArea.offsetHeight - 100;
-        newBottom -= captionBox.offsetHeight;
+        newLeft = 50  - captionBox.offsetWidth * 50 / captionMovableArea.offsetWidth;
+        newBottom = 10;
 
-        if(captionBoxIsHidden) {
+        if(captionBoxIsHidden || captionMovableAreaIsHidden) {
             captionBox.style.display = "none";
             captionBox.style.opacity = 1;
+            captionMovableAreaIsHidden.style.display = "none";
+            captionMovableAreaIsHidden.style.opacity = 1;
         }
     }
 
@@ -76,9 +80,12 @@ export function startDraggable() {
         mouseX = e.clientX;
         mouseY = e.clientY;
 
+        const newBottom = getBottom() + (deltaY * 100 / captionMovableArea.offsetHeight);
+        const newLeft = getLeft() - (deltaX * 100 / captionMovableArea.offsetWidth);
+
         // Check if the mouse is click
         if (e.buttons !== 1) return closeDragElement();
-        setNewPosition(getBottom() + deltaY, getLeft() - deltaX);
+        setNewPosition(newBottom, newLeft);
     }
 
     function closeDragElement() {
@@ -97,8 +104,6 @@ export function stopDraggable() {
 }
 
 export function setNewPosition(newBottom = null, newLeft = null) {
-    const captionMovableArea = document.getElementById("caption-movable-area");
-
     if(newBottom == null) newBottom = getBottom();
     if(newLeft == null) newLeft = getLeft();
 
@@ -118,23 +123,15 @@ export function setNewPosition(newBottom = null, newLeft = null) {
         captionBox.style.opacity = 1;
     }
 
-    // Check if the new position is inside the container 
-    if (newBottom < 0) {
-        newBottom = 0;
-    } else if (newBottom > captionMovableAreaRect.height - captionBoxRect.height) {
-        newBottom = captionMovableAreaRect.height - captionBoxRect.height;
-    }
+    const maxBottom = 100 - captionBoxRect.height * 100 / captionMovableAreaRect.height;
+    const maxLeft = 100 - captionBoxRect.width * 100 / captionMovableAreaRect.width;
+    newBottom = (newBottom < 0) ? 0 : (newBottom < maxBottom) ? newBottom : maxBottom;
+    newLeft = (newLeft < 0) ? 0 : (newLeft < maxLeft) ? newLeft : maxLeft;
 
-    // Check if the new position is inside the container
-    if (newLeft < 0) {
-        newLeft = 0;
-    } else if (newLeft > captionMovableAreaRect.width - captionBoxRect.width) {
-        newLeft = captionMovableAreaRect.width - captionBoxRect.width;
-    }
 
     // Set the new position
-    captionBox.style.bottom = newBottom + "px";
-    captionBox.style.left = newLeft + "px";
+    captionBox.style.bottom = newBottom + "%";
+    captionBox.style.left = newLeft + "%";
 }
 
 // On resize, reposition the caption box
