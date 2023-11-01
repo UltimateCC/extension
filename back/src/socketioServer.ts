@@ -9,6 +9,7 @@ import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
+import { rateLimit } from "./captionsLimit";
 
 
 interface ServerToClientEvents {
@@ -27,9 +28,6 @@ interface ClientToServerEvents {
 	audioEnd: ()  => void;
 }
 
-type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
-type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
-
 export interface SocketData {
 	config: UserConfig;
 	twitchId: string;
@@ -37,6 +35,10 @@ export interface SocketData {
 	stt: SpeechToText | null;
 	streamingStt: StreamingSpeechToText | null;
 }
+
+type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
+type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
+
 
 async function loadConfig(socket: TypedSocket) {
 	const u = await dataSource.manager.findOneByOrFail(User, { twitchId: socket.data.twitchId });
@@ -77,16 +79,16 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	try {
 		socket.emit('transcript', transcript );
 
-		// Todo: Kind of "rate limiter" to show some non-final transcripts depending on config
-		if(transcript.final) {
+		if(rateLimit(socket.data.twitchId, transcript.final)) {
+			return;
+		}
 
-			const out = await socket.data.translator.translate(transcript);
-			if(out.isError) {
-				socket.emit('info', { type: 'warn', message: out.message });
-			}else{
-				console.log('Sending pubsub', out.data);
-				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
-			}		
+		const out = await socket.data.translator.translate(transcript);
+		if(out.isError) {
+			socket.emit('info', { type: 'warn', message: out.message });
+		}else{
+			console.log('Sending pubsub', out.data);
+			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 		}
 	}catch(e) {
 		console.error('Error handling captions', e);
