@@ -39,14 +39,14 @@ export function useSpeechRecognition(
 			//Restart recognition when it ends itself
 			recognition.onend = () => { if(!stopped) recognition.start(); }
 
-			let lastIndex = -1;
+			let speaking = false;
 			let start = Date.now();
 
 			recognition.onresult = (event) => {
 				// Get start time when new sentence
-				if(lastIndex !== event.resultIndex) {
-					lastIndex = event.resultIndex;
+				if(!speaking) {
 					start = Date.now();
+					speaking = true;
 				}
 				const result = event.results[event.resultIndex];
 				const text = result[0].transcript.trim();
@@ -55,6 +55,7 @@ export function useSpeechRecognition(
 					handleText({text, lang, duration, delay: duration, final: result.isFinal });
 					if(result.isFinal) {
 						start = Date.now();
+						speaking = false;
 					}
 				}
 			}
