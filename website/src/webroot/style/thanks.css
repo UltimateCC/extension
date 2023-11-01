@@ -45,6 +45,7 @@
     row-gap: calc(var(--gap) * 0.2);
     width: 200px;
     margin: 0 auto;
+    font-size: 1.2rem;
 }
 
 /* Media queries */
@@ -62,15 +63,23 @@
 }
 
 #thanks .thanks-container .thanks-card h4 {
-    font-size: 1.5rem;
+    font-size: 1.5em;
     font-weight: 400;
     line-height: 1em;
 }
 
 #thanks .thanks-container .thanks-card p {
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 300;
     text-align: center;
     width: 100%;
     color: var(--button);
+}
+
+#thanks .thanks-container > p {
+    font-size: 1.2em;
+}
+
+#thanks .thanks-container > p.others {
+    margin-top: 1.5em;
 }

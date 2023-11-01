@@ -40,8 +40,7 @@ function Thanks() {
                     ))}
                 </ul>
 
-                <h3>Others</h3>
-                <p>
+                <p className="others">
                     {thanksData?.others.map((member) => (
                         <span key={member}>
                             {member}
