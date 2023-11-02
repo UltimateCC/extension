@@ -1,15 +1,15 @@
 import { getData, setData } from "./utils.js";
 import { handleLockPosition } from "./settings.js";
 
-const captionBox = document.getElementById("caption-container");
+const captionContainer = document.getElementById("caption-container");
 const captionMovableArea = document.getElementById("caption-movable-area");
 
 function getBottom() {
-    return captionBox.style.bottom ? parseFloat(captionBox.style.bottom) : 0;
+    return captionContainer.style.bottom ? parseFloat(captionContainer.style.bottom) : 0;
 }
 
 function getLeft() {
-    return captionBox.style.left ? parseFloat(captionBox.style.left) : 0;
+    return captionContainer.style.left ? parseFloat(captionContainer.style.left) : 0;
 }
 
 function saveDataPosition(bottom = null, left = null) {
@@ -21,45 +21,50 @@ function saveDataPosition(bottom = null, left = null) {
 }
 
 export function initPosition() {
+    console.log("Init position");
     const rawPosition = getData("position");
 
     var newBottom = 0, newLeft = 0;
     if (rawPosition) {
         const settingsPosition = rawPosition.split(",");
-        newBottom = settingsPosition[0];
-        newLeft = settingsPosition[1];
+        newBottom = parseFloat(settingsPosition[0]);
+        newLeft = parseFloat(settingsPosition[1]);
     } else {
 
-        const captionBoxIsHidden = captionBox.style.display == "none";
+        const captionContainerIsHidden = captionContainer.style.display == "none";
         const captionMovableAreaIsHidden = captionMovableArea.style.display == "none";
-        if(captionBoxIsHidden || captionMovableAreaIsHidden) {
-            captionBox.style.opacity = 0;
-            captionBox.style.display = "block";
+        if(captionContainerIsHidden || captionMovableAreaIsHidden) {
+            captionContainer.style.opacity = 0;
+            captionContainer.style.display = "block";
             captionMovableAreaIsHidden.style.opacity = 0;
             captionMovableAreaIsHidden.style.display = "block";
         }
 
         // Center
-        newLeft = 50  - captionBox.offsetWidth * 50 / captionMovableArea.offsetWidth;
+        newLeft = 50  - captionContainer.offsetWidth * 50 / captionMovableArea.offsetWidth;
         newBottom = 10;
 
-        if(captionBoxIsHidden || captionMovableAreaIsHidden) {
-            captionBox.style.display = "none";
-            captionBox.style.opacity = 1;
+        if(captionContainerIsHidden || captionMovableAreaIsHidden) {
+            captionContainer.style.display = "none";
+            captionContainer.style.opacity = 1;
             captionMovableAreaIsHidden.style.display = "none";
             captionMovableAreaIsHidden.style.opacity = 1;
         }
     }
 
+
     setNewPosition(newBottom, newLeft);
 
     (getData("isLocked") == "true") ? handleLockPosition() : startDraggable();
+
+    // Save the new position
+    saveDataPosition(newBottom, newLeft);
 }
 
 export function startDraggable() {
     var mouseX = 0, mouseY = 0;
 
-    captionBox.onmousedown = dragMouseDown;
+    captionContainer.onmousedown = dragMouseDown;
 
     // Credits: W3Schools how to make a draggable element
     function dragMouseDown(e) {
@@ -98,43 +103,43 @@ export function startDraggable() {
 }
 
 export function stopDraggable() {
-    captionBox.onmousedown = null;
+    captionContainer.onmousedown = null;
     document.onmouseup = null;
     document.onmousemove = null;
 }
 
 export function setNewPosition(newBottom = null, newLeft = null) {
-    if(newBottom == null) newBottom = getBottom();
-    if(newLeft == null) newLeft = getLeft();
+    if(newBottom == null || newLeft == null) {
+        if(captionContainer.style.bottom == null || captionContainer.style.left == null) {
+            initPosition();
+        } else {
+            if(newBottom == null) newBottom = getBottom();
+            if(newLeft == null) newLeft = getLeft();
+        }
+    }
 
     // Get information about the element and the box
     const captionMovableAreaRect = captionMovableArea.getBoundingClientRect();
 
-    const captionBoxIsHidden = captionBox.style.display == "none";
-    if(captionBoxIsHidden) {
-        captionBox.style.opacity = 0;
-        captionBox.style.display = "block";
+    const captionContainerIsHidden = captionContainer.style.display == "none";
+    if(captionContainerIsHidden) {
+        captionContainer.style.opacity = 0;
+        captionContainer.style.display = "block";
     }
 
-    const captionBoxRect = captionBox.getBoundingClientRect();
+    const captionContainerRect = captionContainer.getBoundingClientRect();
 
-    if(captionBoxIsHidden) {
-        captionBox.style.display = "none";
-        captionBox.style.opacity = 1;
+    if(captionContainerIsHidden) {
+        captionContainer.style.display = "none";
+        captionContainer.style.opacity = 1;
     }
 
-    const maxBottom = 100 - captionBoxRect.height * 100 / captionMovableAreaRect.height;
-    const maxLeft = 100 - captionBoxRect.width * 100 / captionMovableAreaRect.width;
+    const maxBottom = 100 - captionContainerRect.height * 100 / captionMovableAreaRect.height;
+    const maxLeft = 100 - captionContainerRect.width * 100 / captionMovableAreaRect.width;
     newBottom = (newBottom < 0) ? 0 : (newBottom < maxBottom) ? newBottom : maxBottom;
     newLeft = (newLeft < 0) ? 0 : (newLeft < maxLeft) ? newLeft : maxLeft;
 
-
     // Set the new position
-    captionBox.style.bottom = newBottom + "%";
-    captionBox.style.left = newLeft + "%";
+    captionContainer.style.bottom = newBottom + "%";
+    captionContainer.style.left = newLeft + "%";
 }
-
-// On resize, reposition the caption box
-window.addEventListener("resize", () => {
-    setNewPosition();
-});
