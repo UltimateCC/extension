@@ -39,6 +39,9 @@ body#ultimate-closed-caption {
   position: relative;
   font-size: clamp(1em, 2.25vh, 3em);
 }
+body#ultimate-closed-caption #information {
+  display: none;
+}
 body#ultimate-closed-caption #caption-movable-area {
   width: 100vw;
   height: calc(100vh - 1rem * 2);
@@ -460,22 +463,18 @@ body#ultimate-closed-caption #buttons-container > button {
   border: none;
   background-color: transparent;
   font-size: 1.5em;
-  border-radius: 50%;
   cursor: pointer;
-}
-body#ultimate-closed-caption #buttons-container > button:hover {
-  transform: scale(1.1);
   transition: transform 0.2s ease-in-out;
-}
-body#ultimate-closed-caption #buttons-container > button:hover path {
-  fill: #4C4C5A;
+  border-radius: 0.5em;
 }
 body#ultimate-closed-caption #buttons-container > button path {
   fill: #D9D9D9;
-  transition: fill 0.2s;
+}
+body#ultimate-closed-caption #buttons-container > button:hover {
+  transform: scale(1.1);
 }
 body#ultimate-closed-caption #buttons-container > button.isOpen path {
-  fill: red;
+  fill: #999;
 }
 
 @keyframes fade-in {

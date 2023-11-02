@@ -249,7 +249,7 @@ export function toggleSettings(willBeShow = null) {
 
 export async function setSelectOptions(languagesCodes) {
     const languageInput = document.getElementById("language-input");
-    const jsonLangPath = "../storage/languages.json";
+    const jsonLangPath = "storage/languages.json";
 
     let languageDictionary = null;
 
@@ -267,7 +267,7 @@ export async function setSelectOptions(languagesCodes) {
 
     const optionElement = document.createElement("option");
     optionElement.value = "stt";
-    optionElement.innerText = "Speech recognition";
+    optionElement.innerText = "Spoken language";
     languageInput.appendChild(optionElement);
 
     for (let i = 0; i < languagesCodes.length; ++i) {

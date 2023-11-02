@@ -4,6 +4,8 @@ import { initSettings, toggleSettings, setSelectOptions } from "./settings.js";
 
 let currentLanguageCode = getData("language") || "stt"; // Global variable to store the current language code
 
+const body = document.getElementById("ultimate-closed-caption");
+
 export function setCurrentLang(language) {
     currentLanguageCode = language;
 }
@@ -17,10 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // TODO: Find a better way to check if the dom is fully loaded
     setTimeout(function() {
         loadExtension();
+        body.style.removeProperty("display");
     }, 500);
 });
-
-
 
 let notStarted = true;
 function loadExtension() {
@@ -64,6 +65,7 @@ function loadExtension() {
             if(notStarted) {
                 notStarted = false;
                 content = "";
+                finishedContent.content = "";
                 setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
                 if (toggleCaptionBtn.classList.contains("isShow")) {
                     toggleCaptions(true); // Show the captions on the first message

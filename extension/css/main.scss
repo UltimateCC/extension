@@ -75,6 +75,11 @@ body#ultimate-closed-caption {
     position: relative; // Not necessary, just to show what is the container of position: absolute
     font-size: $settings-font-size;
 
+    // Prevent message
+    #information {
+        display: none;
+    }
+
     // Caption container
     #caption-movable-area {
         
@@ -548,6 +553,7 @@ body#ultimate-closed-caption {
     }
 
     // Buttons navigation container
+    $settings-wheel-padding-X: 0.6em;
     #buttons-container {
         position: absolute;
         left: 0;
@@ -555,13 +561,13 @@ body#ultimate-closed-caption {
         z-index: 2;
 
         width: fit-content;
-        padding: $settings-wheel-padding-Y 0.6em;
+        padding: $settings-wheel-padding-Y $settings-wheel-padding-X;
         background-color: $settings-background-color;
         border-top-right-radius: 0.25em;
         border-bottom-right-radius: 0.25em;
 
         display: flex;
-        gap: 0.6em;
+        gap: $settings-wheel-padding-X;
 
         &:not(.show) {
             display: none;
@@ -572,26 +578,23 @@ body#ultimate-closed-caption {
             border: none;
             background-color: transparent;
             font-size: $settings-wheel-size;
-            border-radius: 50%;
             cursor: pointer;
-
-            &:hover {
-                transform: scale(1.1);
-                transition: transform 0.2s ease-in-out;
-
-                path {
-                    fill: $settings-button-color;
-                }
-            }
+            transition: transform 0.2s ease-in-out;
+            border-radius: 0.5em;
+            // padding: 0.1em $settings-wheel-padding-X;
 
             path {
                 fill: $settings-text-color;
-                transition: fill 0.2s;
+            }
+
+            &:hover {
+                transform: scale(1.1);
             }
 
             &.isOpen {
+                // background-color: $settings-button-color;
                 path {
-                    fill: red;
+                    fill: #999;
                 }
             }
         }
