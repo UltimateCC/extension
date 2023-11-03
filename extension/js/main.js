@@ -18,8 +18,8 @@ export function getCurrentLang() {
 document.addEventListener("DOMContentLoaded", function () {
     // TODO: Find a better way to check if the dom is fully loaded
     setTimeout(function() {
-        loadExtension();
         body.style.removeProperty("display");
+        loadExtension();
     }, 500);
 });
 
@@ -56,6 +56,7 @@ function loadExtension() {
         }
 
         const timeToWait = hlsLatencyBroadcaster * 1000 - body.delay;
+        console.log("Ultimate CC : Time to wait : " + timeToWait, hlsLatencyBroadcaster, body.delay);
         setTimeout(function() {
             updateContent();
         }, timeToWait);
