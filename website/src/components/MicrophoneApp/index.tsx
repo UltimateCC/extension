@@ -14,10 +14,10 @@ interface MicrophoneAppProps {
 }
 
 function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: MicrophoneAppProps) {
-    const { handleText, recognized, info, reloadConfig } = useContext(SocketContext);
+    const { handleText, info, reloadConfig } = useContext(SocketContext);
     const [listening, setListening] = useState<boolean>(false);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
-    const { error } = useSpeechRecognition(handleText, spokenLang!, listening);
+    const { error, text } = useSpeechRecognition(handleText, spokenLang!, listening);
 
     useEffect(()=>{
         if(info?.type === 'error') setListening(false);
@@ -71,7 +71,7 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: 
                 <>
                     <h4>Spoken text</h4>
                     <div className="spoken-text">
-                        <p>{ recognized?.text ?? '' } </p>
+                        <p>{ text } </p>
                     </div>
                 </>
             )}

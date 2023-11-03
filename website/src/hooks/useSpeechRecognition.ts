@@ -9,6 +9,7 @@ export function useSpeechRecognition(
 	listening: boolean
 ) {
 	const [error, setError] = useState<string>();
+	const [text, setText] = useState<string>('');
 
 	useEffect(()=>{
 
@@ -39,25 +40,35 @@ export function useSpeechRecognition(
 			//Restart recognition when it ends itself
 			recognition.onend = () => { if(!stopped) recognition.start(); }
 
-			let speaking = false;
-			let start = Date.now();
+			let lastCaptions: number | null = null;
 
 			recognition.onresult = (event) => {
-				// Get start time when new sentence
-				if(!speaking) {
-					start = Date.now();
-					speaking = true;
-				}
 				const result = event.results[event.resultIndex];
 				const text = result[0].transcript.trim();
-				if(text) {
-					const duration = Date.now() - start;
-					handleText({text, lang, duration, delay: duration, final: result.isFinal });
-					if(result.isFinal) {
-						start = Date.now();
-						speaking = false;
-					}
+
+				setText(text);
+
+				// Wait 2s between each partial caption
+				if(!result.isFinal && lastCaptions && ( (lastCaptions + 2000) > Date.now() ) ) {
+					return;
 				}
+
+				// Ignore first partial captions
+				if(text && (result.isFinal || lastCaptions) ) {
+
+					// Duration/delay is time since last partial sent
+					const duration = Date.now() - (lastCaptions ?? 0);
+					handleText({text, lang, duration, delay: duration, final: result.isFinal });
+				}
+
+				if(result.isFinal) {
+					// Reset timestamps when sentence ends
+					lastCaptions = null;
+				}else{
+					// Setup timestamp for next partial time
+					lastCaptions = Date.now();
+				}
+				
 			}
 
 			recognition.start();
@@ -65,6 +76,8 @@ export function useSpeechRecognition(
 			stopFunc = () =>{
 				recognition.abort();
 			}
+		}else{
+			setText('');
 		}
 
 		return ()=>{
@@ -74,5 +87,5 @@ export function useSpeechRecognition(
 
 	}, [ listening, lang, handleText ]);
 
-	return { error };
+	return { error, text };
 }
