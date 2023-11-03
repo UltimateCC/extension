@@ -148,7 +148,7 @@ function loadExtension() {
     });
 
     function initButtons() {
-        toggleCaptions(getData("isVisible") == "true");
+        toggleCaptions(getData("isVisible") != "false");
         toggleButtons(true);
     }
 

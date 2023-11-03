@@ -31,13 +31,13 @@ export function initPosition() {
         newLeft = parseFloat(settingsPosition[1]);
     } else {
 
-        const captionContainerIsHidden = captionContainer.style.display == "none";
-        const captionMovableAreaIsHidden = captionMovableArea.style.display == "none";
+        const captionContainerIsHidden = captionContainer.style.display == "none" || !captionContainer.classList.contains("show");
+        const captionMovableAreaIsHidden = captionMovableArea.style.display == "none" || !captionMovableArea.classList.contains("show");
         if(captionContainerIsHidden || captionMovableAreaIsHidden) {
             captionContainer.style.opacity = 0;
             captionContainer.style.display = "block";
-            captionMovableAreaIsHidden.style.opacity = 0;
-            captionMovableAreaIsHidden.style.display = "block";
+            captionMovableArea.style.opacity = 0;
+            captionMovableArea.style.display = "block";
         }
 
         // Center
@@ -45,10 +45,10 @@ export function initPosition() {
         newBottom = 10;
 
         if(captionContainerIsHidden || captionMovableAreaIsHidden) {
-            captionContainer.style.display = "none";
-            captionContainer.style.opacity = 1;
-            captionMovableAreaIsHidden.style.display = "none";
-            captionMovableAreaIsHidden.style.opacity = 1;
+            captionContainer.style.display = "";
+            captionContainer.style.opacity = "";
+            captionMovableArea.style.display = "";
+            captionMovableArea.style.opacity = "";
         }
     }
 
@@ -130,8 +130,8 @@ export function setNewPosition(newBottom = null, newLeft = null) {
     const captionContainerRect = captionContainer.getBoundingClientRect();
 
     if(captionContainerIsHidden) {
-        captionContainer.style.display = "none";
-        captionContainer.style.opacity = 1;
+        captionContainer.style.display = "";
+        captionContainer.style.opacity = "";
     }
 
     const maxBottom = 100 - captionContainerRect.height * 100 / captionMovableAreaRect.height;
