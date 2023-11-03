@@ -39,7 +39,7 @@ app.use('/api/auth', authRouter);
 // Config
 app.use('/api/config', configRouter);
 // Secrets
-app.use('/api/config', secretsRouter);
+app.use('/api/secrets', secretsRouter);
 // Thanks page
 app.use('/api/thanks', thanksRouter);
 
