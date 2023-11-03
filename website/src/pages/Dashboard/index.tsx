@@ -82,11 +82,16 @@ function Dashboard() {
     };
 
     if(response?.hideRestOfPage) return (
-        <FormResponse
-            isSucceed={response.isSuccess}
-            message={response.message}
-            onClose={closeResponse}
-        />
+        <div className="theme-box">
+            <FormResponse
+                isSucceed={response.isSuccess}
+                message={response.message}
+                onClose={closeResponse}
+            />
+            <Link to="/logout" className="profile-container">
+                You can logout here if is needed
+            </Link>
+        </div>
     );
 
     return (
