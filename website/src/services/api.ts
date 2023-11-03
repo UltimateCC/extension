@@ -25,17 +25,17 @@ export default async function api(
         body: options.body ? JSON.stringify(options.body) : undefined
     });
     if (!res.ok) {
-        const err = await res.json();
-        if (err.code === 401) { // Unauthorized
-            throw new Error('Unauthorized');
-            //window.location.replace('/');
-            return new Promise(() => {}); // Never resolve because we're redirecting
+        let error = "Unexpected error";
+        if (res.status === 401) { // Unauthorized
+            error = "Unauthorized";
         }
-        throw err;
+        try {
+            error = await res.json();
+        } catch (e) {
+            console.error("Error parsing json : ", e);
+        }
+        throw new Error(error);
     } else {
-        if (res.status === 204) {
-            throw new Error('Empty or bad content');
-        }
         return res.json();
     }
 }

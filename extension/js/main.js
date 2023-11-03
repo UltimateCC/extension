@@ -66,7 +66,7 @@ function loadExtension() {
             if(notStarted) {
                 notStarted = false;
                 content = "";
-                finishedContent.content = "";
+                finishedContent.innerText = "";
                 setSelectOptions(allCaptions.map(caption => caption.lang).sort()); // Set select options from the list of languages translated
                 if (toggleCaptionBtn.classList.contains("isShow")) {
                     toggleCaptions(true); // Show the captions on the first message
