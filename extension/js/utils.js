@@ -20,6 +20,13 @@ function convertHexToRGB(hex) {
     return parseInt(hex.substring(0, 2), 16) + ", " + parseInt(hex.substring(2, 4), 16) + ", " + parseInt(hex.substring(4, 6), 16);
 }
 
+// Convert 255, 255, 255 to #ffffff
+function convertRGBToHex(rgb) {
+    if (!rgb) return "";
+    rgb = rgb.split(", ");
+    return "#" + parseInt(rgb[0]).toString(16) + parseInt(rgb[1]).toString(16) + parseInt(rgb[2]).toString(16);
+}
+
 // Set CSS variable
 function setSettingProperty(variableName, newValue = "") {
     if (newValue === "") {
@@ -49,4 +56,4 @@ function fadeOut(element) {
     }, FADE_IN_OUT);
 }
 
-export { setData, getData, deleteData, convertHexToRGB, setSettingProperty, fadeIn, fadeOut };
+export { setData, getData, deleteData, convertHexToRGB, convertRGBToHex, setSettingProperty, fadeIn, fadeOut };

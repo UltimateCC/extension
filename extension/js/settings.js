@@ -1,4 +1,4 @@
-import { setData, getData, deleteData, convertHexToRGB, setSettingProperty, fadeIn, fadeOut } from "./utils.js";
+import { setData, getData, deleteData, convertHexToRGB, convertRGBToHex, setSettingProperty, fadeIn, fadeOut } from "./utils.js";
 import { initPosition, startDraggable, stopDraggable, setNewPosition } from "./draggable.js";
 import { setCurrentLang, getCurrentLang, getNotStarted } from "./main.js";
 
@@ -41,11 +41,11 @@ const backgroundMenu = document.getElementById("group-background");
 const backgroundMenuHeader = backgroundMenu.getElementsByClassName("caption-group-header")[0];
 
 const defaultSettingsContent = {
-    "font-color": "#ffffff",
+    "font-color": "255, 255, 255",
     "font-size": 24,
     "font-family": "Arial, Helvetica, sans-serif",
     "max-lines": 2,
-    "background-color": "#37373E",
+    "background-color": "55, 55, 62",
     "background-opacity": 0.5
 };
 
@@ -58,20 +58,20 @@ export function initSettings() {
     }
 
     // Set CSS variables
-    setSettingProperty("font-color", convertHexToRGB(settingsContent["font-color"]));
+    setSettingProperty("font-color", settingsContent["font-color"]);
     setSettingProperty("font-size", settingsContent["font-size"] + "px");
     setSettingProperty("font-family", settingsContent["font-family"]);
     setSettingProperty("max-lines", settingsContent["max-lines"]);
-    setSettingProperty("background-color", convertHexToRGB(settingsContent["background-color"]));
+    setSettingProperty("background-color", settingsContent["background-color"]);
     setSettingProperty("background-opacity", settingsContent["background-opacity"]);
     setSettingProperty("background-blur", "blur(" + (settingsContent["background-opacity"] * 10) + "px)");
 
-    fontColorInput.value = settingsContent["font-color"];
+    fontColorInput.value = convertRGBToHex(settingsContent["font-color"]);
     fontSizeInput.value = settingsContent["font-size"];
     fontFamilyInput.value = settingsContent["font-family"];
     fontFamilyInput.style.fontFamily = settingsContent["font-family"];
     maxLinesInput.value = settingsContent["max-lines"];
-    bgColorInput.value = settingsContent["background-color"];
+    bgColorInput.value = convertRGBToHex(settingsContent["background-color"]);
     bgOpacityNumberInput.value = settingsContent["background-opacity"] * 100;
     bgOpacityRangeInput.value = settingsContent["background-opacity"] * 100;
 
