@@ -110,6 +110,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
 
     return (
         <>
+            <p>Warning ! You are responsible for setting proper limits on your API keys to avoid any excessive billing</p>
             <form className='api-form'>
                 {response && (
                     <FormResponse

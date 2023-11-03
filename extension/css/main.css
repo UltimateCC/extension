@@ -26,6 +26,14 @@
   --caption-background-blur: blur(5px);
 }
 
+/*
+// Temporary (to have an idea of the result)
+html {
+    background-image: url("../aypierreStream.png");
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+}
+*/
 * {
   box-sizing: border-box;
   margin: 0;
