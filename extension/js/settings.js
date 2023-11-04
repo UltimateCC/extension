@@ -270,6 +270,7 @@ export async function setSelectOptions(languagesCodes) {
     optionElement.innerText = "Spoken language";
     languageInput.appendChild(optionElement);
 
+    let haveSpokenLanguage = false;
     for (let i = 0; i < languagesCodes.length; ++i) {
         const languageCode = languagesCodes[i];
         const languageName = languageDictionary[languageCode] ? languageDictionary[languageCode] : languageCode;
@@ -277,9 +278,17 @@ export async function setSelectOptions(languagesCodes) {
         const optionElement = document.createElement("option");
         optionElement.value = languageCode;
         optionElement.innerText = languageName;
+        if(languageCode == getCurrentLang()) {
+            haveSpokenLanguage = true;
+            optionElement.selected = true;
+        }
         languageInput.appendChild(optionElement);
     }
 
-    languageInput.value = getCurrentLang();
+    if(!haveSpokenLanguage) {
+        languageInput.value = "stt";
+        setCurrentLang("stt");
+    }
+    
     languageInput.disabled = false;
 }
