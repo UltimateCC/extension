@@ -56,7 +56,9 @@ function Navigation({ logo } : { logo: string }) {
                     <NavLink to="/dashboard">Dashboard</NavLink>
                 </nav>
                 <div className="secondary-links">
-                    <NavLink to="/tos">Terms of Service</NavLink>
+                    {
+                        //<NavLink to="/tos">Terms of Service</NavLink>
+                    }
                     <NavLink to="/privacy">Privacy policy</NavLink>
                 </div>
             </div>

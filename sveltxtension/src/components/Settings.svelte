@@ -1,8 +1,8 @@
 <script lang="ts">
     import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
-    import { settings, resetSettings, position, type SettingsType } from "../lib/settings";
-	import languages from "../assets/languages.json";
+    import { settings, resetSettings, position } from "../lib/settings";
 	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
+    import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let settingsShown = false;
 
@@ -15,22 +15,31 @@
 		}
 	}
 
-	$: lastTranscript = $transcript[$transcript.length-1] || [];
-	$: spokenLang = languages[lastTranscript[0]?.lang] || lastTranscript[0]?.lang || '';
-
-	// Clear captions each time language change
+	// Clear captions each time language changes
 	$: clearCaptions($settings.language);
 
 	function clearCaptions(lang: string) {
 		// Reset partial captions
 		$partialCaptions = '';
+
 		// Add last sentence to captions in selected language, or spoken language, or empty
+		const lastTranscript = $transcript[$transcript.length-1] || [];
 		$finalCaptions = ( lastTranscript?.find(c=>c.lang===lang) || lastTranscript[0] )?.text || '';
+	}
+
+	// Close on click outside
+	let settingsElem: HTMLElement;
+	function handleClick(e: MouseEvent) {
+		if(settingsShown && settingsElem && !e.defaultPrevented && !settingsElem.contains(e.target as Node)) {
+			settingsShown = false;
+		}
 	}
 </script>
 
+<svelte:window on:click={handleClick} />
+
 {#if settingsShown}
-	<div id="settings-container">
+	<div id="settings-container" bind:this={settingsElem}>
 		<div class="caption-header-container">
 			<h2>Ultimate CC</h2>
 			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }}>
@@ -44,17 +53,12 @@
 			<div class="caption-group" id="language">
 				<div class="caption-group-header">
 					<h3>Language</h3>
-					<select id="language-input" bind:value={$settings.language}>
-						<option value="">Spoken language{ (lastTranscript.length && spokenLang ) ? (' (' + spokenLang + ')') : '' }</option>
-						{#each lastTranscript as l }
-							<option value={l.lang}>{ languages[l.lang] || l.lang }</option>
-						{/each}
-					</select>
+					<LanguageSelect />
 				</div>
 			</div>
 
 			<!-- Text -->
-			<div class="caption-group" id="group-text">
+			<div class="caption-group" class:isOpen={ current === 'text' } >
 				<div class="caption-group-header">
 					<h3>Text</h3>
 					<button type="button" class="chevron" on:click={()=>toggle('text')}>
@@ -97,7 +101,7 @@
 			</div>
 
 			<!-- Background -->
-			<div class="caption-group" id="group-background">
+			<div class="caption-group" class:isOpen={ current === 'background' }>
 				<div class="caption-group-header">
 					<h3>Background</h3>
 					<button type="button" class="chevron" on:click={()=>toggle('background')}>
@@ -130,10 +134,10 @@
 		<!-- Reset -->
 		<div class="caption-button-container">
 			<div>
-				<button type="button" id="caption-reset-settings" on:click={ resetSettings }>
+				<button type="button" on:click={ resetSettings }>
 					Reset settings
 				</button>
-				<button type="button" id="caption-reset-position" on:click={ ()=>{ position.set({}); } }>
+				<button type="button" on:click={ ()=>{ position.set({}); } }>
 					Reset position
 				</button>
 			</div>

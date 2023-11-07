@@ -89,7 +89,7 @@ function Dashboard() {
                 onClose={closeResponse}
             />
             <Link to="/logout" className="profile-container">
-                You can logout here if is needed
+                Log out
             </Link>
         </div>
     );

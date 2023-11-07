@@ -13,7 +13,9 @@
 		captionsShown = !captionsShown;
 	}
 
-	function toggleSettings() {
+	function toggleSettings(e: Event) {
+		// Prevent closing settings instantly because click outside
+		e.preventDefault();
 		transcriptShown = false;
 		settingsShown = !settingsShown;
 	}
@@ -26,7 +28,9 @@
 
 <div id="ultimate-closed-caption">
 
-	<Captions bind:captionsShown />
+	{#if captionsShown}
+		<Captions />
+	{/if}
 
 	<Settings bind:settingsShown />
 	<!--

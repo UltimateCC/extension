@@ -1,12 +1,18 @@
 
 import { z } from "zod";
-import { Entity, Column, ObjectIdColumn, ObjectId } from "typeorm";
+import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { AccessToken } from "@twurple/auth";
 
 @Entity()
 export class User {
 	@ObjectIdColumn()
 	id: ObjectId;
+
+	@CreateDateColumn()
+	created: Date
+
+	@UpdateDateColumn()
+	updated: Date
 
 	@Column({unique: true})
 	twitchId: string;

@@ -1,52 +1,55 @@
 <script lang="ts">
-    import Settings from "./Settings.svelte";
 	import { transcript } from "../lib/captions";
     import { settings } from "../lib/settings";
+    import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let overlay = false;
 	export let transcriptShown = false;
-
-	let settingsShown = false;
 
 	const scrollToBottom = (node: HTMLElement, parameters: any) => {
 		const scroll = () => node.scroll({
 			top: node.scrollHeight
 		});
 		scroll();
-		return { update: scroll }
+		return {
+			update: scroll
+		}
 	};
 </script>
 
 {#if !overlay || transcriptShown }
 	<div class="container">
 		<div class="top">
-			<h2>Transcript</h2>
+			<h2>Live transcript</h2>
+			<div class="language">
+				<label for="language-input">Language</label>
+				<LanguageSelect />
+			</div>
 			{#if overlay}
 				<button	class="topright" on:click={()=>{ transcriptShown = false; }} >
 					Close transcript
 				</button>
-			{:else}
-				<button class="topright" on:click={ ()=>{ settingsShown = true } } >
-					Settings
-				</button>
-				<Settings bind:settingsShown />
 			{/if}
 		</div>
-		<div class="transcript" use:scrollToBottom={ {$transcript, $settings }} style="background: { $settings.backgroundColor };" >
+		<div class="transcript" use:scrollToBottom={ {$transcript, $settings }} >
 			{#each $transcript as line }
-				<div class="line" style="color: { $settings.textColor }; font-size: { $settings.fontSize }px;">{ (line.find(t=>t.lang === $settings.language) || line[0]).text }</div>
+				<div class="line">
+					{ (line.find(t=>t.lang === $settings.language) || line[0]).text }
+				</div>
 			{/each}
 		</div>
 	</div>	
 {/if}
 
+<style lang="scss">
+	.container { height: 100%; width: 100%; background-color: $theme-background-color; color: $theme-text-color; }
+	.container { font-size: $theme-font-size; font-family: $theme-font-family; }
 
-<style>
-	.container { height: 100%; width: 100%; background: #111; font-family: Arial, Helvetica, sans-serif; }
-	.top { background: #333; color: #eee; height: 2.5em; }
+	.top { height: 4em; background: #1F1F23; }
 	h2 { font-size: 1.25em; display: block; margin: 0 .5em; text-align: center; padding-top: .25em; }
+	.language { margin: .25em .5em; }
 	button.topright { position: absolute; top: 0; right: 0; }
-	.transcript { overflow-y: auto; margin: 0; height: calc(100% - 2.5em); }
-	.line { color: #eee; padding: .25em .5em; }
-	.line:not(:first-child) { border-top: 1px solid #333; }
+
+	.transcript { overflow-y: auto; margin: 0; height: calc(100% - 4em); }
+	.line { padding: .25em .5em; }
 </style>

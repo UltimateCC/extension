@@ -20,7 +20,7 @@ services:
     container_name: captions-back
     links:
       - captionsdb
-    #user: "node"
+    user: "node"
     
     networks: 
       - default

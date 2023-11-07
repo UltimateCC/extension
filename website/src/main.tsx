@@ -19,6 +19,7 @@ import './webroot/style/font.css';
 
 import LogoImg from './assets/logo.png';
 import { AuthProvider } from './context/AuthContext';
+import Privacy from './pages/Privacy';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                             <Route path="/dashboard" element={<Dashboard />} />
                             {/* thank-you */}
                             <Route path="/thank-you" element={<Thanks />} />
+                            <Route path="/privacy" element={<Privacy />} />
                             <Route path="*" element={<Error />} />
                         </Routes>
                         <AppFooter />

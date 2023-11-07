@@ -1,0 +1,32 @@
+
+// Caption variables
+$caption-line-height: 1.25em;
+$caption-container-padding: 0.5em;
+$caption-movable-Y: 1rem;
+$caption-movable-X: 0;
+
+// Ultimate CC theme
+$theme-font-family: Arial, Helvetica, sans-serif;
+$theme-font-size: clamp(1em, 2.25vh, 2em);
+$theme-text-color: #D9D9D9;
+$theme-background-color: #37373E;
+
+// Settings variables
+$settings-text-color: $theme-text-color;
+$settings-button-color: #4C4C5A;
+$settings-background-color: #1F1F23;
+$settings-movable-Y: 5rem;
+$settings-font-size: $theme-font-size;
+$settings-width: 16em;
+$settings-font-family: $theme-font-family;
+$settings-inside-padding: 1em;
+$settings-gap-between-group: 0.75em;
+$settings-input-border-radius: 0.6em;
+$settings-input-size: 7em;
+$settings-input-shadow: 0 3.3px 3.3px 0 rgba($settings-background-color, 0.25) inset;
+$settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
+
+// Buttons variables
+$settings-wheel-size: 1.5em;
+$settings-wheel-padding-Y: 0.4em;
+$settings-wheel-setting-min-gap: 1.5em;
