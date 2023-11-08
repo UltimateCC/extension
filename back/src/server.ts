@@ -2,7 +2,7 @@
 import express from 'express';
 import session from 'express-session';
 import fileStore from 'session-file-store';
-import { authRouter } from './api/auth';
+import { authMiddleware, authRouter } from './api/auth';
 import { secretsRouter } from './api/secrets';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -33,15 +33,18 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 app.use(express.json());
 
-// API Routes 
+// Public routes
 // Auth
 app.use('/api/auth', authRouter);
-// Config
-app.use('/api/config', configRouter);
-// Secrets
-app.use('/api/secrets', secretsRouter);
 // Thanks page
 app.use('/api/thanks', thanksRouter);
+
+// Authenticated routes
+// Config
+app.use('/api/config', authMiddleware, configRouter);
+// Secrets
+app.use('/api/secrets', authMiddleware, secretsRouter);
+
 
 // socket.io on same server
 const server = createServer(app);

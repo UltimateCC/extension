@@ -71,11 +71,9 @@ export async function isExtensionInstalled(user: string) {
 }
 
 export async function sendPubsub(userId: string, message: string) {
-
 	try {
 		await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message)
 	}catch(e) {
 		console.error('Error sending pubsub message', e);
 	}
-
 }

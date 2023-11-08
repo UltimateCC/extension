@@ -16,7 +16,8 @@
 		$position.bottom = 10;
 	}
 	$: if($position.left === undefined && movableArea && movableElem) {
-		$position.left = 50 - movableElem.offsetWidth * 50 / movableArea.offsetWidth;
+		$position.left = 20;
+		//$position.left = 50 - movableElem.offsetWidth * 50 / movableArea.offsetWidth;
 	}
 
 	function onMouseDown(e: MouseEvent) {

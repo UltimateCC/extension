@@ -52,9 +52,10 @@ export function handleCaptions(data: CaptionsData) {
 			}else{
 				// Update captions
 				partialCaptions.set(caption.text);
+				/*
 				transcript.update((array)=>{
 					return array;
-				});
+				});*/
 			}
 		}
 	}, delay);

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
     import { settings, resetSettings, position } from "../lib/settings";
-	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
+	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
     import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let settingsShown = false;
@@ -59,15 +59,15 @@
 
 			<!-- Text -->
 			<div class="caption-group" class:isOpen={ current === 'text' } >
-				<div class="caption-group-header">
+				<button type="button" class="caption-group-header" on:click={()=>toggle('text')}>
 					<h3>Text</h3>
-					<button type="button" class="chevron" on:click={()=>toggle('text')}>
+					<div class="chevron">
 						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
 							<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
 							<path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
 						</svg>
-					</button>
-				</div>
+					</div>
+				</button>
 				{#if current === 'text'}
 					<div class="caption-group-content">
 						<div class="caption-group-content-item">
@@ -78,6 +78,10 @@
 							<label for="font-size-input">Text Size</label>
 							<div class="caption-number-container">
 								<input type="number" id="font-size-input" bind:value={ $settings.fontSize }  min="6" max="100" step="1" />
+								<div class="units">
+									<span class="invisible">{ $settings.fontSize }</span>
+									<span class="caption-unit">px</span>
+								</div>
 							</div>
 						</div>
 						<div class="caption-group-content-item group-font-family">
@@ -102,15 +106,15 @@
 
 			<!-- Background -->
 			<div class="caption-group" class:isOpen={ current === 'background' }>
-				<div class="caption-group-header">
+				<button type="button" class="caption-group-header" on:click={()=>toggle('background')}>
 					<h3>Background</h3>
-					<button type="button" class="chevron" on:click={()=>toggle('background')}>
+					<div class="chevron">
 						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
 							<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
 							<path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
 						</svg>
-					</button>
-				</div>
+					<div/>
+				</button>
 				{#if current === 'background'}
 					<div class="caption-group-content">
 						<div class="caption-group-content-item">
@@ -122,6 +126,10 @@
 								<label for="bg-opacity-number-input">Opacity</label>
 								<div class="caption-number-container">
 									<input type="number" id="bg-opacity-number-input" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
+									<div class="units">
+										<span class="invisible">{ $settings.backgroundOpacity }</span>
+										<span class="caption-unit">%</span>
+									</div>
 								</div>
 							</div>
 							<input type="range" id="bg-opacity-range-input" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />

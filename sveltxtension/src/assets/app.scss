@@ -5,15 +5,6 @@
 html, body { height: 100%; }
 #app { height: 100%; }
 
-/*
-// Temporary (to have an idea of the result)
-html {
-	background-image: url("../aypierreStream.png");
-	background-repeat: no-repeat;
-	background-size: 100vw 100vh;
-}
-*/
-
 body #ultimate-closed-caption {
 	// Lock scroll
 	max-width: 100vw;
@@ -65,368 +56,362 @@ body #ultimate-closed-caption {
 			}
 		}
 	}
-
-	// Settings box
-	#settings-container {
+	
+	.caption-overlay-container {
 		position: absolute;
 		left: 0;
 		top: $settings-movable-Y;
-		z-index: 1;
 
-		min-height: $settings-width;
-		max-height: calc(100vh - #{$settings-movable-Y}*2 - #{$settings-wheel-size} - #{$settings-wheel-padding-Y}*2 - #{$settings-wheel-setting-min-gap});
+		z-index: 1;
+		height: calc(100vh - #{$settings-movable-Y}*2 - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
 		/*
+			Calc incorrect because em are use as units
+
 			100vh = 100% of the height of the screen
 			- #{$settings-movable-Y} * 2 = the margin of the settings box
-			- #{$settings-wheel-size} = the size of the settings wheel
-			- #{$settings-wheel-padding-Y} * 2 = the padding of the settings wheel
-			- #{$settings-wheel-setting-min-gap} = the minimum gap between the settings wheel and the settings box
+			- #{$buttons-size} = the size of the settings wheel
+			- #{$buttons-padding-Y} * 2 = the padding of the settings wheel
+			- #{$buttons-min-gap} = the minimum gap between the settings wheel and the settings box
 		*/
 		
-		width: $settings-width;
-		padding: 0.2em 0.5em 1em;
-		
-		color: $settings-text-color;
-		background-color: rgba($settings-background-color, 0.95);
-		font-family: $settings-font-family;
+		width: $settings-width;		
 
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
+		// Settings box
+		#settings-container {
+			max-height: 100%;
+			width: 100%;
 
-		overflow: hidden auto;
+			padding: 0.2em 0.5em 1em;
+			
+			background-color: rgba($settings-background-color, 0.95);
+			color: $settings-text-color;
+			font-family: $settings-font-family;
 
-		// Scroll style
-		&::-webkit-scrollbar {
-			width: 0.5em;
-		}
-
-		&::-webkit-scrollbar-track {
-			background-color: $settings-text-color;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background-color: $settings-background-color;
-			border-radius: 0.5em;
-			border: 0.15em solid $settings-text-color;
-		}
-
-		direction: rtl;
-		> * {
-			direction: ltr;
-		}
-
-		// Title and close button
-		.caption-header-container {
 			display: flex;
-			justify-content: space-between;
-			align-items: start;
-			position: relative;
-		
-			h2 {
-				font-size: 1.5em;
-				line-height: 1.5em;
-				font-weight: normal;
-				width: 100%;
-				text-align: center;
-				margin: auto;
-			}
-		
-			button#close-settings-button {
-				position: absolute;
-				top: 0;
-				right: 0;
-				border: none;
-				background-color: transparent;
-				polygon {
-					fill: $settings-text-color;
-				}
-				font-size: 2em;
-				cursor: pointer;
-				transition: transform 0.2s ease-in-out;
-		
-				&:hover {
-					transform: scale(1.1);
-				}
-			}
-		}
-
-		// Main content
-		.caption-settings-container {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
 			flex-direction: column;
+			justify-content: space-between;
 
-			.caption-group {
-				width: 100%;
+			overflow: hidden auto;
+
+			// Scroll style
+			&::-webkit-scrollbar {
+				width: 0.5em;
+			}
+
+			&::-webkit-scrollbar-track {
+				background-color: $settings-text-color;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background-color: $settings-background-color;
+				border-radius: 0.5em;
+				border: 0.15em solid $settings-text-color;
+			}
+
+			// Title and close button
+			.caption-header-container {
 				display: flex;
 				justify-content: space-between;
-				flex-direction: column;
-				
-				select {
-					width: $settings-input-size;
-					height: 1.5em;
-					border: 0;
-					border-radius: $settings-input-border-radius;
-					padding-left: 0.5em;
-					padding-right: 2em;
-					font-size: 0.9em;
-					text-align: left;
-					color: rgba($settings-background-color, 0.85);
-					background-color: $settings-text-color;
-					appearance: none;
-					box-shadow: $settings-input-shadow;
-
-					&:not(:disabled) {
-						cursor: pointer;
-
-						&:focus, &:active {
-							outline: none;
-							box-shadow: $settings-input-shadow-out;
-							transition: box-shadow 0.5s;
-						}
-					}
-
-					/* Remove arrow */
-					appearance: none;
-
-					/* Add my customisable arrow */
-					background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" fill="%231F1F23D9"/></svg>');
-					background-repeat: no-repeat;
-					background-position-x: 97.5%;
-					background-position-y: 50%;
-					background-size: 1.25rem;
+				align-items: start;
+				position: relative;
+			
+				h2 {
+					font-size: 1.5em;
+					line-height: 1.5em;
+					font-weight: normal;
+					width: 100%;
+					text-align: center;
+					margin: auto;
 				}
-
-				// If it's open, change the rotation
-				&.isOpen {
-					.caption-group-header button.chevron {
-						transform: rotate(-90deg);
+			
+				button#close-settings-button {
+					position: absolute;
+					top: 0;
+					right: 0;
+					border: none;
+					background-color: transparent;
+					polygon {
+						fill: $settings-text-color;
 					}
-				}
-
-				// If it's the language group, change the direction
-				&#language {
-					.caption-group-header {
-						flex-direction: column;
-						font-size: 1em;
-
-						h3 {
-							font-size: 1.5em;
-						}
-
-						select {
-							width: 100%;
-							margin-top: calc($settings-gap-between-group / 2);
-						}
-					}
-				}
-				&:not(#language) .caption-group-header { // Else
+					font-size: 2em;
 					cursor: pointer;
-					justify-content: space-between;
-					align-items: center;
+					transition: transform 0.2s ease-in-out;
+			
+					&:hover {
+						transform: scale(1.1);
+					}
 				}
+			}
 
-				.caption-group-header {
-					display: flex;
-					
+			// Main content
+
+			.caption-settings-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-direction: column;
+
+				.caption-group {
 					width: 100%;
-					padding-top: 0.75em;
-					padding-bottom: 0.75em;
-					user-select: none;
-
-					&:focus {
-						outline: none;
-					}
-
-					h3 {
-						font-size: 1.5em;
-						font-weight: normal;
-						text-align: left;
-					}
-
-					button.chevron {
-						border: none;
-						background-color: transparent;
-						font-size: 1.25em;
-						cursor: pointer;
-						transition: transform 0.2s ease-in-out;
-						transform: rotate(0deg);
-						padding: 0;
-						margin: 0;
-						width: 1em;
-						height: 1em;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						border-radius: 50%;
-
-						svg {
-							width: 1em;
-							height: 1em;
-							fill: $settings-text-color;
-						}
-					}
-				}
-
-				> div {
-					padding-right: $settings-inside-padding;
-					padding-left: $settings-inside-padding;
-				}
-
-				&::after {
-					content: "";
-					display: block;
-					width: 100%;
-					height: 0.125em;
-					background-color: $settings-text-color;
-					border-radius: 0.25em;
-				}
-
-				.caption-group-content {
 					display: flex;
 					justify-content: space-between;
 					flex-direction: column;
-					align-items: center;
-					width: 100%;
-					gap: $settings-gap-between-group;
-					margin-bottom: calc($settings-gap-between-group * 1.25);
-
-					.caption-group-content-item {
-						display: flex;
-						justify-content: space-between;
-						width: 100%;
+					
+					select {
+						width: $settings-input-size;
+						height: 1.5em;
+						border: 0;
+						border-radius: $settings-input-border-radius;
+						padding-left: 0.5em;
+						padding-right: 2em;
 						font-size: 0.9em;
+						text-align: left;
+						color: rgba($settings-background-color, 0.85);
+						background-color: $settings-text-color;
+						appearance: none;
+						box-shadow: $settings-input-shadow;
 
-						&.group-opacity, &.group-font-family {
-							flex-direction: column;
-
-							> div {
-								display: flex;
-								justify-content: space-between;
-							}
-
-							> select {
-								width: 100%;
-								margin-top: calc($settings-gap-between-group / 2);
-								line-height: 1.1em;
-							}
-
-							> input[type="range"] {
-								margin-top: $settings-gap-between-group;
-								margin-bottom: calc((1em - 0.3em)/2); // 1em = height of thumb, 0.3em = height of range
-								width: 100%;
-								appearance: none;
-								height: 0.3em;
-								box-shadow: none;
-
-								&:focus {
-									outline: none;
-								}
-
-								&::-webkit-slider-thumb {
-									appearance: none;
-									width: 1em;
-									height: 1em;
-									border-radius: 50%;
-									background-color: $settings-button-color;
-									border: 0.25em solid $settings-text-color;
-								}
-							}
-						}
-
-						.caption-number-container {
-							position: relative;
-							color: rgba($settings-background-color, 0.85);
-
-							input {
-								padding-right: 1.2em;
-							}
-
-							.units {
-								position: absolute;
-								right: 0;
-								top: 0;
-								font-size: 1em;
-								height: 1.5em;
-								width: $settings-input-size;
-								line-height: 1.5em;
-								display: inline-flex;
-								justify-content: center;
-								align-items: center;
-								gap: 0.1em;
-								pointer-events: none;
-							}
-						}
-
-						label {
-							font-size: 1em;
-						}
-
-						input {
-							height: 1.5em;
-							width: $settings-input-size;
-							border: 0;
-							border-radius: $settings-input-border-radius;
-							padding: 0;
-							margin: 0;
-							background-color: $settings-text-color;
-							
-							font-family: inherit;
-							font-weight: normal;
-							font-size: 1em;
-							line-height: 1em;
-							color: rgba($settings-background-color, 0.85);
-							text-align: center;
-							box-shadow: $settings-input-shadow;
-							
+						&:not(:disabled) {
 							cursor: pointer;
 
-							// Remove arrows on number input
-							&::-webkit-outer-spin-button,
-							&::-webkit-inner-spin-button {
-								-webkit-appearance: none;
-								margin: 0;
-							}
-
-							// Remove arrows on Firefox
-							&[type=number] {
-								appearance: textfield;
-								-moz-appearance: textfield;
-							}
-
-							// Border radius on color picker on Firefox
-							&[type=color]::-moz-color-swatch {
-								border-radius: $settings-input-border-radius;
-							}
-							
 							&:focus, &:active {
-								outline: none;
 								box-shadow: $settings-input-shadow-out;
 								transition: box-shadow 0.5s;
 							}
-
-							&:not(input[type="range"]) {
-								&::-webkit-color-swatch {
-									border: none;
-									border-radius: $settings-input-border-radius;
-								}
-
-								&::-webkit-color-swatch-wrapper {
-									padding: 0;
-								}
-							}
 						}
 
-						@each $font in $font-families {
-							option[value="#{$font}"] {
-								font-family: #{$font};
+						/* Remove arrow */
+						appearance: none;
+
+						/* Add my customisable arrow */
+						background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" fill="%231F1F23D9"/></svg>');
+						background-repeat: no-repeat;
+						background-position-x: 97.5%;
+						background-position-y: 50%;
+						background-size: 1.25rem;
+					}
+
+					// If it's open, change the rotation
+					&.isOpen {
+						.caption-group-header .chevron {
+							transform: rotate(-90deg);
+						}
+					}
+
+					// If it's the language group, change the direction
+					&#language {
+						.caption-group-header {
+							flex-direction: column;
+
+							select {
+								width: 100%;
+								margin-top: calc($settings-gap-between-group / 2);
+							}
+						}
+					}
+					&:not(#language) .caption-group-header { // Else
+						cursor: pointer;
+						justify-content: space-between;
+						align-items: center;
+					}
+
+					.caption-group-header {
+						display: flex;
+						
+						width: 100%;
+						padding-top: 0.75em;
+						padding-bottom: 0.75em;
+						cursor: pointer;
+
+						border: none;
+						background-color: transparent;
+						font-size: 1em;
+
+						h3 {
+							color: $settings-text-color;
+							font-size: 1.5em;
+							font-weight: normal;
+							text-align: left;
+						}
+
+						.chevron {
+							font-size: 1.25em;
+							transition: transform 0.2s ease-in-out;
+							transform: rotate(0deg);
+							padding: 0;
+							margin: 0;
+							width: 1em;
+							height: 1em;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+
+							svg {
+								width: 1em;
+								height: 1em;
+								fill: $settings-text-color;
+							}
+						}
+					}
+
+					> * {
+						padding-right: $settings-inside-padding;
+						padding-left: $settings-inside-padding;
+					}
+
+					&::after {
+						content: "";
+						display: block;
+						width: 100%;
+						height: 0.125em;
+						background-color: $settings-text-color;
+						border-radius: 0.25em;
+					}
+
+					.caption-group-content {
+						display: flex;
+						justify-content: space-between;
+						flex-direction: column;
+						align-items: center;
+						width: 100%;
+						gap: $settings-gap-between-group;
+						margin-bottom: calc($settings-gap-between-group * 1.25);
+
+						.caption-group-content-item {
+							display: flex;
+							justify-content: space-between;
+							width: 100%;
+							font-size: 0.9em;
+
+							&.group-opacity, &.group-font-family {
+								flex-direction: column;
+
+								> div {
+									display: flex;
+									justify-content: space-between;
+								}
+
+								> select {
+									width: 100%;
+									margin-top: calc($settings-gap-between-group / 2);
+									line-height: 1.1em;
+								}
+
+								> input[type="range"] {
+									margin-top: $settings-gap-between-group;
+									margin-bottom: calc((1em - 0.3em)/2); // 1em = height of thumb, 0.3em = height of range
+									width: 100%;
+									appearance: none;
+									height: 0.3em;
+									box-shadow: none;
+
+									&::-webkit-slider-thumb {
+										appearance: none;
+										width: 1em;
+										height: 1em;
+										border-radius: 50%;
+										background-color: $settings-button-color;
+										border: 0.25em solid $settings-text-color;
+									}
+								}
+							}
+
+							.caption-number-container {
+								position: relative;
+								color: rgba($settings-background-color, 0.85);
+
+								input {
+									padding-right: 1.2em;
+								}
+
+								.units {
+									position: absolute;
+									right: 0;
+									top: 0;
+									font-size: 1em;
+									height: 1.5em;
+									width: $settings-input-size;
+									line-height: 1.5em;
+									display: inline-flex;
+									justify-content: center;
+									align-items: center;
+									gap: 0.1em;
+									pointer-events: none;
+
+									.invisible {
+										visibility: hidden;
+									}
+								}
+							}
+
+							label {
+								font-size: 1em;
+							}
+
+							input {
+								height: 1.5em;
+								width: $settings-input-size;
+								border: 0;
+								border-radius: $settings-input-border-radius;
+								padding: 0;
+								margin: 0;
+								background-color: $settings-text-color;
+								
+								font-family: inherit;
+								font-weight: normal;
+								font-size: 1em;
+								line-height: 1em;
+								color: rgba($settings-background-color, 0.85);
+								text-align: center;
+								box-shadow: $settings-input-shadow;
+								
+								cursor: pointer;
+
+								// Remove arrows on number input
+								&::-webkit-outer-spin-button,
+								&::-webkit-inner-spin-button {
+									-webkit-appearance: none;
+									margin: 0;
+								}
+
+								// Remove arrows on Firefox
+								&[type=number] {
+									appearance: textfield;
+									-moz-appearance: textfield;
+								}
+
+								// Border radius on color picker on Firefox
+								&[type=color]::-moz-color-swatch {
+									border-radius: $settings-input-border-radius;
+								}
+								
+								&:focus, &:active {
+									box-shadow: $settings-input-shadow-out;
+									transition: box-shadow 0.5s;
+								}
+
+								&:not(input[type="range"]) {
+									&::-webkit-color-swatch {
+										border: none;
+										border-radius: $settings-input-border-radius;
+									}
+
+									&::-webkit-color-swatch-wrapper {
+										padding: 0;
+									}
+								}
+							}
+
+							@each $font in $font-families {
+								option[value="#{$font}"] {
+									font-family: #{$font};
+								}
 							}
 						}
 					}
 				}
 			}
+
 		}
 
 		// Buttons
@@ -455,6 +440,7 @@ body #ultimate-closed-caption {
 				color: inherit;
 				cursor: pointer;
 				width: 100%;
+
 				&#caption-lock-position {
 					padding: 0.5em 0;
 				}
@@ -469,32 +455,31 @@ body #ultimate-closed-caption {
 		}
 	}
 
-	// Buttons navigation container
-	$settings-wheel-padding-X: 0.6em;
 	#buttons-container {
 		position: absolute;
 		left: 0;
 		bottom: $settings-movable-Y;
 		z-index: 2;
 
-		width: fit-content;
-		padding: $settings-wheel-padding-Y $settings-wheel-padding-X;
+		padding: $buttons-padding-Y $buttons-padding-X;
 		background-color: $settings-background-color;
 		border-top-right-radius: 0.25em;
 		border-bottom-right-radius: 0.25em;
 
 		display: flex;
-		gap: $settings-wheel-padding-X;
+		align-items: center;
+		gap: $buttons-min-gap;
+		font-size: $buttons-size;
 
 		// Settings wheel
 		> button {
+			height: $buttons-height;
 			border: none;
 			background-color: transparent;
-			font-size: $settings-wheel-size;
 			cursor: pointer;
 			transition: transform 0.2s ease-in-out;
-			border-radius: 0.5em;
-			// padding: 0.1em $settings-wheel-padding-X;
+			// border-radius: 0.5em;
+			padding: 0.1em $buttons-padding-X;
 
 			path {
 				fill: $settings-text-color;

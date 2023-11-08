@@ -1,12 +1,12 @@
 
 import { Router } from "express";
 import { dataSource } from "../database";
-import { User, UserConfigSchema, UserSecretsSchema } from "../entity/User";
-import { authMiddleware } from "./auth";
+import { User, UserConfigSchema } from "../entity/User";
+
 
 export const configRouter = Router();
 
-configRouter.get('', authMiddleware, async (req, res, next)=>{
+configRouter.get('', async (req, res, next)=>{
 	try{
 		let user = await dataSource.manager.findOneByOrFail(User, { twitchId: req.session.userid});
 		res.json(user.config);
@@ -15,7 +15,7 @@ configRouter.get('', authMiddleware, async (req, res, next)=>{
 	}
 });
 
-configRouter.post('', authMiddleware, async (req, res, next)=>{
+configRouter.post('', async (req, res, next)=>{
 	try{
 		const user = await dataSource.manager.findOneByOrFail(User, {twitchId: req.session.userid});
 		const config = UserConfigSchema.partial().parse(req.body);
