@@ -28,5 +28,5 @@
 	select { color: rgba($settings-background-color, 0.85); background-color: $settings-text-color; }
 	select { height: 1.5em; font-size: 0.9em; overflow: hidden; padding-left: 0.5em; }
 
-	select:disabled { background-color: $settings-button-color; }
+	select:disabled { background-color: $settings-disabled-color; }
 </style>

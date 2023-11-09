@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
-    import { settings, resetSettings, position } from "../lib/settings";
+	import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
+	import { settings, resetSettings, position } from "../lib/settings";
 	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
-    import LanguageSelect from "./LanguageSelect.svelte";
+	import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let settingsShown = false;
 
@@ -76,7 +76,7 @@
 						<div class="caption-group-content-item">
 							<label for="font-size-input">Text Size</label>
 							<div class="caption-number-container">
-								<input type="number" id="font-size-input" bind:value={ $settings.fontSize }  min="6" max="100" step="1" />
+								<input type="number" id="font-size-input" bind:value={ $settings.fontSize }  min="6" max="72" step="1" />
 								<div class="units">
 									<span class="invisible">{ $settings.fontSize }</span>
 									<span class="caption-unit">px</span>
@@ -143,7 +143,7 @@
 				<button type="button" on:click={ resetSettings }>
 					Reset settings
 				</button>
-				<button type="button" on:click={ ()=>{ position.set({}); } }>
+				<button type="button" on:click={ ()=>{ position.set({}); $settings.positionLocked = false; } }>
 					Reset position
 				</button>
 			</div>

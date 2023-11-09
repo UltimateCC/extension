@@ -4,6 +4,8 @@
 	import { position, settings, type SettingsType } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
+	export let settingsShown: boolean;
+
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
 
@@ -67,31 +69,34 @@
 	}
 </script>
 
-<div id="caption-movable-area" bind:this={movableArea}>
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div id="caption-container"
-		style={ getCaptionsStyle($settings) }
-		style:bottom = { $position.bottom + '%' } 
-		style:left = { $position.left + '%' }
-		on:mousedown={ onMouseDown }
-		bind:this={ movableElem }
-		class:locked={ $settings.positionLocked }
-	>
-		<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
-			<p id="caption-content">
-				<span id="finished-content">
-					{#if $finalCaptions }
-						{ $finalCaptions }
-					{:else if !$partialCaptions}
-						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
-					{/if}
-				</span>
-				<span id="unfinished-content">
-					{ $partialCaptions }
-				</span>
-			</p>
+{#if settingsShown || $partialCaptions || $finalCaptions }
+	<div id="caption-movable-area" bind:this={movableArea}>
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<div id="caption-container"
+			style={ getCaptionsStyle($settings) }
+			style:bottom = { $position.bottom + '%' } 
+			style:left = { $position.left + '%' }
+			on:mousedown={ onMouseDown }
+			bind:this={ movableElem }
+			class:locked={ $settings.positionLocked }
+		>
+			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
+				<p id="caption-content">
+					<span id="finished-content">
+						{#if $finalCaptions }
+							{ $finalCaptions }
+						{:else if !$partialCaptions }
+							This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
+						{/if}
+					</span>
+					<span id="unfinished-content">
+						{ $partialCaptions }
+					</span>
+				</p>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}
+
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />

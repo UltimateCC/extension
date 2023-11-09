@@ -28,8 +28,8 @@
 
 <div id="ultimate-closed-caption">
 
-	{#if captionsShown}
-		<Captions />
+	{#if captionsShown || settingsShown }
+		<Captions bind:settingsShown />
 	{/if}
 
 	<div class="caption-overlay-container">
