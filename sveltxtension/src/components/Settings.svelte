@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
 	import { settings, resetSettings, position } from "../lib/settings";
-	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
+	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
 	import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let settingsShown = false;

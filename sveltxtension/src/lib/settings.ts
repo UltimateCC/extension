@@ -3,7 +3,7 @@ import { persisted } from "svelte-local-storage-store";
 const defaultSettings = {
 	language: '',
 	positionLocked: false,
-	fontSize: 12,
+	fontSize: 20,
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
 	maxLines: 2,

@@ -171,7 +171,7 @@ body #ultimate-closed-caption {
 						box-shadow: $settings-input-shadow;
 
 						&:disabled {
-							background-color: $settings-button-color;
+							background-color: $settings-disabled-color;
 						}
 
 						&:not(:disabled) {
@@ -222,8 +222,8 @@ body #ultimate-closed-caption {
 						display: flex;
 						
 						width: 100%;
-						padding-top: 0.75em;
-						padding-bottom: 0.75em;
+						padding: .5em 0;
+						margin: .25em 0;
 						cursor: pointer;
 
 						border: none;
