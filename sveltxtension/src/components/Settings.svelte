@@ -41,7 +41,7 @@
 {#if settingsShown}
 	<div id="settings-container" bind:this={settingsElem}>
 		<div class="caption-header-container">
-			<h2>Ultimate CC</h2>
+			<h2>Captions settings</h2>
 			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }}>
 				<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
 					<polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
@@ -62,9 +62,8 @@
 				<button type="button" class="caption-group-header" on:click={()=>toggle('text')}>
 					<h3>Text</h3>
 					<div class="chevron">
-						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-							<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-							<path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960" width="auto">
+							<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
 						</svg>
 					</div>
 				</button>
@@ -109,9 +108,8 @@
 				<button type="button" class="caption-group-header" on:click={()=>toggle('background')}>
 					<h3>Background</h3>
 					<div class="chevron">
-						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
-							<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-							<path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960" width="auto">
+							<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
 						</svg>
 					<div/>
 				</button>

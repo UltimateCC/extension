@@ -20,3 +20,13 @@
 		<option selected>Translations unavailable</option>
 	</select>
 {/if}
+
+<style lang="scss">
+	@import '../assets/vars.scss';
+
+	select { border: 0; border-radius: $settings-input-border-radius; box-shadow: $settings-input-shadow; }
+	select { color: rgba($settings-background-color, 0.85); background-color: $settings-text-color; }
+	select { height: 1.5em; font-size: 0.9em; overflow: hidden; padding-left: 0.5em; }
+
+	select:disabled { background-color: $settings-button-color; }
+</style>

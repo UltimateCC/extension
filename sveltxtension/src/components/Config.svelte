@@ -15,6 +15,9 @@
 </main>
 
 <style>
-	main { height: 100%; background-color: #0e0e10; color: #eee; font-family: Arial, Helvetica, sans-serif; }
-	div { text-align: center; padding: 1em; }
+	main { background-color: #37373E; color: #D9D9D9; font-family: Arial, Helvetica, sans-serif; font-size: 1em; }
+	main { display: flex; align-items: center; justify-content: center; padding: 5em; }
+	h2 { margin-bottom: .5em; }
+	div { text-align: center; }
+	a { color: #B072E8; }
 </style>

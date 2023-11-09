@@ -19,11 +19,11 @@
 		transcriptShown = false;
 		settingsShown = !settingsShown;
 	}
-
+	/*
 	function toggleTranscript() {
 		settingsShown = false;
 		transcriptShown = !transcriptShown;
-	}
+	}*/
 </script>
 
 <div id="ultimate-closed-caption">
@@ -34,7 +34,9 @@
 
 	<div class="caption-overlay-container">
 		<Settings bind:settingsShown />
+		<!--
 		<Transcript overlay={true} bind:transcriptShown />
+		-->
 	</div>
 
 	{#if $twitchContext.arePlayerControlsVisible}
@@ -53,17 +55,16 @@
 					</svg>
 				{/if}
 			</button>
-			<button id="toggle-settings" type="button" on:click={toggleSettings}>
-				<!-- Open settings -->
-				<svg xmlns="http://www.w3.org/2000/svg" height="100%" width="auto" viewBox="0 -960 960 960">
-					<path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/>
-				</svg>
-			</button>
 			<!--
 			<button on:click={ toggleTranscript }>
 				Transcript
+			</button>-->
+			<button id="toggle-settings" type="button" on:click={toggleSettings}>
+				<!-- Open settings -->
+				<svg xmlns="http://www.w3.org/2000/svg" height="100%" width="auto" viewBox="0 -960 960 960">
+					<path d="m387.694-100.001-15.231-121.846q-16.077-5.385-32.962-15.077-16.885-9.693-30.193-20.77l-112.846 47.692L104.156-370l97.615-73.769q-1.385-8.923-1.962-17.923-.577-9-.577-17.923 0-8.539.577-17.347.577-8.808 1.962-19.269L104.156-590l92.306-159.229 112.461 47.308q14.462-11.462 30.885-20.962 16.424-9.501 32.27-15.27l15.616-121.846h184.612l15.231 122.231q18 6.538 32.578 15.269 14.577 8.731 29.423 20.578l114-47.308L855.844-590l-99.153 74.922q2.154 9.693 2.346 18.116.192 8.423.192 16.962 0 8.154-.384 16.577-.385 8.423-2.77 19.27L854.46-370l-92.307 159.998-112.615-48.077q-14.846 11.847-30.308 20.962-15.462 9.116-31.693 14.885l-15.231 122.231H387.694Zm92.767-260q49.923 0 84.961-35.038Q600.46-430.078 600.46-480t-35.038-84.961q-35.038-35.038-84.961-35.038-50.537 0-85.268 35.038-34.73 35.039-34.73 84.961t34.73 84.961q34.731 35.038 85.268 35.038Z"/>
+				</svg>
 			</button>
-			-->
 		</div>
 	{/if}
 </div>

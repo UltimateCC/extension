@@ -1,15 +1,15 @@
-
-// Caption variables
-$caption-line-height: 1.25em;
-$caption-container-padding: 0.5em;
-$caption-movable-Y: 1rem;
-$caption-movable-X: 0;
 	
 // Ultimate CC theme
 $theme-font-family: Arial, Helvetica, sans-serif;
 $theme-font-size: 1.25em; /*clamp(1em, 2.25vh, 2em);*/
 $theme-text-color: #D9D9D9;
 $theme-background-color: #37373E;
+
+// Caption variables
+$caption-line-height: 1.25em;
+$caption-container-padding: 0.5em;
+$caption-movable-Y: 1rem;
+$caption-movable-X: 0;
 
 // Settings variables
 $settings-text-color: $theme-text-color;
@@ -25,6 +25,9 @@ $settings-input-border-radius: 0.6em;
 $settings-input-size: 7em;
 $settings-input-shadow: 0 3.3px 3.3px 0 rgba($settings-background-color, 0.25) inset;
 $settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
+
+// Transcript variables
+$transcript-background-color: #1F1F23;
 
 // Buttons variables
 $buttons-height: 2.5em;

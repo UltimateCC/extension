@@ -18,12 +18,8 @@
 </script>
 
 {#if !overlay || transcriptShown }
-	<div class="container">
+	<div class="container" style:opacity={ overlay ? .9 : 1 }>
 		<div class="top">
-			<h2>Live transcript</h2>
-			<div class="language">
-				<label for="language-input">Language:</label><LanguageSelect />
-			</div>
 			{#if overlay}
 				<button	class="topright" on:click={()=>{ transcriptShown = false; }} >
 					<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
@@ -31,6 +27,11 @@
 					</svg>
 				</button>
 			{/if}
+			<h2>Live transcript</h2>
+			<div class="language">
+				<label for="language-input">Language:</label>
+				<LanguageSelect />
+			</div>
 		</div>
 		<div class="transcript" use:scrollToBottom={ {$transcript, $settings }} >
 			{#each $transcript as line }
@@ -45,13 +46,13 @@
 <style lang="scss">
 	@import '../assets/vars.scss';
 
-	.container { height: 100%; width: 100%;}
-	.container { background-color: rgba($settings-background-color, 0.95); color: $theme-text-color; }
+	.container { height: 100%; width: 100%; }
+	.container { background-color: $theme-background-color; color: $theme-text-color; }
 	.container { font-size: $theme-font-size; font-family: $theme-font-family; }
 
-	.top { height: 4em; background: #1F1F23; }
-	.top h2 { font-size: 1.25em; display: block; margin: 0 .5em; text-align: center; padding-top: .25em; }
-	.top .language { margin: .25em .5em; display: flex; justify-content: flex-start; gap: .5em;  }
+	.top { height: 4em; background-color: $settings-background-color; }
+	.top h2 { display: block; font-size: 1.25em; text-align: center; margin: 0 .5em; padding-top: .25em; font-weight: normal; }
+	.top .language { margin: .25em .5em; display: flex; justify-content: flex-start; gap: .5em; }
 
 	button.topright { position: absolute; top: 0; right: 0; font-size: 2em; border: none; background: none; }
 	button.topright { cursor: pointer; transition: transform 0.2s ease-in-out; }
