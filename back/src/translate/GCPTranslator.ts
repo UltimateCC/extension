@@ -28,11 +28,20 @@ export class GCPTranslator extends Translator {
 			method: 'POST'
 		});
 
-		const json = await res.json();
-		return {
-			isError: false,
-			data: { text: json?.data?.translations[0]?.translatedText ?? '' , lang: target }
-		};
+		if(res.ok) {
+			const json = await res.json();
+			return {
+				isError: false,
+				data: { text: json?.data?.translations[0]?.translatedText ?? '' , lang: target }
+			};
+		}else{
+			const text = await res.text();
+			console.error('GCP translation error', text);
+			return {
+				isError: true,
+				message: 'GCP translation error'
+			}
+		}
 	}
 }
 
