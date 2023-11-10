@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
 	import { settings, resetSettings, position } from "../lib/settings";
-	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
+	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
 	import LanguageSelect from "./LanguageSelect.svelte";
+    import { fade } from "svelte/transition";
 
 	export let settingsShown = false;
 
@@ -39,12 +40,12 @@
 <svelte:window on:click={handleClick} />
 
 {#if settingsShown}
-	<div id="settings-container" bind:this={settingsElem}>
+	<div id="settings-container" bind:this={settingsElem} transition:fade={ { duration: 100 } }>
 		<div class="caption-header-container">
 			<h2>Captions settings</h2>
 			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }}>
-				<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-					<polygon xmlns="http://www.w3.org/2000/svg" points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+				<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960" width="1em">
+					<path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
 				</svg>
 			</button>
 		</div>

@@ -1,5 +1,6 @@
 
 <script lang="ts">
+    import { fade } from "svelte/transition";
 	import { finalCaptions, partialCaptions } from "../lib/captions";
 	import { position, settings, type SettingsType } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
@@ -79,6 +80,7 @@
 			on:mousedown={ onMouseDown }
 			bind:this={ movableElem }
 			class:locked={ $settings.positionLocked }
+			transition:fade={ { duration: 100 } }
 		>
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
 				<p id="caption-content">

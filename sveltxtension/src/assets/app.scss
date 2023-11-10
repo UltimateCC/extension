@@ -130,7 +130,7 @@ body #ultimate-closed-caption {
 					right: 0;
 					border: none;
 					background-color: transparent;
-					polygon {
+					svg > * {
 						fill: $settings-text-color;
 					}
 					font-size: 2em;
@@ -220,10 +220,12 @@ body #ultimate-closed-caption {
 
 					.caption-group-header {
 						display: flex;
-						
+
 						width: 100%;
-						padding: .5em 0;
-						margin: .25em 0;
+						padding-top: .5em;
+						padding-bottom: .5em;
+						margin-top: .25em;
+						margin-bottom: .25em;
 						cursor: pointer;
 
 						border: none;
@@ -483,7 +485,7 @@ body #ultimate-closed-caption {
 			// border-radius: 0.5em;
 			padding: 0.1em $buttons-padding-X;
 
-			path {
+			svg > * {
 				fill: $settings-text-color;
 			}
 
@@ -493,7 +495,7 @@ body #ultimate-closed-caption {
 
 			&.isOpen {
 				// background-color: $settings-button-color;
-				path {
+				svg > * {
 					fill: #999;
 				}
 			}

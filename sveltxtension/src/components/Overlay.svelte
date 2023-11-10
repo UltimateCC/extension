@@ -1,12 +1,12 @@
 <script lang="ts">
     import Settings from "./Settings.svelte";
     import { twitchContext } from "../lib/twitch";
-    import Transcript from "./Transcript.svelte";
+    //import Transcript from "./Transcript.svelte";
     import { fade } from "svelte/transition";
     import Captions from "./Captions.svelte";
 
 	let settingsShown = false;
-	let transcriptShown = false;
+	//let transcriptShown = false;
 	let captionsShown = true;
 
 	function toggleCaptions() {
@@ -16,7 +16,7 @@
 	function toggleSettings(e: Event) {
 		// Prevent closing settings instantly because click outside
 		e.preventDefault();
-		transcriptShown = false;
+		//transcriptShown = false;
 		settingsShown = !settingsShown;
 	}
 	/*

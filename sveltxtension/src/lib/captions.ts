@@ -28,7 +28,7 @@ export const transcript = writable<Caption[][]>([]);
 // Handle received captions
 export function handleCaptions(data: CaptionsData) {
 	// Delay captions for stream latency minus accumulated processing delay
-	const delay = (( get(twitchContext).hlsLatencyBroadcaster || 1 ) * 1000) - data.delay;
+	const delay = (( get(twitchContext).hlsLatencyBroadcaster || 1 ) * 4000) - data.delay;
 
 	setTimeout( ()=>{
 		const caption = data.captions.find(c => c.lang === get(settings).language) ?? data.captions[0];
