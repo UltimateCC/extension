@@ -82,6 +82,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
 		}else{
+			console.log('Sending pubsub for '+socket.data.twitchId, out.data);
 			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 		}
 	}catch(e) {

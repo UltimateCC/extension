@@ -73,6 +73,10 @@ function Dashboard() {
         
     }, [ user, socketCtx.captionsStatus, error ]);
 
+    useEffect(()=>{
+        socketCtx.reloadConfig();
+    }, [translationLangs]);
+
     // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
     //     setAllBanCaptions(newBanCaptions);
     // };
