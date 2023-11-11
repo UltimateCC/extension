@@ -11,9 +11,8 @@ Translation possible with multiple services using your own API keys
 
 ## Roadmap
 
-- Send non-final versions of captions (will help with longer sentences)
+- Configurable delay to send non-final versions of captions
 - Dashboard controls via streamdeck
-- Extension: Rewrite in svelte
 - Website:
   - Dashboard redesign ?
   - Support changing translation services

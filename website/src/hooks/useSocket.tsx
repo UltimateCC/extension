@@ -33,6 +33,7 @@ export function useSocket() {
 
         socket.on('connect_error', e=>{
             console.error('socket.io error', e);
+            setInfo({ type: 'warn', message: 'Connection error, you may need to refresh the page' });
         });
 
         socket.on('info', info=>{

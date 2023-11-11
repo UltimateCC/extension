@@ -109,7 +109,7 @@ function Privacy() {
                 or you would like to exercise one of your data protection rights,
                 please do not hesitate to contact us.
             </p>
-            <p>Email us at: </p>
+            <p>Email us at: contact@ultimatecc.net</p>
         </section>
     );
 }

@@ -9,12 +9,12 @@
 	//let transcriptShown = false;
 	let captionsShown = true;
 
-	function toggleCaptions() {
+	function toggleCaptions(e: Event) {
+		e.preventDefault();
 		captionsShown = !captionsShown;
 	}
 
 	function toggleSettings(e: Event) {
-		// Prevent closing settings instantly because click outside
 		e.preventDefault();
 		//transcriptShown = false;
 		settingsShown = !settingsShown;

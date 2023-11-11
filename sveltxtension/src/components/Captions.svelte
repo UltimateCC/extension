@@ -24,13 +24,13 @@
 	}
 
 	function onMouseDown(e: MouseEvent) {
-		if( !$settings.positionLocked ) {
+		if( !$settings.positionLocked && !e.defaultPrevented ) {
 			moving = true;
 			mouseX = e.clientX;
 			mouseY = e.clientY;
 		}
 	}
-	
+
 	function onMouseMove(e: MouseEvent) {
 		if (moving) {
 			const deltaX = mouseX - e.clientX;
@@ -99,6 +99,5 @@
 		</div>
 	</div>
 {/if}
-
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />

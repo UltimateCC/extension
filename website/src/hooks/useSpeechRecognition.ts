@@ -49,7 +49,7 @@ export function useSpeechRecognition(
 				setText(text);
 
 				// Wait 2s between each partial caption
-				if(!result.isFinal && lastCaptions && ( (lastCaptions + 2000) > Date.now() ) ) {
+				if(!result.isFinal && lastCaptions && ( (lastCaptions + 2500) > Date.now() ) ) {
 					return;
 				}
 
