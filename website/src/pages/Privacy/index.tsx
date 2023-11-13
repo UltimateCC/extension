@@ -1,8 +1,9 @@
+import '../../webroot/style/legal.css';
 
 
 function Privacy() {
     return (
-        <section className="theme-box">
+        <section className="theme-box legal">
             <h2>Privacy policy</h2>
             <p>
                 Ultimate Closed Captions ("us", "we", or "our") operates the https://ultimatecc.net website (hereinafter referred to as the "Service").
@@ -46,32 +47,34 @@ function Privacy() {
 
             <h3>What are your data protection rights?</h3>
             <p>We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
-            <p>
-                <strong>The right to access</strong>
-                You have the right to request us for copies of your personal data.
-            </p>
-            <p>
-                <strong>The right to rectification</strong>
-                You have the right to request that we correct any information you believe is inaccurate.
-                You also have the right to request us to complete the information you believe is incomplete.
-            </p>
-            <p>
-                <strong>The right to erasure</strong>
-                You have the right to request that we erase your personal data, under certain conditions.
-            </p>
-            <p>
-                <strong>The right to restrict processing</strong>
-                You have the right to request that we restrict the processing of your personal data, under certain conditions.
-            </p>
-            <p>
-                <strong>The right to object to processing</strong>
-                You have the right to object to us processing of your personal data, under certain conditions.
-            </p>
-            <p>
-                <strong>The right to data portability</strong>
-                You have the right to request that we transfer the data that we have collected to another organization,
-                or directly to you, under certain conditions.
-            </p>
+            <ul>
+                <li>
+                    <strong>The right to access </strong>
+                    You have the right to request us for copies of your personal data.
+                </li>
+                <li>
+                    <strong>The right to rectification </strong>
+                    You have the right to request that we correct any information you believe is inaccurate.
+                    You also have the right to request us to complete the information you believe is incomplete.
+                </li>
+                <li>
+                    <strong>The right to erasure </strong>
+                    You have the right to request that we erase your personal data, under certain conditions.
+                </li>
+                <li>
+                    <strong>The right to restrict processing </strong>
+                    You have the right to request that we restrict the processing of your personal data, under certain conditions.
+                </li>
+                <li>
+                    <strong>The right to object to processing </strong>
+                    You have the right to object to us processing of your personal data, under certain conditions.
+                </li>
+                <li>
+                    <strong>The right to data portability </strong>
+                    You have the right to request that we transfer the data that we have collected to another organization,
+                    or directly to you, under certain conditions.
+                </li>
+            </ul>
             <p>
                 If you make a request, we have one month to respond to you.
                 If you would like to exercise any of these rights, please contact us by email at the bottom of this page

@@ -1,0 +1,22 @@
+
+
+section.legal {
+	text-align: left;
+}
+
+section.legal h2 {
+	color: var(--title);
+	font-size: 2em;
+}
+
+section.legal h3 {
+	color: var(--title);
+}
+
+section.legal ul {
+	margin: .25em .5em;
+}
+
+section.legal li {
+	list-style-position: inside;
+}
