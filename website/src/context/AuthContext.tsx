@@ -41,53 +41,50 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
 
     const navigate = useNavigate();
 
+    const memoedValue = useMemo( () => {
+        function refreshAuth() {
+            setLoading(true);
+            api('auth')
+                .then((data) => setUser(data))
+                .catch(() => setError(true))
+                .finally(() => setLoading(false));
+        }
+
+        return {
+                user,
+                loading,
+                error,
+                refreshAuth,
+                login: function login(code: string) {
+                    setLoading(true);
+                    api('auth', {method: 'POST', body: {code}})
+                        .then((data) => {
+                            setUser(data);
+                            setError(false);
+                            navigate('/dashboard', { replace: true } );
+                        })
+                        .catch(() => setError(true))
+                        .finally(() => setLoading(false));
+                }, 
+                logout: function logout() {
+                    api('auth', { method: 'DELETE' })
+                        .then(() => {
+                            refreshAuth();
+                            setError(false);
+                            navigate('/', { replace: true } );
+                        })
+                        .catch(() => setError(true));
+                },
+            }
+        },
+        [user, loading, error, navigate]
+    );
+
     // Check if there is a currently active session when mounted
     useEffect(() => {
-        refreshAuth();
-    }, []);
+        memoedValue.refreshAuth();
+    }, [memoedValue]);
 
-    function refreshAuth() {
-        setLoading(true);
-        api('auth')
-            .then((data) => setUser(data))
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-    }
-
-    function login(code: string) {
-        setLoading(true);
-
-        api('auth', {method: 'POST', body: {code}})
-            .then((data) => {
-                setUser(data);
-                setError(false);
-                navigate('/dashboard', { replace: true } );
-            })
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-    }
-
-    function logout() {
-        api('auth', { method: 'DELETE' })
-            .then(() => {
-                refreshAuth();
-                setError(false);
-                navigate('/', { replace: true } );
-            })
-            .catch(() => setError(true));
-    }
-
-    const memoedValue = useMemo(
-        () => ({
-            user,
-            loading,
-            error,
-            login,
-            refreshAuth,
-            logout,
-        }),
-        [user, loading, error]
-    );
 
     return (
         <AuthContext.Provider value={memoedValue}>

@@ -19,5 +19,5 @@ FROM base as production
 
 RUN pnpm build
 
-CMD [ "yarn", "start" ]
+CMD [ "pnpm", "start" ]
 
