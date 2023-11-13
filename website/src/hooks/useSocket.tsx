@@ -31,29 +31,27 @@ export function useSocket() {
     useEffect(() => {
         socket.connect();
 
-        socket.on('connect_error', e=>{
-            console.error('socket.io error', e);
+        function handleError(error: Error) {
+            console.error('socket.io error', error);
             setInfo({ type: 'warn', message: 'Connection error, you may need to refresh the page' });
-        });
+        }
 
-        socket.on('info', info=>{
-            setInfo(info);
-        });
-
-        socket.on('status', status=>{
-            setCaptionsStatus(status);
-        });
-
-        socket.on('transcript', transcript=>{
+        function handleTranscript(transcript: TranscriptData) {
             setRecognized({ lang: transcript.lang, text: transcript.text });
-        });
+        }
 
-        socket.on('translateLangs', translateLangs=>{
-            setTranslateLangs(translateLangs);
-        });
+        socket.on('connect_error', handleError);
+        socket.on('info', setInfo);
+        socket.on('status', setCaptionsStatus);
+        socket.on('translateLangs', setTranslateLangs);
+        socket.on('transcript', handleTranscript);
 
         return () => {
-            socket.removeAllListeners();
+            socket.off('connect_error', handleError);
+            socket.off('info', setInfo);
+            socket.off('status', setCaptionsStatus);
+            socket.off('translateLangs', setTranslateLangs);
+            socket.off('transcript', handleTranscript);
             socket.disconnect();
         }
     }, []);
@@ -91,6 +89,7 @@ export function useSocket() {
     */
 
     return {
+            socket,
             info,
             captionsStatus,
             translateLangs,

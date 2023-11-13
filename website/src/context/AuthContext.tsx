@@ -41,14 +41,16 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
 
     const navigate = useNavigate();
 
+    function refreshAuth() {
+        setLoading(true);
+        api('auth')
+            .then((data) => setUser(data))
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
+    }
+
     const memoedValue = useMemo( () => {
-        function refreshAuth() {
-            setLoading(true);
-            api('auth')
-                .then((data) => setUser(data))
-                .catch(() => setError(true))
-                .finally(() => setLoading(false));
-        }
+
 
         return {
                 user,
@@ -82,9 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
 
     // Check if there is a currently active session when mounted
     useEffect(() => {
-        memoedValue.refreshAuth();
-    }, [memoedValue]);
-
+        refreshAuth();
+    }, []);
 
     return (
         <AuthContext.Provider value={memoedValue}>

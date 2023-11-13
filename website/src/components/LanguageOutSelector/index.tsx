@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
@@ -14,6 +14,7 @@ import api from '../../services/api.ts';
 import languageNames from '../../services/languageNames.ts';
 
 import FormResponse from '../FormResponse';
+import { SocketContext } from '../../context/SocketContext.tsx';
 
 interface LanguageOutSelectorProps {
     selectedLanguageCode: string[];
@@ -60,6 +61,8 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
 
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
+    const { reloadConfig } = useContext(SocketContext);
+
     useEffect(() => {
         const selectedLanguages: string[] = [];
         const nonSelectedLanguages: string[] = [];
@@ -97,6 +100,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
         })
         .then(() => {
             setTranslationLangs(selectedLanguageCodes);
+            reloadConfig();
         })
         .catch((error) => {
             setResponse({ isSuccess: false, message: 'An error occurred while updating your languages' });
