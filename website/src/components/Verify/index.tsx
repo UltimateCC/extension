@@ -16,7 +16,7 @@ function Verify() {
                 login(code);
             }
         }
-    }, []);
+    }, [login]);
     
     return (
         <section id="error" className="theme-box">

@@ -4,7 +4,6 @@ import { Translator } from "./Translator";
 
 
 export class AzureTranslator extends Translator {
-
 	private static langList: LangList = [];
 
 	ready() {

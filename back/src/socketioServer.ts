@@ -3,7 +3,6 @@ import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from ".
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { isExtensionInstalled, sendPubsub } from "./twitch";
-import { dataSource } from "./database";
 import { Translator } from "./translate/Translator";
 import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
@@ -40,7 +39,7 @@ type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, Socket
 
 
 async function loadConfig(socket: TypedSocket) {
-	const u = await dataSource.manager.findOneByOrFail(User, { twitchId: socket.data.twitchId });
+	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
 	socket.data.config = u.config;
 
 	// Speech to text
@@ -136,7 +135,7 @@ export function initSocketioServer(io: TypedServer) {
 		});
 
 		// Streaming speech to text
-		socket.on('audioStart', async ()=>{
+		socket.on('audioStart', ()=>{
 			socket.data.streamingStt?.start();
 		});
 		socket.on('audioEnd', ()=>{

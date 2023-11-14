@@ -1,7 +1,6 @@
 
 import { NextFunction, Request, Response, Router } from "express";
 import { auth, authURL } from "../twitch";
-import { dataSource } from "../database";
 import { User } from "../entity/User";
 
 
@@ -34,14 +33,14 @@ authRouter.get('', (req, res, next)=>{
 	});
 });
 
-authRouter.post('',async (req, res, next)=>{
+authRouter.post('', async (req, res, next)=>{
 	try{
-		if(!req.body || !req.body.code || typeof req.body.code !=='string') {
+		if(!req.body || !req.body.code || typeof req.body.code !== 'string') {
 			return res.status(400).send('Missing code');
 		}
 		const { login, userId, token, img } = await auth(req.body.code);
-
-		let user = await dataSource.manager.findOneBy(User, { twitchId: userId });
+		
+		let user = await User.findOneBy({ twitchId: userId });
 		if(!user) {
 			user = new User();
 		}
@@ -49,7 +48,7 @@ authRouter.post('',async (req, res, next)=>{
 		user.twitchLogin = login;
 		user.twitchToken = token;
 
-		await dataSource.manager.save(user);
+		await user.save();
 		req.session.connected = true;
 		req.session.userid = userId;
 		req.session.login = login;

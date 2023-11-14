@@ -1,14 +1,14 @@
 
-import { exchangeCode, getTokenInfo, RefreshingAuthProvider, StaticAuthProvider } from "@twurple/auth";
+import { exchangeCode, RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "./entity/User";
 import { dataSource } from "./database";
 import { sendExtensionPubSubBroadcastMessage } from "@twurple/ebs-helper";
 
 
+export const clientId = process.env.TWITCH_CLIENTID!;
 const ownerId = process.env.TWITCH_OWNERID!;
 const secret = process.env.TWITCH_SECRET!;
-export const clientId = process.env.TWITCH_CLIENTID!;
 const clientSecret = process.env.TWITCH_CLIENTSECRET!;
 const redirectUri = process.env.TWITCH_REDIRECT_URI!;
 
@@ -31,7 +31,6 @@ authProvider.onRefreshFailure((user)=>{
 });
 
 const api = new ApiClient({authProvider});
-
 
 export async function auth(code: string) {
 	const token = await exchangeCode(clientId, clientSecret, code, redirectUri);
@@ -56,7 +55,7 @@ export async function isExtensionInstalled(user: string) {
 	/*
 	try{
 		if(!authProvider.hasUser(user)) {
-			const u = await dataSource.manager.findOneByOrFail(User, { twitchId: user });
+			const u = await User.findOneByOrFail({ twitchId: user });
 			authProvider.addUser(user, u.twitchToken);
 		}
 		const exts = await api.users.getActiveExtensions(user, true);

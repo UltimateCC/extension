@@ -1,10 +1,14 @@
 
 import { z } from "zod";
-import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
 import { AccessToken } from "@twurple/auth";
+import { randomBytes } from "crypto";
+import { promisify } from "node:util";
+
+const randBytes = promisify(randomBytes);
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
 	@ObjectIdColumn()
 	id: ObjectId;
 
@@ -23,9 +27,13 @@ export class User {
 	@Column('json')
 	twitchToken: AccessToken;
 
+	@Column()
+	webhookSecret: string;
+
 	@Column('json')
 	config: UserConfig = {
-		transcribe: '',	
+		transcribe: '',
+		lastSpokenLang: 'fr-FR',
 		spokenLang: 'en-US',
 		spokenLangs: ['en-US'],
 		translateService: '',
@@ -34,7 +42,14 @@ export class User {
 	};
 
 	@Column('json')
-	secrets: UserSecrets = {}
+	secrets: UserSecrets = {};
+
+	// Methods
+	async genWebhookSecret() {
+		const bytes = await randBytes(32);
+		this.webhookSecret = bytes.toString('hex');
+		await this.save();
+	}
 }
 
 export const UserConfigSchema = z.object({
@@ -44,6 +59,7 @@ export const UserConfigSchema = z.object({
 		z.literal('deepgram'),
 		z.literal('azure'),
 	]),
+	lastSpokenLang: z.string(),
 	spokenLang: z.string(),
 	spokenLangs: z.array(z.string()),
 	translateService: z.union([

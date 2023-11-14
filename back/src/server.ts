@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 import { initSocketioServer } from './socketioServer';
 import { thanksRouter } from './api/thanks';
 import { configRouter } from './api/config';
+import { webhooksRouter } from './api/webhooks';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -45,10 +46,12 @@ app.use('/api/config', authMiddleware, configRouter);
 // Secrets
 app.use('/api/secrets', authMiddleware, secretsRouter);
 
+// Webhooks
+app.use('/api/webhooks', webhooksRouter);
 
 // socket.io on same server
 const server = createServer(app);
-const io = new Server(server);
+export const io = new Server(server);
 io.engine.use(sessionMiddleware);
 //Register socketio routes
 initSocketioServer(io);

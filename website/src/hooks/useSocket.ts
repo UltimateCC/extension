@@ -1,25 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { io, type Socket } from "socket.io-client";
-import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "../context/SocketContext";
+import { io } from "socket.io-client";
+import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData, TypedSocket } from "../context/SocketContext";
 
-interface ServerToClientEvents {
-    translateLangs: (langs: LangList) => void;
-    info: ( info: Info ) => void;
-    status: ( status: CaptionsStatus ) => void;
-    transcript: ( transcript: TranscriptData )=>void;
-}
-
-interface ClientToServerEvents {
-    reloadConfig: () => void;
-    text: (text: TranscriptData) => void;
-    audio: (data: Blob, duration: number) => void;
-    audioStart: () => void;
-    audioData: (data: Blob) => void;
-    audioEnd: () => void;
-}
-
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io({autoConnect: false});
-
+const socket: TypedSocket = io({autoConnect: false});
 
 export function useSocket() {
     const [info, setInfo] = useState<Info>();

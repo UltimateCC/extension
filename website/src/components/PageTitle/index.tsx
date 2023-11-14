@@ -14,6 +14,14 @@ function PageTitle() {
                 return 'Home';
             case '/dashboard':
                 return 'Dashboard';
+            case '/verify':
+                return 'Login';
+            case '/logout':
+                return 'Logout';
+            case '/thanks':
+                return 'Thanks';
+            case '/privacy':
+                return 'Privacy policy';
             default:
                 return 'Error';
         }

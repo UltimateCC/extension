@@ -39,6 +39,22 @@ function Dashboard() {
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
 
+    function loadConfig() {
+        api('config')
+        .then(response => {
+            // setAllBanCaptions(response.banWords);
+            setSpokenLang(response.spokenLang);
+            setTranslateService(response.translateService);
+            setTranslationLangs(response.translateLangs);
+            setConfigLoaded(true);
+            return;
+        })
+        .catch(err => {
+            console.error(err);
+            setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload", hideRestOfPage: true });
+        })
+    }
+
     useEffect(() => {
         if(!user?.connected && user?.url) {
             window.location.replace(user.url);
@@ -52,23 +68,11 @@ function Dashboard() {
         }
 
         if(socketCtx.captionsStatus?.twitch === false) {
-            setResponse({ isSuccess: false, message: "You need to be streaming on Twitch to use this service" });
+            setResponse({ isSuccess: false, message: "The Twitch extension is not installed on your channel." });
         }
 
         if(user?.connected) {
-            api('config')
-                .then(response => {
-                    // setAllBanCaptions(response.banWords);
-                    setSpokenLang(response.spokenLang);
-                    setTranslateService(response.translateService);
-                    setTranslationLangs(response.translateLangs);
-                    setConfigLoaded(true);
-                    return;
-                })
-                .catch(err => {
-                    console.error(err);
-                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload", hideRestOfPage: true });
-                })
+            loadConfig();
         }
         
     }, [ user, socketCtx.captionsStatus, error ]);
