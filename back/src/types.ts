@@ -40,3 +40,8 @@ export type Info = {
 	type: 'warn' | 'error' ,
 	message: string
 }
+
+export type Action = {
+	type: 'setlang' | 'start' | 'stop',
+	lang?: string
+}

@@ -18,7 +18,7 @@ Translation possible with multiple services using your own API keys
   - Support changing translation services
   - Support other speech to text services (interesting ? often expensive)
   - Send captions to OBS (with obs-websocket)
-  - Streamer tutorial / info page
+- Streamer tutorial / info page
 - Check if extension is installed
 - Setting to stop recording voice when stream ends
 - Setup translation server working without further configuration (free ? limited ? paid ? with bits?)

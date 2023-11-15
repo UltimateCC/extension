@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "./types";
+import { Action, CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { isExtensionInstalled, sendPubsub } from "./twitch";
@@ -15,6 +15,7 @@ interface ServerToClientEvents {
 	status: ( status: CaptionsStatus ) => void;
 	info: ( info: Info )=>void;
 	transcript: ( transcript: TranscriptData )=>void;
+	action: (action: Action)=>void;
 }
 
 interface ClientToServerEvents {
@@ -110,6 +111,8 @@ export function initSocketioServer(io: TypedServer) {
 	});
 
 	io.on('connect', (socket) => {
+		socket.join('twitch-'+socket.data.twitchId);
+
 		socket.on('reloadConfig', ()=>{
 			loadConfig(socket).catch(e=>console.error('Error reloading config', e));
 		});

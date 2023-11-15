@@ -46,7 +46,7 @@ export class User extends BaseEntity {
 
 	// Methods
 	async genWebhookSecret() {
-		const bytes = await randBytes(32);
+		const bytes = await randBytes(16);
 		this.webhookSecret = bytes.toString('hex');
 		await this.save();
 	}

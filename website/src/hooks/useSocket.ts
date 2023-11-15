@@ -41,8 +41,12 @@ export function useSocket() {
 
     // Trigger a server side config reload
     const reloadConfig = useCallback(()=>{
-        socket.emit('reloadConfig');
+        // Reset error message
         setInfo(undefined);
+        // Clear buffered events
+        socket.sendBuffer = [];
+
+        socket.emit('reloadConfig');
     }, []);
 
     // Handle text from speech recognition

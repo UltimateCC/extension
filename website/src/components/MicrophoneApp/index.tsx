@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { speechLanguages } from './speechLanguages';
-import api from '../../services/api';
-import { SocketContext } from '../../context/SocketContext';
+import { Action, SocketContext } from '../../context/SocketContext';
 
 import FormResponse from '../FormResponse';
 
 interface MicrophoneAppProps {
     spokenLang?: string
     setSpokenLang: (spokenLang: string) => void
+    lastSpokenLang?: string
     configLoaded: boolean
     loadingImg: string
 }
 
-function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: MicrophoneAppProps) {
-    const { handleText, info, reloadConfig } = useContext(SocketContext);
+function MicrophoneApp({ spokenLang, setSpokenLang, lastSpokenLang, configLoaded, loadingImg }: MicrophoneAppProps) {
+    const { handleText, info, reloadConfig, socket } = useContext(SocketContext);
     const [listening, setListening] = useState<boolean>(false);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
     const { error, text } = useSpeechRecognition(handleText, spokenLang!, listening);
 
+    // Show error messages
     useEffect(()=>{
         if(info?.type === 'error') setListening(false);
         
@@ -27,17 +28,29 @@ function MicrophoneApp({ spokenLang, setSpokenLang, configLoaded, loadingImg }: 
 
     }, [info, error]);
 
+    // Handle actions triggered from server
+    useEffect(()=>{
+        function handleAction(action: Action) {
+            if(action.type === 'setlang') {
+                if(action.lang) {
+                    setSpokenLang(action.lang ?? lastSpokenLang);
+                }
+            }else if(action.type === 'start') {
+                setListening(true);
+            }else if(action.type === 'stop') {
+                setListening(false);
+            }
+        }
+
+        socket.on('action', handleAction);
+
+        return ()=>{
+            socket.off('action', handleAction);
+        }
+    }, [socket, reloadConfig, setSpokenLang, spokenLang, lastSpokenLang]);
+
     function handleSpokenLang(event: React.ChangeEvent<HTMLSelectElement>) {
         setSpokenLang(event.target.value);
-        api('config', {
-            method: 'POST',
-            body: { spokenLang: event.target.value }
-        })
-        .then(reloadConfig)
-        .catch((error) => {
-            console.error('Error updating spoken language', error);
-            setResponse({ isSuccess: false, message: 'An error occurred while updating your spoken language' });
-        });
     }
 
     if (!configLoaded) return (

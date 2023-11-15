@@ -31,11 +31,17 @@ type Metadata = {
 
 export type TranscriptData = Metadata & TranscriptAlt
 
+export type Action = {
+	type: 'setlang' | 'start' | 'stop',
+	lang?: string
+}
+
 interface ServerToClientEvents {
     translateLangs: (langs: LangList) => void;
     info: ( info: Info ) => void;
     status: ( status: CaptionsStatus ) => void;
     transcript: ( transcript: TranscriptData )=>void;
+	action: (action: Action)=>void;
 }
 
 interface ClientToServerEvents {

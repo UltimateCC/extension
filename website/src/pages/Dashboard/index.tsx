@@ -32,17 +32,23 @@ function Dashboard() {
 
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
-    const [spokenLang, setSpokenLang] = useState<string>();
-    const [translateService, setTranslateService] = useState<string>();
-    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
+
+    // Speech language
+    const [lastSpokenLang, setLastSpokenLang] = useState<string>();
+    const [spokenLang, setSpokenLang] = useState<string>();
+
+    // Translation
+    const [translateService, setTranslateService] = useState<string>();
+    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
 
     function loadConfig() {
         api('config')
         .then(response => {
             // setAllBanCaptions(response.banWords);
+            setLastSpokenLang(response.lastSpokenLang);
             setSpokenLang(response.spokenLang);
             setTranslateService(response.translateService);
             setTranslationLangs(response.translateLangs);
@@ -53,6 +59,23 @@ function Dashboard() {
             console.error(err);
             setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload", hideRestOfPage: true });
         })
+    }
+
+    // Set spoken lang, and save it
+    function setSpoken(lang: string | undefined) {
+        const last = lastSpokenLang;
+        setLastSpokenLang(spokenLang);
+        setSpokenLang(lang ?? last);
+
+        api('config', {
+            method: 'POST',
+            body: { spokenLang, lastSpokenLang }
+        })
+        .then(socketCtx.reloadConfig)
+        .catch((error) => {
+            console.error('Error updating spoken language', error);
+            setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });
+        });
     }
 
     useEffect(() => {
@@ -156,7 +179,7 @@ function Dashboard() {
                         <h3>Speech</h3>
                         <MicrophoneApp 
                             spokenLang={spokenLang}
-                            setSpokenLang={setSpokenLang}
+                            setSpokenLang={setSpoken}
                             configLoaded={configLoaded}
                             loadingImg={loadingImg}
                         />
