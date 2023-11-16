@@ -53,6 +53,7 @@ app.use('/api/webhooks', webhooksRouter);
 // socket.io on same server
 const server = createServer(app);
 export const io = new Server(server);
+/*
 // socketio admin UI
 instrument(io, {
 	auth: {
@@ -60,7 +61,7 @@ instrument(io, {
 		username: 'admin',
 		password: process.env.SOCKETIO_ADMIN_PASSWORD!
 	}
-});
+});*/
 io.engine.use(sessionMiddleware);
 //Register socketio routes
 initSocketioServer(io);
