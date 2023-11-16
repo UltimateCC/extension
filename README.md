@@ -6,8 +6,7 @@ Speech to text using Web Speech API
 
 Translation possible with multiple services using your own API keys
 - Google Translation API (Probably best results)
-- Microsoft Azure Translator (Cheaper than google)
-
+- Later: Microsoft Azure Translator (Cheaper than google)
 
 ## Roadmap
 
@@ -31,7 +30,6 @@ Translation possible with multiple services using your own API keys
 ## Development
 
 #### Twitch config
-(Instructions not updated)
 - Go to https://dev.twitch.tv/console/ and create an extension
 - Config asset hosting:
   - Base test uri: https://localhost:5174/
@@ -48,7 +46,7 @@ Translation possible with multiple services using your own API keys
 - nodemon will restart server after any modifications in backend code
 - for local backend dev, run `pnpm install` in back folder to get types working
 
-#### Website
-- `cd website`
+#### Website / extension
+- `cd website` / `cd sveltxtension`
 - Install: `pnpm install`
 - Start local dev server: `pnpm dev`
