@@ -17,7 +17,9 @@ function MicrophoneApp({ spokenLang, setSpokenLang, lastSpokenLang, configLoaded
     const { handleText, info, reloadConfig, socket } = useContext(SocketContext);
     const [listening, setListening] = useState<boolean>(false);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
-    const { error, text } = useSpeechRecognition(handleText, spokenLang!, listening);
+    // Delay between each partial captions
+    const splitDelay = 2500;
+    const { error, text } = useSpeechRecognition(handleText, spokenLang!, listening, splitDelay);
 
     // Show error messages
     useEffect(()=>{

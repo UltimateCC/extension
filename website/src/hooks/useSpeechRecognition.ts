@@ -6,7 +6,8 @@ import { TranscriptData } from "../context/SocketContext";
 export function useSpeechRecognition(
 	handleText: (transcript: TranscriptData) => void,
 	lang: string,
-	listening: boolean
+	listening: boolean,
+	splitDelay: number
 ) {
 	const [error, setError] = useState<string>();
 	const [text, setText] = useState<string>('');
@@ -49,7 +50,7 @@ export function useSpeechRecognition(
 				setText(text);
 
 				// Wait 2s between each partial caption
-				if(!result.isFinal && lastCaptions && ( (lastCaptions + 2500) > Date.now() ) ) {
+				if(!result.isFinal && lastCaptions && ( (lastCaptions + splitDelay) > Date.now() ) ) {
 					return;
 				}
 
@@ -85,7 +86,7 @@ export function useSpeechRecognition(
 			stopFunc();
 		}
 
-	}, [ listening, lang, handleText ]);
+	}, [ listening, lang, splitDelay, handleText ]);
 
 	return { error, text };
 }

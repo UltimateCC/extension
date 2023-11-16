@@ -4,21 +4,19 @@ Closed captions extension for Twitch
 
 Speech to text using Web Speech API
 
-Translation possible with multiple services using your own API keys
-- Google Translation API (Probably best results)
-- Later: Microsoft Azure Translator (Cheaper than google)
+Translation possible with multiple services using your own API keys using Google Translation API
 
 ## Roadmap
-
 - Configurable delay to send non-final versions of captions
-- Dashboard controls via streamdeck
-- Website:
-  - Dashboard redesign ?
-  - Support changing translation services
-  - Support other speech to text services (interesting ? often expensive)
-  - Send captions to OBS (with obs-websocket)
-- Streamer tutorial / info page
-- Check if extension is installed
+- Dashboard controls via webhooks (allows streamdeck control)
+- Website dashboard redesign ?
+- Support other translation services:
+  - Azure (cheaper)
+  - LibreTranslate (self hosted)
+- Support other speech to text services (interesting ? often expensive)
+- Send captions to OBS (with obs-websocket)
+- Streamer tutorial / info page -> wiki on github
+- Warn user if extension is not installed
 - Setting to stop recording voice when stream ends
 - Setup translation server working without further configuration (free ? limited ? paid ? with bits?)
 - Allow streamer to choose if captions are shown to viewers by default or not

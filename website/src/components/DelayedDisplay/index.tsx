@@ -13,7 +13,7 @@ interface DelayedDisplayProps {
     needResponseApi?: boolean;
 }
 
-const MIN_DELAY = 200; // ms
+const MIN_DELAY = 150; // ms
 
 function DelayedDisplay({
     requestFn,

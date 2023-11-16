@@ -6,6 +6,7 @@ import { authMiddleware, authRouter } from './api/auth';
 import { secretsRouter } from './api/secrets';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { instrument } from "@socket.io/admin-ui";
 import { initSocketioServer } from './socketioServer';
 import { thanksRouter } from './api/thanks';
 import { configRouter } from './api/config';
@@ -52,6 +53,14 @@ app.use('/api/webhooks', webhooksRouter);
 // socket.io on same server
 const server = createServer(app);
 export const io = new Server(server);
+// socketio admin UI
+instrument(io, {
+	auth: {
+		type: 'basic',
+		username: 'admin',
+		password: process.env.SOCKETIO_ADMIN_PASSWORD!
+	}
+});
 io.engine.use(sessionMiddleware);
 //Register socketio routes
 initSocketioServer(io);
