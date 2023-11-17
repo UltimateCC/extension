@@ -24,7 +24,6 @@ Translation possible with multiple services using your own API keys using Google
 - Banned words (before/after translation?)
 - Detect used translation to enable only necessary ones
 
-
 ## Development
 
 #### Twitch config

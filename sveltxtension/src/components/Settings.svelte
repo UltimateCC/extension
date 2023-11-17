@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { finalCaptions, partialCaptions, transcript } from "../lib/captions";
+	import { partialCaptions } from "../lib/captions";
 	import { settings, resetSettings, position } from "../lib/settings";
 	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
+    import NumberInput from "./NumberInput.svelte";
 
 	export let settingsShown = false;
 
@@ -20,12 +21,8 @@
 	$: clearCaptions($settings.language);
 
 	function clearCaptions(lang: string) {
-		// Reset partial captions
+		// Reset partial captions when lang changed
 		$partialCaptions = '';
-
-		// Add last sentence to captions in selected language, or spoken language, or empty
-		const lastTranscript = $transcript[$transcript.length-1] || [];
-		$finalCaptions = ( lastTranscript?.find(c=>c.lang===lang) || lastTranscript[0] )?.text || '';
 	}
 
 	// Close on click outside
@@ -72,12 +69,15 @@
 					<div class="caption-group-content">
 						<div class="caption-group-content-item">
 							<label for="font-color-input">Text Color</label>
-							<input type="color" id="font-color-input" bind:value={ $settings.textColor } />
+							<input type="color" id="font-color-input" bind:value={$settings.textColor}/>
 						</div>
 						<div class="caption-group-content-item">
 							<label for="font-size-input">Text Size</label>
 							<div class="caption-number-container">
-								<input type="number" id="font-size-input" bind:value={ $settings.fontSize }  min="6" max="72" step="1" />
+								<NumberInput id="font-size-input"
+									bind:value={ $settings.fontSize } 
+									min={6} max={72} step=1
+								/>
 								<div class="units">
 									<span class="invisible">{ $settings.fontSize }</span>
 									<span class="caption-unit">px</span>
@@ -98,7 +98,10 @@
 						</div>
 						<div class="caption-group-content-item">
 							<label for="max-lines-input">Max lines</label>
-							<input type="number" id="max-lines-input" bind:value={ $settings.maxLines } min="1" max="20" step="1" />
+							<NumberInput id="max-lines-input"
+								bind:value={ $settings.maxLines } 
+								min={1} max={20} step=1
+							/>
 						</div>
 					</div>
 				{/if}
@@ -124,7 +127,10 @@
 							<div>
 								<label for="bg-opacity-number-input">Opacity</label>
 								<div class="caption-number-container">
-									<input type="number" id="bg-opacity-number-input" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
+									<NumberInput id="bg-opacity-number-input"
+										bind:value={ $settings.backgroundOpacity } 
+										min={0} max={100} step=1
+									/>
 									<div class="units">
 										<span class="invisible">{ $settings.backgroundOpacity }</span>
 										<span class="caption-unit">%</span>

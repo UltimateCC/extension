@@ -48,12 +48,12 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
             errorMessage: "An error occurred",
             setIsLoading: setIsLoadingSend,
             setResponse: setResponse,
-            setSuccessAction: () => reloadConfig(),
             apiRequest: async () => {
                 await Promise.all([
                     api('secrets', { method: 'POST', body: { gcpKey: newApiKey } }),
                     api('config', {method: 'POST', body: { translateService: 'gcp' }})
                 ]);
+                reloadConfig();
             }
         });
     };
@@ -71,13 +71,13 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
                     api('secrets', { method: 'POST', body: { gcpKey: '' } }),
                     api('config', {method: 'POST', body: { translateService: '' }})
                 ]);
+                reloadConfig();
             },
             successMessage: "The API key has been removed", 
             errorMessage: "An error occurred",
             setIsLoading: setIsLoadingRemove,
             setResponse: setResponse,
             setSuccessAction: () => {
-                reloadConfig();
                 setIsEditing(false);
             }
         });

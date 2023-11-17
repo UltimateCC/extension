@@ -1,7 +1,7 @@
 
 <script lang="ts">
     import { fade } from "svelte/transition";
-	import { finalCaptions, partialCaptions } from "../lib/captions";
+	import { partialCaptions, transcript } from "../lib/captions";
 	import { position, settings, type SettingsType } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
@@ -19,7 +19,7 @@
 		$position.bottom = 10;
 	}
 	$: if($position.left === undefined && movableArea && movableElem) {
-		$position.left = 20;
+		$position.left = 50;
 		//$position.left = 50 - movableElem.offsetWidth * 50 / movableArea.offsetWidth;
 	}
 
@@ -28,6 +28,33 @@
 			moving = true;
 			mouseX = e.clientX;
 			mouseY = e.clientY;
+		}
+	}
+
+	function clampCaptions() {
+		// Get area limits
+		const areaRect = movableArea.getBoundingClientRect();
+		const elemRect = movableElem.getBoundingClientRect();
+
+		// Half height/width in percent
+		const halfHeight = elemRect.height * 50 / areaRect.height;
+		const halfWidth = elemRect.width * 50 / areaRect.width;
+		// Calc limits
+		const minBottom = 0 + halfHeight;
+		const maxBottom = 100 - halfHeight;
+		const minLeft = 0 + halfWidth;
+		const maxLeft = 100 - halfWidth;
+
+		// Limit captions in area
+		$position.bottom = Math.max(minBottom, Math.min($position.bottom!, maxBottom));
+		$position.left = Math.max(minLeft, Math.min($position.left!, maxLeft));
+
+		// Return true for each side where captions are at limit
+		return {
+			top: $position.bottom === maxBottom,
+			bottom: $position.bottom === minBottom,
+			left: $position.left === minLeft,
+			right: $position.left === maxLeft
 		}
 	}
 
@@ -40,19 +67,12 @@
 			$position.bottom = $position.bottom! + (deltaY * 100 / movableArea.offsetHeight);
 			$position.left = $position.left! - (deltaX * 100 / movableArea.offsetWidth);
 
-			// Get area limits
-			const areaRect = movableArea.getBoundingClientRect();
-			const elemRect = movableElem.getBoundingClientRect();
-			const maxBottom = 100 - elemRect.height * 100 / areaRect.height;
-			const maxLeft = 100 - elemRect.width * 100 / areaRect.width;
-
-			// Limit captions in area
-			$position.bottom = Math.max(0, Math.min($position.bottom, maxBottom));
-			$position.left = Math.max(0, Math.min($position.left, maxLeft));
+			// Clamp captions into area
+			const sides = clampCaptions();
 
 			// Ignore delta if on borders
-			if($position.left!==0 && $position.left!==maxLeft) mouseX = e.clientX;
-			if($position.bottom!==0 && $position.bottom!==maxBottom) mouseY = e.clientY;
+			if(!sides.top && !sides.bottom) mouseY = e.clientY;
+			if(!sides.left && !sides.right) mouseX = e.clientX;
 		}
 	}
 
@@ -70,14 +90,16 @@
 	}
 </script>
 
-{#if settingsShown || $partialCaptions || $finalCaptions }
+{#if settingsShown || $partialCaptions || $transcript.length }
 	<div id="caption-movable-area" bind:this={movableArea}>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container"
 			style={ getCaptionsStyle($settings) }
 			style:bottom = { $position.bottom + '%' } 
 			style:left = { $position.left + '%' }
 			on:mousedown={ onMouseDown }
+			on:click|preventDefault
 			bind:this={ movableElem }
 			class:locked={ $settings.positionLocked }
 			transition:fade={ { duration: 100 } }
@@ -85,10 +107,12 @@
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
 				<p id="caption-content">
 					<span id="finished-content">
-						{#if $finalCaptions }
-							{ $finalCaptions }
+						{#if $transcript.length }
+							{#each $transcript as line }
+								{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text }
+							{/each}
 						{:else if !$partialCaptions }
-							This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
+							This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
 						{/if}
 					</span>
 					<span id="unfinished-content">
