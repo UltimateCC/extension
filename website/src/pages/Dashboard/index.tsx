@@ -63,13 +63,15 @@ function Dashboard() {
 
     // Set spoken lang, and save it
     function setSpoken(lang: string | undefined) {
-        const last = lastSpokenLang;
         setLastSpokenLang(spokenLang);
-        setSpokenLang(lang ?? last);
+        setSpokenLang(lang ?? lastSpokenLang);
 
         api('config', {
             method: 'POST',
-            body: { spokenLang, lastSpokenLang }
+            body: {
+                spokenLang: lang ?? lastSpokenLang,
+                lastSpokenLang: spokenLang
+            }
         })
         .then(socketCtx.reloadConfig)
         .catch((error) => {
