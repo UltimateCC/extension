@@ -28,9 +28,9 @@ body #ultimate-closed-caption {
 			position: absolute; // To be able to move it
 			width: 60%;
 			
-			// If it's locked, don't show the cursor
 			&:not(.locked) {
 				cursor: move;
+				user-select: none;
 			}
 
 			transition: opacity 0.5s;

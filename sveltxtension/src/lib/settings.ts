@@ -16,6 +16,18 @@ export function resetSettings() {
 	settings.set({...defaultSettings});
 }
 
-export const settings = persisted<SettingsType>('config', {...defaultSettings});
+export const settings = persisted<SettingsType>('ucc_config', {...defaultSettings});
 
-export const position = persisted<{ left?: number, bottom?: number, locked?: boolean }>('position', {});
+const defaultPosition = {
+	bottom: 10,
+	left: 50,
+	locked: false
+}
+
+export type PositionType = typeof defaultPosition;
+
+export function resetPosition() {
+	position.set({...defaultPosition});
+}
+
+export const position = persisted<PositionType>('ucc_position', {...defaultPosition});

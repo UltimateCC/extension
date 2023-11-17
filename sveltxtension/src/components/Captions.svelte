@@ -14,14 +14,6 @@
 	let mouseX: number;
 	let mouseY: number;
 
-	// Set initial position
-	$: if($position.bottom === undefined && movableArea && movableElem) {
-		$position.bottom = 10;
-	}
-	$: if($position.left === undefined && movableArea && movableElem) {
-		$position.left = 50;
-	}
-
 	function onMouseDown(e: MouseEvent) {
 		if( !$position.locked && !e.defaultPrevented ) {
 			moving = true;
@@ -45,8 +37,8 @@
 		const maxLeft = 100 - halfWidth;
 
 		// Limit captions in area
-		$position.bottom = Math.max(minBottom, Math.min($position.bottom!, maxBottom));
-		$position.left = Math.max(minLeft, Math.min($position.left!, maxLeft));
+		$position.bottom = Math.max(minBottom, Math.min($position.bottom, maxBottom));
+		$position.left = Math.max(minLeft, Math.min($position.left, maxLeft));
 
 		// Return true for each side where captions are at limit
 		return {
@@ -63,8 +55,8 @@
 			const deltaY = mouseY - e.clientY;
 
 			// Update position
-			$position.bottom = $position.bottom! + (deltaY * 100 / movableArea.offsetHeight);
-			$position.left = $position.left! - (deltaX * 100 / movableArea.offsetWidth);
+			$position.bottom += (deltaY * 100 / movableArea.offsetHeight);
+			$position.left -= (deltaX * 100 / movableArea.offsetWidth);
 
 			// Clamp captions into area
 			const sides = clampCaptions();

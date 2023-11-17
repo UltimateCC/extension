@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { partialCaptions } from "../lib/captions";
-	import { settings, resetSettings, position } from "../lib/settings";
+	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
 	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
@@ -150,7 +150,7 @@
 				<button type="button" on:click={ resetSettings }>
 					Reset settings
 				</button>
-				<button type="button" on:click={ ()=>{ position.set({}); } }>
+				<button type="button" on:click={ resetPosition }>
 					Reset position
 				</button>
 			</div>
