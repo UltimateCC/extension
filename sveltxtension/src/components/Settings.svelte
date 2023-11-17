@@ -150,12 +150,12 @@
 				<button type="button" on:click={ resetSettings }>
 					Reset settings
 				</button>
-				<button type="button" on:click={ ()=>{ position.set({}); $settings.positionLocked = false; } }>
+				<button type="button" on:click={ ()=>{ position.set({}); } }>
 					Reset position
 				</button>
 			</div>
-			<button type="button" id="caption-lock-position" on:click={ ()=>{ $settings.positionLocked =! $settings.positionLocked} }>
-				{ $settings.positionLocked ? 'Unlock' : 'Lock' } position
+			<button type="button" id="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
+				{ $position.locked ? 'Unlock' : 'Lock' } position
 			</button>
 		</div>
 	</div>

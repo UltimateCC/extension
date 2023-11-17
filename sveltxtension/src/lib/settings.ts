@@ -2,7 +2,6 @@ import { persisted } from "svelte-local-storage-store";
 
 const defaultSettings = {
 	language: '',
-	positionLocked: false,
 	fontSize: 20,
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
@@ -19,4 +18,4 @@ export function resetSettings() {
 
 export const settings = persisted<SettingsType>('config', {...defaultSettings});
 
-export const position = persisted<{ left?: number, bottom?: number }>('position', {});
+export const position = persisted<{ left?: number, bottom?: number, locked?: boolean }>('position', {});

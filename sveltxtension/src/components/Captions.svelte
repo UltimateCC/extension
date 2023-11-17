@@ -20,11 +20,10 @@
 	}
 	$: if($position.left === undefined && movableArea && movableElem) {
 		$position.left = 50;
-		//$position.left = 50 - movableElem.offsetWidth * 50 / movableArea.offsetWidth;
 	}
 
 	function onMouseDown(e: MouseEvent) {
-		if( !$settings.positionLocked && !e.defaultPrevented ) {
+		if( !$position.locked && !e.defaultPrevented ) {
 			moving = true;
 			mouseX = e.clientX;
 			mouseY = e.clientY;
@@ -101,7 +100,7 @@
 			on:mousedown={ onMouseDown }
 			on:click|preventDefault
 			bind:this={ movableElem }
-			class:locked={ $settings.positionLocked }
+			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
