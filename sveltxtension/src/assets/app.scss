@@ -33,6 +33,8 @@ body #ultimate-closed-caption {
 				user-select: none;
 			}
 
+			border-radius: 0.2em;
+
 			transition: opacity 0.5s;
 			display: block;
 
@@ -85,9 +87,12 @@ body #ultimate-closed-caption {
 
 			padding: 0.2em 0.5em 1em;
 
-			background-color: rgba($settings-background-color, 0.95);
+			background-color: rgba($settings-background-color, $settings-background-opacity);
 			color: $settings-text-color;
 			font-family: $settings-font-family;
+
+			border-top-right-radius: 0.2em;
+			border-bottom-right-radius: 0.2em;
 
 			display: flex;
 			flex-direction: column;
@@ -146,7 +151,6 @@ body #ultimate-closed-caption {
 			}
 
 			// Main content
-
 			.caption-settings-container {
 				display: flex;
 				justify-content: space-between;
@@ -503,6 +507,73 @@ body #ultimate-closed-caption {
 			}
 		}
 	}
+}
 
+// Tooltip
+[data-tooltip] {
+	position: relative;
 
+	&.visible {
+		&:before,
+		&:after {
+			display: block;
+		}
+	}
+
+	&.removing {
+		&:before,
+		&:after {
+			transition: transform .1s ease-in-out;
+			transform: translate(-50%, 0) !important; // On disappear, it will go down (go initial)
+		}
+	}
+
+	&.showing:before,
+	&.showing:after {
+		// visibility: visible !important;
+		transform: translate(-50%, -5px) !important; // On hover, it will go up (futur)
+	}
+
+	&:before,
+	&:after {
+		position: absolute;
+		transition: transform .2s ease-in-out;
+		transform: translate(-50%, 0); // On appear, it will go up (initial)
+		
+		font-size: 1.2em;
+		line-height: 1em;
+
+		// Hide default
+		display: none;
+		// visibility: hidden;
+	}
+
+	&:after {
+		// Tooltip content
+		content: attr(data-tooltip);
+		text-align: center;
+		white-space: nowrap;
+		
+		background: $theme-text-color;
+		color: $theme-background-color;
+		padding: 0.4em 0.5em;
+		border-radius: 0.1em;
+		
+		bottom: 100%;
+		left: 90%;
+		z-index: 10;
+	}
+
+	&::before {
+		// Create arrow
+		content: "";
+		border: 1em solid transparent;
+		border-bottom-width: 0;
+	
+		border-top-color: $theme-text-color;
+		
+		bottom: 85%;
+		left: 50%;
+		z-index: 9;
+	}
 }

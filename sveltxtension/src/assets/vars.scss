@@ -8,13 +8,14 @@ $theme-background-color: #37373E;
 // Caption variables
 $caption-line-height: 1.25em;
 $caption-container-padding: 0.5em;
-$caption-movable-Y: 1rem;
+$caption-movable-Y: 0;
 $caption-movable-X: 0;
 
 // Settings variables
 $settings-text-color: $theme-text-color;
 $settings-button-color: #4C4C5A;
 $settings-background-color: #1F1F23;
+$settings-background-opacity: 0.95;
 $settings-movable-Y: 5rem;
 $settings-font-size: clamp(1em, 2.25vh, 2em);;
 $settings-width: 18em;
@@ -31,8 +32,8 @@ $settings-disabled-color: #707075;
 $transcript-background-color: #1F1F23;
 
 // Buttons variables
-$buttons-height: 2.5em;
+$buttons-height: 3.5em;
 $buttons-size: 1.5em;
 $buttons-padding-X: .25em;
-$buttons-padding-Y: .25em;
+$buttons-padding-Y: 0.2em;
 $buttons-min-gap: .15em;

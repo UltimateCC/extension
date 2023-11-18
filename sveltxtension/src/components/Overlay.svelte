@@ -24,6 +24,26 @@
 		settingsShown = false;
 		transcriptShown = !transcriptShown;
 	}*/
+
+	let isTooltipVisible = false;
+	let isRemoving = false;
+	let isShowing = false;
+
+  function showTooltip() {
+	isShowing = true;
+	isTooltipVisible = true;
+	setTimeout(() => {
+		isShowing = false;
+	}, 200);
+  }
+
+  function hideTooltip() {
+	isRemoving = true;
+    setTimeout(() => {
+      isTooltipVisible = false;
+	  isRemoving = false;
+    }, 200);
+  }
 </script>
 
 <div id="ultimate-closed-caption">
@@ -42,10 +62,20 @@
 	{/if}
 
 
-	{#if $twitchContext.arePlayerControlsVisible}
+	{#if $twitchContext.arePlayerControlsVisible || true}
 
 		<div id="buttons-container" transition:fade={ { duration: 100 } }>
-			<button id="toggle-captions" type="button" on:click={toggleCaptions}>
+			<button 
+				id="toggle-captions"
+				type="button"
+				data-tooltip="{ captionsShown ? "Hide" : "Show" } CC"
+				on:click={toggleCaptions}
+				on:mouseenter={showTooltip}
+				on:mouseleave={hideTooltip}
+				class:visible={isTooltipVisible}
+				class:removing={isRemoving}
+				class:showing={isShowing}
+			>
 				{#if captionsShown }
 					<!-- Hide captions -->
 					<svg xmlns="http://www.w3.org/2000/svg" height="100%" width="auto" viewBox="0 -960 960 960">
