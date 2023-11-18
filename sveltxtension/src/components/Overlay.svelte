@@ -32,12 +32,15 @@
 		<Captions bind:settingsShown />
 	{/if}
 
-	<div class="caption-overlay-container">
-		<Settings bind:settingsShown />
-		<!--
-		<Transcript overlay={true} bind:transcriptShown />
-		-->
-	</div>
+	{#if settingsShown}
+		<div class="caption-overlay-container">
+			<Settings bind:settingsShown />
+			<!--
+			<Transcript overlay={true} bind:transcriptShown />
+			-->
+		</div>
+	{/if}
+
 
 	{#if $twitchContext.arePlayerControlsVisible}
 

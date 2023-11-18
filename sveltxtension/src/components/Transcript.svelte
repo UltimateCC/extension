@@ -12,7 +12,7 @@
 		});
 		scroll();
 		return {
-			update: scroll
+			update: scroll,
 		}
 	};
 </script>
@@ -33,7 +33,7 @@
 				<LanguageSelect />
 			</div>
 		</div>
-		<div class="transcript" use:scrollToBottom={ {$transcript, $settings }} >
+		<div class="transcript" use:scrollToBottom={ { $transcript, $settings } } >
 			{#each $transcript as line }
 				<div class="line">
 					{ (line.find(t=>t.lang === $settings.language) || line[0]).text }

@@ -1,9 +1,10 @@
 
 import { z } from "zod";
-import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
+import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany } from "typeorm";
 import { AccessToken } from "@twurple/auth";
 import { randomBytes } from "crypto";
 import { promisify } from "node:util";
+//import { Stat } from "./Stat";
 
 const randBytes = promisify(randomBytes);
 
@@ -12,6 +13,13 @@ export class User extends BaseEntity {
 	@ObjectIdColumn()
 	id: ObjectId;
 
+	// Relations
+	/*
+	@OneToMany(() => Stat, (stat) => stat.user)
+	stats: Stat[];
+	*/
+
+	// Properties
 	@CreateDateColumn()
 	created: Date
 

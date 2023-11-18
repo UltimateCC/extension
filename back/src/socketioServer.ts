@@ -8,6 +8,7 @@ import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
+import { Stat } from "./entity/Stat";
 
 
 interface ServerToClientEvents {
@@ -28,6 +29,8 @@ interface ClientToServerEvents {
 }
 
 export interface SocketData {
+	startTime: number;
+	stat: Stat;
 	config: UserConfig;
 	twitchId: string;
 	translator: Translator;
@@ -66,6 +69,10 @@ async function loadConfig(socket: TypedSocket) {
 	sendStatus(socket);
 }
 
+function endSession(socket: TypedSocket) {
+	socket.data.streamingStt?.stop();
+}
+
 async function sendStatus(socket: TypedSocket) {
 	socket.emit('status', {
 		stt: socket.data.streamingStt?.ready() ?? socket.data.stt?.ready() ?? false,
@@ -82,7 +89,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
 		}else{
-			console.log('Sending pubsub for '+socket.data.twitchId, out.data);
+			//console.log('Sending pubsub for '+socket.data.twitchId, out.data);
 			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 		}
 	}catch(e) {
@@ -112,6 +119,10 @@ export function initSocketioServer(io: TypedServer) {
 
 	io.on('connect', (socket) => {
 		socket.join('twitch-'+socket.data.twitchId);
+
+		socket.on('disconnect', ()=>{
+			endSession(socket);
+		});
 
 		socket.on('reloadConfig', ()=>{
 			loadConfig(socket).catch(e=>console.error('Error reloading config', e));
@@ -146,9 +157,6 @@ export function initSocketioServer(io: TypedServer) {
 		});
 		socket.on('audioData', (data)=>{
 			socket.data.streamingStt?.handleData(data);
-		});
-		socket.on('disconnect', ()=>{
-			socket.data.streamingStt?.stop();
 		});
 	});
 	

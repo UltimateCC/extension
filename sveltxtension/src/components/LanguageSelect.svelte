@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { transcript } from "../lib/captions";
+    import { transcript, type Caption } from "../lib/captions";
 	import languages from "../assets/languages.json";
     import { settings } from "../lib/settings";
 
@@ -26,7 +26,7 @@
 
 	select { border: 0; border-radius: $settings-input-border-radius; box-shadow: $settings-input-shadow; }
 	select { color: rgba($settings-background-color, 0.85); background-color: $settings-text-color; }
-	select { height: 1.5em; font-size: 0.9em; overflow: hidden; padding-left: 0.5em; }
+	select { height: 1.5em; width: 100%; font-size: 0.9em; overflow: hidden; padding-left: 0.5em; }
 
 	select:disabled { background-color: $settings-disabled-color; }
 </style>
