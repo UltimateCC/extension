@@ -96,19 +96,15 @@
 			transition:fade={ { duration: 100 } }
 		>
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
-				<p id="caption-content">
-					<span id="finished-content">
-						{#if $transcript.length }
-							{#each $transcript as line }
-								{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text + ' ' }
-							{/each}
-						{:else if !$partialCaptions }
-							This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
-						{/if}
-					</span>
-					<span id="unfinished-content">
-						{ $partialCaptions }
-					</span>
+				<p>
+					{#if $transcript.length }
+						{#each $transcript as line }
+							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text + ' ' }
+						{/each}
+					{:else if !$partialCaptions }
+						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
+					{/if}
+					{ $partialCaptions }
 				</p>
 			</div>
 		</div>

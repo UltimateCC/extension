@@ -51,7 +51,7 @@ body #ultimate-closed-caption {
 				font-size: 1em;
 				user-select: none;
 
-				p#caption-content { // Apply text settings
+				p { // Apply text settings
 					line-height: $caption-line-height;
 					font-size: 1em;
 					color: inherit;
@@ -232,7 +232,6 @@ body #ultimate-closed-caption {
 						padding-bottom: .5em;
 						margin-top: .25em;
 						margin-bottom: .25em;
-						cursor: pointer;
 
 						border: none;
 						background-color: transparent;
@@ -293,7 +292,7 @@ body #ultimate-closed-caption {
 							width: 100%;
 							font-size: 0.9em;
 
-							&.group-opacity, &.group-font-family {
+							&.group-opacity, &.group-font-size, &.group-font-family {
 								flex-direction: column;
 
 								> div {
@@ -451,7 +450,7 @@ body #ultimate-closed-caption {
 				cursor: pointer;
 				width: 100%;
 
-				&#caption-lock-position {
+				&.caption-lock-position {
 					padding: 0.5em 0;
 				}
 

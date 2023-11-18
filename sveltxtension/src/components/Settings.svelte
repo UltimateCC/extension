@@ -71,18 +71,15 @@
 							<label for="font-color-input">Text Color</label>
 							<input type="color" id="font-color-input" bind:value={$settings.textColor}/>
 						</div>
-						<div class="caption-group-content-item">
-							<label for="font-size-input">Text Size</label>
-							<div class="caption-number-container">
+						<div class="caption-group-content-item group-font-size">
+							<div>
+								<label for="font-size-input">Text Size</label>
 								<NumberInput id="font-size-input"
 									bind:value={ $settings.fontSize } 
 									min={6} max={72} step=1
 								/>
-								<div class="units">
-									<span class="invisible">{ $settings.fontSize }</span>
-									<span class="caption-unit">px</span>
-								</div>
 							</div>
+							<input type="range" bind:value={ $settings.fontSize } min="6" max="72" step="1" />
 						</div>
 						<div class="caption-group-content-item group-font-family">
 							<label for="font-family-input">Font family</label>
@@ -137,7 +134,7 @@
 									</div>
 								</div>
 							</div>
-							<input type="range" id="bg-opacity-range-input" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
+							<input type="range" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
 						</div>
 					</div>					
 				{/if}
@@ -154,8 +151,8 @@
 					Reset position
 				</button>
 			</div>
-			<button type="button" id="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
-				{ $position.locked ? 'Unlock' : 'Lock' } position
+			<button type="button" class="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
+				{ $position.locked ? 'Unlock' : 'Lock' } caption position
 			</button>
 		</div>
 	</div>
