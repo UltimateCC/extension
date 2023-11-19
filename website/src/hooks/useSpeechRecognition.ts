@@ -32,7 +32,7 @@ export function useSpeechRecognition(
 
 			// Log relevant errors
 			recognition.onerror = (event) => {
-				if(event.error !== 'aborted' && event.error !== 'no-speech') {
+				if(event.error !== 'aborted' && event.error !== 'no-speech' && event.error !== 'network') {
 					setError('Speech recognition error : '+event.error);
 					console.error('Speech recognition error', event.error);
 				}

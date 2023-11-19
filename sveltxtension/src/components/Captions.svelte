@@ -99,7 +99,7 @@
 				<p>
 					{#if $transcript.length }
 						{#each $transcript as line }
-							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text + ' ' }
+							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text } <br/>
 						{/each}
 					{:else if !$partialCaptions }
 						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption

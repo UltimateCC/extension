@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { partialCaptions } from "../lib/captions";
 	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
-	//import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
     import NumberInput from "./NumberInput.svelte";

@@ -26,14 +26,14 @@ body #ultimate-closed-caption {
 		// Caption box container
 		#caption-container {
 			position: absolute; // To be able to move it
-			width: 60%;
+			width: 50%;
 			
 			&:not(.locked) {
 				cursor: move;
 				user-select: none;
 			}
 
-			border-radius: 0.2em;
+			border-radius: 0.1em;
 
 			transition: opacity 0.5s;
 			display: block;
@@ -64,21 +64,22 @@ body #ultimate-closed-caption {
 	.caption-overlay-container {
 		position: absolute;
 		left: 0;
-		top: $settings-movable-Y;
+		top: $settings-movable-top;
 
 		z-index: 1;
-		height: calc(100vh - #{$settings-movable-Y}*2 - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
+		height: calc(100vh - (#{$settings-movable-top} + #{$settings-movable-bottom}) - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
 		/*
 			Calc incorrect because em are use as units
 
 			100vh = 100% of the height of the screen
-			- #{$settings-movable-Y} * 2 = the margin of the settings box
+			- #{$settings-movable-top} = the top of the settings box
+			- #{$settings-movable-bottom} = the bottom of the settings box
 			- #{$buttons-size} = the size of the settings wheel
 			- #{$buttons-padding-Y} * 2 = the padding of the settings wheel
 			- #{$buttons-min-gap} = the minimum gap between the settings wheel and the settings box
 		*/
 		
-		width: $settings-width;		
+		width: $settings-width;
 
 		// Settings box
 		#settings-container {
@@ -245,7 +246,7 @@ body #ultimate-closed-caption {
 						}
 
 						.chevron {
-							font-size: 2.5em;
+							font-size: 2em;
 							transition: transform 0.2s ease-in-out;
 							transform: rotate(0deg);
 							padding: 0;
@@ -467,7 +468,7 @@ body #ultimate-closed-caption {
 	#buttons-container {
 		position: absolute;
 		left: 0;
-		bottom: $settings-movable-Y;
+		bottom: $settings-movable-bottom;
 		z-index: 2;
 
 		padding: $buttons-padding-Y $buttons-padding-X;
@@ -512,39 +513,29 @@ body #ultimate-closed-caption {
 [data-tooltip] {
 	position: relative;
 
-	&.visible {
-		&:before,
-		&:after {
-			display: block;
-		}
-	}
-
-	&.removing {
-		&:before,
-		&:after {
-			transition: transform .1s ease-in-out;
-			transform: translate(-50%, 0) !important; // On disappear, it will go down (go initial)
-		}
-	}
-
-	&.showing:before,
-	&.showing:after {
-		// visibility: visible !important;
-		transform: translate(-50%, -5px) !important; // On hover, it will go up (futur)
+	&:hover:before,
+	&:hover:after {
+		visibility: visible;
+		opacity: 1;
 	}
 
 	&:before,
 	&:after {
 		position: absolute;
-		transition: transform .2s ease-in-out;
-		transform: translate(-50%, 0); // On appear, it will go up (initial)
-		
+		transform: translate(-50%, -5px);
 		font-size: 1.2em;
 		line-height: 1em;
 
+		transition: opacity ease-in-out .1s;
+
 		// Hide default
-		display: none;
-		// visibility: hidden;
+		visibility: hidden;
+		opacity: 0;
+	}
+
+	&[data-tooltip-content="left"]:after {
+		left: 0;
+		transform: translate(0, -5px);
 	}
 
 	&:after {
@@ -559,20 +550,20 @@ body #ultimate-closed-caption {
 		border-radius: 0.1em;
 		
 		bottom: 100%;
-		left: 90%;
+		left: 50%;
 		z-index: 10;
 	}
 
 	&::before {
 		// Create arrow
 		content: "";
-		border: 1em solid transparent;
+		border: 0.5em solid transparent;
 		border-bottom-width: 0;
 	
 		border-top-color: $theme-text-color;
 		
-		bottom: 85%;
+		bottom: calc(100% - (0.5em - 1px));
 		left: 50%;
-		z-index: 9;
+		z-index: 90;
 	}
 }
