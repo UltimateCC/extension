@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm-build-zip --source=dist/",
+    "build": "vite build && pnpm copysource && npm-build-zip --source=dist/",
+    "copysource": "shx mkdir -p dist/source-code && shx cp -r src index.html package.json pnpm-lock.yaml svelte.config.js tsconfig.json tsconfig.node.json vite.config.ts dist/source-code",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -17,6 +18,7 @@
     "@vitejs/plugin-basic-ssl": "^1.0.1",
     "npm-build-zip": "^1.0.4",
     "sass": "^1.69.5",
+    "shx": "^0.3.4",
     "svelte": "^4.0.5",
     "svelte-check": "^3.4.6",
     "svelte-preprocess": "^5.0.4",
