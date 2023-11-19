@@ -41,7 +41,7 @@
 		</div>
 	{/if}
 
-	{#if $twitchContext.arePlayerControlsVisible || true}
+	{#if $twitchContext.arePlayerControlsVisible}
 		<div id="buttons-container" transition:fade={ { duration: 100 } }>
 			<button 
 				id="toggle-captions"

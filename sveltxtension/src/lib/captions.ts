@@ -4,9 +4,10 @@ import { twitchContext } from "./twitch";
 import languages from "../assets/languages.json";
 import { settings } from "./settings";
 
+export type LangCode = keyof typeof languages;
 
 export interface Caption {
-	lang: keyof typeof languages
+	lang: LangCode
 	text: string
 }
 
@@ -44,10 +45,6 @@ export function handleCaptions(data: CaptionsData) {
 			}else{
 				// Update captions
 				partialCaptions.set(caption.text);
-				/*
-				transcript.update((array)=>{
-					return array;
-				});*/
 			}
 		}
 	}, delay);

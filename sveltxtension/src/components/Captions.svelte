@@ -22,6 +22,9 @@
 		}
 	}
 
+	// Ensure captions are in view after settings are changed
+	$: if(movableArea && movableElem && $settings) clampCaptions();
+
 	function clampCaptions() {
 		// Get area limits
 		const areaRect = movableArea.getBoundingClientRect();
@@ -98,13 +101,16 @@
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
 				<p>
 					{#if $transcript.length }
-						{#each $transcript as line }
-							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text } <br/>
+						{#each $transcript as line, i }
+							{#if i!==0}<br/>{/if}
+							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text } 
 						{/each}
 					{:else if !$partialCaptions }
 						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
 					{/if}
-					{ $partialCaptions }
+					{#if $partialCaptions}
+						<br/>{ $partialCaptions }
+					{/if}
 				</p>
 			</div>
 		</div>

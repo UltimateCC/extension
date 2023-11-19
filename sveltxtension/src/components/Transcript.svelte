@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { transcript } from "../lib/captions";
+	import { partialCaptions, transcript } from "../lib/captions";
     import { settings } from "../lib/settings";
     import LanguageSelect from "./LanguageSelect.svelte";
 
 	export let overlay = false;
 	export let transcriptShown = false;
 
-	const scrollToBottom = (node: HTMLElement, parameters: any) => {
+	const autoScroll = (node: HTMLElement, parameters: any) => {
 		const scroll = () => node.scroll({
 			top: node.scrollHeight
 		});
@@ -33,12 +33,17 @@
 				<LanguageSelect />
 			</div>
 		</div>
-		<div class="transcript" use:scrollToBottom={ { $transcript, $settings } } >
+		<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $settings } } >
 			{#each $transcript as line }
 				<div class="line">
 					{ (line.find(t=>t.lang === $settings.language) || line[0]).text }
 				</div>
 			{/each}
+			{#if $partialCaptions }
+				<div class="line">
+					{ $partialCaptions }
+				</div>
+			{/if}
 		</div>
 	</div>	
 {/if}

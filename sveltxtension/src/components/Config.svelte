@@ -8,7 +8,7 @@
 	<div>
 		<h2>Thanks for installing <a href={url} target="_blank" rel="noreferrer">Ultimate Closed Captions</a></h2>
 		<p>
-			For a better viewer experience, install the extension as an overlay
+			For a better viewer experience, install this extension as an overlay
 		</p>
 		<p>
 			To work correctly, this extension requires you to use the dashboard at

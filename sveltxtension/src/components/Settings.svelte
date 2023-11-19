@@ -16,7 +16,7 @@
 		}
 	}
 
-	// Clear captions each time language changes
+	// Clear partial captions each time language changes
 	$: clearCaptions($settings.language);
 
 	function clearCaptions(lang: string) {
@@ -75,10 +75,10 @@
 								<label for="font-size-input">Text Size</label>
 								<NumberInput id="font-size-input"
 									bind:value={ $settings.fontSize } 
-									min={6} max={72} step=1
+									min={6} max={48} step=1
 								/>
 							</div>
-							<input type="range" bind:value={ $settings.fontSize } min="6" max="72" step="1" />
+							<input type="range" bind:value={ $settings.fontSize } min="6" max="48" step="1" />
 						</div>
 						<div class="caption-group-content-item group-font-family">
 							<label for="font-family-input">Font family</label>
