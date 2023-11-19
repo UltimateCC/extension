@@ -152,7 +152,7 @@
 				</button>
 			</div>
 			<button type="button" class="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
-				{ $position.locked ? 'Unlock' : 'Lock' } caption position
+				{ $position.locked ? 'Unlock' : 'Lock' } position
 			</button>
 		</div>
 	</div>
