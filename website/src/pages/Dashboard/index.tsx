@@ -64,13 +64,14 @@ function Dashboard() {
 
     // Set spoken lang, and save it
     function setSpoken(lang: string | undefined) {
+        const newLang = lang || lastSpokenLang;
         setLastSpokenLang(spokenLang);
-        setSpokenLang(lang ?? lastSpokenLang);
+        setSpokenLang(newLang);
 
         api('config', {
             method: 'POST',
             body: {
-                spokenLang: lang ?? lastSpokenLang,
+                spokenLang: newLang,
                 lastSpokenLang: spokenLang
             }
         })

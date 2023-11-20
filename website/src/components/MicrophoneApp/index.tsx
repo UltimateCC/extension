@@ -7,7 +7,7 @@ import FormResponse from '../FormResponse';
 
 interface MicrophoneAppProps {
     spokenLang?: string
-    setSpokenLang: (spokenLang: string) => void
+    setSpokenLang: (spokenLang: string | undefined) => void
     lastSpokenLang?: string
     configLoaded: boolean
     loadingImg: string
@@ -34,9 +34,7 @@ function MicrophoneApp({ spokenLang, setSpokenLang, lastSpokenLang, configLoaded
     useEffect(()=>{
         function handleAction(action: Action) {
             if(action.type === 'setlang') {
-                if(action.lang) {
-                    setSpokenLang(action.lang ?? lastSpokenLang);
-                }
+                setSpokenLang(action.lang);
             }else if(action.type === 'start') {
                 setListening(true);
             }else if(action.type === 'stop') {
