@@ -5,6 +5,7 @@ import LanguageOutSelector from '../../components/LanguageOutSelector';
 import MicrophoneApp from '../../components/MicrophoneApp';
 import TranslationService from '../../components/TranslationService';
 import FormResponse from '../../components/FormResponse';
+import Twitch from '../../components/Twitch';
 
 // import BannedCaptions from '../../components/BannedCaptions';
 
@@ -184,6 +185,12 @@ function Dashboard() {
                             setSpokenLang={setSpoken}
                             configLoaded={configLoaded}
                             loadingImg={loadingImg}
+                        />
+                    </div>
+                    <div className="setting theme-box">
+                        <h3>Twitch</h3>
+                        <Twitch
+
                         />
                     </div>
                     <Footer />
