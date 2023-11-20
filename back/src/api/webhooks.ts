@@ -36,7 +36,7 @@ webhooksRouter.post('/url', authMiddleware, async (req, res, next)=>{
 });
 
 // Handle webhook
-webhooksRouter.post('/:id/:key', async (req, res, next)=>{
+webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 	try{
 		const user = await User.findOneByOrFail({ twitchId: req.params.id, webhookSecret: req.params.key });
 
