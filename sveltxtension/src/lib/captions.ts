@@ -24,7 +24,6 @@ export const partialCaptions = writable<string>('');
 // Complete transcript
 export const transcript = writable<Caption[][]>([]);
 
-
 // Handle received captions
 export function handleCaptions(data: CaptionsData) {
 	// Delay captions for stream latency minus accumulated processing delay

@@ -1,6 +1,15 @@
-import { readable } from "svelte/store";
+import { readable, writable } from "svelte/store";
 import { handleCaptions, type CaptionsData } from "./captions";
 
+
+Twitch.ext.onError(err=>{
+	console.error('Ultimate CC : Extension helper error', err);
+});
+
+Twitch.ext.onAuthorized(auth=>{
+	twitchChannel.set(auth.channelId);
+});
+export const twitchChannel = writable<string>(undefined);
 
 export const twitchContext = readable<Partial<Twitch.ext.Context>>({}, (set)=>{
 	Twitch.ext.onContext(context=>{
@@ -8,9 +17,18 @@ export const twitchContext = readable<Partial<Twitch.ext.Context>>({}, (set)=>{
 	});
 });
 
-export const broadcasterConfig = readable<string>('', (set)=>{
+// Type for configuration stored in broadcaster config segment
+type BroadcasterConfig = {
+	showCaptions?: boolean
+}
+
+export const broadcasterConfig = readable<BroadcasterConfig>(undefined, (set)=>{
 	Twitch.ext.configuration.onChanged(()=>{
-		set(Twitch.ext.configuration.broadcaster?.content || '');
+		try{
+			set(JSON.parse(Twitch.ext.configuration.broadcaster?.content || '{}' ));
+		}catch(e) {
+			console.error('Ultimate CC : Error parsing broadcaster configuration');
+		}
 	});
 });
 

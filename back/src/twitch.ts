@@ -3,7 +3,7 @@ import { exchangeCode, RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "./entity/User";
 import { dataSource } from "./database";
-import { sendExtensionPubSubBroadcastMessage } from "@twurple/ebs-helper";
+import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 
 
 export const clientId = process.env.TWITCH_CLIENTID!;
@@ -70,9 +70,9 @@ export async function isExtensionInstalled(user: string) {
 }
 
 export async function sendPubsub(userId: string, message: string) {
-	try {
-		await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message)
-	}catch(e) {
-		console.error('Error sending pubsub message', e);
-	}
+	await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message);
+}
+
+export async function saveTwitchConfig(userId: string, config: string) {
+	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
 }

@@ -1,4 +1,6 @@
-import { persisted } from "svelte-local-storage-store";
+import { derived } from "svelte/store";
+import { persisted } from "./persistedStore";
+import { twitchChannel } from "./twitch";
 
 const defaultSettings = {
 	language: '',
@@ -31,3 +33,10 @@ export function resetPosition() {
 }
 
 export const position = persisted<PositionType>('ucc_position', {...defaultPosition});
+
+// Store setting for captions shown or not when user updated it
+export const showCaptions = persisted<boolean | undefined>(
+	derived(twitchChannel, (id) => id ? 'ucc_showCaptions_'+id : ''),
+	undefined);
+
+

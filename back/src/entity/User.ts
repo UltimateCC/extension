@@ -49,12 +49,15 @@ export class User extends BaseEntity {
 		banWords: []
 	};
 
+	@Column()
+	twitchConfig: TwitchConfig = {};
+
 	@Column('json')
 	secrets: UserSecrets = {};
 
 	// Methods
 	async genWebhookSecret() {
-		const bytes = await randBytes(16);
+		const bytes = await randBytes(32);
 		this.webhookSecret = bytes.toString('hex');
 		await this.save();
 	}
@@ -109,3 +112,9 @@ export const UserSecretsSchema = z.object({
 });
 
 export type UserSecrets = z.infer<typeof UserSecretsSchema>;
+
+export const TwitchConfigSchema = z.object({
+	showCaptions: z.boolean()
+}).partial();
+
+export type TwitchConfig = z.infer<typeof TwitchConfigSchema>;

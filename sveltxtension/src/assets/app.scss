@@ -44,7 +44,7 @@ body #ultimate-closed-caption {
 				display: flex;
 				flex-direction: column-reverse;
 
-				margin: min($caption-container-padding, 1rem);
+				margin: $caption-container-padding;
 				overflow: hidden; // Don't show the rest of the text
 				
 				text-align: left;
