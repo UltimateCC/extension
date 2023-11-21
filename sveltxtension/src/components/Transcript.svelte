@@ -30,7 +30,9 @@
 			<h2>Live transcript</h2>
 			<div class="language">
 				<label for="language-input">Language:</label>
-				<LanguageSelect />
+				<div class="language-select">
+					<LanguageSelect />
+				</div>
 			</div>
 		</div>
 		<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $settings } } >
@@ -55,9 +57,10 @@
 	.container { background-color: $theme-background-color; color: $theme-text-color; }
 	.container { font-size: $theme-font-size; font-family: $theme-font-family; }
 
-	.top { height: 4em; background-color: $settings-background-color; }
+	.top { height: 4em; background-color: $settings-background-color; width: 100%; }
 	.top h2 { display: block; font-size: 1.25em; text-align: center; margin: 0 .5em; padding-top: .25em; font-weight: normal; }
 	.top .language { margin: .25em .5em; display: flex; justify-content: flex-start; gap: .5em; }
+	.language-select { min-width: 0; }
 
 	button.topright { position: absolute; top: 0; right: 0; font-size: 2em; border: none; background: none; }
 	button.topright { cursor: pointer; transition: transform 0.2s ease-in-out; }

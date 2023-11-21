@@ -23,7 +23,7 @@
 	}
 
 	// Ensure captions are in view after settings are changed
-	$: if(movableArea && movableElem && $settings) clampCaptions();
+	$: if(movableArea && movableElem && $settings && $position) clampCaptions();
 
 	function clampCaptions() {
 		// Get area limits
@@ -102,14 +102,19 @@
 				<p>
 					{#if $transcript.length }
 						{#each $transcript as line, i }
-							{#if i!==0}<br/>{/if}
+							{#if i!==0}
+								<br/>
+							{/if}
 							{ ( line.find(alt=>alt.lang === $settings.language) ?? line[0] ).text } 
 						{/each}
 					{:else if !$partialCaptions }
 						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
 					{/if}
 					{#if $partialCaptions}
-						<br/>{ $partialCaptions }
+						{#if $transcript.length}
+							<br/>
+						{/if}
+						{ $partialCaptions }
 					{/if}
 				</p>
 			</div>

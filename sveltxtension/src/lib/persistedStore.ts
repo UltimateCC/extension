@@ -7,17 +7,36 @@ import {get, writable, type Readable, type Writable} from 'svelte/store';
 
 type StoreDict = { [key: string]: Writable<any> }
 
-const browser = typeof(window) !== 'undefined' && typeof(document) !== 'undefined';
-const storage = browser ? localStorage : null;
+function getStorage() {
+	try{
+		// Access to local storage only on browser
+		const browser = typeof(window) !== 'undefined' && typeof(document) !== 'undefined';
+		const storage = browser ? localStorage : null;
 
-if (browser) {
+		// Ensure storage access is allowed
+		storage?.setItem('test', 'test');
+		storage?.getItem('test');
+		storage?.removeItem('test');
+		return storage;
+	}catch(e) {
+		console.error('Error accessing local storage', e);
+		return null;
+	}
+}
+const storage = getStorage();
+
+/*
+Listening for storage events would allow to handle settings update accross different tabs
+But needs to be fixed to avoid infinite loops
+
+if (storage) {
 	// Listen for storage events to handle updates in other tabs
 	window.addEventListener("storage", (event: StorageEvent) => {
 		if ( event.key !== null ) {
 			stores[event.key]?.set(event.newValue ? JSON.parse(event.newValue) : null);
 		}
 	});
-}
+}*/
 
 const stores: StoreDict = {};
 
@@ -74,7 +93,8 @@ export function persisted<T>(storageKey: string | Readable<string>, initialValue
 				if(k) {
 					unsubscribe();
 					key = k;
-					const value = get(store);
+					// Get store current value
+					const value = get(baseStore);
 					if(value !== undefined) {
 						// Store has been updated: updated storage accordingly
 						updateStorage(key, value);

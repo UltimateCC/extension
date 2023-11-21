@@ -50,8 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
     }
 
     const memoedValue = useMemo( () => {
-
-
         return {
                 user,
                 loading,

@@ -49,7 +49,6 @@ body #ultimate-closed-caption {
 				
 				text-align: left;
 				font-size: 1em;
-				user-select: none;
 
 				p { // Apply text settings
 					line-height: $caption-line-height;
@@ -69,7 +68,7 @@ body #ultimate-closed-caption {
 		z-index: 1;
 		height: calc(100vh - (#{$settings-movable-top} + #{$settings-movable-bottom}) - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
 		/*
-			Calc incorrect because em are use as units
+			Calc incorrect because em are used as units
 
 			100vh = 100% of the height of the screen
 			- #{$settings-movable-top} = the top of the settings box
@@ -101,19 +100,9 @@ body #ultimate-closed-caption {
 
 			overflow: hidden auto;
 
-			// Scroll style
-			&::-webkit-scrollbar {
-				width: 0.5em;
-			}
-
-			&::-webkit-scrollbar-track {
-				background-color: $settings-text-color;
-			}
-
-			&::-webkit-scrollbar-thumb {
-				background-color: $settings-background-color;
-				border-radius: 0.5em;
-				border: 0.15em solid $settings-text-color;
+			// Scrollbar with simplebar lib
+			.simplebar-scrollbar::before {
+				background-color: $settings-button-color;
 			}
 
 			// Title and close button

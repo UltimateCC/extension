@@ -2,6 +2,8 @@ import './assets/app.scss'
 import Transcript from './components/Transcript.svelte'
 import Config from './components/Config.svelte'
 import Overlay from './components/Overlay.svelte'
+import 'simplebar'
+import 'simplebar/dist/simplebar.css'
 
 // Load correct component
 // https://dev.twitch.tv/docs/extensions/reference/#client-query-parameters

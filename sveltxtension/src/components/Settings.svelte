@@ -36,7 +36,7 @@
 <svelte:window on:click={handleClick} />
 
 {#if settingsShown}
-	<div id="settings-container" bind:this={settingsElem} transition:fade={ { duration: 100 } }>
+	<div id="settings-container" bind:this={settingsElem} transition:fade={ { duration: 100 } } data-simplebar>
 		<div class="caption-header-container">
 			<h2>Captions settings</h2>
 			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }}>

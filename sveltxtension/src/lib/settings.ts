@@ -37,6 +37,7 @@ export const position = persisted<PositionType>('ucc_position', {...defaultPosit
 // Store setting for captions shown or not when user updated it
 export const showCaptions = persisted<boolean | undefined>(
 	derived(twitchChannel, (id) => id ? 'ucc_showCaptions_'+id : ''),
-	undefined);
+	undefined
+);
 
 

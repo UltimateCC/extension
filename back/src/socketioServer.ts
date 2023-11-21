@@ -159,5 +159,4 @@ export function initSocketioServer(io: TypedServer) {
 			socket.data.streamingStt?.handleData(data);
 		});
 	});
-	
 }
