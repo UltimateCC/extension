@@ -1,5 +1,5 @@
 
-import { get, writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 import { twitchContext } from "./twitch";
 import languages from "../assets/languages.json";
 import { settings } from "./settings";
@@ -23,6 +23,8 @@ export const partialCaptions = writable<string>('');
 
 // Complete transcript
 export const transcript = writable<Caption[][]>([]);
+// Last line of the transcript
+export const lastTranscript = derived(transcript, ($t=> $t[$t.length-1] || [] ));
 
 // Handle received captions
 export function handleCaptions(data: CaptionsData) {

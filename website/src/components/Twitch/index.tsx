@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel, { formControlLabelClasses } from '@mui/material/FormControlLabel';
 import Switch, { switchClasses } from '@mui/material/Switch';
 import { alpha, styled } from '@mui/material/styles';
+import api from '../../services/api';
 
 
 const ThemedSwitch = styled(Switch)(({theme}) => ({
@@ -35,13 +36,30 @@ const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
 function Twitch() {
     const [showCaptions, setShowCaptions] = useState<boolean>(true);
 
+    useEffect(()=>{
+        api('twitch')
+        .then(response => {
+            setShowCaptions(response.showCaptions ?? true);
+        })
+        .catch(err => {
+            console.error('Error loading twitch config', err);
+        });
+    }, []);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setShowCaptions(event.target.checked);
+        const showCaptions = event.target.checked;
+        setShowCaptions(showCaptions);
+        api('twitch', {
+            method: 'POST',
+            body: { showCaptions }
+        })
+        .catch(err => {
+            console.error('Error updating twitch config', err);
+        });
     };
 
     return (
         <div>
-            <h5>When users enter your channel, choose if captions are shown by default.</h5>
             <FormGroup>
                 <ThemedFormControlLabel 
                     control={<ThemedSwitch

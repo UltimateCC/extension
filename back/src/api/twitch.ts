@@ -20,7 +20,7 @@ twitchRouter.post('', async (req, res, next)=>{
 		Object.assign(user.twitchConfig, config);
 		await saveTwitchConfig(user.twitchId, JSON.stringify(config));
 		await user.save();
-		res.json(user.config);
+		res.json(user.twitchConfig);
 	}catch(e) {
 		next(e);
 	}

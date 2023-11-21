@@ -58,7 +58,7 @@ function Dashboard() {
         })
         .catch(err => {
             console.error(err);
-            setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, please reload", hideRestOfPage: true });
+            setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
         })
     }
 
@@ -91,7 +91,7 @@ function Dashboard() {
         }
 
         if(error) {
-            setResponse({ isSuccess: false, message: "An error occurred while authenticating, please reload", hideRestOfPage: true });
+            setResponse({ isSuccess: false, message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
         }
 
         if(socketCtx.captionsStatus?.twitch === false) {
@@ -122,6 +122,8 @@ function Dashboard() {
             <Link to="/logout" className="profile-container">
                 Log out
             </Link>
+            <br/>
+            <a onClick={()=>{ window.location.reload() }} href='#'>Refresh</a>
         </div>
     );
 

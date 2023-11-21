@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { partialCaptions } from "../lib/captions";
+	import { lastTranscript, partialCaptions } from "../lib/captions";
 	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
     import NumberInput from "./NumberInput.svelte";
+    import Warning from "./Warning.svelte";
 
 	export let settingsShown = false;
 
@@ -48,10 +49,14 @@
 		<div class="caption-settings-container">
 			<!-- Language -->
 			<div class="caption-group" id="language">
-				<div class="caption-group-header">
-					<h3>Language</h3>
-					<LanguageSelect />
-				</div>
+				{#if $lastTranscript.length === 0}
+					<Warning>Waiting for broadcaster speech</Warning>
+				{:else}
+					<div class="caption-group-header">
+						<h3>Language</h3>
+						<LanguageSelect />	
+					</div>	
+				{/if}
 			</div>
 
 			<!-- Text -->

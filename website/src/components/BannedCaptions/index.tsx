@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+
+import { useState, useEffect, useRef, useContext } from 'react';
 
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
-import languageNames from '../../services/languageNames.ts'; // Import language names
 import api from '../../services/api.ts';
 
 import FormResponse from '../../components/FormResponse';
 import DelayedDisplay from '../../components/DelayedDisplay';
+import { SocketContext } from '../../context/SocketContext.tsx';
 
 interface banCaptionsProps {
     lang: string;
@@ -50,6 +51,12 @@ function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLangua
     const [isLoadingRemove, setIsLoadingRemove] = useState<boolean>(false);
     const [removingLi, setRemovingLi] = useState<HTMLElement | null>(null);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
+
+    const { translateLangs } = useContext(SocketContext);
+
+    function getLangLabel(code: string) {
+        return translateLangs.find(l=>l.code === code)?.name;
+    }
 
     // Set the active language when selectedLanguageCode changes
     useEffect(() => {
@@ -209,7 +216,7 @@ function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLangua
                                 disabled={languageCode === activeLanguage}
                                 onClick={() => handleLanguageClick(languageCode)}
                             >
-                                {languageNames[languageCode]}
+                                { getLangLabel(languageCode) }
                             </button>
                         </li>
                     ))}
@@ -233,7 +240,7 @@ function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLangua
             <div className='ban-captions'>
                 {activeBanCaptions.length === 0 ? (
                     <p>
-                        No banned captions for {languageNames[activeLanguage] ? languageNames[activeLanguage].toLowerCase() : 'loading...'}
+                        No banned captions for { getLangLabel(activeLanguage)?.toLowerCase() ?? 'loading...' }
                     </p>
                 ) : (
                     <ul className="scroll-theme">

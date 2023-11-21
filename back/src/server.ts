@@ -11,6 +11,7 @@ import { initSocketioServer } from './socketioServer';
 import { thanksRouter } from './api/thanks';
 import { configRouter } from './api/config';
 import { webhooksRouter } from './api/webhooks';
+import { twitchRouter } from './api/twitch';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -38,14 +39,19 @@ app.use(express.json());
 // Public routes
 // Auth
 app.use('/api/auth', authRouter);
+
 // Thanks page
 app.use('/api/thanks', thanksRouter);
 
 // Authenticated routes
-// Config
+// User config (loaded when connected to websocket)
 app.use('/api/config', authMiddleware, configRouter);
+
 // Secrets
 app.use('/api/secrets', authMiddleware, secretsRouter);
+
+// Twitch configuration
+app.use('/api/twitch', authMiddleware, twitchRouter);
 
 // Webhooks
 app.use('/api/webhooks', webhooksRouter);
