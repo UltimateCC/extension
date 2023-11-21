@@ -68,7 +68,13 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 					if(lastCaptions) {
 						duration = Date.now() - lastCaptions;
 					}
-					handleText({text, lang, duration, delay: duration + delay, final: result.isFinal });
+					handleText({
+						text,
+						lang,
+						duration,
+						delay: duration - delay,
+						final: result.isFinal
+					});
 				}
 
 				if(result.isFinal) {
