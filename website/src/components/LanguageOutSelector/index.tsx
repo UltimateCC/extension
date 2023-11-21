@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useMemo } from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
@@ -11,10 +11,9 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import api from '../../services/api.ts';
-import languageNames from '../../services/languageNames.ts';
 
 import FormResponse from '../FormResponse';
-import { SocketContext } from '../../context/SocketContext.tsx';
+import { LangList, SocketContext } from '../../context/SocketContext.tsx';
 
 interface LanguageOutSelectorProps {
     selectedLanguageCode: string[];
@@ -26,10 +25,6 @@ function not<T>(a: T[], b: T[]): T[] {
     return a.filter((value) => b.indexOf(value) === -1);
 }
 
-function intersection<T>(a: T[], b: T[]): T[] {
-    return a.filter((value) => b.indexOf(value) !== -1);
-}
-
 // Create a theme instance.
 const theme = createTheme({
     palette: {
@@ -39,60 +34,50 @@ const theme = createTheme({
     },
 });
 
-function getCodeFromLanguage(language: string): string | undefined {
-    for (const code in languageNames) {
-        if (languageNames[code] === language) {
-            return code;
-        }
-    }
-    return "";
-}
-
 export default function LanguageOutSelector({ selectedLanguageCode, setTranslationLangs, configLoaded }: LanguageOutSelectorProps) {
     const [checked, setChecked] = useState<string[]>([]);
-    const [left, setLeft] = useState<string[]>(Object.values(languageNames));
-    const [right, setRight] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const searchInput = useRef<HTMLInputElement>(null);
 
-    const leftChecked = intersection(checked, left);
-    const rightChecked = intersection(checked, right);
-
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
-    const { reloadConfig } = useContext(SocketContext);
+    const { reloadConfig, translateLangs } = useContext(SocketContext);
 
-    useEffect(() => {
-        const selectedLanguages: string[] = [];
-        const nonSelectedLanguages: string[] = [];
+    // Get lists of available and selected languages
+    const [ available, selected ] = useMemo(()=>{
+        const available: LangList = [];
+        const selected: LangList = [];
 
-        for (const code in languageNames) {
-            if (selectedLanguageCode.includes(code)) {
-                selectedLanguages.push(languageNames[code]);
-            } else {
-                nonSelectedLanguages.push(languageNames[code]);
+        for(const lang of translateLangs) {
+            if(selectedLanguageCode.includes(lang.code)) {
+                selected.push(lang);
+            }else{
+                available.push(lang);
             }
         }
+        return [available, selected];
 
-        setLeft(nonSelectedLanguages);
-        setRight(selectedLanguages);
-    }, [selectedLanguageCode]);
+    }, [ selectedLanguageCode, translateLangs ]);
 
-    const handleUpdateLanguages = (newRight: string[]): void => {
+    // Get lists of checked languages
+    const [ availableChecked, selectedChecked ] = useMemo(()=>{
+        const availableChecked: string[] = [];
+        const selectedChecked: string[] = [];
+
+        for(const code of checked) {
+            if(selectedLanguageCode.includes(code)) {
+                selectedChecked.push(code);
+            }else{
+                availableChecked.push(code);
+            }
+        }
+        return [availableChecked, selectedChecked];
+    }, [selectedLanguageCode, checked]);
+
+    const handleUpdateLanguages = (selectedLanguageCodes: string[]): void => {
         // Clear the search
         setSearchTerm('');
-        searchInput.current!.value = '';
-
-        const selectedLanguageCodes : string[]= newRight.map((language) => {
-            return getCodeFromLanguage(language) || "";
-        });
-
-        if (selectedLanguageCodes.includes("")) {
-            alert('Error: one of the selected languages is invalid');
-            setResponse({ isSuccess: false, message: 'One of the selected languages is invalid' });
-            return;
-        }
 
         api('config', {
             method: 'POST',
@@ -121,39 +106,30 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
         } else {
             newChecked.splice(currentIndex, 1);
         }
-
         setChecked(newChecked);
     };
 
     const handleCheckedRight = () => {
-        setRight(right.concat(leftChecked));
-        setLeft(not(left, leftChecked));
-        setChecked(not(checked, leftChecked));
-        handleUpdateLanguages(right.concat(leftChecked));
+        setChecked(not(checked, availableChecked));
+        handleUpdateLanguages(selectedLanguageCode.concat(availableChecked));
     };
 
     const handleCheckedLeft = () => {
-        setLeft(left.concat(rightChecked));
-        setRight(not(right, rightChecked));
-        setChecked(not(checked, rightChecked));
-        handleUpdateLanguages(not(right, rightChecked));
+        setChecked(not(checked, selectedChecked));
+        handleUpdateLanguages( selectedLanguageCode.filter( code => !selectedChecked.includes(code) ) );
     };
 
-    const customList = (items: string[], isLeft: boolean) => (
+    const customList = (items: LangList, isLeft: boolean) => (
         <Paper sx={{ width: 200, height: 230 }} className={`lang-list${isLeft ? ' left' : ' right'}`}>
             <List dense component="div" role="list" className='scroll-theme'>
-                {configLoaded || isLeft ? items
-                    .filter((item) =>
-                        isLeft ? item.toLowerCase().includes(searchTerm.toLowerCase()) : true
-                    )
+                { configLoaded || isLeft ? items
                     .map((value) => {
-                        const labelId = `transfer-list-item-${value}-label`;
-
+                        const labelId = `transfer-list-item-${value.code}-label`;
                         return (
-                            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+                            <ListItem key={value.code} role="listitem" button onClick={handleToggle(value.code)}>
                                 <ListItemIcon>
                                     <Checkbox
-                                        checked={checked.indexOf(value) !== -1}
+                                        checked={checked.indexOf(value.code) !== -1}
                                         tabIndex={-1}
                                         disableRipple
                                         inputProps={{
@@ -161,7 +137,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                                         }}
                                     />
                                 </ListItemIcon>
-                                <ListItemText id={labelId} primary={value} />
+                                <ListItemText id={labelId} primary={value.name} />
                             </ListItem>
                         );
                     }) : (
@@ -200,7 +176,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                             className='search-input'
                         />
                     </ThemeProvider>
-                    {customList(left, true)}
+                    {customList(available, true)}
                 </Grid>
                 <Grid item>
                     <Grid
@@ -212,7 +188,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                         <Button
                             sx={{ my: 0.5 }}
                             onClick={handleCheckedRight}
-                            disabled={leftChecked.length === 0}
+                            disabled={availableChecked.length === 0}
                             aria-label="move selected right"
                             className='switch-btn'
                         >
@@ -226,7 +202,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                         <Button
                             sx={{ my: 0.5 }}
                             onClick={handleCheckedLeft}
-                            disabled={rightChecked.length === 0}
+                            disabled={selectedChecked.length === 0}
                             aria-label="move selected left"
                             className='switch-btn'
                         >
@@ -242,7 +218,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
 
                 <Grid item>
                     <h4 className="language-title">Selected languages</h4>
-                    {customList(right, false)}
+                    {customList(selected, false)}
                 </Grid>
             </Grid>
         </>

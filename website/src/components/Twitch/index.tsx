@@ -41,7 +41,7 @@ function Twitch() {
 
     return (
         <div>
-            <h5>When users enter your channel, choose to either hide or display the caption by default.</h5>
+            <h5>When users enter your channel, choose if captions are shown by default.</h5>
             <FormGroup>
                 <ThemedFormControlLabel 
                     control={<ThemedSwitch
