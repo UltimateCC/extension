@@ -20,6 +20,7 @@ import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
 import { SocketContext } from '../../context/SocketContext';
+import Webhooks from '../../components/Webhooks';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -192,9 +193,11 @@ function Dashboard() {
                     </div>
                     <div className="setting theme-box">
                         <h3>Twitch</h3>
-                        <Twitch
-
-                        />
+                        <Twitch />
+                    </div>
+                    <div className="setting theme-box">
+                        <h3>Webhooks</h3>
+                        <Webhooks/>
                     </div>
                     <Footer />
                 </div>
