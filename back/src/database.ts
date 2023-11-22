@@ -1,12 +1,13 @@
 
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
+import { Stats } from "./entity/Stats";
 
 
 export const dataSource = new DataSource({
 	type: "mongodb",
 	url: process.env.DB_URL!,
-	entities: [User],
+	entities: [User, Stats],
 	connectTimeoutMS: 5000,
 });
 

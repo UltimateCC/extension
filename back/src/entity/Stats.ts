@@ -1,18 +1,15 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, ObjectId, ObjectIdColumn } from "typeorm";
-import { User } from "./User";
-
+import { User, UserConfig } from "./User";
 
 
 @Entity()
-export class Stat extends BaseEntity {
+export class Stats extends BaseEntity {
 	@ObjectIdColumn()
 	id: ObjectId;
 
-	/*
 	// Relations
 	@ManyToOne(() => User, (user) => user.stats)
 	user: User;
-	*/
 
 	// Properties
 	@CreateDateColumn()
@@ -25,27 +22,21 @@ export class Stat extends BaseEntity {
 	duration: number;
 
 	@Column()
-	partialCount: number;
+	partialCount: number = 0;
 
 	@Column()
-	finalCount: number;
+	finalCount: number = 0;
 
 	@Column()
-	partialCharCount: number;
+	partialCharCount: number = 0;
 
 	@Column()
-	finalCharCount: number;
+	finalCharCount: number = 0;
 
 	@Column()
-	spokenLang: string;
+	config: UserConfig;
 
 	@Column()
-	translateService: string;
-
-	@Column()
-	translateLangs: string;
-
-	@Column()
-	translateErrorCount: number;
+	translateErrorCount: number = 0;
 
 }

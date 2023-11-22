@@ -2,16 +2,10 @@
 import express from 'express';
 import session from 'express-session';
 import fileStore from 'session-file-store';
-import { authMiddleware, authRouter } from './api/auth';
-import { secretsRouter } from './api/secrets';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { instrument } from "@socket.io/admin-ui";
-import { initSocketioServer } from './socketioServer';
-import { thanksRouter } from './api/thanks';
-import { configRouter } from './api/config';
-import { webhooksRouter } from './api/webhooks';
-import { twitchRouter } from './api/twitch';
+import { initSocketioServer, endSocketSessions } from './socketioServer';
+import { apiRouter } from './api/apiRoutes';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -36,28 +30,11 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 app.use(express.json());
 
-// Public routes
-// Auth
-app.use('/api/auth', authRouter);
-
-// Thanks page
-app.use('/api/thanks', thanksRouter);
-
-// Authenticated routes
-// User config (loaded when connected to websocket)
-app.use('/api/config', authMiddleware, configRouter);
-
-// Secrets
-app.use('/api/secrets', authMiddleware, secretsRouter);
-
-// Twitch configuration
-app.use('/api/twitch', authMiddleware, twitchRouter);
-
-// Webhooks
-app.use('/api/webhooks', webhooksRouter);
+// API routes
+app.use('/api', apiRouter);
 
 // socket.io on same server
-const server = createServer(app);
+export const server = createServer(app);
 export const io = new Server(server);
 /*
 // socketio admin UI
@@ -81,4 +58,12 @@ export function startServer() {
 			res();
 		});
 	});
+}
+
+export function stopServer() {
+	console.info('Closing HTTP server');
+	server.close(() => {
+		console.info('Server closed');
+	});
+	endSocketSessions(io);
 }

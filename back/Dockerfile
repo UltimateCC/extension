@@ -1,7 +1,8 @@
 
 FROM node:18-alpine3.18 as base
 
-RUN apk add --no-cache ffmpeg
+# Needed if Azure speech to text is enabled
+# RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 

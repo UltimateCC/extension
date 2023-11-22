@@ -5,6 +5,7 @@
     import { fade } from "svelte/transition";
     import NumberInput from "./NumberInput.svelte";
     import Warning from "./Warning.svelte";
+    import Chevron from "./Chevron.svelte";
 
 	export let settingsShown = false;
 
@@ -63,11 +64,7 @@
 			<div class="caption-group" class:isOpen={ current === 'text' } >
 				<button type="button" class="caption-group-header" on:click={()=>toggle('text')}>
 					<h3>Text</h3>
-					<div class="chevron">
-						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960">
-							<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
-						</svg>
-					</div>
+					<Chevron/>
 				</button>
 				{#if current === 'text'}
 					<div class="caption-group-content">
@@ -112,11 +109,7 @@
 			<div class="caption-group" class:isOpen={ current === 'background' }>
 				<button type="button" class="caption-group-header" on:click={()=>toggle('background')}>
 					<h3>Background</h3>
-					<div class="chevron">
-						<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960">
-							<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
-						</svg>
-					<div/>
+					<Chevron/>
 				</button>
 				{#if current === 'background'}
 					<div class="caption-group-content">
@@ -145,8 +138,8 @@
 			</div>
 		</div>
 
-		<!-- Reset -->
 		<div class="caption-button-container">
+			<!-- Reset -->
 			<div>
 				<button type="button" on:click={ resetSettings }>
 					Reset settings

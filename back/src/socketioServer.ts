@@ -8,7 +8,7 @@ import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
-import { Stat } from "./entity/Stat";
+import { Stats } from "./entity/Stats";
 
 
 interface ServerToClientEvents {
@@ -30,7 +30,7 @@ interface ClientToServerEvents {
 
 export interface SocketData {
 	startTime: number;
-	stat: Stat;
+	stats: Stats | null;
 	config: UserConfig;
 	twitchId: string;
 	translator: Translator;
@@ -43,8 +43,17 @@ type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, Socket
 
 
 async function loadConfig(socket: TypedSocket) {
+	// End previous session if there was one
+	await endSession(socket);
 	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
 	socket.data.config = u.config;
+
+	//Init statistics
+	socket.data.stats = new Stats();
+	socket.data.startTime = Date.now();
+	socket.data.stats.user = u;
+	socket.data.stats.twitchId = u.twitchId;
+	socket.data.stats.config = socket.data.config;
 
 	// Speech to text
 	socket.data.stt = getStt(u);
@@ -69,8 +78,14 @@ async function loadConfig(socket: TypedSocket) {
 	sendStatus(socket);
 }
 
-function endSession(socket: TypedSocket) {
+async function endSession(socket: TypedSocket) {
 	socket.data.streamingStt?.stop();
+	// Save statistics if necessary
+	if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
+		socket.data.stats.duration = Date.now() - socket.data.startTime;
+		await socket.data.stats.save();
+		socket.data.stats = null;
+	}
 }
 
 async function sendStatus(socket: TypedSocket) {
@@ -85,9 +100,23 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	try {
 		socket.emit('transcript', transcript );
 
+		// Save statistics
+		if(socket.data.stats) {
+			if(transcript.final) {
+				socket.data.stats.finalCount++;
+				socket.data.stats.finalCharCount += transcript.text.length;
+			}else{
+				socket.data.stats.partialCount++;
+				socket.data.stats.partialCharCount += transcript.text.length;
+			}
+		}
+
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
+			if(socket.data.stats) {
+				socket.data.stats.translateErrorCount++;
+			}
 		}else{
 			//console.log('Sending pubsub for '+socket.data.twitchId, out.data);
 			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
@@ -121,7 +150,8 @@ export function initSocketioServer(io: TypedServer) {
 		socket.join('twitch-'+socket.data.twitchId);
 
 		socket.on('disconnect', ()=>{
-			endSession(socket);
+			endSession(socket)
+				.catch(e=>console.error('Error ending session', e));
 		});
 
 		socket.on('reloadConfig', ()=>{
@@ -159,4 +189,12 @@ export function initSocketioServer(io: TypedServer) {
 			socket.data.streamingStt?.handleData(data);
 		});
 	});
+}
+
+export async function endSocketSessions(io: TypedServer) {
+	// Only local sockets are fetched
+	// socket type can be used safely
+	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
+	// End all sessions (triggers saving statistics)
+	await Promise.all(sockets.map(s=>endSession(s)));
 }

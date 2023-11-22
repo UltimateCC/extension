@@ -46,6 +46,10 @@ webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 				type: 'setlang',
 				lang: typeof req.query.setlang === 'string' ? req.query.setlang : undefined
 			}
+		}else if(req.query.start !== undefined) {
+			action = { type: 'start' };
+		}else if(req.query.stop !== undefined) {
+			action = { type: 'stop' };
 		}
 		// Other webhook actions can be handled here
 
@@ -54,9 +58,10 @@ webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 			io.to('twitch-'+user.twitchId).emit('action', action);
 			res.json({ success: true });
 		}else{
-			res.sendStatus(400);
+			res.status(400).json({
+				error: 'No action found'
+			});
 		}
-		
 	}catch(e) {
 		next(e);
 	}

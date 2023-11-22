@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { initDatabase } from './database';
-import { startServer } from "./server";
+import { startServer, stopServer } from "./server";
 
 
 (async ()=>{
@@ -12,3 +12,8 @@ import { startServer } from "./server";
 		console.error('Error during init', e);
 	}
 })();
+
+// Stop server on Ctrl+C
+process.on('SIGTERM', () => {
+	stopServer();
+});

@@ -4,7 +4,7 @@ import { Entity, Column, ObjectIdColumn, ObjectId, CreateDateColumn, UpdateDateC
 import { AccessToken } from "@twurple/auth";
 import { randomBytes } from "crypto";
 import { promisify } from "node:util";
-//import { Stat } from "./Stat";
+import { Stats } from "./Stats";
 
 const randBytes = promisify(randomBytes);
 
@@ -14,10 +14,8 @@ export class User extends BaseEntity {
 	id: ObjectId;
 
 	// Relations
-	/*
-	@OneToMany(() => Stat, (stat) => stat.user)
-	stats: Stat[];
-	*/
+	@OneToMany(() => Stats, (stats) => stats.user)
+	stats: Stats[];
 
 	// Properties
 	@CreateDateColumn()
@@ -43,7 +41,6 @@ export class User extends BaseEntity {
 		transcribe: '',
 		lastSpokenLang: 'fr-FR',
 		spokenLang: 'en-US',
-		spokenLangs: ['en-US'],
 		translateService: '',
 		translateLangs: [],
 		banWords: []
@@ -72,7 +69,7 @@ export const UserConfigSchema = z.object({
 	]),
 	lastSpokenLang: z.string(),
 	spokenLang: z.string(),
-	spokenLangs: z.array(z.string()),
+	spokenLangs: z.array(z.string()).optional(),
 	translateService: z.union([
 		z.literal(''),
 		z.literal('azure'),

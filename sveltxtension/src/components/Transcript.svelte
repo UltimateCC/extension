@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { lastTranscript, partialCaptions, transcript } from "../lib/captions";
+	import { partialCaptions, transcript } from "../lib/captions";
     import { settings } from "../lib/settings";
     import LanguageSelect from "./LanguageSelect.svelte";
     import Warning from "./Warning.svelte";

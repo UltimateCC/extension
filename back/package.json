@@ -23,7 +23,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@socket.io/admin-ui": "^0.5.1",
     "@twurple/api": "^7.0.3",
     "@twurple/auth": "^7.0.2",
     "@twurple/ebs-helper": "^7.0.4",

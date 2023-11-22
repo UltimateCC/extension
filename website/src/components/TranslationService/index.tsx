@@ -87,7 +87,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
         setResponse(null);
     };
 
-    if (!configLoaded) return (
+    if (!configLoaded || !captionsStatus) return (
         <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
