@@ -37,7 +37,7 @@ function Webhooks() {
 	}
 
 	return (
-		<div>
+		<div className="buttons">
 			<button className={"theme-btn"} onClick={copyUrl}>
 				<span>Copy base url</span>
 			</button>

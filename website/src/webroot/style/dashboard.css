@@ -1,7 +1,9 @@
+/*
 :root {
-    --logoSize: 69px; /* 69 because it's a funny number */
-}
+    --logoSize: 69px; /* 69 because it's a funny number
+}*/
 
+/*
 #dashboard {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
@@ -23,21 +25,28 @@
     #dashboard .welcome {
         grid-column: 1 / 3;
     }
+}*/
+
+#dashboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
 }
 
 #dashboard h2 {
-    font-size: 2.1rem;
+    font-size: 2.1em;
 }
 
 #dashboard h3 {
-    font-size: 2rem;
+    font-size: 2em;
     color: var(--title)
 }
 
+/*
 #dashboard .theme-select {
     position: relative;
     font-size: 1.2vw;
-
 }
 
 #dashboard .custom-option {
@@ -52,49 +61,26 @@
     color: var(--text);
 }
 
-#dashboard .step-indication {
-    font-size: 2rem;
-    background-color: var(--title);
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    user-select: none;
-}
-
 #dashboard .api,
 #dashboard .setting,
 #dashboard .languages,
 #dashboard .banned {
     position: relative;
-}
+}*/
 
 
 #dashboard .welcome {
     position: relative;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-#dashboard .welcome h2 {
-    height: var(--logoSize);
-    line-height: var(--logoSize);
+    padding: 1em;
 }
 
 #dashboard .welcome .profile-container {
-    width: var(--logoSize);
-    height: var(--logoSize);
+    margin: .25em;
+    height: 2em;
+    top: 0;
+    right: .5em;
     position: absolute;
-    right: var(--gap);
-
     cursor: pointer;
-    border-radius: 50%;
 }
 
 #dashboard .welcome .profile-container .profile-image {
@@ -127,40 +113,26 @@
     opacity: 1;
 }
 
-#dashboard .welcome .profile-container:hover >  img {
+#dashboard .welcome .profile-container:hover > img {
     filter: blur(3px);
     transition: filter 0.4s;
 }
 
-/* #dashboard .setting .requestButton {
-    margin-top: 30px;
-} */
-
-/* #dashboard .setting .microphone-devices {
-    width: 100%;
-    font-size: 1.2vw;
-}
-
-#dashboard .setting .microphone-devices p {
-    width: 80%;
-    font-size: 1.2vw;
-} */
-
 #dashboard .setting h4 {
-    font-size: 25px;
-    margin-top: 30px;
+    font-size: 1.5em;
+    margin-top: .5em;
     text-decoration: underline;
 }
 
 #dashboard .setting .spoken-text {
-    margin-top: 15px;
+    margin-top: .5em;
     background-color: var(--text);
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
     border-radius: 10px;
     color: var(--square);
     font-size: 1.2em;
-    padding: 1em 0.75em;
-    min-height: calc(1em * 2 + 1em * 2); /* 2 lines min */
+    padding: 1em;
+    height: 5em;
 }
 
 #dashboard .setting .spoken-text p {
@@ -168,16 +140,30 @@
     text-align: left;
 }
 
-#dashboard .setting .setting-options {
+#dashboard .tabs {
     display: flex;
-    justify-content: space-between;
-    gap: 1em;
-    margin-top: 30px;
+    gap: .5em;
+    margin: 0 1em;
 }
 
-.theme-btn.mute.muted {
-    background-image: linear-gradient(#2B2B2B, #2B2B2B);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+#dashboard .tab {
+    background-color: var(--square);
+    font-size: 1.5em;
+    border-top-left-radius: .5em;
+    border-top-right-radius: .5em;
+    padding: .25em .5em;
+    cursor: pointer;
+}
+
+#dashboard .tab.active {
+    color: var(--title);
+}
+
+#dashboard .setting .setting-options {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
+    margin-top: 1em;
 }
 
 .theme-btn.listening:not(.start-btn) {
@@ -185,13 +171,26 @@
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
+#dashboard .languages {
+    margin-top: 2em;
+}
+
+#dashboard .languages .transfer-list-side {
+    height: 24em;
+    width: 14em;
+    display: flex;
+    flex-direction: column;
+}
+
 #dashboard .languages .lang-list {
     padding: 0.5em 1em 0.5em 0;
     background-color: var(--text);
     box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.25) inset;
     border-radius: 10px;
-    margin-top: 5px;
+    margin-top: .5em;
     color: var(--square);
+    min-height: 0;
+    flex: 1;
 }
 
 #dashboard .languages .lang-list * {
@@ -199,22 +198,19 @@
     overflow: hidden;
 }
 
-#dashboard .languages .lang-list.right {
-    height: 300px;
-}
-
-#dashboard .languages .lang-list > .scroll-theme {
+#dashboard .languages .lang-list .scroll-theme {
     height: 100%;
     overflow: auto;
     padding: 0;
 }
 
 #dashboard .languages .language-title {
-    font-size: 20px;
+    font-size: 1.25em;
 }
 
 #dashboard .languages .search-input {
-    margin: 0.5em 0;
+    margin: .5em 0;
+    width: 100%;
 }
 
 #dashboard .languages .search-input input {
@@ -228,7 +224,6 @@
     color: #5F5F68;
     background-image: linear-gradient(180deg, var(--text) 65%, transparent);
     border-radius: 10px;
-    
 }
 
 .search-input label.MuiInputLabel-shrink {
@@ -250,14 +245,14 @@
     cursor: pointer;
 }
 
-#dashboard .languages .switch-btn:disabled svg path {
+#dashboard .languages .switch-btn:disabled svg > * {
     fill: #5F5F68;
 }
 
 #dashboard .languages .switch-btn:not(:disabled):hover {
     background-color: var(--button);
 }
-
+/*
 #dashboard .banned .tips-img {
     position: absolute;
     top: 30px;
@@ -358,7 +353,7 @@
     color: var(--title);
     cursor: pointer;
     transition: all .5s;
-    overflow: hidden; /* To hide the hover not needed, todo solve with a better way */
+    overflow: hidden; /* To hide the hover not needed, todo solve with a better way *//*
 }
 
 #dashboard .banned .more-btn:hover {
@@ -372,7 +367,7 @@
 
 #dashboard .banned .ban-captions ul {
     overflow-y: auto;
-    max-height: 6.5em; /* 5 lines * 1.2em (line-height) */
+    max-height: 6.5em; /* 5 lines * 1.2em (line-height) *//*
     color: var(--square);
 }
 
@@ -404,12 +399,12 @@
     font-family: "Press Start 2P", sans-serif;
     font-size: 0.75em;
 }
-
+*/
 
 #dashboard .banned form,
 #dashboard .api form > .api-input,
 #dashboard .api .api-connected {
-    margin-top: 30px;
+    margin-top: 2em;
     display: flex;
     justify-content: center;
     margin-right: 0;
@@ -432,7 +427,8 @@
     border-radius: 10px;
     background: var(--text);
     box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.53) inset;
-    font-size: 1.55vw;
+    /*font-size: 1.55vw;*/
+    font-size: 1.25em;
     color: #2B2B2B;
 
     display: flex;
@@ -441,8 +437,7 @@
 }
 
 #dashboard .api a {
-    font-size: 24px;
-    margin-top: 10px;
+    font-size: 1.5em;
     display: block;
 }
 
@@ -450,15 +445,19 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    margin-top: 30px;
+    margin-top: 1.5em;
 }
 
 #dashboard .api .danger-btn {
     padding: 1em;
 }
 
+#dashboard .webhooks .buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
 
-
+/*
 @media only screen and (max-width: 600px) {
     #dashboard .languages .transfer-list-container {
         flex-direction: column;
@@ -467,4 +466,4 @@
     #dashboard .languages .switch-btn-container {
         transform: rotate(90deg);
     }
-}
+}*/

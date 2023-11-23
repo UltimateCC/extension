@@ -60,6 +60,11 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
 
     }, [ selectedLanguageCode, translateLangs ]);
 
+    // Search
+    const searched = useMemo(()=>{
+        return available.filter(lang=>lang.name.toLocaleLowerCase().includes(searchTerm));
+    }, [available, searchTerm]);
+
     // Get lists of checked languages
     const [ availableChecked, selectedChecked ] = useMemo(()=>{
         const availableChecked: string[] = [];
@@ -120,7 +125,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
     };
 
     const customList = (items: LangList, isLeft: boolean) => (
-        <Paper sx={{ width: 200, height: 230 }} className={`lang-list${isLeft ? ' left' : ' right'}`}>
+        <Paper className={`lang-list ${isLeft ? 'left' : 'right'}`}>
             <List dense component="div" role="list" className='scroll-theme'>
                 { configLoaded || isLeft ? items
                     .map((value) => {
@@ -163,20 +168,19 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                 alignItems="center"
                 className='transfer-list-container'
             >
-                <Grid item>
+                <Grid item className='transfer-list-side'>
                     <h4 className="language-title">Available languages</h4>
                     <ThemeProvider theme={theme}>
                         <TextField
                             inputRef={searchInput}
                             label="Search"
-                            sx={{ width: 200 }}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             color="secondary"
                             className='search-input'
                         />
                     </ThemeProvider>
-                    {customList(available, true)}
+                    {customList(searched, true)}
                 </Grid>
                 <Grid item>
                     <Grid
@@ -216,7 +220,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
                     </Grid>
                 </Grid>
 
-                <Grid item>
+                <Grid item className='transfer-list-side'>
                     <h4 className="language-title">Selected languages</h4>
                     {customList(selected, false)}
                 </Grid>

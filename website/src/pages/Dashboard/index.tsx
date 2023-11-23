@@ -21,6 +21,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
 import { SocketContext } from '../../context/SocketContext';
 import Webhooks from '../../components/Webhooks';
+import Tabs from '../../components/Tabs';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -37,6 +38,9 @@ function Dashboard() {
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
+
+    // Select settings tab
+    const [currentTab, setCurrentTab] = useState<string>('Translation');
 
     // Speech language
     const [lastSpokenLang, setLastSpokenLang] = useState<string>();
@@ -139,39 +143,51 @@ function Dashboard() {
             )}
             <section id="dashboard">
                 <div className="welcome theme-box">
-                    <h2>Welcome, <strong>{user?.login ?? ''}</strong></h2>
-                    <Link to="/logout" className="profile-container">
-                        {profilePicture !== loadingImg && (
-                            <div className='logout-box'>
-                                <img src={LogoutImg} alt="logout" />
+                    <h2>
+                        Welcome, <strong>{user?.login ?? ''}</strong>
+                        <Link to="/logout" className="profile-container">
+                            {profilePicture !== loadingImg && (
+                                <div className='logout-box'>
+                                    <img src={LogoutImg} alt="logout" />
+                                </div>
+                            )}
+                            <img src={profilePicture} alt="profile picture" className="profile-image"/>
+                        </Link>
+                    </h2>
+                </div>
+                <div className="setting theme-box">
+                    <h3>Speech</h3>
+                    <MicrophoneApp 
+                        spokenLang={spokenLang}
+                        setSpokenLang={setSpoken}
+                        configLoaded={configLoaded}
+                        loadingImg={loadingImg}
+                    />
+                </div>
+
+                <div>
+                    <Tabs tabs={['Translation', 'Twitch', 'Webhooks']} currentTab={currentTab} setCurrentTab={setCurrentTab}  />
+                    
+                    { currentTab==='Translation' && (
+                        <div className="api theme-box">
+                            <h3>Translation API Connection</h3>
+                            <TranslationService
+                                translateService={translateService}
+                                configLoaded={configLoaded}
+                                loadingImg={loadingImg}
+                            />
+                            <div className='languages'>
+                                <h3>Languages</h3>
+                                <LanguageOutSelector
+                                    selectedLanguageCode={translationLangs}
+                                    setTranslationLangs={setTranslationLangs}
+                                    configLoaded={configLoaded}
+                                />
                             </div>
-                        )}
-                        <img src={profilePicture} alt="profile picture" className="profile-image"/>
-                    </Link>
-                </div>
-                <div>
-                    <div className="api theme-box">
-                        <span className="step-indication">1</span>
-                        <h3>Translation API Connection</h3>
-                        <TranslationService
-                            translateService={translateService}
-                            configLoaded={configLoaded}
-                            loadingImg={loadingImg}
-                        />
-                    </div>
-                    <div className="languages theme-box">
-                        <span className="step-indication">2</span>
-                        <h3>Languages</h3>
-                        <LanguageOutSelector
-                            selectedLanguageCode={translationLangs}
-                            setTranslationLangs={setTranslationLangs}
-                            configLoaded={configLoaded}
-                        />
-                    </div>
-                </div>
-                <div>
+                        </div>                        
+                    )}
+
                     {/* <div className="banned theme-box">
-                        <span className="step-indication">3</span>
                         <h3>Banned captions</h3>
                         <BannedCaptions
                             allBanCaptions={allBanCaptions}
@@ -181,26 +197,22 @@ function Dashboard() {
                             LoadingImg={LoadingImg}
                         />
                     </div> */}
-                    <div className="setting theme-box">
-                        <span className="step-indication">3</span>
-                        <h3>Speech</h3>
-                        <MicrophoneApp 
-                            spokenLang={spokenLang}
-                            setSpokenLang={setSpoken}
-                            configLoaded={configLoaded}
-                            loadingImg={loadingImg}
-                        />
-                    </div>
-                    <div className="setting theme-box">
-                        <h3>Twitch</h3>
-                        <Twitch />
-                    </div>
-                    <div className="setting theme-box">
-                        <h3>Webhooks</h3>
-                        <Webhooks/>
-                    </div>
-                    <Footer />
+
+                    { currentTab === 'Twitch' && (
+                        <div className="setting theme-box">
+                            <h3>Twitch</h3>
+                            <Twitch />
+                        </div>                        
+                    )}
+
+                    { currentTab === 'Webhooks' && (
+                        <div className="webhooks theme-box">
+                            <h3>Webhooks</h3>
+                            <Webhooks/>
+                        </div>                        
+                    ) }
                 </div>
+                <Footer />
             </section>
         </SocketContext.Provider>
     );

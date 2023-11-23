@@ -83,9 +83,9 @@ function MicrophoneApp({ spokenLang, setSpokenLang, lastSpokenLang, configLoaded
                 </button>
             </div>
 
-            {listening && (
+            { (
                 <>
-                    <h4>Spoken text</h4>
+                    <h4>Recognized text</h4>
                     <div className="spoken-text">
                         <p>{ text } </p>
                     </div>

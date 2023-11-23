@@ -13,7 +13,7 @@ function Home() {
     return (
         <section id='home'>
             <div className='header-title'>
-                <h2>A tool designed to integrate <strong>real-time translation</strong> directly into live video streams</h2>
+                <h2>A tool designed to integrate <strong>real-time translation</strong> to your Twitch streams</h2>
             </div>
             <div className='start-extension'>
                 <h4>Ready to use it ? </h4>

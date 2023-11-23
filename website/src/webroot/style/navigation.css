@@ -1,28 +1,18 @@
 #navbar {
-    position: absolute;
-    font-size: 0.5em;
+    width: 20em;
+    flex: 0;
 }
 
-#navbar #laptopNavbar {
-    position: fixed;
-    width: calc(25% - 39px);
-    /* Why 39px? I don't know, but it works */
-    right: 50px;
-    bottom: 50px;
-    top: 50px;
+#laptopNavbar {
+    position: sticky;
+    top: 2em;
+}
+
+#navbar > * {
     display: flex;
     flex-direction: column;
-    padding-bottom: 50px;
     align-items: center;
 }
-
-/* @media (max-height: 700px) {
-    #navbar > div {
-        position: relative;
-    }
-} */
-
-
 
 #navbar .logo-container {
     width: 100%;
@@ -45,47 +35,37 @@
 #navbar .theme-box a.main-title {
     text-decoration: none;
     font-family: "Press Start 2P", sans-serif;
-    font-size: 2.5em;
     color: var(--text);
-    margin-bottom: min(5vh);
-}
-
-@media (max-width: 1300px) {
-    #navbar .theme-box a.main-title {
-        font-size: 1.5em;
-        margin-top: 20px;
-    }
 }
 
 #navbar .spacer {
     height: 3px;
     width: 75%;
-    margin: 2.5em auto;
+    margin: 1.5em auto;
     background-color: var(--text);
 }
-
+/*
 @media (max-width: 1300px) {
     #navbar .spacer {
         margin-top: 3vh;
     }
-}
+}*/
 
 #navbar .main-links,
 #navbar .secondary-links {
     display: grid;
     justify-items: center;
     justify-content: center;
-    font-size: 3em;
+    font-size: 1.5em;
     line-height: 1.5em;
-    margin-bottom: min(1vh);
+    margin-bottom: .5em;
 }
-
 
 @media (max-width: 1300px) {
 
     #navbar .main-links,
     #navbar .secondary-links {
-        font-size: 2em;
+        font-size: 1em;
     }
 }
 
@@ -93,18 +73,19 @@
 
     #navbar .main-links,
     #navbar .secondary-links {
-        font-size: 2.5em;
+        font-size: 1.25em;
     }
 }
 
 #navbar .main-links {
-    margin-top: min(1vh);
-    gap: 3vh;
-    line-height: 1.5em;
+    margin-top: .5em;
+    gap: 1em;
+    line-height: .75em;
 }
 
 #navbar .main-links a {
     font-size: 2em;
+    margin-bottom: .25em;
     text-decoration: none;
     transition: all 0.5s;
 }
@@ -136,12 +117,10 @@
     text-decoration-thickness: 3
     px;
     color: var(--button);
-    transform: scale(1.05);
-
 }
 
 #navbar .secondary-links {
-    margin-top: auto;
+    margin-top: 6em;
 }
 
 #navbar .main-links a:not(.active):after,
@@ -174,16 +153,18 @@
 
 
 #navbar #burger-menu {
+    font-size: .25em;
+
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
 
-    gap: 2vw;
+    gap: 2em;
 
     height: fit-content;
     width: fit-content;
-    padding: 3vw;
+    padding: 3em;
     background-color: #9F4EE5;
     border: solid 2px var(--square);
     border-radius: 15px;
@@ -191,8 +172,8 @@
 }
 
 #navbar #burger-menu .bar {
-    width: 12vw;
-    height: 3vw;
+    width: 12em;
+    height: 3em;
     border-radius: 6px;
     box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.25);
     background-color: var(--square);
@@ -203,9 +184,9 @@
     transform: scale(1.05);
 }
 
-#navbar #nonLaptopNavbar .main-img {
-    display: flex;
-    height: 25vw;
+#navbar #nonLaptopNavbar .main-img img {
+    width: 10em;
+    height: auto;
 }
 
 #navbar .close {
@@ -214,11 +195,11 @@
 
 #navbar #nonLaptopNavbar {
     display: none;
+    flex-direction: row;
 }
 
 @media (max-width: 1000px) {
     #navbar {
-        position: initial;
         width: 100%;
     }
 
@@ -232,6 +213,7 @@
 
     #navbar #laptopNavbar {
         width: fit-content;
+        position: absolute;
         right: 0;
         left: auto;
         top: 0;
@@ -240,7 +222,7 @@
         background: #7643A4;
         box-shadow: 10px 10px 4px 0px rgba(0, 0, 0, 0.25);
         z-index: 30;
-        transition: right 1s;
+        transition: right .5s;
     }
 
     #navbar #laptopNavbar:not(.show) {
@@ -252,7 +234,7 @@
     }
 
     #navbar #laptopNavbar .main-title {
-        font-size: 3em;
+        font-size: 1.5em;
         width: 30vw;
         min-width: min-content;
     }
