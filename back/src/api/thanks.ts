@@ -10,7 +10,7 @@ type Contributor = {
 const contributors: Contributor[] = [
 	{
 		discordId: "207935292995403777",
-		role: "For the original idea and the testing",
+		role: "Original idea and testing",
 		name: "aypierre",
 		img: "https://cdn.discordapp.com/avatars/207935292995403777/c0a365f3ce2109b5f5b327b4ef182249?size=1024"
 	},

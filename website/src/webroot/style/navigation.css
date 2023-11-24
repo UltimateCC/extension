@@ -114,13 +114,34 @@
 #navbar .secondary-links a.active {
     text-decoration: underline;
     text-decoration-color: var(--title);
-    text-decoration-thickness: 3
-    px;
+    text-decoration-thickness: 3px;
     color: var(--button);
 }
 
 #navbar .secondary-links {
     margin-top: 6em;
+}
+
+#navbar .socials {
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: .5em;
+}
+
+#navbar .socials a {
+    transition: transform .25s;
+}
+
+#navbar .socials a:hover,
+#navbar .socials a:focus {
+    transform: scale(1.1);
+}
+
+#navbar .socials svg > * {
+    fill: var(--text);
 }
 
 #navbar .main-links a:not(.active):after,

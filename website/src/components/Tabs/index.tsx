@@ -11,6 +11,7 @@ function Tabs({ tabs, currentTab, setCurrentTab } :TabProps) {
         <div className="tabs">
             { tabs.map(t=>
                 <div
+                    key={t}
                     className={`tab ${t===currentTab ? 'active' : ''}`}
                     onClick={()=>setCurrentTab(t)}>
                     {t}

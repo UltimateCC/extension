@@ -5,7 +5,7 @@ function PageTitle() {
     const location = useLocation();
 
     useEffect(() => {
-        document.title = `Ultimate Closed Caption - ${getPageTitle(location.pathname)}`;
+        document.title = `Ultimate Closed Captions - ${getPageTitle(location.pathname)}`;
     }, [location]);
 
     const getPageTitle = (path: string) => {

@@ -1,31 +1,3 @@
-/*
-:root {
-    --logoSize: 69px; /* 69 because it's a funny number
-}*/
-
-/*
-#dashboard {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat(3, auto);
-    grid-gap: var(--gap);
-}
-
-#dashboard > div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-}
-
-@media (min-width: 1700px) {
-    #dashboard {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    #dashboard .welcome {
-        grid-column: 1 / 3;
-    }
-}*/
 
 #dashboard {
     width: 100%;
@@ -43,12 +15,11 @@
     color: var(--title)
 }
 
-/*
 #dashboard .theme-select {
     position: relative;
-    font-size: 1.2vw;
+    font-size: 1.25em;
 }
-
+/*
 #dashboard .custom-option {
     padding: 10px;
     background-color: transparent;
@@ -142,6 +113,7 @@
 
 #dashboard .tabs {
     display: flex;
+    flex-wrap: nowrap;
     gap: .5em;
     margin: 0 1em;
 }
@@ -153,6 +125,11 @@
     border-top-right-radius: .5em;
     padding: .25em .5em;
     cursor: pointer;
+    min-width: 0;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #dashboard .tab.active {
@@ -180,6 +157,12 @@
     width: 14em;
     display: flex;
     flex-direction: column;
+}
+
+@media only screen and (max-width: 40rem) {
+    #dashboard .languages .transfer-list-side {
+        width: 10em;
+    }
 }
 
 #dashboard .languages .lang-list {
@@ -427,7 +410,6 @@
     border-radius: 10px;
     background: var(--text);
     box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.53) inset;
-    /*font-size: 1.55vw;*/
     font-size: 1.25em;
     color: #2B2B2B;
 
@@ -455,15 +437,5 @@
 #dashboard .webhooks .buttons {
     display: flex;
     justify-content: space-evenly;
+    gap: 1em;
 }
-
-/*
-@media only screen and (max-width: 600px) {
-    #dashboard .languages .transfer-list-container {
-        flex-direction: column;
-    }
-
-    #dashboard .languages .switch-btn-container {
-        transform: rotate(90deg);
-    }
-}*/

@@ -166,18 +166,22 @@ function Dashboard() {
                 </div>
 
                 <div>
-                    <Tabs tabs={['Translation', 'Twitch', 'Webhooks']} currentTab={currentTab} setCurrentTab={setCurrentTab}  />
-                    
+                    <Tabs
+                        tabs={['Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'Webhooks']}
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                    />
+
                     { currentTab==='Translation' && (
                         <div className="api theme-box">
-                            <h3>Translation API Connection</h3>
+                            <h3>Translation API</h3>
                             <TranslationService
                                 translateService={translateService}
                                 configLoaded={configLoaded}
                                 loadingImg={loadingImg}
                             />
                             <div className='languages'>
-                                <h3>Languages</h3>
+                                <h3>Translation languages</h3>
                                 <LanguageOutSelector
                                     selectedLanguageCode={translationLangs}
                                     setTranslationLangs={setTranslationLangs}
