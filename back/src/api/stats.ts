@@ -18,7 +18,7 @@ statsRouter.get('', async (req, res, next)=>{
 			}
 			all = true;
 		}
-		const stats = await Stats.findBy({ twitchId: all ? undefined : req.session.userid });
+		const stats = await Stats.find({where:{ twitchId: all ? undefined : req.session.userid }});
 		res.json(stats);
 	}catch(e) {
 		next(e);
