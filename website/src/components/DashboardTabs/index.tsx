@@ -5,20 +5,20 @@ interface TabProps {
     setCurrentTab: (tab: string)=>void;
 }
 
-function Tabs({ tabs, currentTab, setCurrentTab } :TabProps) {
+function DashboardTabs({ tabs, currentTab, setCurrentTab } :TabProps) {
 
     return (
         <div className="tabs">
             { tabs.map(t=>
-                <div
+                <button
                     key={t}
                     className={`tab ${t===currentTab ? 'active' : ''}`}
                     onClick={()=>setCurrentTab(t)}>
                     {t}
-                </div>
+                </button>
             ) }
         </div>
     );
 }
 
-export default Tabs;
+export default DashboardTabs;

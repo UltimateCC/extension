@@ -219,7 +219,8 @@
     flex-direction: row;
 }
 
-@media (max-width: 1000px) {
+/* Mobile navbar */
+@media (max-width: 60rem) {
     #navbar {
         width: 100%;
     }
@@ -265,7 +266,7 @@
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 30rem) {
     #navbar #laptopNavbar {
         width: 100vw;
     }

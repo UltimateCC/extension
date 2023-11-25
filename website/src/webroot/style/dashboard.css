@@ -95,6 +95,27 @@
     text-decoration: underline;
 }
 
+#dashboard .setting .setting-options {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
+    margin-top: 1em;
+}
+
+#dashboard .setting .setting-options .theme-select {
+    min-width: 0;
+}
+
+#dashboard .theme-btn.listening {
+    flex-shrink: 0;
+    width: 14em;
+}
+
+.theme-btn.listening:not(.start-btn) {
+    background-image: linear-gradient(#2B2B2B, #2B2B2B);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
 #dashboard .setting .spoken-text {
     margin-top: .5em;
     background-color: var(--text);
@@ -119,33 +140,24 @@
 }
 
 #dashboard .tab {
-    background-color: var(--square);
     font-size: 1.5em;
+    display: block;
+    min-width: 0;
+    padding: .25em .5em;
+    font-family: 'Baloo', sans-serif;
+    background-color: var(--square);
+    color: var(--text);
+    border: none;
     border-top-left-radius: .5em;
     border-top-right-radius: .5em;
-    padding: .25em .5em;
-    cursor: pointer;
-    min-width: 0;
-    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 #dashboard .tab.active {
     color: var(--title);
-}
-
-#dashboard .setting .setting-options {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 1em;
-    margin-top: 1em;
-}
-
-.theme-btn.listening:not(.start-btn) {
-    background-image: linear-gradient(#2B2B2B, #2B2B2B);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
 #dashboard .languages {
@@ -433,9 +445,13 @@
 #dashboard .api .danger-btn {
     padding: 1em;
 }
+#dashboard .webhooks p {
+    line-height: 1em;
+}
 
 #dashboard .webhooks .buttons {
     display: flex;
     justify-content: space-evenly;
     gap: 1em;
+    margin-top: 2em;
 }

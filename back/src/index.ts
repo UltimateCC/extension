@@ -17,3 +17,12 @@ import { startServer, stopServer } from "./server";
 process.on('SIGTERM', () => {
 	stopServer();
 });
+
+/*
+process.on('uncaughtException', (err)=>{
+	console.error('uncaughtException', err);
+});*/
+
+process.on('unhandledRejection', (err)=>{
+	console.error('unhandledRejection', err);
+});

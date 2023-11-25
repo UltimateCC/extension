@@ -28,7 +28,7 @@ const ThemedSwitch = styled(Switch)(({theme}) => ({
 const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
     [`& .${formControlLabelClasses.label}`]: {
         color: "#D9D9D9",
-        fontSize: 16,
+        fontSize: '1em',
         fontFamily: "Baloo",
     },
 }));
@@ -60,7 +60,7 @@ function Twitch() {
 
     return (
         <div>
-            <h5>Settings related to the Twitch extension (soon)</h5>
+            <p>Settings related to the Twitch extension (soon)</p>
             <FormGroup>
                 <ThemedFormControlLabel 
                     control={<ThemedSwitch

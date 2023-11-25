@@ -21,7 +21,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
 import { SocketContext } from '../../context/SocketContext';
 import Webhooks from '../../components/Webhooks';
-import Tabs from '../../components/Tabs';
+import DashboardTabs from '../../components/DashboardTabs';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -88,25 +88,23 @@ function Dashboard() {
     }
 
     useEffect(() => {
+        // If not connected, redirect to auth url
         if(!user?.connected && user?.url) {
             window.location.replace(user.url);
         }
+
         if(user?.img) {
             setProfilePicture(user.img);
         }
-
         if(error) {
             setResponse({ isSuccess: false, message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
         }
-
         if(socketCtx.captionsStatus?.twitch === false) {
             setResponse({ isSuccess: false, message: "The Twitch extension is not installed on your channel." });
         }
-
         if(user?.connected) {
             loadConfig();
         }
-        
     }, [ user, socketCtx.captionsStatus, error ]);
 
     // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
@@ -156,40 +154,49 @@ function Dashboard() {
                     </h2>
                 </div>
                 <div className="setting theme-box">
-                    <h3>Speech</h3>
-                    <MicrophoneApp 
-                        spokenLang={spokenLang}
-                        setSpokenLang={setSpoken}
-                        configLoaded={configLoaded}
-                        loadingImg={loadingImg}
-                    />
+                    <div className='theme-box-container'>
+                        <h3>Dashboard</h3>
+                        <MicrophoneApp 
+                            spokenLang={spokenLang}
+                            setSpokenLang={setSpoken}
+                            configLoaded={configLoaded}
+                            loadingImg={loadingImg}
+                        />
+                    </div>
                 </div>
 
                 <div>
-                    <Tabs
+                    <DashboardTabs
                         tabs={['Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'Webhooks']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
-
-                    { currentTab==='Translation' && (
-                        <div className="api theme-box">
-                            <h3>Translation API</h3>
-                            <TranslationService
-                                translateService={translateService}
-                                configLoaded={configLoaded}
-                                loadingImg={loadingImg}
-                            />
-                            <div className='languages'>
-                                <h3>Translation languages</h3>
-                                <LanguageOutSelector
-                                    selectedLanguageCode={translationLangs}
-                                    setTranslationLangs={setTranslationLangs}
-                                    configLoaded={configLoaded}
-                                />
-                            </div>
-                        </div>                        
-                    )}
+                    <div className="theme-box">
+                        <div className='theme-box-container'>
+                            <h3>{ currentTab }</h3>
+                            { currentTab==='Translation' && (
+                                <div>
+                                    <TranslationService
+                                        translateService={translateService}
+                                        configLoaded={configLoaded}
+                                        loadingImg={loadingImg}
+                                    />
+                                    { translationLangs?.length && (
+                                        <div className='languages'>
+                                            <h3>Translation languages</h3>
+                                            <LanguageOutSelector
+                                                selectedLanguageCode={translationLangs}
+                                                setTranslationLangs={setTranslationLangs}
+                                                configLoaded={configLoaded}
+                                            />
+                                        </div>
+                                    ) }
+                                </div>
+                            )}
+                            { currentTab === 'Twitch' && ( <Twitch /> ) }
+                            { currentTab === 'Webhooks' && (<Webhooks/>) }
+                        </div>
+                    </div>
 
                     {/* <div className="banned theme-box">
                         <h3>Banned captions</h3>
@@ -201,20 +208,6 @@ function Dashboard() {
                             LoadingImg={LoadingImg}
                         />
                     </div> */}
-
-                    { currentTab === 'Twitch' && (
-                        <div className="setting theme-box">
-                            <h3>Twitch</h3>
-                            <Twitch />
-                        </div>                        
-                    )}
-
-                    { currentTab === 'Webhooks' && (
-                        <div className="webhooks theme-box">
-                            <h3>Webhooks</h3>
-                            <Webhooks/>
-                        </div>                        
-                    ) }
                 </div>
                 <Footer />
             </section>
