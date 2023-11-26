@@ -16,14 +16,14 @@ function Home() {
                 <h2>A tool designed to integrate <strong>real-time translation</strong> to your Twitch streams</h2>
             </div>
             <div className='start-extension'>
-                <h4>Ready to use it ? </h4>
+                <h4>Ready to use it&nbsp;?</h4>
                 <NavLink to="/dashboard">
                     <button className='theme-btn'><span>CLICK HERE to START!</span></button>
                 </NavLink>
             </div>
             <div className='about-header-container'>
-                <AboutHeader emoji="⚡" title="Instant translation" id="translation" />
                 <AboutHeader emoji="💪" title="Accessibility" id="accessibility" />
+                <AboutHeader emoji="⚡" title="Instant translation" id="translation" />
                 <AboutHeader emoji="🤝" title="User-friendly interface" id="interface" />
             </div>
             <div className='about-extension-container'>

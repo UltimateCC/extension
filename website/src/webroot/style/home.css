@@ -101,17 +101,26 @@
 }
 
 @media only screen and (max-width: 75em) {
+    #home .about-extension-container {
+        gap: 2em;
+    }
+
     #home .about-extension-container .about-description {
         flex-direction: column;
         gap: 1em;
     }
 
+    #home .about-description.right h3,
+    #home .about-description h3 {
+        text-align: center;
+    }
     #home .about-description.right p {
         text-align: left;
     }
 
     #home .about-description img {
-        width: 100%;
+        width: 80%;
+        height: auto;
         margin: 0;
     }
 }

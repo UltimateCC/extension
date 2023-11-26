@@ -289,6 +289,10 @@ section#home > div {
     padding: .5em 2em 2em;
 }
 
+.theme-box.padtop {
+    padding-top: 2em;
+}
+
 .theme-box-container {
     max-width: 50em;
     margin: auto;

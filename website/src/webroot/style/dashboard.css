@@ -31,13 +31,7 @@
     background-color: var(--square);
     color: var(--text);
 }
-
-#dashboard .api,
-#dashboard .setting,
-#dashboard .languages,
-#dashboard .banned {
-    position: relative;
-}*/
+*/
 
 
 #dashboard .welcome {

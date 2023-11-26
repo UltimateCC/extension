@@ -19,7 +19,7 @@ function Verify() {
     }, [login]);
     
     return (
-        <section id="error" className="theme-box">
+        <section id="error" className="theme-box padtop">
             <h2>{ error ? 'Error' : 'Redirecting' }</h2>
         </section>
     );
