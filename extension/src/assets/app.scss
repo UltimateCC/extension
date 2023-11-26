@@ -1,0 +1,558 @@
+@import 'fonts';
+@import 'vars';
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+#app { height: 100%; }
+
+body #ultimate-closed-caption {
+	// Lock scroll
+	max-width: 100vw;
+	max-height: 100vh;
+	height: 100%;
+	padding: $caption-movable-Y $caption-movable-X; // Advice by twitch 5rem 7rem 5rem 0
+	position: relative; // Not necessary, just to show what is the container of position: absolute
+	font-size: $settings-font-size;
+
+
+	// Caption container
+	#caption-movable-area {
+		
+		// Do calc only if needed
+		width: if($caption-movable-X == 0, 100vw, calc(100vw - #{$caption-movable-X} * 2));
+		height: if($caption-movable-Y == 0, 100vh, calc(100vh - #{$caption-movable-Y} * 2));
+		position: relative;
+
+		// Caption box container
+		#caption-container {
+			position: absolute; // To be able to move it
+			width: 50%;
+			
+			&:not(.locked) {
+				cursor: move;
+				user-select: none;
+			}
+
+			border-radius: 0.1em;
+
+			transition: opacity 0.5s;
+			display: block;
+
+			transform: translateX(-50%) translateY(50%);
+
+			.caption-content-box {
+				display: flex;
+				flex-direction: column-reverse;
+
+				margin: $caption-container-padding;
+				overflow: hidden; // Don't show the rest of the text
+				
+				text-align: left;
+				font-size: 1em;
+
+				p { // Apply text settings
+					line-height: $caption-line-height;
+					font-size: 1em;
+					color: inherit;
+					font-family: inherit;
+				}
+			}
+		}
+	}
+	
+	.caption-overlay-container {
+		position: absolute;
+		left: 0;
+		top: $settings-movable-top;
+
+		z-index: 1;
+		height: calc(100vh - (#{$settings-movable-top} + #{$settings-movable-bottom}) - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
+		/*
+			Calc incorrect because em are used as units
+
+			100vh = 100% of the height of the screen
+			- #{$settings-movable-top} = the top of the settings box
+			- #{$settings-movable-bottom} = the bottom of the settings box
+			- #{$buttons-size} = the size of the settings wheel
+			- #{$buttons-padding-Y} * 2 = the padding of the settings wheel
+			- #{$buttons-min-gap} = the minimum gap between the settings wheel and the settings box
+		*/
+		
+		width: $settings-width;
+
+		// Settings box
+		#settings-container {
+			max-height: 100%;
+			width: 100%;
+
+			padding: 0.2em 0.5em 1em;
+
+			background-color: rgba($settings-background-color, $settings-background-opacity);
+			color: $settings-text-color;
+			font-family: $settings-font-family;
+
+			border-top-right-radius: 0.2em;
+			border-bottom-right-radius: 0.2em;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+
+			overflow: hidden auto;
+
+			// Scrollbar with simplebar lib
+			.simplebar-scrollbar::before {
+				background-color: $settings-button-color;
+			}
+
+			// Title and close button
+			.caption-header-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: start;
+				position: relative;
+
+				h2 {
+					font-size: 1.5em;
+					line-height: 1.5em;
+					font-weight: normal;
+					width: 100%;
+					text-align: center;
+					margin: auto;
+				}
+
+				button#close-settings-button {
+					position: absolute;
+					top: 0;
+					right: 0;
+					border: none;
+					background-color: transparent;
+					svg > * {
+						fill: $settings-text-color;
+					}
+					font-size: 2em;
+					cursor: pointer;
+					transition: transform 0.2s ease-in-out;
+
+					&:hover {
+						transform: scale(1.1);
+					}
+				}
+			}
+
+			// Main content
+			.caption-settings-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-direction: column;
+
+				.caption-group {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					flex-direction: column;
+					
+					select {
+						width: $settings-input-size;
+						height: 1.5em;
+						border: 0;
+						border-radius: $settings-input-border-radius;
+						padding-left: 0.5em;
+						padding-right: 2em;
+						font-size: 0.9em;
+						text-align: left;
+						color: rgba($settings-background-color, 0.85);
+						background-color: $settings-text-color;
+						box-shadow: $settings-input-shadow;
+
+						&:disabled {
+							background-color: $settings-disabled-color;
+						}
+
+						&:not(:disabled) {
+							cursor: pointer;
+
+							&:focus, &:active {
+								box-shadow: $settings-input-shadow-out;
+								transition: box-shadow 0.5s;
+							}
+						}
+
+						/* Remove arrow */
+						appearance: none;
+
+						/* Add my customisable arrow */
+						background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" fill="%231F1F23D9"/></svg>');
+						background-repeat: no-repeat;
+						background-position-x: 97.5%;
+						background-position-y: 50%;
+						background-size: 1.25rem;
+					}
+
+					// If it's open, change the rotation
+					&.isOpen {
+						.caption-group-header .chevron {
+							transform: rotate(-90deg);
+						}
+					}
+
+					// If it's the language group, change the direction
+					&#language {
+						.caption-group-header {
+							flex-direction: column;
+
+							select {
+								width: 100%;
+								margin-top: calc($settings-gap-between-group / 2);
+							}
+						}
+					}
+					&:not(#language) .caption-group-header { // Else
+						cursor: pointer;
+						justify-content: space-between;
+						align-items: center;
+					}
+
+					.caption-group-header {
+						display: flex;
+
+						width: 100%;
+						padding-top: .5em;
+						padding-bottom: .5em;
+						margin-top: .25em;
+						margin-bottom: .25em;
+
+						border: none;
+						background-color: transparent;
+						font-size: 1em;
+
+						h3 {
+							color: $settings-text-color;
+							font-size: 1.5em;
+							font-weight: normal;
+							text-align: left;
+						}
+
+						.chevron {
+							font-size: 2em;
+							transition: transform 0.2s ease-in-out;
+							transform: rotate(0deg);
+							padding: 0;
+							margin: 0;
+							width: 1em;
+							height: 1em;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+
+							svg {
+								width: 1em;
+								height: 1em;
+								fill: $settings-text-color;
+							}
+						}
+					}
+
+					> * {
+						padding-right: $settings-inside-padding;
+						padding-left: $settings-inside-padding;
+					}
+
+					&::after {
+						content: "";
+						display: block;
+						width: 100%;
+						height: 2px;
+						background-color: $settings-text-color;
+					}
+
+					.caption-group-content {
+						display: flex;
+						justify-content: space-between;
+						flex-direction: column;
+						align-items: center;
+						width: 100%;
+						gap: $settings-gap-between-group;
+						margin-bottom: calc($settings-gap-between-group * 1.25);
+
+						.caption-group-content-item {
+							display: flex;
+							justify-content: space-between;
+							width: 100%;
+							font-size: 0.9em;
+
+							&.group-opacity, &.group-font-size, &.group-font-family {
+								flex-direction: column;
+
+								> div {
+									display: flex;
+									justify-content: space-between;
+								}
+
+								> select {
+									width: 100%;
+									margin-top: calc($settings-gap-between-group / 2);
+									line-height: 1.1em;
+								}
+
+								> input[type="range"] {
+									margin-top: $settings-gap-between-group;
+									margin-bottom: calc((1em - 0.3em)/2); // 1em = height of thumb, 0.3em = height of range
+									width: 100%;
+									appearance: none;
+									height: 0.3em;
+									box-shadow: none;
+
+									&::-webkit-slider-thumb {
+										appearance: none;
+										width: 1em;
+										height: 1em;
+										border-radius: 50%;
+										background-color: $settings-button-color;
+										border: 0.25em solid $settings-text-color;
+									}
+								}
+							}
+
+							.caption-number-container {
+								position: relative;
+								color: rgba($settings-background-color, 0.85);
+
+								input {
+									padding-right: 1.2em;
+								}
+
+								.units {
+									position: absolute;
+									right: 0;
+									top: 0;
+									font-size: 1em;
+									height: 1.5em;
+									width: $settings-input-size;
+									line-height: 1.5em;
+									display: inline-flex;
+									justify-content: center;
+									align-items: center;
+									gap: 0.1em;
+									pointer-events: none;
+
+									.invisible {
+										visibility: hidden;
+									}
+								}
+							}
+
+							label {
+								font-size: 1em;
+							}
+
+							input {
+								height: 1.5em;
+								width: $settings-input-size;
+								border: 0;
+								border-radius: $settings-input-border-radius;
+								padding: 0;
+								margin: 0;
+								background-color: $settings-text-color;
+								
+								font-family: inherit;
+								font-weight: normal;
+								font-size: 1em;
+								line-height: 1em;
+								color: rgba($settings-background-color, 0.85);
+								text-align: center;
+								box-shadow: $settings-input-shadow;
+								
+								cursor: pointer;
+
+								// Remove arrows on number input
+								&::-webkit-outer-spin-button,
+								&::-webkit-inner-spin-button {
+									-webkit-appearance: none;
+									margin: 0;
+								}
+
+								// Remove arrows on Firefox
+								&[type=number] {
+									appearance: textfield;
+									-moz-appearance: textfield;
+								}
+
+								// Border radius on color picker on Firefox
+								&[type=color]::-moz-color-swatch {
+									border-radius: $settings-input-border-radius;
+								}
+								
+								&:focus, &:active {
+									box-shadow: $settings-input-shadow-out;
+									transition: box-shadow 0.5s;
+								}
+
+								&:not(input[type="range"]) {
+									&::-webkit-color-swatch {
+										border: none;
+										border-radius: $settings-input-border-radius;
+									}
+
+									&::-webkit-color-swatch-wrapper {
+										padding: 0;
+									}
+								}
+							}
+
+							@each $font in $font-families {
+								option[value="#{$font}"] {
+									font-family: #{$font};
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+		// Buttons
+		.caption-button-container {
+			display: flex;
+			flex-direction: column;
+			padding: 0 $settings-inside-padding;
+
+			div {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: 1em;
+				margin: 1em 0;
+			}
+			
+			button {
+				padding: 0.2em 1em;
+				border: 0;
+				border-radius: 0.5em;
+				font-size: 1em;
+				font-family: inherit;
+				line-height: 1em;
+				background-color: $settings-button-color;
+				color: inherit;
+				cursor: pointer;
+				width: 100%;
+
+				&.caption-lock-position {
+					padding: 0.5em 0;
+				}
+
+				transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+				&:hover {
+					background-color: rgba($settings-text-color, 0.95);
+					color: $settings-button-color;
+				}
+			}
+		}
+	}
+
+	#buttons-container {
+		position: absolute;
+		left: 0;
+		bottom: $settings-movable-bottom;
+		z-index: 2;
+
+		padding: $buttons-padding-Y $buttons-padding-X;
+		background-color: $settings-background-color;
+		border-top-right-radius: 0.25em;
+		border-bottom-right-radius: 0.25em;
+
+		display: flex;
+		align-items: center;
+		gap: $buttons-min-gap;
+		font-size: $buttons-size;
+
+		// Settings wheel
+		> button {
+			height: $buttons-height;
+			border: none;
+			background-color: transparent;
+			cursor: pointer;
+			transition: transform 0.2s ease-in-out;
+			// border-radius: 0.5em;
+			padding: 0.1em $buttons-padding-X;
+
+			svg > * {
+				fill: $settings-text-color;
+			}
+
+			&:hover {
+				transform: scale(1.1);
+			}
+
+			&.isOpen {
+				// background-color: $settings-button-color;
+				svg > * {
+					fill: #999;
+				}
+			}
+		}
+	}
+}
+
+// Tooltip
+[data-tooltip] {
+	position: relative;
+
+	&:hover:before,
+	&:hover:after {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	&:before,
+	&:after {
+		position: absolute;
+		transform: translate(-50%, -5px);
+		font-size: 1.2em;
+		line-height: 1em;
+
+		transition: opacity ease-in-out .1s;
+
+		// Hide default
+		visibility: hidden;
+		opacity: 0;
+	}
+
+	&[data-tooltip-content="left"]:after {
+		left: 0;
+		transform: translate(0, -5px);
+	}
+
+	&:after {
+		// Tooltip content
+		content: attr(data-tooltip);
+		text-align: center;
+		white-space: nowrap;
+		
+		background: $theme-text-color;
+		color: $theme-background-color;
+		padding: 0.4em 0.5em;
+		border-radius: 0.1em;
+		
+		bottom: 100%;
+		left: 50%;
+		z-index: 10;
+	}
+
+	&::before {
+		// Create arrow
+		content: "";
+		border: 0.5em solid transparent;
+		border-bottom-width: 0;
+	
+		border-top-color: $theme-text-color;
+		
+		bottom: calc(100% - (0.5em - 1px));
+		left: 50%;
+		z-index: 90;
+	}
+}

@@ -2,7 +2,7 @@ import AboutHeader from '../../components/AboutHeader';
 import AboutDescription from '../../components/AboutDescription';
 
 import TranslationDescImg from '../../assets/translation.png';
-import FlexibilityDescImg from '../../assets/flexibility.jpg';
+import AccessibilityDescImg from '../../assets/accessibility.png';
 import InterfaceDescImg from '../../assets/interface.png';
 
 import '../../webroot/style/home.css';
@@ -23,19 +23,17 @@ function Home() {
             </div>
             <div className='about-header-container'>
                 <AboutHeader emoji="⚡" title="Instant translation" id="translation" />
-                <AboutHeader emoji="💪" title="Linguistic flexibility" id="flexibility" />
+                <AboutHeader emoji="💪" title="Accessibility" id="accessibility" />
                 <AboutHeader emoji="🤝" title="User-friendly interface" id="interface" />
             </div>
             <div className='about-extension-container'>
-                <AboutDescription src={TranslationDescImg} title="Instant translation" isRight={false} id="translation">
+                <AboutDescription src={AccessibilityDescImg} title="Accessibility" isRight={false} id="accessibility">
+                    Add closed captions to your streams generated in real-time, making your streams more accessible to viewers unable to hear correctly.
+                </AboutDescription>
+                <AboutDescription src={TranslationDescImg} title="Instant translation" isRight={true} id="translation">
                     Add real-time translation to your live streams.
                     Your speech can be translated to any language selected by viewers,
                     allowing them to understand your content without additional effort.
-                </AboutDescription>
-                <AboutDescription src={FlexibilityDescImg} title="Linguistic flexibility" isRight={true} id="flexibility">
-                    Your viewers will be able to view translation for any language you choose.
-                    This makes it possible to reach audiences in different countries and regions of the world,
-                    increasing content accessibility and engagement.
                 </AboutDescription>
                 <AboutDescription src={InterfaceDescImg} title="User-friendly interface" isRight={false} id="interface">
                     The plugin is easy to use, both for the content creator and the viewer.
