@@ -1,21 +1,27 @@
 import "reflect-metadata";
-import { initDatabase } from './database';
+import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
+import { config } from "./config";
 
 
 (async ()=>{
 	try{
 		await initDatabase();
 		await startServer();
-		console.info('Server started on port '+process.env.PORT);
+		console.info('Server started on port '+config.PORT);
 	}catch(e){
 		console.error('Error during init', e);
 	}
 })();
 
 // Stop server on Ctrl+C
-process.on('SIGTERM', () => {
-	stopServer();
+process.on('SIGTERM', async() => {
+	try {
+		await stopServer();
+		await disconnectDatabase();
+	}catch(e) {
+		console.error('Error stoping server', e)
+	}
 });
 
 /*

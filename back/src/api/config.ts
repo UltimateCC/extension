@@ -16,8 +16,8 @@ configRouter.get('', async (req, res, next)=>{
 configRouter.post('', async (req, res, next)=>{
 	try{
 		const user = await User.findOneByOrFail({twitchId: req.session.userid});
-		const config = UserConfigSchema.partial().parse(req.body);
-		Object.assign(user.config, config);
+		const userConfig = UserConfigSchema.partial().parse(req.body);
+		Object.assign(user.config, userConfig);
 		await user.save();
 		res.json(user.config);
 	}catch(e) {

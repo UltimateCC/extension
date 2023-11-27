@@ -2,11 +2,12 @@
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
+import { config } from "./config";
 
 
 export const dataSource = new DataSource({
 	type: "mongodb",
-	url: process.env.DB_URL!,
+	url: config.DB_URL,
 	entities: [User, Stats],
 	connectTimeoutMS: 5000,
 });
@@ -31,4 +32,8 @@ export async function initDatabase() {
 			}
 		}
 	}
+}
+
+export async function disconnectDatabase() {
+	await dataSource.destroy();
 }

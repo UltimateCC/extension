@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { config } from "../config";
 
 type Contributor = {
 	discordId: string
@@ -63,10 +64,13 @@ const others = ["Agape", "Maner", "Ouafax", "RacoonSama", "Random9", "Sirop_D_Or
 // Update contributor list on app start
 (async ()=>{
 	try {
+		if(!config.DISCORD_BOT_TOKEN) {
+			return;
+		}
 		for(const c of contributors) {
 			const res = await fetch('https://discord.com/api/v10/users/'+c.discordId, {
 				headers: {
-					'Authorization': 'Bot ' + process.env.DISCORD_BOT_TOKEN,
+					'Authorization': 'Bot ' + config.DISCORD_BOT_TOKEN,
 					'Content-Type': 'application/json',
 				}
 			});

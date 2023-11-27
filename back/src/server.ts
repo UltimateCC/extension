@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import { initSocketioServer, endSocketSessions } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
+import { config } from './config';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -17,7 +18,7 @@ const sessionTime = 3600*24;
 const FileStore = fileStore(session);
 const sessionMiddleware = session({
 	proxy: true,
-	secret: process.env.SESSION_SECRET!,
+	secret: config.SESSION_SECRET,
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
@@ -53,7 +54,7 @@ io.engine.use(sessionMiddleware);
 initSocketioServer(io);
 
 
-const PORT = process.env.PORT;
+const PORT = config.PORT;
 
 export function startServer() {
 	return new Promise<void>((res)=>{
@@ -63,10 +64,14 @@ export function startServer() {
 	});
 }
 
-export function stopServer() {
-	console.info('Closing HTTP server');
-	server.close(() => {
-		console.info('Server closed');
+export async function stopServer() {
+	await new Promise<void>((resolve, reject)=>{
+		console.info('Closing HTTP server');
+		server.close((err)=>{
+			if(err) reject();
+			else resolve();
+		});
 	});
-	endSocketSessions(io);
+	console.info('Server closed');
+	await endSocketSessions(io);
 }

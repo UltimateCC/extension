@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { Stats } from "../entity/Stats";
+import { config } from "../config";
 
-const admins = (process.env.ADMINS_TWITCHID ?? '').split(',');
+const admins = config.ADMINS_TWITCHID.split(',');
 
 export const statsRouter = Router();
 

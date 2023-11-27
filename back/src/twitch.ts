@@ -4,17 +4,18 @@ import { ApiClient } from "@twurple/api";
 import { User } from "./entity/User";
 import { dataSource } from "./database";
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
+import { config } from "./config";
 
 
-export const clientId = process.env.TWITCH_CLIENTID!;
-const ownerId = process.env.TWITCH_OWNERID!;
-const secret = process.env.TWITCH_SECRET!;
-const clientSecret = process.env.TWITCH_CLIENTSECRET!;
-const redirectUri = process.env.TWITCH_REDIRECT_URI!;
+export const clientId = config.TWITCH_CLIENTID;
+const ownerId = config.TWITCH_OWNERID;
+const secret = config.TWITCH_SECRET;
+const clientSecret = config.TWITCH_CLIENTSECRET;
+const redirectUri = config.TWITCH_REDIRECT_URI;
 
 export const authURL = 'https://id.twitch.tv/oauth2/authorize?response_type=code'
 	+'&client_id='+ clientId
-	+'&redirect_uri='+ process.env.TWITCH_REDIRECT_URI
+	+'&redirect_uri='+ redirectUri
 	+'&scope=user:read:broadcast';
 
 
