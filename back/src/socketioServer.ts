@@ -9,6 +9,7 @@ import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
 import { Stats } from "./entity/Stats";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 
 
 interface ServerToClientEvents {
@@ -38,13 +39,29 @@ export interface SocketData {
 	streamingStt: StreamingSpeechToText | null;
 }
 
-type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
-type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>
+type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>;
+type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>;
 
+// Limit config reloads
+const loadRateLimiter = new RateLimiterMemory({
+	points: 2,
+	duration: 1,
+});
+
+// Limit received text
+const textRateLimiter = new RateLimiterMemory({
+	points: 10,
+	duration: 5,
+});
 
 async function loadConfig(socket: TypedSocket) {
 	// End previous session if there was one
 	await endSession(socket);
+
+	// Ratelimit
+	await loadRateLimiter.consume(socket.data.twitchId);
+
+	// Fetch user
 	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
 	socket.data.config = u.config;
 
@@ -82,9 +99,11 @@ async function endSession(socket: TypedSocket) {
 	socket.data.streamingStt?.stop();
 	// Save statistics if necessary
 	if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
-		socket.data.stats.duration = Date.now() - socket.data.startTime;
-		await socket.data.stats.save();
+		// Remove stats from socket data before to avoid race condition (double save)
+		const stats = socket.data.stats;
 		socket.data.stats = null;
+		stats.duration = Date.now() - socket.data.startTime;
+		await stats.save();
 	}
 }
 
@@ -98,6 +117,8 @@ async function sendStatus(socket: TypedSocket) {
 
 async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) {
 	try {
+		await textRateLimiter.consume(socket.data.twitchId);
+
 		socket.emit('transcript', transcript );
 
 		// Save statistics
@@ -128,6 +149,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 
 export function initSocketioServer(io: TypedServer) {
 
+	// Before actually accepting connection: auth + load config
 	io.use((socket, next)=>{
 		const session = (socket.request as any).session;
 
@@ -193,7 +215,7 @@ export function initSocketioServer(io: TypedServer) {
 
 export async function endSocketSessions(io: TypedServer) {
 	// Only local sockets are fetched
-	// socket type can be used safely
+	// -> socket type can be used
 	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
 	// End all sessions (triggers saving statistics)
 	await Promise.all(sockets.map(s=>endSession(s)));

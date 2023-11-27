@@ -116,7 +116,7 @@ function Dashboard() {
     };
 
     if(response?.hideRestOfPage) return (
-        <div className="theme-box">
+        <div className="theme-box padtop">
             <FormResponse
                 isSucceed={response.isSuccess}
                 message={response.message}

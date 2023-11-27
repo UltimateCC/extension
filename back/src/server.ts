@@ -6,9 +6,12 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { initSocketioServer, endSocketSessions } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
+import { rateLimiterMiddleware } from './middleware/rateLimit';
 
 const app = express();
 app.set('trust proxy', 1);
+
+app.use(rateLimiterMiddleware);
 
 const sessionTime = 3600*24;
 const FileStore = fileStore(session);

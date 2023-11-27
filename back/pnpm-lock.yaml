@@ -29,6 +29,9 @@ dependencies:
   mongodb:
     specifier: ^5.9.1
     version: 5.9.1
+  rate-limiter-flexible:
+    specifier: ^3.0.4
+    version: 3.0.4
   reflect-metadata:
     specifier: ^0.1.13
     version: 0.1.13
@@ -1750,6 +1753,10 @@ packages:
   /range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /rate-limiter-flexible@3.0.4:
+    resolution: {integrity: sha512-LFrdT9Pl/TRxG143frHBPyESXHvS2tstLfAUM6shBbJ3M6YssT2cIUWFwAWVAU9Vl4Z2gUN7ZE7tSdQh/0aqcA==}
     dev: false
 
   /raw-body@2.5.1:
