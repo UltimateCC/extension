@@ -51,7 +51,8 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 
 			recognition.onresult = (event) => {
 				const result = event.results[event.resultIndex];
-				const text = result[0].transcript.trim();
+
+				const text = normalizeTranscript(result[0].transcript);
 
 				setText(text);
 
@@ -103,4 +104,20 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 	}, [ listening, lang, splitDelay, delay, handleText ]);
 
 	return { error, text };
+}
+
+// Get transcript a bit more consistent accross web browsers
+function normalizeTranscript(text: string) {
+	// Trim
+	text = text.trim();
+	
+	// Make first letter always uppercase
+	text = text.charAt(0).toLocaleUpperCase() + text.slice(1);
+
+	// Remove any "." at the end (-1 char on each sentence when using Edge)
+	if(text.endsWith('.')) {
+		text = text.slice(0,-1).trim();
+	}
+
+	return text;
 }
