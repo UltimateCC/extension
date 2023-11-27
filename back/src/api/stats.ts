@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Stats } from "../entity/Stats";
 import { config } from "../config";
+import { FindManyOptions } from "typeorm";
 
 const admins = config.ADMINS_TWITCHID.split(',');
 
@@ -19,7 +20,12 @@ statsRouter.get('', async (req, res, next)=>{
 			}
 			all = true;
 		}
-		const stats = await Stats.find({where:{ twitchId: all ? undefined : req.session.userid }});
+		let stats: Stats[];	
+		if(all) {
+			stats = await Stats.find();
+		}else {
+			stats = await Stats.find({where:{ twitchId: req.session.userid }});
+		}
 		res.json(stats);
 	}catch(e) {
 		next(e);
