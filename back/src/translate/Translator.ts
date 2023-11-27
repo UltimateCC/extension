@@ -1,7 +1,11 @@
 import { UserConfig, UserSecrets } from "../entity/User";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
+// Cache delay for keeping translation results
+const CACHE_DELAY = 30 * 1000;
+
 export abstract class Translator {
+	private cache = new Map<string, TranscriptAlt[]>;
 
 	constructor(protected config: UserConfig, protected secrets: UserSecrets) {}
 
@@ -16,28 +20,42 @@ export abstract class Translator {
 		if(!this.ready()) {
 			return {
 				isError: true,
-				message: 'Configure the translation service before using it'
+				message: 'Translation service is not properly configured'
 			}
 		}
 		const start = Date.now();
 		const lang = data.lang.split('-')[0];
-		const result = await this.translateAll(
-			{ text: data.text, lang },
-			// Exclude source language
-			this.config.translateLangs.filter(t=>t!==lang)
-		);
-		if(result.isError) {
-			return result;
-		}else{
-			return {
-				isError: false,
-				data: {
-					delay: data.delay + ( Date.now() - start ),
-					duration: data.duration,
-					captions: result.data,
-					final: data.final
-				}
+
+		const result: CaptionsData = {
+			delay: data.delay + ( Date.now() - start ),
+			duration: data.duration,
+			captions: [],
+			final: data.final
+		}
+
+		// If translations already in cache, get it
+		const cached = this.cache.get(data.text+data.lang);
+		if(cached) {
+			result.captions = cached;
+		}else {
+			const translated = await this.translateAll(
+				{ text: data.text, lang },
+				// Exclude source language
+				this.config.translateLangs.filter(t=>t!==lang)
+			);
+			if(translated.isError) {
+				return translated;
 			}
+			result.captions = translated.data;
+
+			this.cache.set(data.text+data.lang, translated.data);
+			setTimeout(()=>{
+				this.cache.delete(data.text+data.lang);
+			}, CACHE_DELAY);
+		}
+		return {
+			isError: false,
+			data: result
 		}
 	}
 

@@ -12,7 +12,7 @@ join the discord and tell us if you are particularly interested in one of them, 
 
 ##### Support other translation services
 - Azure (cheaper)
-- LibreTranslate (self hosted)
+- LibreTranslate (self hosted, but quality to be tested)
 
 ##### Configurable delay between non-final captions
 Allow streamers to choose between smoother captions for their viewers, or lower prices for translation

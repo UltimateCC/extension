@@ -181,7 +181,7 @@ function Dashboard() {
                                         configLoaded={configLoaded}
                                         loadingImg={loadingImg}
                                     />
-                                    { translationLangs?.length && (
+                                    { (translationLangs?.length > 0) && (
                                         <div className='languages'>
                                             <h3>Translation languages</h3>
                                             <LanguageOutSelector
@@ -193,7 +193,7 @@ function Dashboard() {
                                     ) }
                                 </div>
                             )}
-                            { currentTab === 'Twitch' && ( <Twitch /> ) }
+                            { currentTab === 'Twitch' && (<Twitch />) }
                             { currentTab === 'Webhooks' && (<Webhooks/>) }
                         </div>
                     </div>
