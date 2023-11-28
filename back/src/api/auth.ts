@@ -38,7 +38,7 @@ authRouter.post('', async (req, res, next)=>{
 		if(!req.body || !req.body.code || typeof req.body.code !== 'string') {
 			return res.status(400).send('Missing code');
 		}
-		const { login, userId, token, img } = await auth(req.body.code);
+		const { login, userId, email, token, img } = await auth(req.body.code);
 		
 		let user = await User.findOneBy({ twitchId: userId });
 		if(!user) {
@@ -47,6 +47,7 @@ authRouter.post('', async (req, res, next)=>{
 		user.twitchId = userId;
 		user.twitchLogin = login;
 		user.twitchToken = token;
+		user.email = email ?? '';
 
 		await user.save();
 		req.session.connected = true;

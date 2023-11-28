@@ -34,6 +34,9 @@ export class User extends BaseEntity {
 	twitchToken: AccessToken;
 
 	@Column()
+	email: string;
+
+	@Column()
 	webhookSecret: string;
 
 	@Column('json')
@@ -87,25 +90,25 @@ export type UserConfig = z.infer<typeof UserConfigSchema>;
 
 export const UserSecretsSchema = z.object({
 	// OpenAI API Key
-	openaiKey: z.string().optional(),
+	openaiKey: z.string().max(128).optional(),
 
 	// Deepgram API key
-	deepgramKey: z.string().optional(),
+	deepgramKey: z.string().max(128).optional(),
 
 	// Azure stt config
-	azureSttKey: z.string().optional(),
-	azureSttRegion: z.string().optional(),
+	azureSttKey: z.string().max(128).optional(),
+	azureSttRegion: z.string().max(32).optional(),
 
 	// Azure translation config
-	azureKey: z.string().optional(),
-	azureRegion: z.string().optional(),
+	azureKey: z.string().max(128).optional(),
+	azureRegion: z.string().max(32).optional(),
 
 	// LibreTranslate config
-	libreUrl: z.string().optional(),
-	libreKey: z.string().optional(),
+	libreUrl: z.string().max(128).optional(),
+	libreKey: z.string().max(128).optional(),
 
 	//GCP translation config
-	gcpKey: z.string().optional(),
+	gcpKey: z.string().max(128).optional(),
 });
 
 export type UserSecrets = z.infer<typeof UserSecretsSchema>;

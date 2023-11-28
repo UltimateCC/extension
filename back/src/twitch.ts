@@ -13,10 +13,12 @@ const secret = config.TWITCH_SECRET;
 const clientSecret = config.TWITCH_CLIENTSECRET;
 const redirectUri = config.TWITCH_REDIRECT_URI;
 
-export const authURL = 'https://id.twitch.tv/oauth2/authorize?response_type=code'
-	+'&client_id='+ clientId
-	+'&redirect_uri='+ redirectUri
-	+'&scope=user:read:broadcast';
+export const authURL = 'https://id.twitch.tv/oauth2/authorize?' + new URLSearchParams({
+	response_type: 'code',
+	client_id: clientId,
+	redirect_uri: redirectUri,
+	scope: 'user:read:broadcast user:read:email'
+});
 
 
 const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
@@ -40,8 +42,9 @@ export async function auth(code: string) {
 	return {
 		userId,
 		login: user.displayName,
+		email: user.email,
 		img: user.profilePictureUrl,
-		token
+		token,
 	};
 }
 
