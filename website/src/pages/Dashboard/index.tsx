@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import LanguageOutSelector from '../../components/LanguageOutSelector';
@@ -30,7 +30,7 @@ import DashboardTabs from '../../components/DashboardTabs';
 // }
 
 function Dashboard() {
-    const { user, error } = useContext(AuthContext);
+    const { user, refreshAuth, error, loading } = useContext(AuthContext);
     const socketCtx = useSocket();
 
     // Request to get the user's config
@@ -87,12 +87,25 @@ function Dashboard() {
         });
     }
 
+    // Check if authenticated
+    // Move to separate hook ?
+    const authRefreshed = useRef<boolean>(false);
     useEffect(() => {
-        // If not connected, redirect to auth url
-        if(!user?.connected && user?.url) {
-            window.location.replace(user.url);
-        }
+        if(!user?.connected) {
+            // If not connected, redirect to auth url
+            if(user?.url) {
+                window.location.replace(user.url);
 
+            // If url, try refreshing auth once
+            }else if(!loading && !authRefreshed.current) {
+                authRefreshed.current = true;
+                refreshAuth();
+            }
+        }
+    }, [error, user, loading, refreshAuth]);
+
+
+    useEffect(() => {
         if(user?.img) {
             setProfilePicture(user.img);
         }
@@ -105,7 +118,7 @@ function Dashboard() {
         if(user?.connected) {
             loadConfig();
         }
-    }, [ user, socketCtx.captionsStatus, error ]);
+    }, [ user, error, socketCtx.captionsStatus ]);
 
     // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
     //     setAllBanCaptions(newBanCaptions);

@@ -1,5 +1,5 @@
 
-import React, {
+import {
     createContext,
     ReactNode,
     useEffect,
@@ -34,7 +34,7 @@ export const AuthContext = createContext<AuthContextType>(
     {} as AuthContextType
 );
 
-export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.Element {
+export function AuthProvider({ children }: { children: ReactNode; }) {
     const [user, setUser] = useState<SessionData>({});
     const [error, setError] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -43,19 +43,23 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
 
     function refreshAuth() {
         setLoading(true);
+        setError(false);
         api('auth')
-            .then((data) => setUser(data))
+            .then((data) => {
+                setUser(data);
+            })
             .catch(() => setError(true))
             .finally(() => setLoading(false));
     }
 
-    const memoedValue = useMemo( () => {
-        return {
+    const memoedValue = useMemo(
+        () => {
+            return {
                 user,
                 loading,
                 error,
                 refreshAuth,
-                login: function login(code: string) {
+                login(code: string) {
                     setLoading(true);
                     api('auth', {method: 'POST', body: {code}})
                         .then((data) => {
@@ -66,11 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode; }): React.JSX.
                         .catch(() => setError(true))
                         .finally(() => setLoading(false));
                 }, 
-                logout: function logout() {
+                logout() {
                     api('auth', { method: 'DELETE' })
                         .then(() => {
                             refreshAuth();
-                            setError(false);
                             navigate('/', { replace: true } );
                         })
                         .catch(() => setError(true));
