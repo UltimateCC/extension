@@ -154,6 +154,27 @@
     color: var(--title);
 }
 
+#dashboard .guide h4 {
+    font-size: 1.5em;
+    color: var(--title);
+}
+
+#dashboard .guide ul {
+    font-size: 1.1em;
+    max-width: 32em;
+    margin: 0 auto;
+    text-align: left;
+}
+
+#dashboard .guide ul li {
+    list-style-position: inside;
+}
+
+#dashboard .guide .help {
+    margin-top: 1em;
+    font-size: 1.5em;
+}
+
 #dashboard .languages {
     margin-top: 2em;
 }

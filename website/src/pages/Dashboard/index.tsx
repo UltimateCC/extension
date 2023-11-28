@@ -22,6 +22,7 @@ import { useSocket } from '../../hooks/useSocket';
 import { SocketContext } from '../../context/SocketContext';
 import Webhooks from '../../components/Webhooks';
 import DashboardTabs from '../../components/DashboardTabs';
+import Guide from '../../components/Guide';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -40,7 +41,7 @@ function Dashboard() {
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
 
     // Select settings tab
-    const [currentTab, setCurrentTab] = useState<string>('Translation');
+    const [currentTab, setCurrentTab] = useState<string>('Guide');
 
     // Speech language
     const [lastSpokenLang, setLastSpokenLang] = useState<string>();
@@ -180,14 +181,15 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'Webhooks']}
+                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'Webhooks']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
                     <div className="theme-box">
                         <div className='theme-box-container'>
                             <h3>{ currentTab }</h3>
-                            { currentTab==='Translation' && (
+                            { currentTab === 'Guide' && (<Guide />) }
+                            { currentTab === 'Translation' && (
                                 <div>
                                     <TranslationService
                                         translateService={translateService}

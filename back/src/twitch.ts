@@ -52,6 +52,10 @@ export async function isExtensionInstalled(user: string) {
 	// https://dev.twitch.tv/docs/api/reference/#get-user-active-extensions
 	// Dev version should be included, but they are not :/ bug ?
 
+	if(process.env.NODE_ENV !== 'production') {
+		return true;
+	}
+
 	try{
 		if(!authProvider.hasUser(user)) {
 			const u = await User.findOneByOrFail({ twitchId: user });
