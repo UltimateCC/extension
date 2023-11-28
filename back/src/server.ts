@@ -65,13 +65,15 @@ export function startServer() {
 }
 
 export async function stopServer() {
-	await new Promise<void>((resolve, reject)=>{
-		console.info('Closing HTTP server');
-		server.close((err)=>{
-			if(err) reject();
-			else resolve();
-		});
-	});
+	await Promise.all([
+		new Promise<void>((resolve, reject)=>{
+			console.info('Closing HTTP server');
+			server.close((err)=>{
+				if(err) reject();
+				else resolve();
+			});
+		}),
+		endSocketSessions(io)
+	]); 
 	console.info('Server closed');
-	await endSocketSessions(io);
 }

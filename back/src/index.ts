@@ -19,6 +19,7 @@ process.on('SIGTERM', async() => {
 	try {
 		await stopServer();
 		await disconnectDatabase();
+		console.info('Database disconnected');
 	}catch(e) {
 		console.error('Error stoping server', e)
 	}

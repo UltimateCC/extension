@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Action, CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData } from "./types";
+import { Action, CaptionsStatus, Info, LangList, TranscriptData } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { isExtensionInstalled, sendPubsub } from "./twitch";
@@ -140,7 +140,17 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			}
 		}else{
 			//console.log('Sending pubsub for '+socket.data.twitchId, out.data);
-			await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
+			try{
+				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
+			}catch(e: any) {
+				if(e?.getStatusCode() === 422) {
+					// Simplify error when pubsub message is too large
+					// todo: If this is correctly detected, show message to user
+					console.error('Pubsub message too large for user '+socket.data.twitchId);
+				}else{
+					throw e;
+				}
+			}
 		}
 	}catch(e) {
 		console.error('Error handling captions', e);
@@ -219,4 +229,5 @@ export async function endSocketSessions(io: TypedServer) {
 	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
 	// End all sessions (triggers saving statistics)
 	await Promise.all(sockets.map(s=>endSession(s)));
+	console.info('All sockets disconnected');
 }
