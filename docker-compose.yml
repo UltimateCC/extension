@@ -6,9 +6,9 @@ services:
   website:
     build: ./website
     container_name: captions-website
-    links:
+    depends_on:
       - back
-    networks: 
+    networks:
       - default
     environment: 
       - LISTEN_PORT=8000
@@ -18,19 +18,18 @@ services:
   back:
     build: ./back
     container_name: captions-back
-    links:
-      - captionsdb
     depends_on: 
       - captionsdb
-    
-    networks: 
+      - captionsredis
+
+    networks:
       - default
 
     environment:
       - NODE_ENV=production
       - PORT=8001
       - DB_URL=mongodb://captions:${DB_PASSWORD}@captionsdb:27017/
-
+      - SESSION_REDIS=redis://captionsredis
       - SESSION_SECRET=${SESSION_SECRET}
       - TWITCH_OWNERID=${TWITCH_OWNERID}
       - TWITCH_CLIENTID=${TWITCH_CLIENTID}
@@ -41,12 +40,21 @@ services:
       - ADMINS_TWITCHID=${ADMINS_TWITCHID}
       #- SOCKETIO_ADMIN_PASSWORD=${SOCKETIO_ADMIN_PASSWORD}
 
+  captionsredis:
+    image: redis:7
+    container_name: captions-redis
+    networks:
+      - default
+
   captionsdb:
     image: mongo
     container_name: captions-db
+    networks:
+      - default
     environment:
       - MONGO_INITDB_ROOT_USERNAME=captions
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+
 
 
 

@@ -10,6 +10,8 @@ export const configSchema = z.object({
 
 	// Secret for signing user sessions
 	SESSION_SECRET: z.string().min(1),
+	// Session redis URL
+	SESSION_REDIS: z.string().min(1),
 
 	// List of admins twitch id separated with ","
 	// Admins are allowed to fetch global stats

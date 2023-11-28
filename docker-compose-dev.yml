@@ -15,8 +15,6 @@ services:
       # Mount source code to restart app on change
       - ./back/src:/app/src
       - ./back/nodemon.json:/app/nodemon.json
-      # Persist data (user sessions) between restarts
-      - ./data:/app/data
     ports:
       - 8001:8001
     environment:

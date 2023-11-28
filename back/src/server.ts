@@ -1,8 +1,9 @@
 
 import express from 'express';
 import session from 'express-session';
-import fileStore from 'session-file-store';
 import { createServer } from 'http';
+import RedisStore from "connect-redis";
+import {createClient} from "redis";
 import { Server } from 'socket.io';
 import { initSocketioServer, endSocketSessions } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
@@ -14,8 +15,16 @@ app.set('trust proxy', 1);
 
 app.use(rateLimiterMiddleware);
 
-const sessionTime = 3600*24;
-const FileStore = fileStore(session);
+// Sessions are valid for 24h
+const sessionTime = 60 * 60 * 24;
+
+const redisClient = createClient({
+	url: config.SESSION_REDIS
+});
+redisClient.on('error', e=>{
+	console.error('Redis client error', e);
+});
+
 const sessionMiddleware = session({
 	proxy: true,
 	secret: config.SESSION_SECRET,
@@ -25,10 +34,9 @@ const sessionMiddleware = session({
 		//secure: true,
 		maxAge: sessionTime * 1000
 	},
-	store: new FileStore({
-		path: './data/sessions',
-		ttl: sessionTime,
-		logFn: ()=>{}
+	store: new RedisStore({
+		client: redisClient,
+		prefix: "captions:",
 	})
 });
 app.use(sessionMiddleware);
@@ -56,8 +64,9 @@ initSocketioServer(io);
 
 const PORT = config.PORT;
 
-export function startServer() {
-	return new Promise<void>((res)=>{
+export async function startServer() {
+	await redisClient.connect();
+	await new Promise<void>((res)=>{
 		server.listen(PORT, ()=>{
 			res();
 		});
@@ -74,6 +83,7 @@ export async function stopServer() {
 			});
 		}),
 		endSocketSessions(io)
-	]); 
+	]);
+	await redisClient.disconnect();
 	console.info('Server closed');
 }
