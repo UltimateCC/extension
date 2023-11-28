@@ -34,6 +34,9 @@ export class Stats extends BaseEntity {
 	finalCharCount: number = 0;
 
 	@Column()
+	translatedCharCount: number = 0;
+
+	@Column()
 	config: UserConfig;
 
 	@Column()

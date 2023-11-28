@@ -103,6 +103,7 @@ async function endSession(socket: TypedSocket) {
 		const stats = socket.data.stats;
 		socket.data.stats = null;
 		stats.duration = Date.now() - socket.data.startTime;
+		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
 		await stats.save();
 	}
 }

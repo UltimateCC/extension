@@ -6,8 +6,13 @@ const CACHE_DELAY = 30 * 1000;
 
 export abstract class Translator {
 	private cache = new Map<string, TranscriptAlt[]>;
+	protected translatedChars = 0;
 
 	constructor(protected config: UserConfig, protected secrets: UserSecrets) {}
+
+	getTranslatedChars() {
+		return this.translatedChars;
+	}
 
 	abstract ready(): boolean;
 
@@ -68,6 +73,7 @@ export abstract class Translator {
 			for(const result of translated) {
 				if(!result.isError) {
 					out.push(result.data);
+					this.translatedChars += transcript.text.length;
 				}
 			}
 		}catch(e){
