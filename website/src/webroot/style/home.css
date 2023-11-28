@@ -14,6 +14,7 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    gap: 1em;
 }
 
 #home .start-extension h4 {
@@ -24,15 +25,11 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-around;
-    gap: .5em;
 }
 
 #home a.about-header {
     text-decoration: none;
-    /*
-    color: inherit;
-    width: fit-content;
-    */
+    width: 30%;
     cursor: pointer;
     display: flex;
     flex-direction: column;
