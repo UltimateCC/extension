@@ -77,3 +77,16 @@ export async function sendPubsub(userId: string, message: string) {
 export async function saveTwitchConfig(userId: string, config: string) {
 	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
 }
+
+// Get live channels currently live with the extension
+export async function getLiveChannels() {
+	const channels = await api.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
+	return channels.map(c=>(
+		{
+			id: c.id,
+			displayName: c.displayName,
+			title: c.title,
+			gameName: c.gameName
+		}
+	));
+}

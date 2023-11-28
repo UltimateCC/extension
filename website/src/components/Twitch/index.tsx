@@ -37,7 +37,7 @@ function Twitch() {
     const [showCaptions, setShowCaptions] = useState<boolean>(true);
 
     useEffect(()=>{
-        api('twitch')
+        api('twitchconfig')
         .then(response => {
             setShowCaptions(response.showCaptions ?? true);
         })
@@ -49,7 +49,7 @@ function Twitch() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const showCaptions = event.target.checked;
         setShowCaptions(showCaptions);
-        api('twitch', {
+        api('twitchconfig', {
             method: 'POST',
             body: { showCaptions }
         })
