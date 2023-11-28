@@ -49,14 +49,9 @@ export async function auth(code: string) {
 }
 
 export async function isExtensionInstalled(user: string) {
-	return true;
-
 	// https://dev.twitch.tv/docs/api/reference/#get-user-active-extensions
-	// Get User Active Extensions seems broken with extension in dev even with authorization
-	// Todo after extension is released:
-	// Try something like this
+	// Dev version should be included, but they are not :/ bug ?
 
-	/*
 	try{
 		if(!authProvider.hasUser(user)) {
 			const u = await User.findOneByOrFail({ twitchId: user });
@@ -68,9 +63,12 @@ export async function isExtensionInstalled(user: string) {
 				return true;
 			} 
 		}
-	}catch(e) {}
+	}catch(e) {
+		console.error('Error checking if extension is installed', e);
+		// In case of error return true to not disturb user
+		return true;
+	}
 	return false;
-	*/
 }
 
 export async function sendPubsub(userId: string, message: string) {
