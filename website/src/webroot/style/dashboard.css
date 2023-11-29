@@ -411,10 +411,13 @@
 }
 */
 
-#dashboard .banned form,
+#dashboard .api .api-form {
+    margin-top: 1.5em;
+}
+
 #dashboard .api form > .api-input,
 #dashboard .api .api-connected {
-    margin-top: 2em;
+    margin-top: .5em;
     display: flex;
     justify-content: center;
     margin-right: 0;

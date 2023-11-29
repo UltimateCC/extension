@@ -25,9 +25,6 @@ Are streamers willing to pay 1$/h for this feature anyway ?
 Send captions to OBS using obs-websocket,
 it would allow captions on Twitch VODs, but only in one language
 
-##### Warn user if extension is not installed
-Dashboard warning when extension is not installed
-
 ##### Setting to stop recording voice when stream ends
 Stop listening for speech at end of stream to avoid captions running when unnecessary
 

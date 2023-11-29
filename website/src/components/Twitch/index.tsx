@@ -60,7 +60,7 @@ function Twitch() {
 
     return (
         <div>
-            <p>Settings related to the Twitch extension (soon)</p>
+            <p>Settings related to the Twitch extension ( WIP )</p>
             <FormGroup>
                 <ThemedFormControlLabel 
                     control={<ThemedSwitch

@@ -6,6 +6,7 @@ import FormResponse from '../FormResponse';
 import DelayedDisplay from '../DelayedDisplay';
 
 import { SocketContext } from '../../context/SocketContext';
+import { config } from '../../config';
 
 interface TranslationServiceProps {
     translateService?: string
@@ -91,7 +92,6 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
         <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
-    
     if(translateService && captionsStatus?.translation && !isEditing) return (
         <>
             {response && (
@@ -110,8 +110,15 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
 
     return (
         <div className='api'>
-            <p>Warning ! You are responsible for setting proper limits on your API keys to avoid any excessive billing</p>
+            <p>
+                In this first version, translation is only available using Google Translation API
+                and requires you to create a Google Cloud account and provide your own API key.
+            </p>
+            <p>
+                Simpler ways to enable translation will be available later.
+            </p>
             <form className='api-form'>
+                <p>Warning ! When using your own API keys, you are responsible for setting proper limits to avoid any unexpected billing</p>
                 {response && (
                     <FormResponse
                         isSucceed={response.isSuccess}
@@ -132,7 +139,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
                 </div>
             </form>
             <div className='api-info'>
-                <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank" rel="noreferrer">
+                <a href={ config.github + '/wiki/Configure-translation' } target="_blank" rel="noreferrer">
                     &rarr; Get your Google API key
                 </a>
                 
