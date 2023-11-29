@@ -144,7 +144,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			try{
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
-				if(e?.getStatusCode() === 422) {
+				if(e?.statusCode === 422) {
 					// Simplify error when pubsub message is too large
 					// todo: If this is correctly detected, show message to user
 					console.error('Pubsub message too large for user '+socket.data.twitchId);
