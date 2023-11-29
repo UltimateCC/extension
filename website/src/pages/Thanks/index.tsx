@@ -28,8 +28,9 @@ function Thanks() {
 
     return (
         <section id="thanks">
-            
-            <h2 className="theme-box">Our thanks to :</h2>
+            <div className="theme-box top">
+                <h2>Main contributors :</h2>
+            </div>
 
             <div className="thanks-container theme-box">
                 <ul className="main">
@@ -48,7 +49,8 @@ function Thanks() {
                         </span>
                     ))}
                 </p>
-                <p>And all the people who helped us</p>
+                <p>Thanks to everyone who helped us !</p>
+                <p>Thanks to aypierre and Vartac for the first tests in real conditions !</p>
             </div>
         </section>
     );

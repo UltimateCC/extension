@@ -317,7 +317,7 @@ section#home > div {
 
     section#home > div,
     .theme-box {
-        border-radius: 3px;
+        border-radius: .5em;
     }
 
     :root {
