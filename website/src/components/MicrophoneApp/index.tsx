@@ -29,7 +29,11 @@ function MicrophoneApp({ spokenLang, setSpokenLang, lastSpokenLang, configLoaded
         if(info?.type === 'error') setListening(false);
         
         const errorMessage : string | undefined = error ?? info?.message;
-        if(errorMessage) setResponse({ isSuccess: false, message: errorMessage });
+        if(errorMessage) {
+            setResponse({ isSuccess: false, message: errorMessage });
+        }else{
+            setResponse(null);
+        }
 
     }, [info, error]);
 

@@ -14,6 +14,11 @@ export function useSocket() {
     useEffect(() => {
         socket.connect();
 
+        function handleConnect() {
+            console.log('connected');
+            setInfo(undefined);
+        }
+
         function handleError(error: Error) {
             console.error('socket.io error', error);
             setInfo({ type: 'warn', message: 'Connection error, you may need to refresh the page' });
@@ -23,6 +28,7 @@ export function useSocket() {
             setRecognized({ lang: transcript.lang, text: transcript.text });
         }
 
+        socket.on('connect', handleConnect);
         socket.on('connect_error', handleError);
         socket.on('info', setInfo);
         socket.on('status', setCaptionsStatus);
@@ -30,6 +36,7 @@ export function useSocket() {
         socket.on('transcript', handleTranscript);
 
         return () => {
+            socket.off('connect', handleConnect);
             socket.off('connect_error', handleError);
             socket.off('info', setInfo);
             socket.off('status', setCaptionsStatus);
