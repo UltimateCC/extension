@@ -48,17 +48,19 @@
 			</button>
 		</div>
 		<div class="caption-settings-container">
-			<!-- Language -->
-			<div class="caption-group" id="language">
-				{#if $lastTranscript.length === 0}
-					<Warning>Waiting for broadcaster speech</Warning>
-				{:else}
-					<div class="caption-group-header">
-						<h3>Language</h3>
-						<LanguageSelect />	
-					</div>	
-				{/if}
-			</div>
+			{#if $lastTranscript.length !== 1}
+				<!-- Language -->
+				<div class="caption-group" id="language">
+					{#if $lastTranscript.length === 0}
+						<Warning>Waiting for broadcaster speech</Warning>
+					{:else}
+						<div class="caption-group-header">
+							<h3>Language</h3>
+							<LanguageSelect />	
+						</div>	
+					{/if}
+				</div>
+			{/if}
 
 			<!-- Text -->
 			<div class="caption-group" class:isOpen={ current === 'text' } >

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { partialCaptions, transcript } from "../lib/captions";
+	import { partialCaptions, transcript, lastTranscript } from "../lib/captions";
     import { settings } from "../lib/settings";
     import LanguageSelect from "./LanguageSelect.svelte";
     import Warning from "./Warning.svelte";
@@ -18,16 +18,20 @@
 <div class="container">
 	<div class="top">
 		<h2>Live transcript</h2>
-		<div class="language">
-			<label for="language-input">Language:</label>
-			<div class="language-select">
-				<LanguageSelect />
+		{#if $lastTranscript.length > 1}
+			<div class="language">
+				<label for="language-input">Language:</label>
+				<div class="language-select">
+					<LanguageSelect />
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 	<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $settings } } >
 		{#if !$transcript.length && !$partialCaptions}
+		<div class="warning-container">
 			<Warning>Waiting for broadcaster speech</Warning>
+		</div>	
 		{/if}
 
 		{#each $transcript as line }
@@ -50,12 +54,18 @@
 	.container { height: 100%; width: 100%; }
 	.container { background-color: $theme-background-color; color: $theme-text-color; }
 	.container { font-size: $theme-font-size; font-family: $theme-font-family; }
+	.container {
+		display: flex;
+		flex-direction: column;
+	}
 
-	.top { height: 4em; background-color: $settings-background-color; width: 100%; }
-	.top h2 { display: block; font-size: 1.25em; text-align: center; margin: 0 .5em; padding-top: .25em; font-weight: normal; }
-	.top .language { margin: .25em .5em; display: flex; justify-content: flex-start; gap: .5em; }
+	.warning-container { display: flex; justify-content: center;}
+
+	.top { background-color: $settings-background-color; width: 100%; }
+	.top h2 { display: block; font-size: 1.25em; text-align: center; margin: 0 .5em; padding: .25em 0; font-weight: normal; }
+	.top .language { margin: 0 .5em .5em; display: flex; justify-content: flex-start; gap: .5em; }
 	.language-select { min-width: 0; }
 
-	.transcript { overflow-y: auto; margin: 0; height: calc(100% - 4em); }
+	.transcript { overflow-y: auto; margin: 0;}
 	.transcript .line { padding: .25em .5em; }
 </style>

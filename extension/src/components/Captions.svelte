@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import { fade } from "svelte/transition";
 	import { partialCaptions, transcript } from "../lib/captions";
