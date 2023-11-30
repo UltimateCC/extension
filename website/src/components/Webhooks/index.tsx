@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import loadingImg from '../../assets/loading.svg';
+import { config } from "../../config";
 
 function Webhooks() {
 	const [url, setUrl] = useState<string>('');
@@ -42,6 +43,7 @@ function Webhooks() {
 	return (
 		<div className="webhooks">
 			<p>Control your dashboard from external sources (like a streamdeck) by sending HTTP requests</p>
+			<a href={ config.github + '/wiki/Streamdeck-configuration' } target="_blank" rel="noreferrer">How it works ?</a>
 			<div className="buttons">
 				<button className={"theme-btn"} onClick={copyUrl}>
 					<span>{ copied ? 'Copied !' : 'Copy base url' }</span>

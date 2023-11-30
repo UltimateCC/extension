@@ -117,8 +117,9 @@
     border-radius: 10px;
     color: var(--square);
     font-size: 1.2em;
-    padding: 1em;
+    padding: 0.5em 1em;
     height: 5em;
+    overflow-y: auto;
 }
 
 #dashboard .setting .spoken-text p {
