@@ -15,7 +15,6 @@ export function useSocket() {
         socket.connect();
 
         function handleConnect() {
-            console.log('connected');
             setInfo(undefined);
         }
 

@@ -41,21 +41,20 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
                             source: 'en',
                             target: 'fr' // Cocorico
                         }
-                    },
-                    false
-                )
+                    }
+                );
+                await Promise.all([
+                    api('secrets', { method: 'POST', body: { gcpKey: newApiKey } }),
+                    api('config', {method: 'POST', body: { translateService: 'gcp' }})
+                ]);
+                await new Promise((res)=>setTimeout(res, 200));
+                reloadConfig();
+
             },
             successMessage: "The API key is working and has been saved", 
             errorMessage: "An error occurred",
             setIsLoading: setIsLoadingSend,
             setResponse: setResponse,
-            apiRequest: async () => {
-                await Promise.all([
-                    api('secrets', { method: 'POST', body: { gcpKey: newApiKey } }),
-                    api('config', {method: 'POST', body: { translateService: 'gcp' }})
-                ]);
-                reloadConfig();
-            }
         });
     };
 
@@ -72,6 +71,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
                     api('secrets', { method: 'POST', body: { gcpKey: '' } }),
                     api('config', {method: 'POST', body: { translateService: '' }})
                 ]);
+                await new Promise((res)=>setTimeout(res, 200));
                 reloadConfig();
             },
             successMessage: "The API key has been removed", 

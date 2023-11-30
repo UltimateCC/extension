@@ -3,11 +3,15 @@ export default async function api(
     path: string,
     options: {
         method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-        body?: unknown,
-        params?: { [key: string]: string | number }
+        body?: unknown
+        params?: { [key: string]: string | number },
+        withCredentials?: boolean
     } = {},
-    withCredentials = true
 ) {
+    let credentials: 'omit' | 'include' | undefined;
+    if(options.withCredentials !== undefined) {
+        credentials = options.withCredentials ? 'include' : 'omit';
+    }
     let url = path.startsWith('http') ? path : '/api/' + path;
     if (options.params) {
         const params = new URLSearchParams();
@@ -21,7 +25,7 @@ export default async function api(
         headers: {
             "Content-Type": "application/json",
         },
-        credentials: withCredentials ? 'include' : 'omit',
+        credentials,
         body: options.body ? JSON.stringify(options.body) : undefined
     });
     if (!res.ok) {

@@ -9,7 +9,6 @@ interface DelayedDisplayProps {
         React.SetStateAction<{ isSuccess: boolean; message: string } | null>
     >;
     setSuccessAction?: (responseApi: unknown | null) => void;
-    apiRequest?: () => Promise<void>;
     needResponseApi?: boolean;
 }
 
@@ -22,7 +21,6 @@ function DelayedDisplay({
     setIsLoading,
     setResponse,
     setSuccessAction = () => { },
-    apiRequest = undefined,
     needResponseApi = false,
 }: DelayedDisplayProps) {
     const delayExecution = async (isSuccess: boolean, errorAditionalMessage: string | null, sucessContent: unknown | null) => {
@@ -46,7 +44,6 @@ function DelayedDisplay({
 
     requestFn()
         .then(async (response) => {
-            if (apiRequest !== undefined) await apiRequest();
             const sucessContent = (needResponseApi) ? response : null;
             return delayExecution(true, null, sucessContent);
         })
