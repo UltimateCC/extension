@@ -33,8 +33,8 @@ authProvider.onRefreshFailure((user)=>{
 	logger.error('Twitch token refresh failure for user '+user);
 });
 
-// Ensure user tokens are loaded from database
-export async function ensureUserLoaded(user: string) {
+/* Ensure user tokens are loaded from database */
+export async function ensureUserReady(user: string) {
 	if(!authProvider.hasUser(user)) {
 		const u = await User.findOneByOrFail({ twitchId: user });
 		authProvider.addUser(user, u.twitchToken);
