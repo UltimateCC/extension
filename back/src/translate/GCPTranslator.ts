@@ -1,4 +1,5 @@
 
+import { logger } from "../logger";
 import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
@@ -36,7 +37,7 @@ export class GCPTranslator extends Translator {
 			};
 		}else{
 			const text = await res.text();
-			console.error('GCP translation error', text);
+			logger.error('GCP translation error', text);
 			return {
 				isError: true,
 				message: 'GCP translation error'

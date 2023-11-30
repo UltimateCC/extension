@@ -1,4 +1,5 @@
 
+import { logger } from "../logger";
 import { LangList, Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
@@ -59,7 +60,7 @@ export class AzureTranslator extends Translator {
 			}
 			this.translatedChars += (transcript.text.length * langs.length);
 		}catch(e) {
-			console.error('Azure translation error', e);
+			logger.error('Azure translation error', e);
 		}
 		return {
 			isError: false,

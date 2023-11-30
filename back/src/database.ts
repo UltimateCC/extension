@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
 import { config } from "./config";
+import { logger } from "./logger";
 
 
 export const dataSource = new DataSource({
@@ -24,10 +25,10 @@ export async function initDatabase() {
 		}catch(e) {
 			tries++;
 			if(tries<10) {
-				console.error('Error connecting to database, retrying in 5 seconds', e);
+				logger.error('Error connecting to database, retrying in 5 seconds', e);
 				await new Promise((res)=>{ setTimeout(res, 5000) });				
 			}else{
-				console.error('Unable to connect to database', e);
+				logger.error('Unable to connect to database', e);
 				process.exit(1);
 			}
 		}

@@ -10,6 +10,7 @@ import { getStreamingStt } from "./streamingStt/getStreamingStt";
 import { Stats } from "./entity/Stats";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
+import { logger } from "./logger";
 
 
 interface ServerToClientEvents {
@@ -140,21 +141,21 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				socket.data.stats.translateErrorCount++;
 			}
 		}else{
-			//console.log('Sending pubsub for '+socket.data.twitchId, out.data);
+			//logger.info('Sending pubsub for '+socket.data.twitchId, out.data);
 			try{
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {
 					// Simplify error when pubsub message is too large
 					// todo: If this is correctly detected, show message to user
-					console.error('Pubsub message too large for user '+socket.data.twitchId);
+					logger.error('Pubsub message too large for user '+socket.data.twitchId);
 				}else{
 					throw e;
 				}
 			}
 		}
 	}catch(e) {
-		console.error('Error handling captions', e);
+		logger.error('Error handling captions', e);
 	}
 }
 
@@ -170,7 +171,7 @@ export function initSocketioServer(io: TypedServer) {
 				next();
 			})
 			.catch((e=>{
-				console.error('Error loading user config', e);
+				logger.error('Error loading user config', e);
 				next(new Error('error loading user config'));
 			}));
 			
@@ -184,17 +185,17 @@ export function initSocketioServer(io: TypedServer) {
 
 		socket.on('disconnect', ()=>{
 			endSession(socket)
-				.catch(e=>console.error('Error ending session', e));
+				.catch(e=>logger.error('Error ending session', e));
 		});
 
 		socket.on('reloadConfig', ()=>{
-			loadConfig(socket).catch(e=>console.error('Error reloading config', e));
+			loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
 		});
 
 		// Text direclty received
 		socket.on('text', captions =>{
 			handleCaptions(socket, captions).catch(e=>{
-				console.error('Error handling captions', e);
+				logger.error('Error handling captions', e);
 			});
 		});
 
@@ -208,7 +209,7 @@ export function initSocketioServer(io: TypedServer) {
 						handleCaptions(socket, result.data);
 					}
 				})
-				.catch(e=>{ console.error('Stt error', e) });
+				.catch(e=>{ logger.error('Stt error', e) });
 		});
 
 		// Streaming speech to text
@@ -230,5 +231,5 @@ export async function endSocketSessions(io: TypedServer) {
 	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
 	// End all sessions (triggers saving statistics)
 	await Promise.all(sockets.map(s=>endSession(s)));
-	console.info('All sockets disconnected');
+	logger.info('All sockets disconnected');
 }

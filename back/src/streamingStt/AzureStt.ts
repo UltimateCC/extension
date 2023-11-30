@@ -1,6 +1,7 @@
 import { AudioConfig, AudioInputStream, AutoDetectSourceLanguageConfig, CancellationErrorCode, CancellationReason, LanguageIdMode, PushAudioInputStream, ResultReason, SpeechConfig, SpeechRecognizer } from "microsoft-cognitiveservices-speech-sdk";
 import { StreamingSpeechToText } from "./StreamingSpeechToText";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import { logger } from "../logger";
 
 export class AzureStt extends StreamingSpeechToText {
 	private speechRecognizer: SpeechRecognizer;
@@ -43,7 +44,7 @@ export class AzureStt extends StreamingSpeechToText {
 
 			/*
 			this.ffmpeg.stderr.on('data', data=> {
-				console.log('ffmpeg err', data.toString("utf8"));
+				logger.debug('ffmpeg err', data.toString("utf8"));
 			});*/
 			
 			this.ffmpeg.stdout.on('data', (arrayBuffer) => {
@@ -82,7 +83,7 @@ export class AzureStt extends StreamingSpeechToText {
 							message: 'Error connecting to Azure Speech to Text service, ensure configuration is correct'
 						});
 					}else {
-						console.error('Azure unexpected STT error ', e.errorCode, e.errorDetails);
+						logger.error('Azure unexpected STT error ', e.errorCode, e.errorDetails);
 						this.emit('info', { type: 'error', message: 'Unexpected Azure Speech to Text error' });
 					}
 				}
@@ -96,7 +97,7 @@ export class AzureStt extends StreamingSpeechToText {
 			this.speechRecognizer.startContinuousRecognitionAsync();
 		}catch(e) {
 			this.emit('info', { type: 'error', message: 'Error starting speech to text service, try again later' });
-			console.error('Error starting azure stt service', e);
+			logger.error('Error starting azure stt service', e);
 			this.stop();
 		}
 	}
@@ -112,7 +113,7 @@ export class AzureStt extends StreamingSpeechToText {
 				this.ffmpeg.stdin.write(data);
 			};
 		}catch(e) {
-			console.error('Azure sst ffmpeg write error', e);
+			logger.error('Azure sst ffmpeg write error', e);
 		}
 	}
 }

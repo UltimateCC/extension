@@ -4,6 +4,7 @@ import { ApiClient } from "@twurple/api";
 import { User } from "../entity/User";
 import { dataSource } from "../database";
 import { config } from "../config";
+import { logger } from "../logger";
 
 
 export const clientId = config.TWITCH_CLIENTID;
@@ -29,7 +30,7 @@ authProvider.onRefresh((user, token)=>{
 	});
 });
 authProvider.onRefreshFailure((user)=>{
-	console.error('Twitch token refresh failure for user '+user);
+	logger.error('Twitch token refresh failure for user '+user);
 });
 
 // Ensure user tokens are loaded from database

@@ -1,5 +1,6 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId } from "./twitch";
+import { logger } from "../logger";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -19,7 +20,7 @@ export async function isExtensionInstalled(user: string) {
 			} 
 		}
 	}catch(e) {
-		console.error('Error checking if extension is installed', e);
+		logger.error('Error checking if extension is installed', e);
 		// In case of error return true to not disturb user
 		return true;
 	}

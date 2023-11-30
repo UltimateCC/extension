@@ -1,4 +1,5 @@
 import { UserConfig, UserSecrets } from "../entity/User";
+import { logger } from "../logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
 // Cache delay for keeping translation results
@@ -77,7 +78,7 @@ export abstract class Translator {
 				}
 			}
 		}catch(e){
-			console.error('Translation error', e);
+			logger.error('Translation error', e);
 		}
 		return {
 			isError: false,

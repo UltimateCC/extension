@@ -2,15 +2,16 @@ import "reflect-metadata";
 import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
 import { config } from "./config";
+import { logger } from "./logger";
 
 
 (async ()=>{
 	try{
 		await initDatabase();
 		await startServer();
-		console.info('Server started on port '+config.PORT);
+		logger.info('Server started on port '+config.PORT);
 	}catch(e){
-		console.error('Error during init', e);
+		logger.error('Error during init', e);
 	}
 })();
 
@@ -19,17 +20,17 @@ process.on('SIGTERM', async() => {
 	try {
 		await stopServer();
 		await disconnectDatabase();
-		console.info('Database disconnected');
+		logger.info('Database disconnected');
 	}catch(e) {
-		console.error('Error stoping server', e)
+		logger.error('Error stoping server', e)
 	}
 });
 
 /*
 process.on('uncaughtException', (err)=>{
-	console.error('uncaughtException', err);
+	logger.error('uncaughtException', err);
 });*/
 
 process.on('unhandledRejection', (err)=>{
-	console.error('unhandledRejection', err);
+	logger.error('unhandledRejection', err);
 });

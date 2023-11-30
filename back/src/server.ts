@@ -9,6 +9,7 @@ import { initSocketioServer, endSocketSessions } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
 import { config } from './config';
+import { logger } from './logger';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -22,7 +23,7 @@ const redisClient = createClient({
 	url: config.SESSION_REDIS
 });
 redisClient.on('error', e=>{
-	console.error('Redis client error', e);
+	logger.error('Redis client error', e);
 });
 
 const sessionMiddleware = session({
@@ -76,7 +77,7 @@ export async function startServer() {
 export async function stopServer() {
 	await Promise.all([
 		new Promise<void>((resolve, reject)=>{
-			console.info('Closing HTTP server');
+			logger.info('Closing HTTP server');
 			server.close((err)=>{
 				if(err) reject();
 				else resolve();
@@ -85,5 +86,5 @@ export async function stopServer() {
 		endSocketSessions(io)
 	]);
 	await redisClient.disconnect();
-	console.info('Server closed');
+	logger.info('Server closed');
 }

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { config } from "../config";
+import { logger } from "../logger";
 
 type Contributor = {
 	discordId: string
@@ -57,7 +58,7 @@ const others = ["Kranack", "Rem_x", "Theondrus", "Velie"];
 		}
 
 	}catch(e) {
-		console.error('Error fetching contributors infos', e);
+		logger.error('Error fetching contributors infos', e);
 	}
 })();
 

@@ -3,6 +3,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { authURL } from "../twitch/twitch";
 import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
+import { logger } from "../logger";
 
 
 declare module 'express-session' {
@@ -55,7 +56,7 @@ authRouter.post('', async (req, res, next)=>{
 		req.session.userid = userId;
 		req.session.login = displayName;
 		req.session.img = img;
-		console.info(name + ' authenticated');
+		logger.info(name + ' authenticated');
 		return res.json({login: displayName, userid: userId, img, connected: true, url: authURL});
 	}catch(e) {
 		next(e);

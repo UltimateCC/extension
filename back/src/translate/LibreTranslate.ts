@@ -1,4 +1,5 @@
 
+import { logger } from "../logger";
 import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
@@ -23,7 +24,7 @@ export class LibreTranslate extends Translator {
 				}				
 			}
 		}catch(e) {
-			console.error('Libretranslate error fetching language list');
+			logger.error('Libretranslate error fetching language list');
 		}
 		return [];
 	}
