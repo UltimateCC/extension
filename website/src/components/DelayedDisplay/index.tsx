@@ -24,10 +24,8 @@ function DelayedDisplay({
     needResponseApi = false,
 }: DelayedDisplayProps) {
     const delayExecution = async (isSuccess: boolean, errorAditionalMessage: string | null, sucessContent: unknown | null) => {
-        const startTime = Date.now();
-        await new Promise((resolve) =>
-            setTimeout(resolve, Math.max(0, MIN_DELAY - (Date.now() - startTime)))
-        );
+
+        await new Promise((resolve) => setTimeout(resolve, MIN_DELAY));
 
         if (isSuccess) {
             setResponse({ isSuccess: true, message: successMessage });

@@ -18,8 +18,12 @@ twitchConfigRouter.post('', async (req, res, next)=>{
 		const user = await User.findOneByOrFail({twitchId: req.session.userid});
 		const config = TwitchConfigSchema.partial().parse(req.body);
 		Object.assign(user.twitchConfig, config);
-		await saveTwitchConfig(user.twitchId, JSON.stringify(config));
-		await user.save();
+		await saveTwitchConfig(user.twitchId, JSON.stringify(user.twitchConfig));
+		await User.update({
+			id: user.id
+		},{
+			twitchConfig: user.twitchConfig
+		});
 		res.json(user.twitchConfig);
 	}catch(e) {
 		next(e);

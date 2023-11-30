@@ -122,7 +122,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	try {
 		await textRateLimiter.consume(socket.data.twitchId);
 
-		if(transcript.text.length > 500) { // Check if 500 seems reasonable
+		if(transcript.text.length > 1000) { // Check if 1000 seems reasonable
 			logger.warn('Dropping too long transcript for user '+socket.data.twitchId);
 			return;
 		}
