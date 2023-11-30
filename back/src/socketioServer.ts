@@ -2,7 +2,6 @@ import { Server, Socket } from "socket.io";
 import { Action, CaptionsStatus, Info, LangList, TranscriptData } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
-import { isExtensionInstalled, sendPubsub } from "./twitch";
 import { Translator } from "./translate/Translator";
 import { getStt } from "./stt/getStt";
 import { SpeechToText } from "./stt/SpeechToText";
@@ -10,6 +9,7 @@ import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
 import { Stats } from "./entity/Stats";
 import { RateLimiterMemory } from "rate-limiter-flexible";
+import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 
 
 interface ServerToClientEvents {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TwitchConfigSchema, User } from "../entity/User";
-import { saveTwitchConfig } from "../twitch";
+import { saveTwitchConfig } from "../twitch/extension";
 
 export const twitchConfigRouter = Router();
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getLiveChannels } from "../twitch";
+import { getLiveChannels } from "../twitch/extension";
 
 
 export const twitchRouter = Router();
