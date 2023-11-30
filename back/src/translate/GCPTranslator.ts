@@ -36,11 +36,12 @@ export class GCPTranslator extends Translator {
 				data: { text: json?.data?.translations[0]?.translatedText ?? '' , lang: target }
 			};
 		}else{
+			const status = res.status + ' ' + res.statusText;
 			const text = await res.text();
-			logger.error('GCP translation error', text);
+			logger.error('GCP translation error', status, text);
 			return {
 				isError: true,
-				message: 'GCP translation error'
+				message: 'Translation API error: ' + status
 			}
 		}
 	}

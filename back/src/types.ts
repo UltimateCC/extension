@@ -1,10 +1,11 @@
 
 /** Utility type to allow returning an error without throwing it */
 export type Result<T> = {
-	isError: true,
+	isError: true
 	message: string
 } | {
-	isError: false,
+	isError: false
+	errors?: string[]
 	data: T
 }
 

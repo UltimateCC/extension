@@ -31,6 +31,7 @@ export abstract class Translator {
 		}
 		const start = Date.now();
 		const lang = data.lang.split('-')[0];
+		let errors: string[] | undefined = [];
 
 		const result: CaptionsData = {
 			delay: data.delay + ( Date.now() - start ),
@@ -53,6 +54,7 @@ export abstract class Translator {
 				return translated;
 			}
 			result.captions = translated.data;
+			errors = translated.errors;
 
 			this.cache.set(data.text+data.lang, translated.data);
 			setTimeout(()=>{
@@ -61,18 +63,22 @@ export abstract class Translator {
 		}
 		return {
 			isError: false,
-			data: result
+			data: result,
+			errors
 		}
 	}
 
 	/** Override this function to translate to all languages at once, source language is already excluded for target languages */
 	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
 		const out = [transcript];
+		const errors = [];
 		//Translate in all required languages
 		try {
 			const translated = await Promise.all(langs.map(lang=>{ return this.translateOne(transcript, lang) }));
 			for(const result of translated) {
-				if(!result.isError) {
+				if(result.isError) {
+					errors.push(result.message);
+				}else{
 					out.push(result.data);
 					this.translatedChars += transcript.text.length;
 				}
@@ -82,6 +88,7 @@ export abstract class Translator {
 		}
 		return {
 			isError: false,
+			errors,
 			data: out
 		}
 	};

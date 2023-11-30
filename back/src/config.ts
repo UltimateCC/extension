@@ -8,6 +8,9 @@ export const configSchema = z.object({
 	// Server listen port
 	PORT: z.string().min(1),
 
+	// Logger log level
+	LOGLEVEL: z.string().default('info'),
+
 	// Secret for signing user sessions
 	SESSION_SECRET: z.string().min(1),
 	// Session redis URL

@@ -106,6 +106,7 @@ async function endSession(socket: TypedSocket) {
 		stats.duration = Date.now() - socket.data.startTime;
 		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
 		await stats.save();
+		logger.debug('Saved stats for '+socket.data.twitchId);
 	}
 }
 
@@ -122,7 +123,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		await textRateLimiter.consume(socket.data.twitchId);
 
 		if(transcript.text.length > 500) { // Check if 500 seems reasonable
-			logger.error('Dropping too long transcript for user '+socket.data.twitchId);
+			logger.warn('Dropping too long transcript for user '+socket.data.twitchId);
 			return;
 		}
 
@@ -146,14 +147,14 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				socket.data.stats.translateErrorCount++;
 			}
 		}else{
-			//logger.info('Sending pubsub for '+socket.data.twitchId, out.data);
+			logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
 			try{
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {
 					// Simplify error when pubsub message is too large
 					// todo: If this is correctly detected, show message to user
-					logger.error('Pubsub message too large for user '+socket.data.twitchId);
+					logger.warn('Pubsub message too large for user '+socket.data.twitchId);
 				}else{
 					throw e;
 				}
@@ -166,7 +167,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 
 export function initSocketioServer(io: TypedServer) {
 
-	// Before actually accepting connection: auth + load config
+	// Before actually accepting connection: auth + try loading config
 	io.use((socket, next)=>{
 		const session = (socket.request as any).session;
 

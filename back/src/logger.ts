@@ -1,5 +1,6 @@
 
 import { configure, getLogger } from 'log4js';
+import { config } from './config';
 
 configure({
 	appenders: {
@@ -11,7 +12,11 @@ configure({
 		}
 	},
 	categories: {
-		default: { appenders: ['out'], level: process.env.LOGLEVEL || 'info', enableCallStack: true }
+		default: {
+			appenders: ['out'],
+			level: config.LOGLEVEL || 'info',
+			enableCallStack: true
+		}
 	}
 });
 
