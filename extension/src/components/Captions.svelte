@@ -9,12 +9,14 @@
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
 
+	let resizeMode = false;
+
 	let moving = false;
 	let mouseX: number;
 	let mouseY: number;
 
 	function onMouseDown(e: MouseEvent) {
-		if( !$position.locked && !e.defaultPrevented ) {
+		if(!$position.locked && !e.defaultPrevented) {
 			moving = true;
 			mouseX = e.clientX;
 			mouseY = e.clientY;
@@ -56,21 +58,28 @@
 			const deltaX = mouseX - e.clientX;
 			const deltaY = mouseY - e.clientY;
 
-			// Update position
-			$position.bottom += (deltaY * 100 / movableArea.offsetHeight);
-			$position.left -= (deltaX * 100 / movableArea.offsetWidth);
+			if(resizeMode) {
+				// Update size
+				$settings.width -= (deltaX / movableArea.offsetWidth);
+				$settings.width = Math.max(15, Math.min(100, $settings.width));
+			} else {
+				// Update position
+				$position.bottom += (deltaY * 100 / movableArea.offsetHeight);
+				$position.left -= (deltaX * 100 / movableArea.offsetWidth);
 
-			// Clamp captions into area
-			const sides = clampCaptions();
-
-			// Ignore delta if on borders
-			if(!sides.top && !sides.bottom) mouseY = e.clientY;
-			if(!sides.left && !sides.right) mouseX = e.clientX;
+				// Clamp captions into area
+				const sides = clampCaptions();
+				
+				// Ignore delta if on borders
+				if(!sides.top && !sides.bottom) mouseY = e.clientY;
+				if(!sides.left && !sides.right) mouseX = e.clientX;
+			}
 		}
 	}
 
 	function onMouseUp() {
 		moving = false;
+		resizeMode = false;
 	}
 
 	// Get style rule to apply to captions container
@@ -80,6 +89,7 @@
 		+ 'font-family: ' + settings.fontFamily + ';'
 		+ 'background-color: rgba(' + hexToRGB(settings.backgroundColor) + ', ' + settings.backgroundOpacity/100 + ');'
 		+ 'backdrop-filter: blur(' + (settings.backgroundOpacity / 10) + 'px) ;'
+		+ 'width: ' + settings.width + '%;';
 	}
 </script>
 
@@ -98,6 +108,14 @@
 			transition:fade={ { duration: 100 } }
 		>
 			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
+				<div class="resize"
+					on:mousedown = { ()=>{ resizeMode = true; } }
+					transition:fade={ { duration: 100 } }
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 -960 960 960">
+						<path d="M560-280h200v-200h-80v120H560v80ZM200-480h80v-120h120v-80H200v200Zm-40 320q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/>
+					</svg>
+				</div>
 				<p>
 					{#if $transcript.length }
 						{#each $transcript as line, i }

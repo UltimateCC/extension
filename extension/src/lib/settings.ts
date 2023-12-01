@@ -8,6 +8,7 @@ const defaultSettings = {
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
 	maxLines: 2,
+	width: 50, // %
 	backgroundColor: '#37373E',
 	backgroundOpacity: 50
 }

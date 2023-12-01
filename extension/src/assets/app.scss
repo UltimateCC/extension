@@ -26,7 +26,7 @@ body #ultimate-closed-caption {
 		// Caption box container
 		#caption-container {
 			position: absolute; // To be able to move it
-			width: 50%;
+			// width: 50%;
 			
 			&:not(.locked) {
 				cursor: move;
@@ -49,6 +49,28 @@ body #ultimate-closed-caption {
 				
 				text-align: left;
 				font-size: 1em;
+
+
+				.resize {
+					position: absolute;
+					right: 0;
+					bottom: 0;
+					font-size: 1.25em;
+					width: 1em;
+					height: 1em;
+					cursor: nwse-resize;
+					pointer-events: auto;
+					transition: transform 0.2s ease-in-out;
+					clip-path: polygon(100% 0, 100% 100%, 0 100%);
+
+					svg > * {
+						fill: $settings-text-color;
+					}
+
+					&:hover {
+						transform: scale(1.1);
+					}
+				}
 
 				p { // Apply text settings
 					line-height: $caption-line-height;
