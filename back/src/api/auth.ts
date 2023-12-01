@@ -4,6 +4,7 @@ import { authURL } from "../twitch/twitch";
 import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
 import { logger } from "../logger";
+import { config } from "../config";
 
 
 declare module 'express-session' {
@@ -12,6 +13,7 @@ declare module 'express-session' {
 		login: string
 		img: string
 		connected: boolean
+		admin?: true
 	}
 }
 
@@ -23,6 +25,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 	}
 }
 
+const admins = config.ADMINS_TWITCHID.split(',');
+
 export const authRouter = Router();
 
 authRouter.get('', (req, res, next)=>{
@@ -31,6 +35,7 @@ authRouter.get('', (req, res, next)=>{
 		userid: req.session.userid,
 		login: req.session.login,
 		img: req.session.img,
+		admin: req.session.admin,
 		url: authURL
 	});
 });
@@ -56,6 +61,9 @@ authRouter.post('', async (req, res, next)=>{
 		req.session.userid = userId;
 		req.session.login = displayName;
 		req.session.img = img;
+		if(admins.includes(req.session.userid)) {
+			req.session.admin = true;
+		}
 		logger.info(name + ' authenticated');
 		return res.json({login: displayName, userid: userId, img, connected: true, url: authURL});
 	}catch(e) {

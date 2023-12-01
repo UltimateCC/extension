@@ -4,8 +4,8 @@ import { logger } from "../logger";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
 
-// Sessions are valid for 24h
-const sessionTime = 60 * 60 * 24;
+// Sessions are valid for 7 days
+const sessionTime = 60 * 60 * 24 * 7;
 
 const redisClient = createClient({
 	url: config.SESSION_REDIS
