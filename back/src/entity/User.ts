@@ -66,8 +66,6 @@ export class User extends BaseEntity {
 export const UserConfigSchema = z.object({
 	transcribe: z.union([
 		z.literal(''),
-		z.literal('whisper'),
-		z.literal('deepgram'),
 		z.literal('azure'),
 	]),
 	lastSpokenLang: z.string(),
@@ -76,7 +74,6 @@ export const UserConfigSchema = z.object({
 	translateService: z.union([
 		z.literal(''),
 		z.literal('azure'),
-		z.literal('libre'),
 		z.literal('gcp')
 	]),
 	translateLangs: z.array(z.string()),
@@ -89,12 +86,6 @@ export const UserConfigSchema = z.object({
 export type UserConfig = z.infer<typeof UserConfigSchema>;
 
 export const UserSecretsSchema = z.object({
-	// OpenAI API Key
-	openaiKey: z.string().max(128).optional(),
-
-	// Deepgram API key
-	deepgramKey: z.string().max(128).optional(),
-
 	// Azure stt config
 	azureSttKey: z.string().max(128).optional(),
 	azureSttRegion: z.string().max(32).optional(),
@@ -102,10 +93,6 @@ export const UserSecretsSchema = z.object({
 	// Azure translation config
 	azureKey: z.string().max(128).optional(),
 	azureRegion: z.string().max(32).optional(),
-
-	// LibreTranslate config
-	libreUrl: z.string().max(128).optional(),
-	libreKey: z.string().max(128).optional(),
 
 	//GCP translation config
 	gcpKey: z.string().max(128).optional(),

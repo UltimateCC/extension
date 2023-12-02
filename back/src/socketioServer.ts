@@ -3,8 +3,6 @@ import { Action, CaptionsStatus, Info, LangList, TranscriptData } from "./types"
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { Translator } from "./translate/Translator";
-import { getStt } from "./stt/getStt";
-import { SpeechToText } from "./stt/SpeechToText";
 import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
 import { getStreamingStt } from "./streamingStt/getStreamingStt";
 import { Stats } from "./entity/Stats";
@@ -24,7 +22,6 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
 	reloadConfig: () => void;
 	text: (text: TranscriptData) => void;
-	audio: (data: Buffer, duration: number)  => void;
 	audioStart: ()  => void;
 	audioData: (data: Buffer)  => void;
 	audioEnd: ()  => void;
@@ -36,7 +33,6 @@ export interface SocketData {
 	config: UserConfig;
 	twitchId: string;
 	translator: Translator;
-	stt: SpeechToText | null;
 	streamingStt: StreamingSpeechToText | null;
 }
 
@@ -72,9 +68,6 @@ async function loadConfig(socket: TypedSocket) {
 	socket.data.stats.user = u;
 	socket.data.stats.twitchId = u.twitchId;
 	socket.data.stats.config = socket.data.config;
-
-	// Speech to text
-	socket.data.stt = getStt(u);
 
 	// Streaming speech to text
 	await socket.data.streamingStt?.stop();
@@ -112,7 +105,7 @@ async function endSession(socket: TypedSocket) {
 
 async function sendStatus(socket: TypedSocket) {
 	socket.emit('status', {
-		stt: socket.data.streamingStt?.ready() ?? socket.data.stt?.ready() ?? false,
+		stt: socket.data.streamingStt?.ready() ?? false,
 		translation: socket.data.translator.ready(),
 		twitch: await isExtensionInstalled(socket.data.twitchId)
 	});
@@ -203,19 +196,6 @@ export function initSocketioServer(io: TypedServer) {
 			handleCaptions(socket, captions).catch(e=>{
 				logger.error('Error handling captions', e);
 			});
-		});
-
-		// Speech to text
-		socket.on('audio', (data, duration)=>{
-			socket.data.stt?.transcribe(data, duration)
-				.then(result=>{
-					if(result.isError) {
-						socket.emit('info', { type: 'warn', message: result.message });
-					}else if(result.data) {
-						handleCaptions(socket, result.data);
-					}
-				})
-				.catch(e=>{ logger.error('Stt error', e) });
 		});
 
 		// Streaming speech to text
