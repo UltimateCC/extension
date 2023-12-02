@@ -61,7 +61,7 @@ authRouter.post('', async (req, res, next)=>{
 		req.session.userid = userId;
 		req.session.login = displayName;
 		req.session.img = img;
-		if(admins.includes(req.session.userid)) {
+		if(admins.includes(userId)) {
 			req.session.admin = true;
 		}
 		logger.info(name + ' authenticated');
