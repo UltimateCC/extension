@@ -61,12 +61,6 @@ export function useSocket() {
     }, []);
 
     /*
-    // Handle sending audio as recording
-    function handleRecord(data: Blob, duration: number) {
-        socket.emit('audio', data, duration);
-    }*/
-
-    /*
     // Handle sending audio as stream
     function handleAudioStart() {
         socket.emit('audioStart');

@@ -2,8 +2,16 @@ import { UserConfig, UserSecrets } from "../entity/User";
 import { logger } from "../logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
-// Cache delay for keeping translation results
-const CACHE_DELAY = 30 * 1000;
+
+/** Get delay to keep text cached */
+function getCacheDelay(text: string) {
+	// Longer cache time for really short text (repeated more commonly)
+	if(text.length < 10) {
+		return 1000 * 60 * 30;
+	}else{
+		return 1000 * 30;
+	}
+}
 
 export abstract class Translator {
 	private cache = new Map<string, TranscriptAlt[]>;
@@ -57,9 +65,10 @@ export abstract class Translator {
 			errors = translated.errors;
 
 			this.cache.set(data.text+data.lang, translated.data);
+			// Cache translation results a small time
 			setTimeout(()=>{
 				this.cache.delete(data.text+data.lang);
-			}, CACHE_DELAY);
+			}, getCacheDelay(data.text));
 		}
 		return {
 			isError: false,

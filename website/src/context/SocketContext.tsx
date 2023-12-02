@@ -47,7 +47,6 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
     reloadConfig: () => void;
     text: (text: TranscriptData) => void;
-    audio: (data: Blob, duration: number) => void;
     audioStart: () => void;
     audioData: (data: Blob) => void;
     audioEnd: () => void;
