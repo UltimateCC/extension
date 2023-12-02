@@ -44,9 +44,9 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 				}
 			}
 
-			let startTime: number = 0;
+			//let startTime: number = 0;
 			recognition.onstart = () => {
-				startTime = Date.now();
+				//startTime = Date.now();
 				console.log('started');
 			}
 
