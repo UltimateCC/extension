@@ -47,12 +47,10 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 			let startTime: number = 0;
 			recognition.onstart = () => {
 				if(!startTime) startTime = Date.now();
-				console.log('started');
 			}
 
 			//Restart recognition when it ends itself
 			recognition.onend = () => {
-				console.log('ended');
 				if(!stopped) {
 					// If stopping just after start: Probably not supported
 					if(startTime && ( (Date.now() - startTime) > 100 ) ) {

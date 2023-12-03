@@ -8,7 +8,6 @@ const defaultSettings = {
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
 	maxLines: 2,
-	width: 50, // %
 	backgroundColor: '#37373E',
 	backgroundOpacity: 50
 }
@@ -24,7 +23,8 @@ export const settings = persisted<SettingsType>('ucc_config', {...defaultSetting
 const defaultPosition = {
 	bottom: 10,
 	left: 50,
-	locked: false
+	locked: false,
+	width: 50, // %
 }
 
 export type PositionType = typeof defaultPosition;
