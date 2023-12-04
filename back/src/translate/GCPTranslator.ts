@@ -11,6 +11,21 @@ export class GCPTranslator extends Translator {
 		return !!this.secrets.gcpKey;
 	}
 
+	static async checkKey(key: string) {
+		const params = new URLSearchParams({
+			key,
+			q: 'Hi',
+			source: 'en',
+			target: 'fr'
+		});
+		const res = await fetch("https://translation.googleapis.com/language/translate/v2?" + params );
+		if(!res.ok) {
+			const text = await res.text() 
+			logger.warn('Error saving GCP key', text);
+			return res.status + ' ' + res.statusText;
+		}
+	}
+
 	async getLangs() {
 		return Object.entries(langs).map(([code, name])=>{ return { code, name } });
 	}
