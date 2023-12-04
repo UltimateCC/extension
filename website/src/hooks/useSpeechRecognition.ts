@@ -53,7 +53,7 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 			recognition.onend = () => {
 				if(!stopped) {
 					// If stopping just after start: Probably not supported
-					if(startTime && ( (Date.now() - startTime) > 100 ) ) {
+					if(startTime && ( (Date.now() - startTime) < 1000 ) ) {
 						setError('Couldn\'t start speech recognition, it may not be supported in your browser, try using Chrome or Edge');
 					}else{
 						recognition.start();

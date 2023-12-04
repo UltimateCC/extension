@@ -16,6 +16,7 @@ function getCacheDelay(text: string) {
 export abstract class Translator {
 	private cache = new Map<string, TranscriptAlt[]>;
 	protected translatedChars = 0;
+	protected expired = false;
 
 	constructor(protected config: UserConfig, protected secrets: UserSecrets) {}
 
@@ -37,6 +38,22 @@ export abstract class Translator {
 				message: 'Translation service is not properly configured'
 			}
 		}
+
+		// Invalid credentials, do not try translation anymore
+		if(this.expired) {
+			return {
+				isError: false,
+				data: {
+					delay: data.delay,
+					duration: data.duration,
+					final: data.final,
+					captions: [
+						{lang: data.lang, text: data.text}
+					]
+				}
+			}
+		}
+
 		const start = Date.now();
 		const lang = data.lang.split('-')[0];
 		let errors: string[] | undefined = [];

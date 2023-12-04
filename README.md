@@ -12,7 +12,7 @@ join the discord and tell us if you are particularly interested in one of them, 
 
 ##### Support other translation services
 - Azure (cheaper)
-- LibreTranslate (self hosted, but quality to be tested)
+- Look into free open source alternatives
 
 ##### Configurable delay between non-final captions
 Allow streamers to choose between smoother captions for their viewers, or lower prices for translation
@@ -43,7 +43,7 @@ Would allow broadcaster to add delay to captions to match a delayed stream
 Before and after translation ?
 
 ##### Detect used translations to enable only necessary ones
-Would probably require large server capacity to handle viewer requests, worth ?
+Would probably require large server capacity to handle viewer requests, probably not worth
 
 ##### Export generated subtitles
 Export subtitles to an SRT files to allow later use
@@ -64,7 +64,7 @@ Show subtitles in a separate window to integrate directly into streams as browse
 #### Back
 - Copy exemple.env to .env and fill env variables
 - Create a docker volume for database persistence: `docker volume create captionsdb`
-- Start : `docker compose -f docker-compose.yml -f docker-compose-dev.yml up --build --attach back`
+- Start : `./dev.sh`
 - This will start the backend in dev mode, with a static version of the website
 - Address: http://localhost:8000
 - nodemon will restart server after any modifications in backend code

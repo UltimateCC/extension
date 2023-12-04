@@ -115,7 +115,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	try {
 		await textRateLimiter.consume(socket.data.twitchId);
 
-		if(transcript.text.length > 1000) { // Check if 1000 seems reasonable
+		if(transcript.text.length > 1000) {
 			logger.warn('Dropping too long transcript for user '+socket.data.twitchId);
 			return;
 		}
@@ -140,8 +140,18 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				socket.data.stats.translateErrorCount++;
 			}
 		}else{
-			logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
+			// If translation generated errors, warn user
+			if(out.errors?.length) {
+				if(socket.data.stats) {
+					socket.data.stats.translateErrorCount += out.errors.length;
+				}
+				// If multiple translation errors, it's probably multiple times the same
+				// -> Send only first one to user
+				socket.emit('info', { type: 'warn', message: out.errors[0] });
+			}
+
 			try{
+				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {
