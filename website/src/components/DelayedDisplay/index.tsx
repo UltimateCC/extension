@@ -49,9 +49,9 @@ function DelayedDisplay({
             let errorAditionalMessage = "";
             
             if(error) {
-                if(error.message) {
+                if(error.message && typeof error.message === 'string') {
                     errorAditionalMessage = " : " + error.message;
-                } else if(error.error && error.error.message) {
+                } else if(error.error && error.error.message && typeof error.error.message === 'string') {
                     errorAditionalMessage = " : " + error.error.message;
                 }
             }
