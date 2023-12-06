@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { TranscriptData } from "../context/SocketContext";
 
 
+// Minimum text length before spliting it
+const SPLIT_MIN_LENGTH = 200;
+
 /** Speech recognition using Web Speech API */
 export function useSpeechRecognition( { handleText, lang, listening, splitDelay, delay }: {
 		handleText: (transcript: TranscriptData) => void,
@@ -61,7 +64,12 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 				}
 			}
 
+			// Timestamp for last partial caption
 			let lastCaptions: number | null = null;
+			// Last text
+			let lastText = '';
+			// Length of text to ignore (When start of text as already been sent as final)
+			let ignoreLength = 0;
 
 			recognition.onresult = (event) => {
 				const result = event.results[event.resultIndex];
@@ -77,19 +85,62 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 
 				// Ignore first partial captions
 				if(text && (result.isFinal || lastCaptions) ) {
+
 					// Duration/delay is time since last partial sent
 					// Default duration is split delay ( happens mostly when results received in wrong order )
 					let duration = splitDelay;
 					if(lastCaptions) {
 						duration = Date.now() - lastCaptions;
 					}
-					handleText({
-						text,
-						lang,
-						duration,
-						delay: duration - delay,
-						final: result.isFinal
-					});
+
+					let currentPart = text.slice(ignoreLength).trim();
+
+					// If partial text too long: try to split it
+					// Possible upgrade in the future: Find more reliable ways to split text
+					if(!result.isFinal && currentPart.length > SPLIT_MIN_LENGTH && lastText.length && text.toLowerCase().startsWith(lastText.toLowerCase()) ) {
+
+						// Text splitted: Send last part as final + Send next part as first partial
+						const part = lastText.slice(ignoreLength);
+						// Send first sentence part as final
+						handleText({
+							final: true,
+							lang,
+							duration: 0,
+							text: part,
+							delay: duration - (delay - 500)
+						});
+
+						ignoreLength = lastText.length;
+						currentPart = text.slice(ignoreLength).trim();
+
+						// Send next part as partial
+						handleText({
+							final: false,
+							lang,
+							duration,
+							text: currentPart,
+							delay: duration - (delay + 250)
+						});
+					}else{
+						// Text not splitted
+						// Send it normally
+						handleText({
+							text: currentPart,
+							lang,
+							duration,
+							delay: duration - delay,
+							final: result.isFinal
+						});
+					}
+
+					if(!result.isFinal) {
+						// Store partial text to compare it with next version
+						lastText = text;
+					}else{
+						// Clear partial text when finished
+						lastText = '';
+						ignoreLength = 0;
+					}
 				}
 
 				if(result.isFinal) {

@@ -121,6 +121,12 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			logger.warn('Transcript ratelimited for: '+socket.data.twitchId);
 		}
 
+		// Ignore empty string (in theory should not happen)
+		if(transcript.text.length === 0) {
+			logger.warn('Dropping empty transcript for: '+socket.data.twitchId);
+			return;
+		}
+
 		// Limit too long text
 		if(transcript.text.length > 800) {
 			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
@@ -190,7 +196,7 @@ export function initSocketioServer(io: TypedServer) {
 				logger.error('Error loading user config', e);
 				next(new Error('error loading user config'));
 			}));
-			
+
 		}else{
 			next(new Error('not authenticated'));
 		}

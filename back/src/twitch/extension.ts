@@ -36,7 +36,7 @@ export async function saveTwitchConfig(userId: string, config: string) {
 	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
 }
 
-// Get live channels currently live with the extension
+// Get channels currently live with the extension activated
 export async function getLiveChannels() {
 	const channels = await api.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
 
@@ -65,6 +65,9 @@ export async function getLiveChannels() {
 			});
 		}
 	}));
+
+	// Sort all fetched streams by descending viewer count
+	out.sort((a,b)=> b.viewers - a.viewers);
 
 	return out;
 }
