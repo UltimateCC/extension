@@ -28,7 +28,8 @@ interface ClientToServerEvents {
 }
 
 export interface SocketData {
-	startTime: number;
+	firstText: number;
+	lastText: number;
 	stats: Stats | null;
 	config: UserConfig;
 	twitchId: string;
@@ -41,7 +42,7 @@ type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, Socket
 
 // Limit config reloads
 const loadRateLimiter = new RateLimiterMemory({
-	points: 2,
+	points: 3,
 	duration: 1,
 });
 
@@ -64,7 +65,6 @@ async function loadConfig(socket: TypedSocket) {
 
 	//Init statistics
 	socket.data.stats = new Stats();
-	socket.data.startTime = Date.now();
 	socket.data.stats.user = u;
 	socket.data.stats.twitchId = u.twitchId;
 	socket.data.stats.config = socket.data.config;
@@ -96,8 +96,9 @@ async function endSession(socket: TypedSocket) {
 		// Remove stats from socket data before to avoid race condition (double save)
 		const stats = socket.data.stats;
 		socket.data.stats = null;
-		stats.duration = Date.now() - socket.data.startTime;
+		stats.duration = socket.data.lastText - socket.data.firstText;
 		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
+		stats.translateErrorCount = socket.data.translator.getErrorCount();
 		await stats.save();
 		logger.debug('Saved stats for '+socket.data.twitchId);
 	}
@@ -113,17 +114,29 @@ async function sendStatus(socket: TypedSocket) {
 
 async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) {
 	try {
-		await textRateLimiter.consume(socket.data.twitchId);
+		// Ratelimit
+		try {
+			await textRateLimiter.consume(socket.data.twitchId);
+		}catch(e) {
+			logger.warn('Transcript ratelimited for: '+socket.data.twitchId);
+		}
 
-		if(transcript.text.length > 1000) {
-			logger.warn('Dropping too long transcript for user '+socket.data.twitchId);
+		// Limit too long text
+		if(transcript.text.length > 800) {
+			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
 			return;
 		}
 
 		socket.emit('transcript', transcript );
 
-		// Save statistics
+		// Count statistics
 		if(socket.data.stats) {
+			const now = Date.now();
+			if(!socket.data.firstText) {
+				socket.data.firstText = now;
+			}
+			socket.data.lastText = now;
+
 			if(transcript.final) {
 				socket.data.stats.finalCount++;
 				socket.data.stats.finalCharCount += transcript.text.length;
@@ -136,15 +149,9 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
-			if(socket.data.stats) {
-				socket.data.stats.translateErrorCount++;
-			}
 		}else{
 			// If translation generated errors, warn user
 			if(out.errors?.length) {
-				if(socket.data.stats) {
-					socket.data.stats.translateErrorCount += out.errors.length;
-				}
 				// If multiple translation errors, it's probably multiple times the same
 				// -> Send only first one to user
 				socket.emit('info', { type: 'warn', message: out.errors[0] });
