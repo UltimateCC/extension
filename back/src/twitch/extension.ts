@@ -39,12 +39,32 @@ export async function saveTwitchConfig(userId: string, config: string) {
 // Get live channels currently live with the extension
 export async function getLiveChannels() {
 	const channels = await api.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
-	return channels.map(c=>(
-		{
-			id: c.id,
-			displayName: c.displayName,
-			title: c.title,
-			gameName: c.gameName
+
+	const out: {
+		id: string
+		name: string
+		displayName: string
+		viewers: number
+		title: string
+		gameName: string
+		thumbnailUrl: string
+	}[] = [];
+
+	await Promise.all(channels.map(async (channel) => {
+		const stream = await api.streams.getStreamByUserId(channel.id);
+
+		if(stream) {
+			out.push({
+				id: stream.userId,
+				name: stream.userName,
+				displayName: stream.userDisplayName,
+				gameName: stream.gameName,
+				title: stream.title,
+				viewers: stream.viewers,
+				thumbnailUrl: stream.thumbnailUrl,
+			});
 		}
-	));
+	}));
+
+	return out;
 }
