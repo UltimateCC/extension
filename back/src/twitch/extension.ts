@@ -61,7 +61,7 @@ export async function getLiveChannels() {
 				gameName: stream.gameName,
 				title: stream.title,
 				viewers: stream.viewers,
-				thumbnailUrl: stream.thumbnailUrl,
+				thumbnailUrl: stream.getThumbnailUrl(640, 360),
 			});
 		}
 	}));

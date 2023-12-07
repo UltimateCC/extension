@@ -8,9 +8,8 @@
     --gap: 2rem;
 }
 
-html,
-body {
-    min-height: 100vh;
+html {
+    overflow-y: hidden;
 }
 
 body {
@@ -21,6 +20,9 @@ body {
     color: var(--text);
     text-align: center;
     overflow-x: hidden;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 /* Body scrollbar */
@@ -43,7 +45,6 @@ body::-webkit-scrollbar-thumb:active {
     border: 4px solid var(--square);
 }
 
-/* Scrollbar for theme */
 .scroll-theme::-webkit-scrollbar {
     width: 13px;
     transition: 0.5s;
