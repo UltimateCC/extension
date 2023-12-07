@@ -9,6 +9,7 @@ import { Stats } from "./entity/Stats";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { logger } from "./logger";
+import { sessionMiddleware } from "./middleware/session";
 
 
 interface ServerToClientEvents {
@@ -128,7 +129,8 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		}
 
 		// Limit too long text
-		if(transcript.text.length > 800) {
+		// (Shouldn't happen because text should be splitted clientside)
+		if(transcript.text.length > 500) {
 			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
 			return;
 		}
@@ -181,64 +183,67 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 	}
 }
 
-export function initSocketioServer(io: TypedServer) {
+export const io: TypedServer = new Server();
 
-	// Before actually accepting connection: auth + try loading config
-	io.use((socket, next)=>{
-		const session = (socket.request as any).session;
+// Before actually accepting connection: auth + try loading config
+io.use((socket, next)=>{
+	const session = (socket.request as any).session;
 
-		if(session.userid) {
-			socket.data.twitchId = session.userid;
-			loadConfig(socket).then(()=>{
-				next();
-			})
-			.catch((e=>{
-				logger.error('Error loading user config', e);
-				next(new Error('error loading user config'));
-			}));
+	if(session.userid) {
+		socket.data.twitchId = session.userid;
+		loadConfig(socket).then(()=>{
+			next();
+		})
+		.catch((e=>{
+			logger.error('Error loading user config', e);
+			next(new Error('error loading user config'));
+		}));
 
-		}else{
-			next(new Error('not authenticated'));
-		}
+	}else{
+		next(new Error('not authenticated'));
+	}
+});
+
+// When socket connected
+io.on('connect', (socket) => {
+	socket.join('twitch-'+socket.data.twitchId);
+
+	socket.on('disconnect', ()=>{
+		endSession(socket).catch(e=>logger.error('Error ending session', e));
 	});
 
-	io.on('connect', (socket) => {
-		socket.join('twitch-'+socket.data.twitchId);
-
-		socket.on('disconnect', ()=>{
-			endSession(socket)
-				.catch(e=>logger.error('Error ending session', e));
-		});
-
-		socket.on('reloadConfig', ()=>{
-			loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
-		});
-
-		// Text direclty received
-		socket.on('text', captions =>{
-			handleCaptions(socket, captions).catch(e=>{
-				logger.error('Error handling captions', e);
-			});
-		});
-
-		// Streaming speech to text
-		socket.on('audioStart', ()=>{
-			socket.data.streamingStt?.start();
-		});
-		socket.on('audioEnd', ()=>{
-			socket.data.streamingStt?.stop();
-		});
-		socket.on('audioData', (data)=>{
-			socket.data.streamingStt?.handleData(data);
-		});
+	socket.on('reloadConfig', ()=>{
+		loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
 	});
-}
 
-export async function endSocketSessions(io: TypedServer) {
+	socket.on('text', captions =>{
+		handleCaptions(socket, captions).catch(e=> logger.error('Error handling captions', e));
+	});
+
+	// Streaming speech to text
+	/*
+	socket.on('audioStart', ()=>{
+		socket.data.streamingStt?.start();
+	});
+	socket.on('audioEnd', ()=>{
+		socket.data.streamingStt?.stop();
+	});
+	socket.on('audioData', (data)=>{
+		socket.data.streamingStt?.handleData(data);
+	});*/
+});
+
+/** Gracefully disconnect all sockets (called at shutdown) */
+export async function endSocketSessions() {
 	// Only local sockets are fetched
 	// -> socket type can be used
 	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
 	// End all sessions (triggers saving statistics)
 	await Promise.all(sockets.map(s=>endSession(s)));
 	logger.info('All sockets disconnected');
+}
+
+export async function isConnected(twitchId: string) {
+	const sockets = await io.to('twitch-'+twitchId).fetchSockets();
+	return !!sockets.length;
 }

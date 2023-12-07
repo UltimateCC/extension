@@ -36,23 +36,40 @@ export async function saveTwitchConfig(userId: string, config: string) {
 	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
 }
 
-// Get channels currently live with the extension activated
+interface LiveChannel {
+	id: string
+	name: string
+	displayName: string
+	viewers: number
+	title: string
+	gameName: string
+	thumbnailUrl: string
+}
+
+// Do only one call of getLiveChannels at a time
 export async function getLiveChannels() {
+	if(p) {
+		return p;
+	}else{
+		p = _getLiveChannels();
+		const channels = await p;
+		p = null;
+		return channels;
+	}
+}
+
+let p: Promise<LiveChannel[]> | null = null;
+
+// Get channels currently live with the extension activated
+async function _getLiveChannels() {
 	const channels = await api.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
 
-	const out: {
-		id: string
-		name: string
-		displayName: string
-		viewers: number
-		title: string
-		gameName: string
-		thumbnailUrl: string
-	}[] = [];
+	const out: LiveChannel[] = [];
 
 	await Promise.all(channels.map(async (channel) => {
-		const stream = await api.streams.getStreamByUserId(channel.id);
+		// Maybe: Filter to only connected users ?
 
+		const stream = await api.streams.getStreamByUserId(channel.id);
 		if(stream) {
 			out.push({
 				id: stream.userId,

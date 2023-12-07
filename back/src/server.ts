@@ -1,8 +1,7 @@
 
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { initSocketioServer, endSocketSessions } from './socketioServer';
+import { endSocketSessions, io } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
 import { config } from './config';
@@ -19,14 +18,11 @@ app.use(express.json());
 // API routes
 app.use('/api', apiRouter);
 
-// socket.io on same server
+// Create HTTP server and attach express app
 export const server = createServer(app);
-export const io = new Server(server);
-
+// Attach socketio to server
+io.attach(server);
 io.engine.use(sessionMiddleware);
-//Register socketio routes
-initSocketioServer(io);
-
 
 export async function startServer() {
 	await initSessionMiddleware();
@@ -46,7 +42,7 @@ export async function stopServer() {
 				else resolve();
 			});
 		}),
-		endSocketSessions(io)
+		endSocketSessions()
 	]);
 	logger.info('Server closed');
 	await stopSessionMiddleware();

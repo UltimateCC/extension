@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { authMiddleware } from "./auth";
 import { User } from "../entity/User";
-import { io } from "../server";
 import { Action } from "../types";
+import { io } from "../socketioServer";
 
 
 async function getWebhookUrl(twitchId: string, regen: boolean) {
