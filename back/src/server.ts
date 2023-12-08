@@ -7,11 +7,13 @@ import { rateLimiterMiddleware } from './middleware/rateLimit';
 import { config } from './config';
 import { logger } from './logger';
 import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
+import { eventsub } from './twitch/events';
 
 const app = express();
 app.set('trust proxy', 1);
 
 app.use(rateLimiterMiddleware);
+eventsub.apply(app);
 app.use(sessionMiddleware);
 app.use(express.json());
 
@@ -31,6 +33,7 @@ export async function startServer() {
 			res();
 		});
 	});
+	await eventsub.markAsReady();
 }
 
 export async function stopServer() {

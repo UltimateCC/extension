@@ -128,7 +128,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
             </form>
             <div className='api-info'>
                 <a href={ config.github + '/wiki/Configure-translation' } target="_blank" rel="noreferrer">
-                    &rarr; Get your Google API key
+                    &rarr; How to get an API key&nbsp;?
                 </a>
                 
                 {isEditing && (

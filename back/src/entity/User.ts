@@ -46,7 +46,7 @@ export class User extends BaseEntity {
 		spokenLang: 'en-US',
 		translateService: '',
 		translateLangs: [],
-		banWords: []
+		twitchAutoStop: false
 	};
 
 	@Column()
@@ -77,10 +77,12 @@ export const UserConfigSchema = z.object({
 		z.literal('gcp')
 	]),
 	translateLangs: z.array(z.string()),
+	twitchAutoStop: z.boolean().optional()
+	/*
 	banWords: z.array(z.object({
 		lang: z.string(),
 		text: z.string()
-	}))
+	}))*/
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;
