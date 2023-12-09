@@ -4,7 +4,7 @@ import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData, TypedSoc
 
 const socket: TypedSocket = io({autoConnect: false});
 
-export function useSocket() {
+export function useSocket(connect: boolean) {
     const [info, setInfo] = useState<Info>();
     const [captionsStatus, setCaptionsStatus] = useState<CaptionsStatus>();
     const [translateLangs, setTranslateLangs] = useState<LangList>([]);
@@ -12,8 +12,6 @@ export function useSocket() {
     const [recognized, setRecognized] = useState<TranscriptAlt>();
 
     useEffect(() => {
-        socket.connect();
-
         function handleConnect() {
             setInfo(undefined);
         }
@@ -26,24 +24,28 @@ export function useSocket() {
         function handleTranscript(transcript: TranscriptData) {
             setRecognized({ lang: transcript.lang, text: transcript.text });
         }
+        
+        if(connect) {
+            socket.connect();
 
-        socket.on('connect', handleConnect);
-        socket.on('connect_error', handleError);
-        socket.on('info', setInfo);
-        socket.on('status', setCaptionsStatus);
-        socket.on('translateLangs', setTranslateLangs);
-        socket.on('transcript', handleTranscript);
+            socket.on('connect', handleConnect);
+            socket.on('connect_error', handleError);
+            socket.on('info', setInfo);
+            socket.on('status', setCaptionsStatus);
+            socket.on('translateLangs', setTranslateLangs);
+            socket.on('transcript', handleTranscript);
 
-        return () => {
-            socket.off('connect', handleConnect);
-            socket.off('connect_error', handleError);
-            socket.off('info', setInfo);
-            socket.off('status', setCaptionsStatus);
-            socket.off('translateLangs', setTranslateLangs);
-            socket.off('transcript', handleTranscript);
-            socket.disconnect();
+            return () => {
+                socket.off('connect', handleConnect);
+                socket.off('connect_error', handleError);
+                socket.off('info', setInfo);
+                socket.off('status', setCaptionsStatus);
+                socket.off('translateLangs', setTranslateLangs);
+                socket.off('transcript', handleTranscript);
+                socket.disconnect();
+            }            
         }
-    }, []);
+    }, [connect]);
 
     // Trigger a server side config reload
     const reloadConfig = useCallback(()=>{

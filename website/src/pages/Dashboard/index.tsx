@@ -32,7 +32,7 @@ import Guide from '../../components/Guide';
 
 function Dashboard() {
     const { user, refreshAuth, error, loading } = useContext(AuthContext);
-    const socketCtx = useSocket();
+    const socketCtx = useSocket(user?.connected ?? false);
 
     // Request to get the user's config
     // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
