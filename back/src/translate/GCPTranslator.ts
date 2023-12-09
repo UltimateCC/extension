@@ -56,8 +56,9 @@ export class GCPTranslator extends Translator {
 			logger.error('GCP translation error', status, text);
 
 			// Status 403 = Key doesnt have required permissions to access API
+			// Status 400 = Invalid request ...?
 			// Mark as expired to avoid calling API again in this case
-			if(res.status === 403) {
+			if(res.status === 403 || res.status === 400) {
 				this.expired = true;
 			}
 			return {

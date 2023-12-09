@@ -14,6 +14,8 @@ function PageTitle() {
                 return 'Home';
             case '/dashboard':
                 return 'Dashboard';
+            case '/channels':
+                return 'Live channels';
             case '/verify':
                 return 'Login';
             case '/logout':
