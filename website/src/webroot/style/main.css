@@ -276,7 +276,7 @@ strong {
 
 section#home > div {
     border-radius: 1em;
-    background: #37373E;
+    background-color: var(--square);
     box-shadow: 10px 10px 4px 0px rgba(0, 0, 0, 0.25);
     width: 100%;
     padding: 2em;
@@ -284,7 +284,7 @@ section#home > div {
 
 .theme-box {
     border-radius: 1em;
-    background: #37373E;
+    background-color: var(--square);
     box-shadow: 10px 10px 4px 0px rgba(0, 0, 0, 0.25);
     width: 100%;
     padding: .5em 2em 2em;

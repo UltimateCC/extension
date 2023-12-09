@@ -55,6 +55,7 @@ function Navigation({ logo } : { logo: string }) {
                     <NavLink to="/">Home</NavLink>
                     {/* <NavLink to="/plugin">The plugin</NavLink> */}
                     <NavLink to="/dashboard">Dashboard</NavLink>
+                    <NavLink to="/channels">Explore</NavLink>
                 </nav>
                 <div className="secondary-links">
                     {

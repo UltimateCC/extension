@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ThanksCard from '../../components/ThanksCard';
 
-import '../../webroot/style/thanks.css';
+import '../../webroot/style/channels.css';
 import api from '../../services/api';
 
 type ThanksData = {
@@ -29,7 +29,7 @@ function Thanks() {
     return (
         <section id="thanks">
             <div className="theme-box top">
-                <h2>Main contributors :</h2>
+                <h2>Main contributors</h2>
             </div>
 
             <div className="thanks-container theme-box">

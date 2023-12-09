@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/';
 import Dashboard from './pages/Dashboard/';
 import Thanks from './pages/Thanks';
+import Channels from './pages/Channels';
 import Verify from './components/Verify';
 import Error from './pages/Error';
 
@@ -33,8 +34,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                             <Route path="/verify" element={<Verify />} />
                             <Route path="/logout" element={<Logout />} />
                             <Route path="/dashboard" element={<Dashboard />} />
-                            {/* thank-you */}
                             <Route path="/thank-you" element={<Thanks />} />
+                            <Route path="/channels" element={<Channels />} />
                             <Route path="/privacy" element={<Privacy />} />
                             <Route path="*" element={<Error />} />
                         </Routes>
