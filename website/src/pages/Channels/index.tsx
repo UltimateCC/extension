@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import '../../webroot/style/thanks.css';
 import api from '../../services/api';
 
-// {"id":"26184492","name":"lege","displayName":"Lege","gameName":"Sid Meier's Civilization VI","title":"FFA ROAD TO DEITY - 19 CIVINTERNETPOINTS NEEDED","viewers":536,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_lege-640x360.jpg"}
-
 interface LiveChannel {
     id: string
     name: string
@@ -37,18 +35,11 @@ function Channels() {
     const [streamerCount, setStreamerCount] = useState<string>("0");
     const [viewerCount, setViewerCount] = useState<string>("0");
 
-    const apiContent = '{"id":"29020626","name":"ljoga","displayName":"LJoga","gameName":"I\'m Only Sleeping","title":"[NOITE 08] Acordo às 11h | !minecraft | Subathon do LJoga | !subathon !kabum !pix","viewers":30,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_ljoga-640x360.jpg"},{"id":"105713838","name":"kazmila","displayName":"Kazmila","gameName":"I\'m Only Sleeping","title":"[Dia 3] !Subathon marota de 10k - a mimir 💤 💤 💤  - !comandos","viewers":12,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_kazmila-640x360.jpg"},{"id":"448633424","name":"zaramoth1232","displayName":"ZaraMoth1232","gameName":"Just Chatting","title":"Poranna kawka? | !dc","viewers":7,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_zaramoth1232-640x360.jpg"},{"id":"86841499","name":"byegeek","displayName":"ByeGeek","gameName":"Minecraft","title":"Ouverture into 3h30h du matin |  Hourglass XI | !discord !hug !vote !bar","viewers":1,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_byegeek-640x360.jpg"},{"id":"129747833","name":"iciwali","displayName":"IciWali","gameName":"The Binding of Isaac: Afterbirth+","title":"Le meilleur jeu de tous les temps je ne veux rien entendre (Isaac AB+ 1001%) - !youtube","viewers":0,"thumbnailUrl":"https://static-cdn.jtvnw.net/previews-ttv/live_user_iciwali-640x360.jpg"}';
-
     useEffect(()=>{
         api('twitch/live')
             .then((res) => {
                 setLiveChannels(res);
             }).catch(e=>console.error('Error fetching contributors', e));
-    }, []);
-
-    // Set live channels with apiContent because i'm in dev mode and i don't want to spam the api
-    useEffect(()=>{
-        setLiveChannels(JSON.parse(`[${apiContent}]`));
     }, []);
 
     // Edit viewers number to show K or M
