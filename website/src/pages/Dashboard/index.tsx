@@ -52,7 +52,7 @@ function Dashboard() {
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
 
     // Twitch autostop
-    const [twitchAutoStop, setTwitchAutoStop] = useState<boolean>(false);
+    const [twitchAutoStop, setTwitchAutoStop] = useState<boolean>(true);
 
     function loadConfig() {
         api('config')
@@ -62,7 +62,7 @@ function Dashboard() {
             setSpokenLang(response.spokenLang);
             setTranslateService(response.translateService);
             setTranslationLangs(response.translateLangs);
-            setTwitchAutoStop(response.twitchAutoStop ?? false)
+            setTwitchAutoStop(response.twitchAutoStop ?? true)
             setConfigLoaded(true);
             return;
         })

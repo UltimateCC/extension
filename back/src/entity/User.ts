@@ -46,7 +46,7 @@ export class User extends BaseEntity {
 		spokenLang: 'en-US',
 		translateService: '',
 		translateLangs: [],
-		twitchAutoStop: false
+		twitchAutoStop: true
 	};
 
 	@Column()

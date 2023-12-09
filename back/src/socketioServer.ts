@@ -64,7 +64,7 @@ async function loadConfig(socket: TypedSocket) {
 	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
 	socket.data.config = u.config;
 
-	if(socket.data.config.twitchAutoStop) {
+	if(socket.data.config.twitchAutoStop !== false) {
 		registerTwitchAutoStop(u.twitchId);
 	}
 
