@@ -1,6 +1,7 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
 import { logger } from "../logger";
+import { isConnected } from "../socketioServer";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -67,19 +68,19 @@ async function _getLiveChannels() {
 	const out: LiveChannel[] = [];
 
 	await Promise.all(channels.map(async (channel) => {
-		// Maybe: Filter to only connected users ?
-
-		const stream = await api.streams.getStreamByUserId(channel.id);
-		if(stream) {
-			out.push({
-				id: stream.userId,
-				name: stream.userName,
-				displayName: stream.userDisplayName,
-				gameName: stream.gameName,
-				title: stream.title,
-				viewers: stream.viewers,
-				thumbnailUrl: stream.getThumbnailUrl(640, 360),
-			});
+		if(await isConnected(channel.id)) {
+			const stream = await api.streams.getStreamByUserId(channel.id);
+			if(stream) {
+				out.push({
+					id: stream.userId,
+					name: stream.userName,
+					displayName: stream.userDisplayName,
+					gameName: stream.gameName,
+					title: stream.title,
+					viewers: stream.viewers,
+					thumbnailUrl: stream.getThumbnailUrl(640, 360),
+				});
+			}
 		}
 	}));
 

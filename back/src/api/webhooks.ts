@@ -38,7 +38,14 @@ webhooksRouter.post('/url', authMiddleware, async (req, res, next)=>{
 // Handle webhook
 webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 	try{
-		const user = await User.findOneByOrFail({ twitchId: req.params.id, webhookSecret: req.params.key });
+		const user = await User.findOneBy({ twitchId: req.params.id, webhookSecret: req.params.key });
+
+		if(!user) {
+			res.status(401).json({
+				error: 'Invalid url'
+			});
+			return;
+		}
 
 		let action: Action | undefined;
 		if(req.query.setlang !== undefined) {

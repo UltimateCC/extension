@@ -51,6 +51,9 @@ function Dashboard() {
     const [translateService, setTranslateService] = useState<string>();
     const [translationLangs, setTranslationLangs] = useState<string[]>([]);
 
+    // Twitch autostop
+    const [twitchAutoStop, setTwitchAutoStop] = useState<boolean>(false);
+
     function loadConfig() {
         api('config')
         .then(response => {
@@ -59,6 +62,7 @@ function Dashboard() {
             setSpokenLang(response.spokenLang);
             setTranslateService(response.translateService);
             setTranslationLangs(response.translateLangs);
+            setTwitchAutoStop(response.twitchAutoStop ?? false)
             setConfigLoaded(true);
             return;
         })
@@ -208,7 +212,11 @@ function Dashboard() {
                                     ) }
                                 </div>
                             )}
-                            { currentTab === 'Twitch' && (<Twitch />) }
+                            { currentTab === 'Twitch' && (
+                                <Twitch
+                                    twitchAutoStop={twitchAutoStop}
+                                    setTwitchAutoStop={setTwitchAutoStop}
+                                />)}
                             { currentTab === 'Webhooks' && (<Webhooks/>) }
                         </div>
                     </div>

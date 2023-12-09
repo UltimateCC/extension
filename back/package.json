@@ -26,7 +26,7 @@
     "@twurple/api": "^7.0.6",
     "@twurple/auth": "^7.0.6",
     "@twurple/ebs-helper": "^7.0.6",
-    "@twurple/eventsub-ws": "^7.0.6",
+    "@twurple/eventsub-http": "^7.0.6",
     "connect-redis": "^7.1.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",

@@ -3,13 +3,11 @@ import { Action, CaptionsStatus, Info, LangList, TranscriptData } from "./types"
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { Translator } from "./translate/Translator";
-import { StreamingSpeechToText } from "./streamingStt/StreamingSpeechToText";
-import { getStreamingStt } from "./streamingStt/getStreamingStt";
 import { Stats } from "./entity/Stats";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { logger } from "./logger";
-import { sessionMiddleware } from "./middleware/session";
+import { eventsub } from "./twitch/events";
 
 
 interface ServerToClientEvents {
@@ -23,9 +21,11 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
 	reloadConfig: () => void;
 	text: (text: TranscriptData) => void;
+	/*
 	audioStart: ()  => void;
 	audioData: (data: Buffer)  => void;
 	audioEnd: ()  => void;
+	*/
 }
 
 export interface SocketData {
@@ -35,7 +35,7 @@ export interface SocketData {
 	config: UserConfig;
 	twitchId: string;
 	translator: Translator;
-	streamingStt: StreamingSpeechToText | null;
+	//streamingStt: StreamingSpeechToText | null;
 }
 
 type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>;
@@ -64,6 +64,10 @@ async function loadConfig(socket: TypedSocket) {
 	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
 	socket.data.config = u.config;
 
+	if(socket.data.config.twitchAutoStop) {
+		registerTwitchAutoStop(u.twitchId);
+	}
+
 	//Init statistics
 	socket.data.stats = new Stats();
 	socket.data.stats.user = u;
@@ -71,6 +75,7 @@ async function loadConfig(socket: TypedSocket) {
 	socket.data.stats.config = socket.data.config;
 
 	// Streaming speech to text
+	/*
 	await socket.data.streamingStt?.stop();
 	socket.data.streamingStt = getStreamingStt(u);
 	socket.data.streamingStt?.on('transcript', transcript=>{
@@ -78,7 +83,7 @@ async function loadConfig(socket: TypedSocket) {
 	});
 	socket.data.streamingStt?.on('info', info => {
 		socket.emit('info', info);
-	});
+	});*/
 
 	// Translation
 	socket.data.translator = getTranslator(u);
@@ -91,7 +96,7 @@ async function loadConfig(socket: TypedSocket) {
 }
 
 async function endSession(socket: TypedSocket) {
-	socket.data.streamingStt?.stop();
+	//socket.data.streamingStt?.stop();
 	// Save statistics if necessary
 	if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
 		// Remove stats from socket data before to avoid race condition (double save)
@@ -107,7 +112,7 @@ async function endSession(socket: TypedSocket) {
 
 async function sendStatus(socket: TypedSocket) {
 	socket.emit('status', {
-		stt: socket.data.streamingStt?.ready() ?? false,
+		stt: /*socket.data.streamingStt?.ready() ??*/ false,
 		translation: socket.data.translator.ready(),
 		twitch: await isExtensionInstalled(socket.data.twitchId)
 	});
@@ -124,13 +129,13 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 
 		// Ignore empty string (in theory should not happen)
 		if(transcript.text.length === 0) {
-			logger.warn('Dropping empty transcript for: '+socket.data.twitchId);
+			logger.warn('Received empty transcript for: '+socket.data.twitchId);
 			return;
 		}
 
 		// Limit too long text
-		// (Shouldn't happen because text should be splitted clientside)
-		if(transcript.text.length > 500) {
+		// (Text shouldnt be this long because it is splitted clientside)
+		if(transcript.text.length > 300) {
 			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
 			return;
 		}
@@ -246,4 +251,21 @@ export async function endSocketSessions() {
 export async function isConnected(twitchId: string) {
 	const sockets = await io.to('twitch-'+twitchId).fetchSockets();
 	return !!sockets.length;
+}
+
+export function registerTwitchAutoStop(twitchId: string) {
+	eventsub.onStreamOffline(twitchId, async()=>{
+		try {
+			// Only local sockets are fetched
+			// -> socket type can be used
+			const sockets = await io.local.in('twitch-'+twitchId).fetchSockets() as unknown as TypedSocket[];
+			for(const socket of sockets) {
+				if(socket.data.config.twitchAutoStop) {
+					socket.emit('action', { type:'stop' });
+				}
+			}
+		}catch(e) {
+			logger.warn('Error fetching sockets for twitch autostop ', e);
+		}
+	});
 }

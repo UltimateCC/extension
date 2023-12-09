@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel, { formControlLabelClasses } from '@mui/material/FormControlLabel';
 import Switch, { switchClasses } from '@mui/material/Switch';
@@ -33,7 +31,13 @@ const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
     },
 }));
 
-function Twitch() {
+interface TwitchProps {
+    twitchAutoStop: boolean
+    setTwitchAutoStop: (twitchAutoStop: boolean) => void
+}
+
+function Twitch({ setTwitchAutoStop, twitchAutoStop }: TwitchProps) {
+    /*
     const [showCaptions, setShowCaptions] = useState<boolean>(true);
 
     useEffect(()=>{
@@ -57,17 +61,37 @@ function Twitch() {
             console.error('Error updating twitch config', err);
         });
     };
+    */
+
+    const handleAutoStopChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const autoStop = event.target.checked;
+        setTwitchAutoStop(autoStop);
+        api('config', {
+            method: 'POST',
+            body: { twitchAutoStop: autoStop }
+        })
+        .catch(err => {
+            console.error('Error updating autostop', err);
+        });
+    }
 
     return (
         <div>
-            <p>Settings related to the Twitch extension ( WIP )</p>
             <FormGroup>
+                {/*
                 <ThemedFormControlLabel 
                     control={<ThemedSwitch
                         checked={showCaptions}
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />}
-                    label="Show captions by default" />
+                    label="Show captions to viewers by default (Available soon)" />
+                */}
+                <ThemedFormControlLabel 
+                    control={<ThemedSwitch
+                        checked={twitchAutoStop}
+                        onChange={handleAutoStopChange} 
+                    />}
+                    label="Stop captions when your stream ends (Experimental)" />
             </FormGroup>
         </div>
     );

@@ -1,24 +1,25 @@
 import { Router } from "express";
 import { Stats } from "../entity/Stats";
+import { Between, FindOptionsWhere } from "typeorm";
 
 export const statsRouter = Router();
 
 statsRouter.get('', async (req, res, next)=>{
 	try{
-		let stats: Stats[];	
+		let stats: Stats[];
 
-		// If user is admin and "all" parameter is set, get stats from all users
-		if(req.query.all) {
-			if(!req.session.admin) {
-				res.status(403).json({
-					error: 'Forbidden'
-				});
-				return;
+		let where: FindOptionsWhere<Stats> = { twitchId: req.session.userid };
+
+		if(req.session.admin) {
+			if(req.query.all) {
+				// Include all users
+				delete where.twitchId;
+			}else if(typeof req.query.twitchId === 'string') {
+				// Filter to specific user
+				where.twitchId = req.query.twitchId;
 			}
-			stats = await Stats.find();
-		}else{
-			stats = await Stats.find({where:{ twitchId: req.session.userid }});
 		}
+		stats = await Stats.find({where, order: { created: 'DESC' }});
 		res.json(stats);
 	}catch(e) {
 		next(e);

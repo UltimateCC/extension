@@ -1,4 +1,3 @@
-
 version: '3.3'
 
 services:
@@ -10,7 +9,7 @@ services:
       - back
     networks:
       - default
-    environment: 
+    environment:
       - LISTEN_PORT=8000
       - API_HOST=back
       - API_PORT=8001
@@ -18,7 +17,7 @@ services:
   back:
     build: ./back
     container_name: captions-back
-    depends_on: 
+    depends_on:
       - captionsdb
       - captionsredis
 
@@ -36,6 +35,8 @@ services:
       - TWITCH_CLIENTSECRET=${TWITCH_CLIENTSECRET}
       - TWITCH_SECRET=${TWITCH_SECRET}
       - TWITCH_REDIRECT_URI=${TWITCH_REDIRECT_URI}
+      - TWITCH_EVENTSUB_HOST=${TWITCH_EVENTSUB_HOST}
+      - TWITCH_EVENTSUB_SECRET=${TWITCH_EVENTSUB_SECRET}
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - ADMINS_TWITCHID=${ADMINS_TWITCHID}
       #- SOCKETIO_ADMIN_PASSWORD=${SOCKETIO_ADMIN_PASSWORD}

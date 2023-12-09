@@ -27,6 +27,9 @@ export const configSchema = z.object({
 	TWITCH_SECRET: z.string().min(1),
 	TWITCH_REDIRECT_URI: z.string().min(1),
 
+	TWITCH_EVENTSUB_HOST: z.string(),
+	TWITCH_EVENTSUB_SECRET: z.string(),
+
 	// Discord token (to fetch thanks info)
 	DISCORD_BOT_TOKEN: z.string().optional(),
 });
