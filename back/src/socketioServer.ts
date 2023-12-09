@@ -260,7 +260,7 @@ export function registerTwitchAutoStop(twitchId: string) {
 			// -> socket type can be used
 			const sockets = await io.local.in('twitch-'+twitchId).fetchSockets() as unknown as TypedSocket[];
 			for(const socket of sockets) {
-				if(socket.data.config.twitchAutoStop) {
+				if(socket.data.config.twitchAutoStop !== false) {
 					socket.emit('action', { type:'stop' });
 				}
 			}
