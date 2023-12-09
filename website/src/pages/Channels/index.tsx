@@ -65,7 +65,7 @@ function Channels() {
                 <div className="live-info theme-box">
                     <div>
                         <h3>Live</h3>
-                        <p>{streamerCount} currently using it</p>
+                        <p>{streamerCount} channels currently live</p>
                     </div>
                     <div>
                         <h3>Extension</h3>

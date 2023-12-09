@@ -162,14 +162,15 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
+			logger.error('Translation failed for '+socket.data.twitchId, out.message);
 		}else{
 			// If translation generated errors, warn user
 			if(out.errors?.length) {
 				// If multiple translation errors, it's probably multiple times the same
 				// -> Send only first one to user
 				socket.emit('info', { type: 'warn', message: out.errors[0] });
+				logger.warn('Translation error for '+socket.data.twitchId, out.errors[0]);
 			}
-
 			try{
 				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
@@ -205,6 +206,7 @@ io.use((socket, next)=>{
 		}));
 
 	}else{
+		logger.warn('Unauthenticated socketio connection');
 		next(new Error('not authenticated'));
 	}
 });

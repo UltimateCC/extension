@@ -20,8 +20,6 @@ export class GCPTranslator extends Translator {
 		});
 		const res = await fetch("https://translation.googleapis.com/language/translate/v2?" + params );
 		if(!res.ok) {
-			const text = await res.text() 
-			logger.warn('Error saving GCP key', text);
 			return res.status + ' ' + res.statusText;
 		}
 	}
@@ -56,7 +54,7 @@ export class GCPTranslator extends Translator {
 			logger.error('GCP translation error', status, text);
 
 			// Status 403 = Key doesnt have required permissions to access API
-			// Status 400 = Invalid request ...?
+			// Status 400 = Invalid request ...? Invalid API key etc
 			// Mark as expired to avoid calling API again in this case
 			if(res.status === 403 || res.status === 400) {
 				this.expired = true;
