@@ -1,7 +1,7 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
 import { logger } from "../logger";
-import { isConnected } from "../socketioServer";
+import { getUserSockets, isConnected } from "../socketioServer";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -45,6 +45,8 @@ interface LiveChannel {
 	title: string
 	gameName: string
 	thumbnailUrl: string
+	spokenLang: string
+	translation: boolean
 }
 
 // Do only one call of getLiveChannels at a time
@@ -68,19 +70,27 @@ async function _getLiveChannels() {
 	const out: LiveChannel[] = [];
 
 	await Promise.all(channels.map(async (channel) => {
-		if(await isConnected(channel.id)) {
-			const stream = await api.streams.getStreamByUserId(channel.id);
-			if(stream) {
-				out.push({
-					id: stream.userId,
-					name: stream.userName,
-					displayName: stream.userDisplayName,
-					gameName: stream.gameName,
-					title: stream.title,
-					viewers: stream.viewers,
-					thumbnailUrl: stream.getThumbnailUrl(640, 360),
-				});
+		const sockets = await getUserSockets(channel.id);
+
+		if(sockets.length) {
+			const socketData = sockets[0].data;
+			if(socketData.lastSpokenLang) {
+				const stream = await api.streams.getStreamByUserId(channel.id);
+				if(stream) {
+					out.push({
+						id: stream.userId,
+						name: stream.userName,
+						displayName: stream.userDisplayName,
+						gameName: stream.gameName,
+						title: stream.title,
+						viewers: stream.viewers,
+						thumbnailUrl: stream.getThumbnailUrl(640, 360),
+						spokenLang: socketData.lastSpokenLang,
+						translation: socketData.translator?.isWorking() ?? false
+					});
+				}				
 			}
+
 		}
 	}));
 

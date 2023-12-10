@@ -29,12 +29,13 @@ interface ClientToServerEvents {
 }
 
 export interface SocketData {
-	firstText: number;
-	lastText: number;
-	stats: Stats | null;
-	config: UserConfig;
-	twitchId: string;
-	translator: Translator;
+	firstText: number
+	lastText: number
+	lastSpokenLang: string
+	stats: Stats | null
+	config: UserConfig
+	twitchId: string
+	translator: Translator
 	//streamingStt: StreamingSpeechToText | null;
 }
 
@@ -141,6 +142,8 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		}
 
 		socket.emit('transcript', transcript );
+
+		socket.data.lastSpokenLang = transcript.lang;
 
 		// Count statistics
 		if(socket.data.stats) {
@@ -250,17 +253,21 @@ export async function endSocketSessions() {
 	logger.info('All sockets disconnected');
 }
 
+export async function getUserSockets(twitchId: string) {
+	// Only local sockets are fetched
+	// -> socket type can be used
+	return await io.local.in('twitch-'+twitchId).fetchSockets() as unknown as TypedSocket[];
+}
+
 export async function isConnected(twitchId: string) {
-	const sockets = await io.to('twitch-'+twitchId).fetchSockets();
+	const sockets = await getUserSockets(twitchId);
 	return !!sockets.length;
 }
 
 export function registerTwitchAutoStop(twitchId: string) {
 	eventsub.onStreamOffline(twitchId, async()=>{
 		try {
-			// Only local sockets are fetched
-			// -> socket type can be used
-			const sockets = await io.local.in('twitch-'+twitchId).fetchSockets() as unknown as TypedSocket[];
+			const sockets = await getUserSockets(twitchId);
 			for(const socket of sockets) {
 				if(socket.data.config.twitchAutoStop !== false) {
 					socket.emit('action', { type:'stop' });

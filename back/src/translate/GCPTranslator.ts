@@ -20,7 +20,11 @@ export class GCPTranslator extends Translator {
 		});
 		const res = await fetch("https://translation.googleapis.com/language/translate/v2?" + params );
 		if(!res.ok) {
-			return res.status + ' ' + res.statusText;
+			const text = await res.text();
+			return {
+				message: res.status + ' ' + res.statusText,
+				text
+			}
 		}
 	}
 
