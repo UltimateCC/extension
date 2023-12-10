@@ -3,7 +3,7 @@ import { TranscriptData } from "../context/SocketContext";
 
 
 // Minimum text length before spliting it
-const SPLIT_MIN_LENGTH = 200;
+const SPLIT_MIN_LENGTH = 150;
 
 /** Speech recognition using Web Speech API */
 export function useSpeechRecognition( { handleText, lang, listening, splitDelay, delay }: {
@@ -60,6 +60,10 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 						setError('Couldn\'t start speech recognition, it may not be supported in your browser, try using Chrome or Edge');
 					}else{
 						recognition.start();
+						// Reset partial results
+						lastText = '';
+						ignoreLength = 0;
+						lastCaptions = null;
 					}
 				}
 			}

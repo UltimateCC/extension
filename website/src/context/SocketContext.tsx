@@ -47,9 +47,11 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
     reloadConfig: () => void;
     text: (text: TranscriptData) => void;
+    /*
     audioStart: () => void;
     audioData: (data: Blob) => void;
     audioEnd: () => void;
+    */
 }
 
 export type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
