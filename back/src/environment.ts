@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 
-export const configSchema = z.object({
+export const envSchema = z.object({
 	// Database url
 	DB_URL: z.string().min(1),
 
@@ -34,4 +34,4 @@ export const configSchema = z.object({
 	DISCORD_BOT_TOKEN: z.string().optional(),
 });
 
-export const config = configSchema.parse(process.env);
+export const environment = envSchema.parse(process.env);

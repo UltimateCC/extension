@@ -6,8 +6,13 @@ export default defineConfig({
   plugins: [react()],
 
 	server: {
-		// Config dev server to proxy socketio requests to backend
 		proxy: {
+			// Use real live channel endpoint for testing
+			'/api/twitch/live': {
+				target: 'https://ultimatecc.net'
+			},
+
+			// Config dev server to proxy socketio requests to backend locally
 			'/socket.io': {
 				target: 'ws://localhost:8001',
 				ws: true

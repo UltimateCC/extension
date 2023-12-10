@@ -1,6 +1,6 @@
 
 import { configure, getLogger } from 'log4js';
-import { config } from './config';
+import { environment } from './environment';
 
 configure({
 	appenders: {
@@ -14,7 +14,7 @@ configure({
 	categories: {
 		default: {
 			appenders: ['out'],
-			level: config.LOGLEVEL || 'info',
+			level: environment.LOGLEVEL || 'info',
 			enableCallStack: true
 		}
 	}

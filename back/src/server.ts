@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { endSocketSessions, io } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
-import { config } from './config';
+import { environment } from './environment';
 import { logger } from './logger';
 import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
 import { eventsub } from './twitch/events';
@@ -29,7 +29,7 @@ io.engine.use(sessionMiddleware);
 export async function startServer() {
 	await initSessionMiddleware();
 	await new Promise<void>((res)=>{
-		server.listen(config.PORT, ()=>{
+		server.listen(environment.PORT, ()=>{
 			res();
 		});
 	});

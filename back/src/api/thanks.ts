@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { config } from "../config";
+import { environment } from "../environment";
 import { logger } from "../logger";
 
 type Contributor = {
@@ -35,13 +35,13 @@ const others = ["Kranack", "Rem_x", "Theondrus", "Velie"];
 // Update contributor list on app start
 (async ()=>{
 	try {
-		if(!config.DISCORD_BOT_TOKEN) {
+		if(!environment.DISCORD_BOT_TOKEN) {
 			return;
 		}
 		for(const c of contributors) {
 			const res = await fetch('https://discord.com/api/v10/users/'+c.discordId, {
 				headers: {
-					'Authorization': 'Bot ' + config.DISCORD_BOT_TOKEN,
+					'Authorization': 'Bot ' + environment.DISCORD_BOT_TOKEN,
 					'Content-Type': 'application/json',
 				}
 			});

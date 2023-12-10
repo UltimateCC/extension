@@ -3,15 +3,15 @@ import { RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "../entity/User";
 import { dataSource } from "../database";
-import { config } from "../config";
+import { environment } from "../environment";
 import { logger } from "../logger";
 
 
-export const clientId = config.TWITCH_CLIENTID;
-export const ownerId = config.TWITCH_OWNERID;
-export const secret = config.TWITCH_SECRET;
-export const clientSecret = config.TWITCH_CLIENTSECRET;
-export const redirectUri = config.TWITCH_REDIRECT_URI;
+export const clientId = environment.TWITCH_CLIENTID;
+export const ownerId = environment.TWITCH_OWNERID;
+export const secret = environment.TWITCH_SECRET;
+export const clientSecret = environment.TWITCH_CLIENTSECRET;
+export const redirectUri = environment.TWITCH_REDIRECT_URI;
 
 export const authURL = 'https://id.twitch.tv/oauth2/authorize?' + new URLSearchParams({
 	response_type: 'code',

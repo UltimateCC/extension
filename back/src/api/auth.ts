@@ -4,7 +4,7 @@ import { authURL } from "../twitch/twitch";
 import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
 import { logger } from "../logger";
-import { config } from "../config";
+import { environment } from "../environment";
 
 
 declare module 'express-session' {
@@ -25,7 +25,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 	}
 }
 
-const admins = config.ADMINS_TWITCHID.split(',');
+const admins = environment.ADMINS_TWITCHID.split(',');
 
 export const authRouter = Router();
 

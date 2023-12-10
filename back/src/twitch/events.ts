@@ -1,14 +1,14 @@
 import { EventSubMiddleware } from "@twurple/eventsub-http";
 import { api } from "./twitch";
-import { config } from "../config";
+import { environment } from "../environment";
 import { logger } from "../logger";
 
 
 export const eventsub = new EventSubMiddleware({
 	apiClient: api,
 	pathPrefix: '/api/eventsub',
-	hostName: config.TWITCH_EVENTSUB_HOST,
-	secret: config.TWITCH_EVENTSUB_SECRET
+	hostName: environment.TWITCH_EVENTSUB_HOST,
+	secret: environment.TWITCH_EVENTSUB_SECRET
 });
 
 // Log errors

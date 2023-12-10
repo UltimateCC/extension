@@ -2,13 +2,13 @@
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
-import { config } from "./config";
+import { environment } from "./environment";
 import { logger } from "./logger";
 
 
 export const dataSource = new DataSource({
 	type: "mongodb",
-	url: config.DB_URL,
+	url: environment.DB_URL,
 	entities: [User, Stats],
 	connectTimeoutMS: 5000,
 });

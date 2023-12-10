@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
-import { config } from "./config";
+import { environment } from "./environment";
 import { logger } from "./logger";
 
 
@@ -9,7 +9,7 @@ import { logger } from "./logger";
 	try{
 		await initDatabase();
 		await startServer();
-		logger.info('Server started on port '+config.PORT);
+		logger.info('Server started on port '+environment.PORT);
 	}catch(e){
 		logger.error('Error during init', e);
 	}
