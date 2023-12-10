@@ -61,7 +61,7 @@ async function loadConfig(socket: TypedSocket) {
 	await loadRateLimiter.consume(socket.data.twitchId);
 
 	// Fetch user
-	const u = await User.findOneByOrFail({ twitchId: socket.data.twitchId });
+	const u = await User.findOneOrFail({where: { twitchId: socket.data.twitchId }, cache: false});
 	socket.data.config = u.config;
 
 	if(socket.data.config.twitchAutoStop !== false) {

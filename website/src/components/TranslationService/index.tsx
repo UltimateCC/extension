@@ -35,7 +35,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
         DelayedDisplay({
             requestFn: async () => {
                 await api('secrets', { method: 'POST', body: { gcpKey: newApiKey } });
-                await api('config', {method: 'POST', body: { translateService: 'gcp' }});
+                await api('config', { method: 'POST', body: { translateService: 'gcp' }});
                 await new Promise((res)=>setTimeout(res, 200));
                 reloadConfig();
             },
