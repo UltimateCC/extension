@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import '../../webroot/style/thanks.css';
 import api from '../../services/api';
+import { langList } from '../../services/langs';
 
 interface LiveChannel {
     id: string
@@ -11,15 +12,16 @@ interface LiveChannel {
     title: string
     gameName: string
     thumbnailUrl: string
-    
+	spokenLang: string
+	translation: boolean
     viewersText?: string
 }
 
 function formatNumber(number: number, general: string, one: string, none: string) {
     if (number > 999999) {
-        return `${(number / 1000000).toFixed(3)}M` + " " + general;
+        return `${(number / 1000000).toFixed(3)}M ` + general;
     } else if (number > 999) {
-        return `${(number / 1000).toFixed(1)}k` + " " + general;
+        return `${(number / 1000).toFixed(1)}k ` + general;
     } else if (number == 1) {
         return "1 " + one;
     } else if (number == 0) {
@@ -42,6 +44,7 @@ function Channels() {
                     // Edit viewers number to show K or M
                     const newLiveChannels = res.map((channel) => {
                         channel.viewersText = formatNumber(channel.viewers, "people watching", "person watching", "watching :/");
+                        channel.spokenLang = langList[channel.spokenLang] ?? '';
                         return channel;
                     });
                     setLiveChannels(newLiveChannels);
@@ -82,7 +85,7 @@ function Channels() {
                                     </div>
                                     <div className="card-bottom">
                                         <p>{channel.viewersText}</p>
-                                        <p>French</p>
+                                        <p>{channel.spokenLang}</p>
                                     </div>
                                 </a>
                             </div>

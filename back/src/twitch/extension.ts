@@ -1,7 +1,7 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
 import { logger } from "../logger";
-import { getUserSockets, isConnected } from "../socketioServer";
+import { getUserSockets } from "../socketioServer";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -85,7 +85,7 @@ async function _getLiveChannels() {
 						title: stream.title,
 						viewers: stream.viewers,
 						thumbnailUrl: stream.getThumbnailUrl(640, 360),
-						spokenLang: socketData.lastSpokenLang,
+						spokenLang: socketData.lastSpokenLang.split('-')[0],
 						translation: socketData.translator?.isWorking() ?? false
 					});
 				}				

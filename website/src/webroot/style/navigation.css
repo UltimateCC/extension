@@ -85,13 +85,9 @@
 
 #navbar .main-links a {
     font-size: 2em;
-    margin-bottom: .5em;
+    margin-bottom: .4em;
     text-decoration: none;
     transition: all 0.5s;
-}
-
-#navbar .main-links .dashboard {
-    margin-bottom: min(8vh);
 }
 
 #navbar .secondary-links a {
@@ -158,11 +154,11 @@
 }
 
 #navbar .secondary-links a:not(.active):after {
-    bottom: 7px;
+    top: 1.2em;
 }
 
 #navbar .main-links a:not(.active):after {
-    top: 32px;
+    top: .6em;
 }
 
 #navbar .main-links a:not(.active):hover:after,
