@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authMiddleware, authRouter } from "./auth";
+import { adminMiddleware, authMiddleware, authRouter } from "./auth";
 import { thanksRouter } from "./thanks";
 import { webhooksRouter } from "./webhooks";
 import { configRouter } from "./config";
@@ -7,6 +7,7 @@ import { secretsRouter } from "./secrets";
 import { twitchConfigRouter } from "./twitchConfig";
 import { statsRouter } from "./stats";
 import { twitchRouter } from "./twitch";
+import { usersRouter } from "./users";
 
 
 export const apiRouter = Router();
@@ -36,3 +37,6 @@ apiRouter.use('/twitchconfig', authMiddleware, twitchConfigRouter);
 
 // Statistics
 apiRouter.use('/stats', authMiddleware, statsRouter);
+
+// Admin: List users
+apiRouter.use('/users', adminMiddleware, usersRouter)

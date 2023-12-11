@@ -25,6 +25,14 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 	}
 }
 
+export function adminMiddleware(req: Request, res: Response, next: NextFunction) {
+	if(!req.session.admin) {
+		res.status(403).json({message: 'Forbidden'});
+	}else{
+		next();
+	}
+}
+
 const admins = environment.ADMINS_TWITCHID.split(',');
 
 export const authRouter = Router();
