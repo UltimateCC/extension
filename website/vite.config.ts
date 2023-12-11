@@ -9,7 +9,8 @@ export default defineConfig({
 		proxy: {
 			// Use real live channel endpoint for testing
 			'/api/twitch/live': {
-				target: 'https://ultimatecc.net'
+				target: 'https://ultimatecc.net',
+				changeOrigin: true
 			},
 
 			// Config dev server to proxy socketio requests to backend locally

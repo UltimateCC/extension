@@ -85,7 +85,7 @@ function Dashboard() {
                 lastSpokenLang: spokenLang
             }
         })
-        .then(socketCtx.reloadConfig)
+        /*.then(socketCtx.reloadConfig)*/
         .catch((error) => {
             console.error('Error updating spoken language', error);
             setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });

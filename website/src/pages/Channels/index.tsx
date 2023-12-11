@@ -15,15 +15,15 @@ interface LiveChannel {
     viewersText?: string
 }
 
-function FormatNumber(number: number, general: string, one: string, none: string) {
+function formatNumber(number: number, general: string, one: string, none: string) {
     if (number > 999999) {
-        return `${(number / 1000000).toFixed(1)}M` + " " + general;
+        return `${(number / 1000000).toFixed(3)}M` + " " + general;
     } else if (number > 999) {
-        return `${(number / 1000).toFixed(1)}K` + " " + general;
+        return `${(number / 1000).toFixed(1)}k` + " " + general;
     } else if (number == 1) {
-        return "One " + one;
+        return "1 " + one;
     } else if (number == 0) {
-        return "No one " + none;
+        return "0 " + none;
     } else {
         return number.toString() + " " + general;
     }
@@ -31,29 +31,27 @@ function FormatNumber(number: number, general: string, one: string, none: string
 
 function Channels() {
 
-    const [liveChannels, setLiveChannels] = useState<LiveChannel[]>();
+    const [liveChannels, setLiveChannels] = useState<LiveChannel[]>([]);
     const [streamerCount, setStreamerCount] = useState<string>("0");
     const [viewerCount, setViewerCount] = useState<string>("0");
 
     useEffect(()=>{
         api('twitch/live')
-            .then((res) => {
-                setLiveChannels(res);
-            }).catch(e=>console.error('Error fetching contributors', e));
-    }, []);
+            .then((res: LiveChannel[]) => {
+                if (res) {
+                    // Edit viewers number to show K or M
+                    const newLiveChannels = res.map((channel) => {
+                        channel.viewersText = formatNumber(channel.viewers, "people watching", "person watching", "watching :/");
+                        return channel;
+                    });
+                    setLiveChannels(newLiveChannels);
+                    setStreamerCount(newLiveChannels.length.toString() + " channel" + (newLiveChannels.length > 1 ? "s" : ""));
+                    setViewerCount(formatNumber(newLiveChannels.reduce((acc, channel) => acc + channel.viewers, 0), "viewers", "viewer", "viewer"));
+                }
 
-    // Edit viewers number to show K or M
-    useEffect(()=>{
-        if (liveChannels) {
-            const newLiveChannels = liveChannels.map((channel) => {
-                channel.viewersText = FormatNumber(channel.viewers, "people watching", "person watching", "watching :/");
-                return channel;
-            });
-            setLiveChannels(newLiveChannels);
-            setStreamerCount(newLiveChannels.length.toString() + " streamer" + (newLiveChannels.length > 1 ? "s" : ""));
-            setViewerCount(FormatNumber(newLiveChannels.reduce((acc, channel) => acc + channel.viewers, 0), "viewers", "viewer", "viewer"));
-        }
-    }, [liveChannels]);
+                setLiveChannels(res);
+            }).catch(e=>console.error('Error fetching live channels', e));
+    }, []);
 
     return (
         <section id="channels">
@@ -61,35 +59,39 @@ function Channels() {
                 <h2>Live Channels</h2>
             </div>
 
-            <div className="channels-container">
-                <div className="live-info theme-box">
-                    <div>
-                        <h3>Live</h3>
-                        <p>{streamerCount} channels currently live</p>
-                    </div>
-                    <div>
-                        <h3>Extension</h3>
-                        <p>{viewerCount} currently using it</p>
-                    </div>
-                </div>
-                <div className="live-channels">
-                    {liveChannels?.map((channel) => (
-                        <div className="card-container" key={ channel.id } style={{ backgroundImage: `url(${channel.thumbnailUrl})` }}>
-                            <a href={`https://twitch.tv/${channel.name}`} target="_blank" rel="noreferrer">
-                                <div className="card-top">
-                                    <h4>{channel.displayName}</h4>
-                                    <p>{channel.gameName}</p>
-                                    <p className='stream-title'>{channel.title}</p>
-                                </div>
-                                <div className="card-bottom">
-                                    <p>{channel.viewersText}</p>
-                                    <p>French</p>
-                                </div>
-                            </a>
+            { liveChannels.length > 0 && (
+                <div className="channels-container">
+                    <div className="live-info theme-box">
+                        <div>
+                            <h3>Live</h3>
+                            <p>{streamerCount} currently live</p>
                         </div>
-                    ))}
-                </div>
-            </div>
+                        <div>
+                            <h3>Extension</h3>
+                            <p>{viewerCount} currently using it</p>
+                        </div>
+                    </div>
+                    <div className="live-channels">
+                        {liveChannels?.map((channel) => (
+                            <div className="card-container" key={ channel.id } style={{ backgroundImage: `url(${channel.thumbnailUrl})` }}>
+                                <a href={`https://twitch.tv/${channel.name}`} target="_blank" rel="noreferrer">
+                                    <div className="card-top">
+                                        <h4>{channel.displayName}</h4>
+                                        <p>{channel.gameName}</p>
+                                        <p className='stream-title'>{channel.title}</p>
+                                    </div>
+                                    <div className="card-bottom">
+                                        <p>{channel.viewersText}</p>
+                                        <p>French</p>
+                                    </div>
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                </div>                
+            ) }
+
+
         </section>
     );
 }

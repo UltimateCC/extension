@@ -126,6 +126,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			await textRateLimiter.consume(socket.data.twitchId);
 		}catch(e) {
 			logger.warn('Transcript ratelimited for: '+socket.data.twitchId);
+			return;
 		}
 
 		// Ignore empty string (in theory should not happen)
@@ -179,8 +180,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {
-					// Simplify error when pubsub message is too large
-					// todo: If this is correctly detected, show message to user
+					// Simplify error when its pubsub message too large
 					logger.warn('Pubsub message too large for user '+socket.data.twitchId);
 				}else{
 					throw e;
