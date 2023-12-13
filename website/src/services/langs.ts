@@ -92,7 +92,7 @@ export const langList: {
 	"ps": "Pashto",
 	"fa": "Persian",
 	"pl": "Polish",
-	"pt": "Portuguese (Portugal, Brazil)",
+	"pt": "Portuguese",
 	"pa": "Punjabi",
 	"qu": "Quechua",
 	"ro": "Romanian",

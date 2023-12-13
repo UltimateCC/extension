@@ -137,7 +137,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 
 		// Limit too long text
 		// (Text shouldnt be this long because it is splitted clientside)
-		if(transcript.text.length > 300) {
+		if(transcript.text.length > 250) {
 			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
 			return;
 		}
@@ -150,7 +150,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 		if(socket.data.stats) {
 			const now = Date.now();
 			if(!socket.data.firstText) {
-				socket.data.firstText = now;
+				socket.data.firstText = now - transcript.duration;
 			}
 			socket.data.lastText = now;
 
@@ -180,15 +180,16 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {
-					// Simplify error when its pubsub message too large
 					logger.warn('Pubsub message too large for user '+socket.data.twitchId);
+				}else if(e?.statusCode === 500) {
+					logger.warn('Error 500 sending pubsub for user '+socket.data.twitchId);
 				}else{
 					throw e;
 				}
 			}
 		}
 	}catch(e) {
-		logger.error('Error handling captions', e);
+		logger.error('Error handling captions for '+socket.data.twitchId, e);
 	}
 }
 
@@ -227,7 +228,15 @@ io.on('connect', (socket) => {
 	});
 
 	socket.on('text', captions =>{
-		handleCaptions(socket, captions).catch(e=> logger.error('Error handling captions', e));
+		// Ignore if data is invalid
+		if(typeof captions.text !== 'string') return;
+		if(typeof captions.delay !== 'number') return;
+		if(typeof captions.duration !== 'number') return;
+		if(captions.duration < 0) return;
+		if(typeof captions.lang !== 'string') return;
+		if(typeof captions.final !== 'boolean') return;
+
+		handleCaptions(socket, captions);
 	});
 
 	// Streaming speech to text
@@ -250,7 +259,7 @@ export async function endSocketSessions() {
 	const sockets = await io.local.fetchSockets() as unknown as TypedSocket[];
 	// End all sessions (triggers saving statistics)
 	await Promise.all(sockets.map(s=>endSession(s)));
-	logger.info('All sockets disconnected');
+	logger.info('All sockets sessions ended');
 }
 
 export async function getUserSockets(twitchId: string) {
