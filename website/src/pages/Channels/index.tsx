@@ -33,7 +33,7 @@ function formatNumber(number: number, general: string, one: string, none: string
 
 function Channels() {
 
-    const [liveChannels, setLiveChannels] = useState<LiveChannel[]>([]);
+    const [liveChannels, setLiveChannels] = useState<LiveChannel[]>();
     const [streamerCount, setStreamerCount] = useState<string>("0");
     const [viewerCount, setViewerCount] = useState<string>("0");
 
@@ -62,16 +62,16 @@ function Channels() {
                 <h2>Live Channels</h2>
             </div>
 
-            { liveChannels.length > 0 && (
+            { Array.isArray(liveChannels) && (
                 <div className="channels-container">
                     <div className="live-info theme-box">
                         <div>
-                            <h3>Live</h3>
-                            <p>{streamerCount} currently live</p>
-                        </div>
-                        <div>
-                            <h3>Extension</h3>
-                            <p>{viewerCount} currently using it</p>
+                            <h3>Live channels</h3>
+                            { liveChannels.length ? (
+                                <p>{streamerCount} currently live with {viewerCount} total viewers</p>
+                            ): (
+                                <p>Nobody currently live :/</p>
+                            ) }
                         </div>
                     </div>
                     <div className="live-channels">
