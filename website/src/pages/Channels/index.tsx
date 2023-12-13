@@ -68,7 +68,7 @@ function Channels() {
                         <div>
                             <h3>Live channels</h3>
                             { liveChannels.length ? (
-                                <p>{streamerCount} currently live with {viewerCount} total viewers</p>
+                                <p>{streamerCount} currently live with a total of {viewerCount}</p>
                             ): (
                                 <p>Nobody currently live :/</p>
                             ) }
