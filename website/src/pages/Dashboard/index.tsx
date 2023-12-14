@@ -19,10 +19,11 @@ import loadingImg from '../../assets/loading.svg';
 import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
-import { SocketContext } from '../../context/SocketContext';
+import { Action, SocketContext } from '../../context/SocketContext';
 import Webhooks from '../../components/Webhooks';
 import DashboardTabs from '../../components/DashboardTabs';
 import Guide from '../../components/Guide';
+import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 
 // interface banCaptionsProps {
 //     lang: string;
@@ -46,6 +47,14 @@ function Dashboard() {
     // Speech language
     const [lastSpokenLang, setLastSpokenLang] = useState<string>();
     const [spokenLang, setSpokenLang] = useState<string>();
+    
+    // Speech recognition
+    const [listening, setListening] = useState<boolean>(false);
+    // Delay between each partial captions
+    const splitDelay = 2500;
+    // Additional delay added to captions
+    const delay = 1000;
+    const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: spokenLang, listening, splitDelay, delay});
 
     // Translation
     const [translateService, setTranslateService] = useState<string>();
@@ -53,6 +62,9 @@ function Dashboard() {
 
     // Twitch autostop
     const [twitchAutoStop, setTwitchAutoStop] = useState<boolean>(true);
+
+    // OBS websocket
+    //const { obs } = useObsWebsocket({url:'ws://127.0.0.1:4455', password:'UQetwmY0jbzblEL0', enabled: true});
 
     function loadConfig() {
         api('config')
@@ -129,6 +141,36 @@ function Dashboard() {
     //     setAllBanCaptions(newBanCaptions);
     // };
 
+    // Handle actions triggered from server
+    useEffect(()=>{
+        function handleAction(action: Action) {
+            if(action.type === 'setlang') {
+                setSpokenLang(action.lang);
+            }else if(action.type === 'start') {
+                setListening(true);
+            }else if(action.type === 'stop') {
+                setListening(false);
+            }
+        }
+        socketCtx.socket.on('action', handleAction);
+
+        return ()=>{
+            socketCtx.socket.off('action', handleAction);
+        }
+    }, [socketCtx.socket, socketCtx.reloadConfig, setSpokenLang, spokenLang, lastSpokenLang]);
+
+    /*
+    // Send captions to obs
+    useEffect(()=>{
+        // todo: send only if enabled
+        // ratelimit sending...?
+        // Move to custom hook
+        if(obs?.identified) {
+            obs.call('SendStreamCaption', {captionText: text});
+        }
+    }, [obs, text]);
+    */
+
     const closeResponse = () => {
         setResponse(null);
     };
@@ -175,10 +217,14 @@ function Dashboard() {
                     <div className='theme-box-container'>
                         <h3>Dashboard</h3>
                         <MicrophoneApp 
+                            listening={listening}
+                            setListening={setListening}
+                            text={text}
                             spokenLang={spokenLang}
                             setSpokenLang={setSpoken}
                             configLoaded={configLoaded}
                             loadingImg={loadingImg}
+                            recognitionErrror={recognitionErrror}
                         />
                     </div>
                 </div>
