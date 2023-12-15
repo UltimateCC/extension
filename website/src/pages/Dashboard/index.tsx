@@ -42,12 +42,13 @@ function Dashboard() {
     // Redirect if not connected
     useAuthCheck();
 
+    // User config
+    const { config, loadConfig, updateConfig } = useSavedConfig<UserConfig>({apiPath: 'config'});
+
+    // Current dashboard state
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
-
-    // User config
-    const { config, loadConfig, updateConfig } = useSavedConfig<UserConfig>({apiPath: 'config'});
     
     // Selected settings tab
     const [currentTab, setCurrentTab] = useState<string>('Guide');
@@ -190,6 +191,7 @@ function Dashboard() {
                                 <div>
                                     <TranslationService
                                         translateService={config.translateService}
+                                        updateConfig={updateConfig}
                                         configLoaded={configLoaded}
                                         loadingImg={loadingImg}
                                     />

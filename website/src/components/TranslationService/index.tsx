@@ -11,10 +11,11 @@ import { config } from '../../config';
 interface TranslationServiceProps {
     translateService?: string
     configLoaded: boolean
+    updateConfig: (config: {translateService: '' | 'gcp'}) => Promise<void>
     loadingImg: string
 }
 
-function TranslationService({ translateService, configLoaded, loadingImg }: TranslationServiceProps) {
+function TranslationService({ translateService, updateConfig, configLoaded, loadingImg }: TranslationServiceProps) {
     const { captionsStatus, reloadConfig } = useContext(SocketContext);
 
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
@@ -35,8 +36,8 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
         DelayedDisplay({
             requestFn: async () => {
                 await api('secrets', { method: 'POST', body: { gcpKey: newApiKey } });
-                await api('config', { method: 'POST', body: { translateService: 'gcp' }});
-                await new Promise((res)=>setTimeout(res, 200));
+                await updateConfig({translateService: 'gcp'});
+                await new Promise((res)=>setTimeout(res, 100));
                 reloadConfig();
             },
             successMessage: "The API key is working and has been saved", 
@@ -57,9 +58,9 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
             requestFn: async () => {
                 await Promise.all([
                     api('secrets', { method: 'POST', body: { gcpKey: '' } }),
-                    api('config', {method: 'POST', body: { translateService: '' }})
+                    updateConfig({translateService: ''})
                 ]);
-                await new Promise((res)=>setTimeout(res, 200));
+                await new Promise((res)=>setTimeout(res, 100));
                 reloadConfig();
             },
             successMessage: "The API key has been removed", 
@@ -119,7 +120,7 @@ function TranslationService({ translateService, configLoaded, loadingImg }: Tran
                         ref={apiKeyInputRef}
                         type="password"
                         className="theme-input"
-                        placeholder="Enter the api key..."
+                        placeholder="Paste your API key here"
                     />
                     <button className="theme-btn" onClick={sendApiKey} type="submit">
                         <span>{isLoadingSend ? 'Sending...' : 'Send'}</span>
