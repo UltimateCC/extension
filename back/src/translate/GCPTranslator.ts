@@ -11,10 +11,11 @@ export class GCPTranslator extends Translator {
 		return !!this.secrets.gcpKey;
 	}
 
+	/** Check if API key is working by translating an empty string */
 	static async checkKey(key: string) {
 		const params = new URLSearchParams({
 			key,
-			q: 'Hi',
+			q: '',
 			source: 'en',
 			target: 'fr'
 		});
@@ -55,7 +56,7 @@ export class GCPTranslator extends Translator {
 		}else{
 			const status = res.status + ' ' + res.statusText;
 			const text = await res.text();
-			logger.error('GCP translation error', status, text);
+			logger.debug('GCP translation error', status, text);
 
 			// Status 403 = Key doesnt have required permissions to access API
 			// Status 400 = Invalid request ...? Invalid API key etc
