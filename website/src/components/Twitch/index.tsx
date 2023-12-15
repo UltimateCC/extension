@@ -2,7 +2,6 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel, { formControlLabelClasses } from '@mui/material/FormControlLabel';
 import Switch, { switchClasses } from '@mui/material/Switch';
 import { alpha, styled } from '@mui/material/styles';
-import api from '../../services/api';
 
 
 const ThemedSwitch = styled(Switch)(({theme}) => ({
@@ -33,10 +32,10 @@ const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
 
 interface TwitchProps {
     twitchAutoStop: boolean
-    setTwitchAutoStop: (twitchAutoStop: boolean) => void
+    updateConfig: (config: {twitchAutoStop: boolean}) => Promise<void>
 }
 
-function Twitch({ setTwitchAutoStop, twitchAutoStop }: TwitchProps) {
+function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
     /*
     const [showCaptions, setShowCaptions] = useState<boolean>(true);
 
@@ -65,11 +64,7 @@ function Twitch({ setTwitchAutoStop, twitchAutoStop }: TwitchProps) {
 
     const handleAutoStopChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const autoStop = event.target.checked;
-        setTwitchAutoStop(autoStop);
-        api('config', {
-            method: 'POST',
-            body: { twitchAutoStop: autoStop }
-        })
+        updateConfig({ twitchAutoStop: autoStop })
         .catch(err => {
             console.error('Error updating autostop', err);
         });

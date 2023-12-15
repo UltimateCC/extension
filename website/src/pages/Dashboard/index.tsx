@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 import LanguageOutSelector from '../../components/LanguageOutSelector';
@@ -16,7 +16,6 @@ import '../../webroot/style/dashboard.css';
 import LogoutImg from '../../assets/logout.svg';
 import loadingImg from '../../assets/loading.svg';
 
-import api from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useSocket } from '../../hooks/useSocket';
 import { Action, SocketContext } from '../../context/SocketContext';
@@ -24,29 +23,34 @@ import Webhooks from '../../components/Webhooks';
 import DashboardTabs from '../../components/DashboardTabs';
 import Guide from '../../components/Guide';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
+import { useSavedConfig } from '../../hooks/useSavedConfig';
+import { useAuthCheck } from '../../hooks/useAuthCheck';
 
-// interface banCaptionsProps {
-//     lang: string;
-//     text: string;
-//     id: string;
-// }
+interface UserConfig {
+	spokenLang: string
+	lastSpokenLang: string
+	spokenLangs?: string[]
+	translateService: '' | 'gcp'
+	translateLangs?: string[]
+    twitchAutoStop?: boolean
+}
 
 function Dashboard() {
-    const { user, refreshAuth, error, loading } = useContext(AuthContext);
+    const { user, error } = useContext(AuthContext);
     const socketCtx = useSocket(user?.connected ?? false);
+    
+    // Redirect if not connected
+    useAuthCheck();
 
-    // Request to get the user's config
-    // const [allBanCaptions, setAllBanCaptions] = useState<banCaptionsProps[]>([]);
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
 
-    // Select settings tab
+    // User config
+    const { config, loadConfig, updateConfig } = useSavedConfig<UserConfig>({apiPath: 'config'});
+    
+    // Selected settings tab
     const [currentTab, setCurrentTab] = useState<string>('Guide');
-
-    // Speech language
-    const [lastSpokenLang, setLastSpokenLang] = useState<string>();
-    const [spokenLang, setSpokenLang] = useState<string>();
     
     // Speech recognition
     const [listening, setListening] = useState<boolean>(false);
@@ -54,74 +58,28 @@ function Dashboard() {
     const splitDelay = 2500;
     // Additional delay added to captions
     const delay = 1000;
-    const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: spokenLang, listening, splitDelay, delay});
-
-    // Translation
-    const [translateService, setTranslateService] = useState<string>();
-    const [translationLangs, setTranslationLangs] = useState<string[]>([]);
-
-    // Twitch autostop
-    const [twitchAutoStop, setTwitchAutoStop] = useState<boolean>(true);
+    const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
 
     // OBS websocket
-    //const { obs } = useObsWebsocket({url:'ws://127.0.0.1:4455', password:'UQetwmY0jbzblEL0', enabled: true});
+    //const { obs } = useObsWebsocket({url:'ws://127.0.0.1:4455', password:'', enabled: true});
+    //useObsSendCaptions({obs, text, enabled: true});
 
-    function loadConfig() {
-        api('config')
-        .then(response => {
-            // setAllBanCaptions(response.banWords);
-            setLastSpokenLang(response.lastSpokenLang);
-            setSpokenLang(response.spokenLang);
-            setTranslateService(response.translateService);
-            setTranslationLangs(response.translateLangs);
-            setTwitchAutoStop(response.twitchAutoStop ?? true)
-            setConfigLoaded(true);
-            return;
-        })
-        .catch(err => {
-            console.error(err);
-            setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
-        })
-    }
+    // Function to set spoken lang, and save it
+    const setSpoken = useCallback((lang: string | undefined) => {
+        const newLang = lang || config.lastSpokenLang;
 
-    // Set spoken lang, and save it
-    function setSpoken(lang: string | undefined) {
-        const newLang = lang || lastSpokenLang;
-        setLastSpokenLang(spokenLang);
-        setSpokenLang(newLang);
-
-        api('config', {
-            method: 'POST',
-            body: {
-                spokenLang: newLang,
-                lastSpokenLang: spokenLang
-            }
+        updateConfig({
+            spokenLang: newLang,
+            lastSpokenLang: config.spokenLang
         })
         /*.then(socketCtx.reloadConfig)*/
         .catch((error) => {
             console.error('Error updating spoken language', error);
             setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });
         });
-    }
+    }, [config.lastSpokenLang, config.spokenLang, updateConfig]);
 
-    // Check if authenticated
-    // Move to separate hook ?
-    const authRefreshed = useRef<boolean>(false);
-    useEffect(() => {
-        if(!user?.connected) {
-            // If not connected, redirect to auth url
-            if(user?.url) {
-                window.location.replace(user.url);
-
-            // If url, try refreshing auth once
-            }else if(!loading && !authRefreshed.current) {
-                authRefreshed.current = true;
-                refreshAuth();
-            }
-        }
-    }, [error, user, loading, refreshAuth]);
-
-
+    // Set error message if there is one to show
     useEffect(() => {
         if(user?.img) {
             setProfilePicture(user.img);
@@ -133,19 +91,20 @@ function Dashboard() {
             setResponse({ isSuccess: false, message: "The Twitch extension is not installed on your channel." });
         }
         if(user?.connected) {
-            loadConfig();
+            loadConfig()
+                .then(()=>setConfigLoaded(true))
+                .catch((e)=>{
+                    console.error('Error loading user config', e);
+                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
+                });
         }
-    }, [ user, error, socketCtx.captionsStatus ]);
-
-    // const handleAllBanCaptionsChange = (newBanCaptions: banCaptionsProps[]) => {
-    //     setAllBanCaptions(newBanCaptions);
-    // };
+    }, [ user, error, socketCtx.captionsStatus, loadConfig ]);
 
     // Handle actions triggered from server
     useEffect(()=>{
         function handleAction(action: Action) {
             if(action.type === 'setlang') {
-                setSpokenLang(action.lang);
+                setSpoken(action.lang);
             }else if(action.type === 'start') {
                 setListening(true);
             }else if(action.type === 'stop') {
@@ -157,19 +116,7 @@ function Dashboard() {
         return ()=>{
             socketCtx.socket.off('action', handleAction);
         }
-    }, [socketCtx.socket, socketCtx.reloadConfig, setSpokenLang, spokenLang, lastSpokenLang]);
-
-    /*
-    // Send captions to obs
-    useEffect(()=>{
-        // todo: send only if enabled
-        // ratelimit sending...?
-        // Move to custom hook
-        if(obs?.identified) {
-            obs.call('SendStreamCaption', {captionText: text});
-        }
-    }, [obs, text]);
-    */
+    }, [socketCtx.socket, socketCtx.reloadConfig, setSpoken]);
 
     const closeResponse = () => {
         setResponse(null);
@@ -186,7 +133,7 @@ function Dashboard() {
                 Log out
             </Link>
             <br/>
-            <a onClick={()=>{ window.location.reload() }} href='#'>Refresh</a>
+            <a onClick={ ()=>{ window.location.reload() } } href='#'>Refresh</a>
         </div>
     );
 
@@ -220,7 +167,7 @@ function Dashboard() {
                             listening={listening}
                             setListening={setListening}
                             text={text}
-                            spokenLang={spokenLang}
+                            spokenLang={config.spokenLang}
                             setSpokenLang={setSpoken}
                             configLoaded={configLoaded}
                             loadingImg={loadingImg}
@@ -242,7 +189,7 @@ function Dashboard() {
                             { currentTab === 'Translation' && (
                                 <div>
                                     <TranslationService
-                                        translateService={translateService}
+                                        translateService={config.translateService}
                                         configLoaded={configLoaded}
                                         loadingImg={loadingImg}
                                     />
@@ -250,8 +197,8 @@ function Dashboard() {
                                         <div className='languages'>
                                             <h3>Translation languages</h3>
                                             <LanguageOutSelector
-                                                selectedLanguageCode={translationLangs}
-                                                setTranslationLangs={setTranslationLangs}
+                                                selectedLanguageCode={config.translateLangs}
+                                                updateConfig={updateConfig}
                                                 configLoaded={configLoaded}
                                             />
                                         </div>
@@ -260,8 +207,8 @@ function Dashboard() {
                             )}
                             { currentTab === 'Twitch' && (
                                 <Twitch
-                                    twitchAutoStop={twitchAutoStop}
-                                    setTwitchAutoStop={setTwitchAutoStop}
+                                    twitchAutoStop={config.twitchAutoStop ?? true}
+                                    updateConfig={updateConfig}
                                 />)}
                             { currentTab === 'Webhooks' && (<Webhooks/>) }
                         </div>

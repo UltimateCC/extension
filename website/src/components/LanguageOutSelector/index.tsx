@@ -10,14 +10,12 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import api from '../../services/api.ts';
-
 import FormResponse from '../FormResponse';
 import { LangList, SocketContext } from '../../context/SocketContext.tsx';
 
 interface LanguageOutSelectorProps {
-    selectedLanguageCode: string[];
-    setTranslationLangs: (translationLangs: string[]) => void;
+    selectedLanguageCode?: string[];
+    updateConfig: (config: {translateLangs: string[]}) => Promise<void>
     configLoaded: boolean;
 }
 
@@ -34,7 +32,7 @@ const theme = createTheme({
     },
 });
 
-export default function LanguageOutSelector({ selectedLanguageCode, setTranslationLangs, configLoaded }: LanguageOutSelectorProps) {
+export default function LanguageOutSelector({ selectedLanguageCode, updateConfig, configLoaded }: LanguageOutSelectorProps) {
     const [checked, setChecked] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -50,7 +48,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
         const selected: LangList = [];
 
         for(const lang of translateLangs) {
-            if(selectedLanguageCode.includes(lang.code)) {
+            if(selectedLanguageCode?.includes(lang.code)) {
                 selected.push(lang);
             }else{
                 available.push(lang);
@@ -71,7 +69,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
         const selectedChecked: string[] = [];
 
         for(const code of checked) {
-            if(selectedLanguageCode.includes(code)) {
+            if(selectedLanguageCode?.includes(code)) {
                 selectedChecked.push(code);
             }else{
                 availableChecked.push(code);
@@ -84,12 +82,10 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
         // Clear the search
         setSearchTerm('');
 
-        api('config', {
-            method: 'POST',
-            body: { translateLangs: selectedLanguageCodes }
+        updateConfig({
+            translateLangs: selectedLanguageCodes
         })
         .then(() => {
-            setTranslationLangs(selectedLanguageCodes);
             reloadConfig();
         })
         .catch((error) => {
@@ -116,12 +112,12 @@ export default function LanguageOutSelector({ selectedLanguageCode, setTranslati
 
     const handleCheckedRight = () => {
         setChecked(not(checked, availableChecked));
-        handleUpdateLanguages(selectedLanguageCode.concat(availableChecked));
+        handleUpdateLanguages((selectedLanguageCode??[]).concat(availableChecked));
     };
 
     const handleCheckedLeft = () => {
         setChecked(not(checked, selectedChecked));
-        handleUpdateLanguages( selectedLanguageCode.filter( code => !selectedChecked.includes(code) ) );
+        handleUpdateLanguages((selectedLanguageCode??[]).filter( code => !selectedChecked.includes(code) ) );
     };
 
     const customList = (items: LangList, isLeft: boolean) => (
