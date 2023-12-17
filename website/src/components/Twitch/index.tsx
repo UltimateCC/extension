@@ -1,34 +1,4 @@
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel, { formControlLabelClasses } from '@mui/material/FormControlLabel';
-import Switch, { switchClasses } from '@mui/material/Switch';
-import { alpha, styled } from '@mui/material/styles';
-
-
-const ThemedSwitch = styled(Switch)(({theme}) => ({
-    [`& .${switchClasses.thumb}`]: {
-        color: "#9F4EE5",
-        '&:hover': {
-            backgroundColor: alpha('#9F4EE5', theme.palette.action.hoverOpacity),
-        },
-    },
-
-    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-        backgroundColor: "#9F4EE5",
-    },
-
-    [`& .${switchClasses.track}`]: {
-        backgroundColor: "#D9D9D9",
-        opacity: 0.8,
-    },
-}));
-
-const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
-    [`& .${formControlLabelClasses.label}`]: {
-        color: "#D9D9D9",
-        fontSize: '1em',
-        fontFamily: "Baloo",
-    },
-}));
+import ConfigSwitch from '../ConfigSwitch';
 
 interface TwitchProps {
     twitchAutoStop: boolean
@@ -62,32 +32,27 @@ function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
     };
     */
 
-    const handleAutoStopChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const autoStop = event.target.checked;
-        updateConfig({ twitchAutoStop: autoStop })
+    const handleAutoStopChange = (val: boolean) => {
+        updateConfig({ twitchAutoStop: val })
         .catch(err => {
             console.error('Error updating autostop', err);
         });
     }
 
     return (
-        <div>
-            <FormGroup>
-                {/*
-                <ThemedFormControlLabel 
-                    control={<ThemedSwitch
-                        checked={showCaptions}
-                        onChange={handleChange}
-                    />}
-                    label="Show captions to viewers by default (Available soon)" />
-                */}
-                <ThemedFormControlLabel 
-                    control={<ThemedSwitch
-                        checked={twitchAutoStop}
-                        onChange={handleAutoStopChange} 
-                    />}
-                    label="Stop captions when your stream ends (Experimental)" />
-            </FormGroup>
+        <div className="twitch">
+            {/*
+            <ConfigSwitch
+                checked={showCaptions}
+                onChange={handleChange}
+                label="Show captions to viewers by default (Available soon)"
+            />
+            */}
+            <ConfigSwitch
+                checked={twitchAutoStop}
+                onChange={handleAutoStopChange}
+                label="Stop captions when your stream ends (Experimental)"
+            />
         </div>
     );
 }

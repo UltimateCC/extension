@@ -3,9 +3,9 @@ import { useEffect, useRef } from "react"
 
 
 interface ObsWebsocketParams {
-	enabled: boolean
-	url: string
-	password: string
+	enabled?: boolean
+	url?: string
+	password?: string
 }
 
 const obs = new OBSWebSocket();
@@ -31,7 +31,7 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 				});
 		}
 
-		if(enabled) {
+		if(url && password && enabled) {
 			if(!connecting.current) {
 				connect();
 			}else{

@@ -464,6 +464,33 @@
 #dashboard .api .danger-btn {
     padding: 1em;
 }
+
+#dashboard .twitch {
+    text-align: left;
+}
+
+#dashboard .obs {
+    text-align: left;
+    margin: 0 auto;
+}
+
+#dashboard .obs .url {
+    display: flex;
+    width: fit-content;
+    gap: 1em;
+    margin: 0 auto;
+}
+
+#dashboard .obs .url label {
+    min-width: 0;
+}
+
+#dashboard .obs .url input {
+    display: block;
+    height: 2.25em;
+    width: 100%;
+}
+
 #dashboard .webhooks p {
     line-height: 1em;
 }

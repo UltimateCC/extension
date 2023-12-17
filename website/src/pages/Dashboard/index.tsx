@@ -25,6 +25,9 @@ import Guide from '../../components/Guide';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { useSavedConfig } from '../../hooks/useSavedConfig';
 import { useAuthCheck } from '../../hooks/useAuthCheck';
+import { useObsWebsocket } from '../../hooks/useObsWebsocket';
+import { useObsSendCaptions } from '../../hooks/useObsSendCaptions';
+import OBS from '../../components/OBS';
 
 interface UserConfig {
 	spokenLang: string
@@ -33,6 +36,11 @@ interface UserConfig {
 	translateService: '' | 'gcp'
 	translateLangs?: string[]
     twitchAutoStop?: boolean
+    obsEnabled?: boolean,
+    obsPort?: number,
+    obsPassword?: string,
+    obsSendCaptions?: boolean,
+    obsAutoStop?: boolean
 }
 
 function Dashboard() {
@@ -62,8 +70,8 @@ function Dashboard() {
     const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
 
     // OBS websocket
-    //const { obs } = useObsWebsocket({url:'ws://127.0.0.1:4455', password:'', enabled: true});
-    //useObsSendCaptions({obs, text, enabled: true});
+    const { obs } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
+    useObsSendCaptions({obs, text, enabled: (config.obsSendCaptions??true)});
 
     // Function to set spoken lang, and save it
     const setSpoken = useCallback((lang: string | undefined) => {
@@ -79,6 +87,16 @@ function Dashboard() {
             setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });
         });
     }, [config.lastSpokenLang, config.spokenLang, updateConfig]);
+
+    const handleAction = useCallback((action: Action) => {
+        if(action.type === 'setlang') {
+            setSpoken(action.lang);
+        }else if(action.type === 'start') {
+            setListening(true);
+        }else if(action.type === 'stop') {
+            setListening(false);
+        }
+    }, [setSpoken, setListening]);
 
     // Set error message if there is one to show
     useEffect(() => {
@@ -101,23 +119,29 @@ function Dashboard() {
         }
     }, [ user, error, socketCtx.captionsStatus, loadConfig ]);
 
-    // Handle actions triggered from server
+    // Handle actions triggered from server via socket
     useEffect(()=>{
-        function handleAction(action: Action) {
-            if(action.type === 'setlang') {
-                setSpoken(action.lang);
-            }else if(action.type === 'start') {
-                setListening(true);
-            }else if(action.type === 'stop') {
-                setListening(false);
-            }
-        }
         socketCtx.socket.on('action', handleAction);
 
         return ()=>{
             socketCtx.socket.off('action', handleAction);
         }
-    }, [socketCtx.socket, socketCtx.reloadConfig, setSpoken]);
+    }, [socketCtx.socket, socketCtx.reloadConfig, setSpoken, handleAction]);
+
+    // Handle obs events
+    useEffect(()=>{
+        // Stop listening when stream ends on OBS
+        function handleStreamStateChanged(event: {outputActive: boolean}) {
+            if((config.obsAutoStop ?? true) && listening && !event.outputActive) {
+                setListening(false);
+            }
+        }
+        obs.on('StreamStateChanged', handleStreamStateChanged);
+
+        return ()=>{
+            obs.off('StreamStateChanged', handleStreamStateChanged);
+        }
+    }, [obs, config.obsAutoStop, listening]);
 
     const closeResponse = () => {
         setResponse(null);
@@ -210,6 +234,11 @@ function Dashboard() {
                             { currentTab === 'Twitch' && (
                                 <Twitch
                                     twitchAutoStop={config.twitchAutoStop ?? true}
+                                    updateConfig={updateConfig}
+                                />)}
+                            { currentTab === 'OBS' && (
+                                <OBS
+                                    config={config}
                                     updateConfig={updateConfig}
                                 />)}
                             { currentTab === 'Webhooks' && (<Webhooks/>) }

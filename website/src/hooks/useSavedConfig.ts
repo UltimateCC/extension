@@ -19,7 +19,7 @@ export function useSavedConfig<T>({ apiPath }: { apiPath: string }) {
 		}
 		setConfig(updated);
 
-		await api(apiPath, { method: 'POST', body: updated });
+		await api(apiPath, { method: 'POST', body: newConfig });
 	}, [apiPath, config]);
 
 	return { config, loadConfig, updateConfig };

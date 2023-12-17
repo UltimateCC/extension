@@ -44,9 +44,17 @@ export class User extends BaseEntity {
 		transcribe: '',
 		lastSpokenLang: 'fr-FR',
 		spokenLang: 'en-US',
+
 		translateService: '',
 		translateLangs: [],
-		twitchAutoStop: true
+		
+		twitchAutoStop: true,
+
+		obsEnabled: false,
+		obsPort: 4455,
+		obsPassword: '',
+		obsSendCaptions: true,
+		obsAutoStop: true
 	};
 
 	@Column()
@@ -71,18 +79,26 @@ export const UserConfigSchema = z.object({
 	lastSpokenLang: z.string(),
 	spokenLang: z.string(),
 	spokenLangs: z.array(z.string()).optional(),
+
 	translateService: z.union([
 		z.literal(''),
 		z.literal('azure'),
 		z.literal('gcp')
 	]),
 	translateLangs: z.array(z.string()),
-	twitchAutoStop: z.boolean().optional()
+
+	twitchAutoStop: z.boolean(),
 	/*
 	banWords: z.array(z.object({
 		lang: z.string(),
 		text: z.string()
 	}))*/
+
+	obsEnabled: z.boolean(),
+	obsPort: z.number(),
+	obsPassword: z.string(),
+	obsSendCaptions: z.boolean(),
+	obsAutoStop: z.boolean()
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;

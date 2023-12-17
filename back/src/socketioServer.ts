@@ -172,8 +172,12 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			if(out.errors?.length) {
 				// If multiple translation errors, it's probably multiple times the same
 				// -> Send only first one to user
-				socket.emit('info', { type: 'warn', message: out.errors[0] });
-				logger.warn('Translation error for '+socket.data.twitchId, out.errors[0]);
+				const message = out.errors[0];
+				// Do not send errors 500+ to users to avoid confusion
+				if(!message.startsWith('Translation API error: 50')) {
+					socket.emit('info', { type: 'warn', message });
+				}
+				logger.warn('Translation error for '+socket.data.twitchId+' : '+message);
 			}
 			try{
 				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
