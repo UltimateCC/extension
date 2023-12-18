@@ -31,6 +31,11 @@ authProvider.onRefresh((user, token)=>{
 });
 authProvider.onRefreshFailure((user)=>{
 	logger.error('Twitch token refresh failure for user '+user);
+	try {
+		authProvider.removeUser(user);
+	}catch(e) {
+		logger.error('Error removing user after refresh failure');
+	}
 });
 
 /* Ensure user tokens are loaded from database */
