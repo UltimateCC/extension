@@ -29,7 +29,7 @@ export default async function api(
         body: options.body ? JSON.stringify(options.body) : undefined
     });
     if (!res.ok) {
-        let error = "Unexpected error";
+        let error = "Unknown error";
         if (res.status === 401) { // Unauthorized
             error = "Unauthorized";
         }
