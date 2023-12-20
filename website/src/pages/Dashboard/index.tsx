@@ -131,8 +131,11 @@ function Dashboard() {
     // Handle obs events
     useEffect(()=>{
         // Stop listening when stream ends on OBS
-        function handleStreamStateChanged(event: {outputActive: boolean}) {
-            if((config.obsAutoStop ?? true) && listening && !event.outputActive) {
+        function handleStreamStateChanged(event: {outputActive: boolean, outputState: string}) {
+            if(
+                (config.obsAutoStop ?? true) && listening
+                && ['OBS_WEBSOCKET_OUTPUT_STOPPING', 'OBS_WEBSOCKET_OUTPUT_STOPPED'].includes(event.outputState)
+            ) {
                 setListening(false);
             }
         }
@@ -238,7 +241,7 @@ function Dashboard() {
                                 />)}
                             { currentTab === 'OBS' && (
                                 <OBS
-                                    config={config}
+                                    userConfig={config}
                                     updateConfig={updateConfig}
                                 />)}
                             { currentTab === 'Webhooks' && (<Webhooks/>) }

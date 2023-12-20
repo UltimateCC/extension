@@ -8,6 +8,7 @@ export function useObsSendCaptions({obs, text, enabled}: { obs: OBSWebSocket, en
 
 	useEffect(()=>{
 		function sendCaptions() {
+			console.log('sendcaptions');
 			if(obs?.identified && enabled ) {
 				last.current = Date.now();
 				obs.call('SendStreamCaption', {captionText: text});
@@ -21,7 +22,7 @@ export function useObsSendCaptions({obs, text, enabled}: { obs: OBSWebSocket, en
 		}, 500);
 
 		// Prevent sending too much captions
-		if(last.current && Date.now() < (last.current + 250) ) {
+		if(last.current && Date.now() < (last.current + 200) ) {
 			return;
 		}
 		sendCaptions();

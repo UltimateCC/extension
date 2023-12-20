@@ -181,6 +181,8 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			}
 			try{
 				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
+				// todo for metrics:
+				// Get delay at this step
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
 			}catch(e: any) {
 				if(e?.statusCode === 422) {

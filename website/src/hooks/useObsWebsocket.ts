@@ -40,6 +40,7 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 		}
 
 		return ()=>{
+			shouldConnect.current = false;
 			obs.disconnect()
 				.catch(e=>console.error('Error disconnecting OBS websocket',e));
 		}

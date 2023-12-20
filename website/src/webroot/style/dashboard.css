@@ -474,11 +474,15 @@
     margin: 0 auto;
 }
 
+#dashboard .obs p {
+    text-align: center;
+}
+
 #dashboard .obs .url {
     display: flex;
     width: fit-content;
     gap: 1em;
-    margin: 0 auto;
+    margin: 1em auto;
 }
 
 #dashboard .obs .url label {

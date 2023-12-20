@@ -3,7 +3,7 @@ import { TranscriptData } from "../context/SocketContext";
 
 
 // Minimum text length before spliting it
-const SPLIT_MIN_LENGTH = 150;
+const SPLIT_MIN_LENGTH = 120;
 
 /** Speech recognition using Web Speech API */
 export function useSpeechRecognition( { handleText, lang, listening, splitDelay, delay }: {

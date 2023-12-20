@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import ConfigSwitch from "../ConfigSwitch";
-
+import { config } from "../../config";
 
 interface OBSConfig {
 	obsEnabled?: boolean,
@@ -10,15 +10,14 @@ interface OBSConfig {
 	obsAutoStop?: boolean
 }
 
-
 interface OBSProps {
-    config: OBSConfig
+    userConfig: OBSConfig
     updateConfig: (config: Partial<OBSConfig>) => Promise<void>
 }
 
-export default function OBS({config, updateConfig}: OBSProps) {
-	const portInput = useRef<HTMLInputElement>();
-	const passwordInput = useRef<HTMLInputElement>();
+export default function OBS({ userConfig, updateConfig }: OBSProps) {
+	const portInput = useRef<HTMLInputElement>(null);
+	const passwordInput = useRef<HTMLInputElement>(null);
 
 	const handleSwitch = (key: 'obsEnabled'|'obsSendCaptions'|'obsAutoStop', val: boolean) => {
         updateConfig({ [key]: val })
@@ -28,10 +27,20 @@ export default function OBS({config, updateConfig}: OBSProps) {
     }
 
 	const saveUrl = () => {
-		const obsPort = Number(portInput.current?.value);
+		const obsPort = Number.parseInt(portInput.current?.value??'');
 		const obsPassword = passwordInput.current?.value;
-		if(!Number.isNaN(obsPort) && obsPassword) {
-			updateConfig({ obsPort, obsPassword })
+		const newConfig: Partial<OBSConfig> = {};
+		let update = false;
+		if(obsPort && !Number.isNaN(obsPort)) {
+			newConfig.obsPort = obsPort;
+			update = true;
+		}
+		if(obsPassword && obsPassword!=='placeholder') {
+			newConfig.obsPassword = obsPassword;
+			update = true;
+		}
+		if(update) {
+			updateConfig(newConfig)
 			.catch(err => {
 				console.error('Error updating config', err);
 			});
@@ -40,35 +49,46 @@ export default function OBS({config, updateConfig}: OBSProps) {
 
 	return (
 		<div className="obs">
+			<p>
+				Connect to OBS via websocket to send closed captions with your video stream, making them available on most streaming platforms
+			</p>
+			<p>
+				<a href={ config.github + '/wiki/OBS-websocket-connection' }>Read more</a>
+			</p>
 			<div className="url">
 				<label>
 					Port
-					<input className="theme-input" type="text" value={config.obsPort} />
+					<input className="theme-input" type="text" ref={portInput} defaultValue={userConfig.obsPort??4455} />
 				</label>
 				<label>
 					Password
-					<input className="theme-input" type="password" />
+					<input className="theme-input" type="password" ref={passwordInput} defaultValue={userConfig.obsPassword ? 'placeholder' : ''} />
 				</label>
 				<button className="theme-btn" onClick={saveUrl}>
 					<span>Save</span>
 				</button>
 			</div>
-			<ConfigSwitch
-				checked={config.obsEnabled??false}
-				onChange={(val)=>{ handleSwitch('obsEnabled', val) }}
-				label="Connect to OBS websocket server"
-			/>
-			{ config.obsEnabled && (
+			{
+				!!(userConfig.obsPort && userConfig.obsPassword) && (
+					<ConfigSwitch
+					checked={userConfig.obsEnabled??false}
+					onChange={(val)=>{ handleSwitch('obsEnabled', val) }}
+					label="Enable connection to OBS"
+					/>
+				)
+			}
+
+			{ userConfig.obsEnabled && (
 				<div>
 					<ConfigSwitch
-						checked={config.obsSendCaptions??true}
+						checked={userConfig.obsSendCaptions??true}
 						onChange={(val)=>{ handleSwitch('obsSendCaptions', val) }}
-						label="Send captions to OBS (Only spoken language)"
+						label="Send captions to OBS (Spoken language only)"
 					/>
 					<ConfigSwitch
-						checked={config.obsAutoStop??true}
+						checked={userConfig.obsAutoStop??true}
 						onChange={(val)=>{ handleSwitch('obsAutoStop', val) }}
-						label="Stop listening when ending your stream on OBS"
+						label="Stop captions when ending your stream on OBS"
 					/>
 				</div>
 			) }
