@@ -9,12 +9,14 @@ export class AzureStt extends StreamingSpeechToText {
 	private pushStream: PushAudioInputStream;
 
 	ready() {
-		return !!(this.secrets.azureSttKey?.trim() && this.secrets.azureSttRegion?.trim() )
+		//return !!(this.secrets.azureSttKey?.trim() && this.secrets.azureSttRegion?.trim() )
+		return false;
 	}
 
 	async start() {
 		this.stop();
 		try {
+			/*
 			if( !this.ready() || !this.config.spokenLangs?.length ) {
 				this.emit('info', {
 					type: 'error',
@@ -32,7 +34,7 @@ export class AzureStt extends StreamingSpeechToText {
 			const audioConfig = AudioConfig.fromStreamInput(this.pushStream);
 
 			this.speechRecognizer = SpeechRecognizer.FromConfig(speechConfig, langsConfig, audioConfig);
-
+			*/
 			this.ffmpeg = spawn('ffmpeg', [
 				'-i', '-',
 				'-ar', '16000',

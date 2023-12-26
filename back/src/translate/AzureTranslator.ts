@@ -8,7 +8,8 @@ export class AzureTranslator extends Translator {
 	private static langList: LangList = [];
 
 	ready() {
-		return !!(this.secrets.azureKey && this.secrets.azureRegion);
+		//return !!(this.secrets.azureKey && this.secrets.azureRegion);
+		return false;
 	}
 
 	async getLangs() {
@@ -46,8 +47,8 @@ export class AzureTranslator extends Translator {
 			const res = await fetch("https://api.cognitive.microsofttranslator.com/translate?" + params, { 
 				method: 'POST',
 				headers: {
-					'Ocp-Apim-Subscription-Key': this.secrets.azureKey!,
-					'Ocp-Apim-Subscription-Region': this.secrets.azureRegion!,
+					//'Ocp-Apim-Subscription-Key': this.secrets.azureKey!,
+					//'Ocp-Apim-Subscription-Region': this.secrets.azureRegion!,
 					'Content-type': 'application/json'
 				},
 				body: JSON.stringify([{text: transcript.text}])

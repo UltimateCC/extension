@@ -20,7 +20,6 @@ export const authURL = 'https://id.twitch.tv/oauth2/authorize?' + new URLSearchP
 	scope: 'user:read:broadcast user:read:email'
 });
 
-
 export const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
 authProvider.onRefresh((user, token)=>{
 	dataSource.manager.update(User, {
