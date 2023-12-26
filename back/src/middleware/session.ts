@@ -19,6 +19,7 @@ export const sessionMiddleware = session({
 	secret: environment.SESSION_SECRET,
 	saveUninitialized: false,
 	resave: false,
+	rolling: true,
 	cookie: {
 		//secure: true,
 		maxAge: sessionTime * 1000

@@ -15,7 +15,6 @@ function getCacheDelay(text: string) {
 
 export abstract class Translator {
 
-	private working = false;
 	protected expired = false;
 
 	private cache = new Map<string, TranscriptAlt[]>;
@@ -34,7 +33,7 @@ export abstract class Translator {
 	}
 
 	isWorking() {
-		return this.working;
+		return !!this.translatedChars;
 	}
 
 	abstract ready(): boolean;
@@ -90,9 +89,6 @@ export abstract class Translator {
 			);
 			if(translated.isError) {
 				return translated;
-			}
-			if(translated.data.length > 1) {
-				this.working = true;
 			}
 			result.captions = translated.data;
 			errors = translated.errors;
