@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { createServer } from 'http';
 import { endSocketSessions, io } from './socketioServer';
@@ -10,7 +9,7 @@ import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from 
 import { eventsub } from './twitch/events';
 
 const app = express();
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 app.use(rateLimiterMiddleware);
 eventsub.apply(app);

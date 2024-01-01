@@ -55,9 +55,14 @@ export async function getLiveChannels() {
 		return p;
 	}else{
 		p = _getLiveChannels();
-		const channels = await p;
-		p = null;
-		return channels;
+		try {
+			const channels = await p;
+			p = null;
+			return channels;
+		}catch(e) {
+			p = null;
+			throw e;
+		}
 	}
 }
 
@@ -65,7 +70,10 @@ let p: Promise<LiveChannel[]> | null = null;
 
 // Get channels currently live with the extension activated
 async function _getLiveChannels() {
-	const channels = await api.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
+
+	const channels = await api.withoutUser((client)=>{
+		return client.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
+	});
 
 	const out: LiveChannel[] = [];
 
@@ -90,7 +98,6 @@ async function _getLiveChannels() {
 					});
 				}				
 			}
-
 		}
 	}));
 
