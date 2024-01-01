@@ -64,7 +64,7 @@ function Dashboard() {
     // Speech recognition
     const [listening, setListening] = useState<boolean>(false);
     // Delay between each partial captions
-    const splitDelay = 2500;
+    const splitDelay = 2700;
     // Additional delay added to captions
     const delay = 1000;
     const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
