@@ -8,10 +8,9 @@ export function useObsSendCaptions({obs, text, enabled}: { obs: OBSWebSocket, en
 
 	useEffect(()=>{
 		function sendCaptions() {
-			console.log('sendcaptions');
-			if(obs?.identified && enabled ) {
+			if(obs.identified && enabled) {
 				last.current = Date.now();
-				obs.call('SendStreamCaption', {captionText: text});
+				obs.call('SendStreamCaption', {captionText: text}).catch(e=>console.warn('Error sending stream captions', e));
 			}
 		}
 
