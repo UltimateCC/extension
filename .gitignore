@@ -6,10 +6,3 @@ secrets
 docker-compose.override.yml
 dist
 extension*.zip
-
-# Temporary while we don't remove yarn
-*/.yarn/*
-!*/.yarn/releases
-!*/.yarn/plugins
-!*/.yarn/sdks
-!*/.yarn/versions
