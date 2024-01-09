@@ -6,7 +6,6 @@ const defaultSettings = {
 	fontSize: 20,
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
-	maxLines: 2,
 	backgroundColor: '#37373E',
 	backgroundOpacity: 50
 }
@@ -21,10 +20,11 @@ export function resetSettings() {
 }
 
 const defaultPosition = {
-	bottom: 10,
-	left: 50,
-	locked: false,
+	bottom: 10, // %
+	left: 50, // %
 	width: 50, // %
+	maxLines: 2, // lines
+	locked: false,
 }
 
 export type PositionType = typeof defaultPosition;

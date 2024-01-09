@@ -3,7 +3,6 @@
 	import { partialCaptions, transcript } from "../lib/captions";
 	import { position, settings, language, type SettingsType } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
-    import { tick } from "svelte";
 
 	export let settingsShown: boolean;
 
@@ -14,6 +13,8 @@
 	let moving = false;
 	let mouseX: number;
 	let mouseY: number;
+
+	export let captionHovered: boolean = false;
 
 	function startResize(e: MouseEvent) {
 		if(!$position.locked && !e.defaultPrevented) {
@@ -35,30 +36,28 @@
 	$: if(movableArea && movableElem && $settings) clampCaptions();
 
 	function clampCaptions() {
-		// Width limit
-		const minWidth = 15;
-		const maxWidth = 100;
-		$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
-		// Round width
-		$position.width = Math.round($position.width * 1000) / 1000;
-
-		// Half height/width in percent
+		// Half height/width in percent to calc limits
 		const halfHeight = movableElem.offsetHeight * 50 / movableArea.offsetHeight;
 		const halfWidth = movableElem.offsetWidth * 50 / movableArea.offsetWidth;
-		// Calc limits
+		
+		// Limits
 		const minBottom = 0 + halfHeight;
 		const maxBottom = 100 - halfHeight;
 		const minLeft = 0 + halfWidth;
 		const maxLeft = 100 - halfWidth;
+		
+		const minWidth = 15;
+		const maxWidth = 100;
 
 		// Round all values
 		$position.bottom = Math.round($position.bottom * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
+		$position.width = Math.round($position.width * 1000) / 1000;
 
 		// Position limits
 		$position.bottom = Math.max(minBottom, Math.min($position.bottom, maxBottom));
 		$position.left = Math.max(minLeft, Math.min($position.left, maxLeft));
-
+		$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
 
 		// Return true for each side where captions are at limit
 		return {
@@ -76,19 +75,31 @@
 		const deltaY = mouseY - e.clientY;
 
 		if(resizing) {
+			// Height limits
+			const minHeight = 1;
+			const maxHeight = 20;
+
 			// Update size
 			const oldWith = $position.width;
 			const oldLeft = $position.left;
 
 			// Update width
 			$position.width -= (deltaX / movableArea.offsetWidth) * 100;
+			
+			// Update height
+			let newMaxLines = Math.round($position.maxLines - deltaY / (1.5 * $settings.fontSize))
+			newMaxLines = Math.max(minHeight, Math.min(newMaxLines, maxHeight));
+			if(newMaxLines !== $position.maxLines) { // If we changed maxLines
+				$position.maxLines = newMaxLines;
+				mouseY = e.clientY;
+			}
+
 			// Update position
 			$position.left -= (deltaX / movableArea.offsetWidth) * 100 /2;
 
 			const sides = clampCaptions();
 
 			if(!sides.minWidth && !sides.maxWidth) {
-				mouseY = e.clientY;
 				mouseX = e.clientX;
 			}else{
 				$position.left = oldLeft;
@@ -114,6 +125,14 @@
 		resizing = false;
 	}
 
+	function onMouseEnter() {
+		captionHovered = true;
+	}
+
+	function onMouseLeave() {
+		captionHovered = false;
+	}
+
 	// Get style rule to apply to captions container
 	function getCaptionsStyle(settings: SettingsType) {
 		return 'color: ' + settings.textColor + ';'
@@ -134,20 +153,25 @@
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			on:mousedown={ onMouseDown }
+			on:mouseenter={ onMouseEnter }
+			on:mouseleave={ onMouseLeave }
 			on:click|preventDefault
 			bind:this={ movableElem }
 			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
-			<div class="caption-content-box" style="max-height: calc(1.25em * { $settings.maxLines });">
-				<div class="resize"
-					on:mousedown = { startResize }
-					transition:fade={ { duration: 100 } }
-				>
-					<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M21 15L15 21M21 8L8 21" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</div>
+			<div class="caption-content-box" style="max-height: calc(1.25em * { $position.maxLines });">
+				<!-- Show only if caption is hover -->
+				{#if !$position.locked && captionHovered}
+					<div class="resize-control"
+						on:mousedown = { startResize }
+						transition:fade={ { duration: 100 } }
+					>
+						<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+				{/if}
 				<p>
 					{#if $transcript.length }
 						{#each $transcript as line, i }

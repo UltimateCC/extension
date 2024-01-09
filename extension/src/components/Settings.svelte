@@ -96,13 +96,6 @@
 								<option value="Verdana, sans-serif">Verdana</option>
 							</select>
 						</div>
-						<div class="caption-group-content-item">
-							<label for="max-lines-input">Max lines</label>
-							<NumberInput id="max-lines-input"
-								bind:value={ $settings.maxLines } 
-								min={1} max={20} step=1
-							/>
-						</div>
 					</div>
 				{/if}
 			</div>
