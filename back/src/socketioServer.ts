@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Action, CaptionsStatus, Info, LangList, TranscriptData } from "./types";
+import { Action, CaptionsStatus, Info, LangList, TranscriptData, TranscriptAlt } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { Translator } from "./translate/Translator";
@@ -181,6 +181,19 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 			}
 			try{
 				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
+
+				// If not in production, add fake translate for free to captions for testing
+				if(process.env.NODE_ENV !== 'production') {
+					const fakeTranslatorContent: TranscriptAlt[] = [
+						...out.data.captions,
+						{
+							text: transcript.text,
+							lang: "test"
+						}
+					]
+					out.data.captions = fakeTranslatorContent;
+				}
+
 				// todo for metrics:
 				// Get delay at this step
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));

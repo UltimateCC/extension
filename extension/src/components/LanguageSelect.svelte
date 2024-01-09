@@ -1,21 +1,21 @@
 <script lang="ts">
     import { type LangCode, lastTranscript } from "../lib/captions";
 	import languages from "../assets/languages.json";
-    import { settings } from "../lib/settings";
+    import { language } from "../lib/settings";
 
 	// Last received languages are used as base list
 	$: spokenLang = languages[$lastTranscript[0]?.lang] || $lastTranscript[0]?.lang || '';
 
-	$: currentLangName = languages[$settings.language as LangCode] ?? $settings.language;
+	$: currentLangName = languages[$language as LangCode] ?? $language;
 </script>
 
 {#if $lastTranscript.length > 1}
-	<select id="language-input" bind:value={$settings.language}>
+	<select id="language-input" bind:value={$language}>
 		<option value="">Spoken language{ spokenLang ? (' (' + spokenLang + ')') : '' }</option>
 
 		<!-- Show current selected lang if not available -->
-		{#if $settings.language && !$lastTranscript.some(alt=>alt.lang===$settings.language) }
-			<option value={$settings.language}>{ currentLangName } (unavailable)</option>
+		{#if $language && !$lastTranscript.some(alt=>alt.lang===$language) }
+			<option value={$language}>{ currentLangName } (unavailable)</option>
 		{/if}
 
 		<!-- List all available langs -->
