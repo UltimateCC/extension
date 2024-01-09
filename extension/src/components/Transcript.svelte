@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { partialCaptions, transcript, lastTranscript } from "../lib/captions";
-    import { settings } from "../lib/settings";
+    import { language } from "../lib/settings";
     import LanguageSelect from "./LanguageSelect.svelte";
     import Warning from "./Warning.svelte";
 
+	/** Scroll to bottom each time one of the parameters changes */
 	const autoScroll = (node: HTMLElement, parameters: any) => {
 		const scroll = () => node.scroll({
 			top: node.scrollHeight
@@ -27,7 +28,8 @@
 			</div>
 		{/if}
 	</div>
-	<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $settings } } >
+	<!-- When transcript, partialCaptions or language change, execute autoScroll function -->
+	<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $language } } > 
 		{#if !$transcript.length && !$partialCaptions}
 		<div class="warning-container">
 			<Warning>Waiting for broadcaster speech</Warning>
@@ -36,7 +38,7 @@
 
 		{#each $transcript as line }
 			<div class="line">
-				{ (line.find(t=>t.lang === $settings.language) || line[0]).text }
+				{ (line.find(t=>t.lang === $language) || line[0]).text }
 			</div>
 		{/each}
 		{#if $partialCaptions }

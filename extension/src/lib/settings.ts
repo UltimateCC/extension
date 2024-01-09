@@ -16,7 +16,8 @@ export type SettingsType = typeof defaultSettings;
 export const settings = persisted<SettingsType>('ucc_config', {...defaultSettings});
 
 export function resetSettings() {
-	settings.set({...defaultSettings});
+	settings.set({...defaultSettings}); // Reset settings
+	language.set(''); // Reset language
 }
 
 const defaultPosition = {
