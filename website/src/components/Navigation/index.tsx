@@ -54,9 +54,7 @@ function Navigation({ logo } : { logo: string }) {
                 <nav className="main-links">
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/dashboard">Dashboard</NavLink>
-                    {
-                        //<NavLink to="/channels">Explore</NavLink>
-                    }
+                    <NavLink to="/channels">Channels</NavLink>
                 </nav>
                 <div className="secondary-links">
                     {
