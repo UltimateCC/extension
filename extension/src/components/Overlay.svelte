@@ -34,9 +34,7 @@
 	{/if}
 
 	{#if settingsShown}
-		<div class="caption-overlay-container">
-			<Settings bind:settingsShown />
-		</div>
+		<Settings bind:settingsShown />
 	{/if}
 
 	{#if $twitchContext.arePlayerControlsVisible}
