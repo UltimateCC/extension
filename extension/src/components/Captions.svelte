@@ -33,40 +33,45 @@
 	}
 
 	// Ensure captions are in view after settings are changed
-	$: if(movableArea && movableElem && $settings) clampCaptions();
+	$: if(movableArea?.offsetHeight && movableElem?.offsetHeight && $settings) clampCaptions();
 
 	function clampCaptions() {
 		// Half height/width in percent to calc limits
-		const halfHeight = movableElem.offsetHeight * 50 / movableArea.offsetHeight;
-		const halfWidth = movableElem.offsetWidth * 50 / movableArea.offsetWidth;
+		const height = movableElem.offsetHeight * 100 / movableArea.offsetHeight;
+		const width = movableElem.offsetWidth * 100 / movableArea.offsetWidth;
 		
 		// Limits
-		const minBottom = 0 + halfHeight;
-		const maxBottom = 100 - halfHeight;
-		const minLeft = 0 + halfWidth;
-		const maxLeft = 100 - halfWidth;
-		
+		const minTop = 0;
+		const maxTop = 100 - height;
+		const minLeft = 0;
+		const maxLeft = 100 - width;
+
 		const minWidth = 15;
 		const maxWidth = 100;
+		const minHeight = 1;
+		const maxHeight = 20;
 
 		// Round all values
-		$position.bottom = Math.round($position.bottom * 1000) / 1000;
+		$position.top = Math.round($position.top * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
 		$position.width = Math.round($position.width * 1000) / 1000;
 
 		// Position limits
-		$position.bottom = Math.max(minBottom, Math.min($position.bottom, maxBottom));
+		$position.top = Math.max(minTop, Math.min($position.top, maxTop));
 		$position.left = Math.max(minLeft, Math.min($position.left, maxLeft));
 		$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
+		$position.maxLines = Math.max(minHeight, Math.min($position.maxLines, maxHeight));
 
 		// Return true for each side where captions are at limit
 		return {
-			top: $position.bottom === maxBottom,
-			bottom: $position.bottom === minBottom,
+			top: $position.top === minTop,
+			bottom: $position.top === maxTop,
 			left: $position.left === minLeft,
 			right: $position.left === maxLeft,
 			minWidth: $position.width === minWidth,
-			maxWidth: $position.width === maxWidth
+			maxWidth: $position.width === maxWidth,
+			minHeight: $position.maxLines === minHeight,
+			maxHeight: $position.maxLines === maxHeight,
 		}
 	}
 
@@ -75,45 +80,38 @@
 		const deltaY = mouseY - e.clientY;
 
 		if(resizing) {
-			// Height limits
-			const minHeight = 1;
-			const maxHeight = 20;
+			// Get sizes
+			const oldWidth = $position.width;
+			const oldMaxLines = $position.maxLines;
 
-			// Update size
-			const oldWith = $position.width;
-			const oldLeft = $position.left;
-
-			// Update width
+			// Update sizes
 			$position.width -= (deltaX / movableArea.offsetWidth) * 100;
-			
-			// Update height
-			let newMaxLines = Math.round($position.maxLines - deltaY / (1.5 * $settings.fontSize))
-			newMaxLines = Math.max(minHeight, Math.min(newMaxLines, maxHeight));
-			if(newMaxLines !== $position.maxLines) { // If we changed maxLines
-				$position.maxLines = newMaxLines;
-				mouseY = e.clientY;
-			}
+			$position.maxLines -= deltaY / ( 1.25 * $settings.fontSize);
 
-			// Update position
-			$position.left -= (deltaX / movableArea.offsetWidth) * 100 /2;
-
+			// Limit to borders
 			const sides = clampCaptions();
+
+			// Cancel update if on limits
+			if(!sides.maxHeight && !sides.minHeight) {
+				mouseY = e.clientY;
+			}else{
+				$position.maxLines = oldMaxLines;
+			}
 
 			if(!sides.minWidth && !sides.maxWidth) {
 				mouseX = e.clientX;
 			}else{
-				$position.left = oldLeft;
-				$position.width = oldWith;
+				$position.width = oldWidth;
 			}
 
 		}else if (moving) {
 			// Update position
-			$position.bottom += (deltaY * 100 / movableArea.offsetHeight);
+			$position.top -= (deltaY * 100 / movableArea.offsetHeight);
 			$position.left -= (deltaX * 100 / movableArea.offsetWidth);
 
 			// Clamp captions into area
 			const sides = clampCaptions();
-			
+
 			// Ignore delta if on borders
 			if(!sides.top && !sides.bottom) mouseY = e.clientY;
 			if(!sides.left && !sides.right) mouseX = e.clientX;
@@ -123,6 +121,7 @@
 	function onMouseUp() {
 		moving = false;
 		resizing = false;
+		$position.maxLines = Math.round($position.maxLines);
 	}
 
 	function onMouseEnter() {
@@ -149,7 +148,7 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container"
 			style={ getCaptionsStyle($settings) }
-			style:bottom = { $position.bottom + '%' } 
+			style:top = { $position.top + '%' } 
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			on:mousedown={ onMouseDown }
@@ -160,8 +159,8 @@
 			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
-			<div class="caption-content-box" style="max-height: calc(1.25em * { $position.maxLines });">
-				<!-- Show only if caption is hover -->
+			<div class="caption-content-box" style="max-height: calc(1.25em * { Math.round($position.maxLines) });">
+				<!-- Resize control shown only on hover -->
 				{#if !$position.locked && captionHovered}
 					<div class="resize-control"
 						on:mousedown = { startResize }
@@ -181,7 +180,9 @@
 							{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
 						{/each}
 					{:else if !$partialCaptions }
-						This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption This is a sample caption
+						{#each {length: 30} as _}
+							This is a sample caption <br/>
+						{/each}
 					{/if}
 					{#if $partialCaptions}
 						{#if $transcript.length}

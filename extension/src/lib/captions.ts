@@ -2,7 +2,7 @@
 import { derived, get, writable } from "svelte/store";
 import { twitchContext } from "./twitch";
 import languages from "../assets/languages.json";
-import { settings } from "./settings";
+import { language } from "./settings";
 
 export type LangCode = keyof typeof languages;
 
@@ -32,7 +32,7 @@ export function handleCaptions(data: CaptionsData) {
 	const delay = (( get(twitchContext).hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
 
 	setTimeout( ()=>{
-		const caption = data.captions.find(c => c.lang === get(settings).language) ?? data.captions[0];
+		const caption = data.captions.find(c => c.lang === get(language)) ?? data.captions[0];
 		if(caption) {
 			if(data.final) {
 				partialCaptions.set('');
