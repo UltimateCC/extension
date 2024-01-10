@@ -84,19 +84,19 @@ body #ultimate-closed-caption {
 		position: absolute;
 		left: 0;
 		top: $settings-movable-top;
+		z-index: 1;	
 
-		z-index: 1;
-		height: calc(100vh - (#{$settings-movable-top} + #{$settings-movable-bottom}) - #{$buttons-size} - #{$buttons-padding-Y}*2 - #{$buttons-min-gap} - 2em);
-		/*
-			Calc incorrect because em are used as units
+		$button-container-height: calc($buttons-height * $buttons-font-size + $buttons-padding-Y*2);
+        height: calc(100vh - #{$settings-movable-top + $settings-movable-bottom} - #{$button-container-height} - #{$buttons-settings-gap});
+        /*
+            Calc incorrect because em are used as units
 
-			100vh = 100% of the height of the screen
-			- #{$settings-movable-top} = the top of the settings box
-			- #{$settings-movable-bottom} = the bottom of the settings box
-			- #{$buttons-size} = the size of the settings wheel
-			- #{$buttons-padding-Y} * 2 = the padding of the settings wheel
-			- #{$buttons-min-gap} = the minimum gap between the settings wheel and the settings box
-		*/
+            100vh = 100% of the height of the screen
+            - $settings-movable-top = the top of the settings box
+            - $settings-movable-bottom = the bottom of the settings box
+            - $button-container-height = the height of the buttons container
+            - $buttons-settings-gap = the minimum gap between the settings wheel and the settings box
+        */
 		
 		width: $settings-width;
 
@@ -480,6 +480,7 @@ body #ultimate-closed-caption {
 		bottom: $settings-movable-bottom;
 		z-index: 2;
 
+		font-size: $buttons-font-size;
 		padding: $buttons-padding-Y $buttons-padding-X;
 		background-color: $settings-background-color;
 		border-top-right-radius: 0.25em;
@@ -488,17 +489,20 @@ body #ultimate-closed-caption {
 		display: flex;
 		align-items: center;
 		gap: $buttons-min-gap;
-		font-size: $buttons-size;
 
 		// Settings wheel
 		> button {
-			height: $buttons-height;
+			height: #{$buttons-height}em;
 			border: none;
 			background-color: transparent;
 			cursor: pointer;
 			transition: transform 0.2s ease-in-out;
-			// border-radius: 0.5em;
-			padding: 0.1em $buttons-padding-X;
+			padding: 0.12em 0.15em;
+			font-size: 1em;
+			
+			&:after {
+				font-size: 0.75em;
+			}
 
 			svg > * {
 				fill: $settings-text-color;

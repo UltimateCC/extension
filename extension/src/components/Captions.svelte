@@ -5,6 +5,8 @@
 	import { hexToRGB } from "../lib/utils";
 
 	export let settingsShown: boolean;
+	export let captionHovered: boolean = false;
+	export const oneLineHeight = 1.25; // Size of one line in em (same as line-height in css)
 
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
@@ -13,8 +15,6 @@
 	let moving = false;
 	let mouseX: number;
 	let mouseY: number;
-
-	export let captionHovered: boolean = false;
 
 	function startResize(e: MouseEvent) {
 		if(!$position.locked && !e.defaultPrevented) {
@@ -51,7 +51,7 @@
 		const minHeight = 1;
 		const maxHeight = 20;
 
-		// Round all values
+		// Round all values (except maxLines)
 		$position.top = Math.round($position.top * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
 		$position.width = Math.round($position.width * 1000) / 1000;
@@ -86,7 +86,7 @@
 
 			// Update sizes
 			$position.width -= (deltaX / movableArea.offsetWidth) * 100;
-			$position.maxLines -= deltaY / ( 1.25 * $settings.fontSize);
+			$position.maxLines -= deltaY / (oneLineHeight * $settings.fontSize);
 
 			// Limit to borders
 			const sides = clampCaptions();
@@ -159,7 +159,7 @@
 			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
-			<div class="caption-content-box" style="max-height: calc(1.25em * { Math.round($position.maxLines) });">
+			<div class="caption-content-box" style="max-height: calc({ oneLineHeight }em * { Math.round($position.maxLines) });">
 				<!-- Resize control shown only on hover -->
 				{#if !$position.locked && captionHovered}
 					<div class="resize-control"
