@@ -82,7 +82,6 @@
 
 		if(resizing) {
 			// Get sizes
-			const oldWidth = $position.width;
 			const oldMaxLines = $position.maxLines;
 
 			// Update sizes
@@ -93,16 +92,14 @@
 			const sides = clampCaptions();
 
 			// Cancel update if on limits
+			if(!sides.minWidth && !sides.maxWidth) {
+				mouseX = e.clientX;
+			}
+			
 			if(!sides.maxHeight && !sides.minHeight) {
 				mouseY = e.clientY;
 			}else{
 				$position.maxLines = oldMaxLines;
-			}
-
-			if(!sides.minWidth && !sides.maxWidth) {
-				mouseX = e.clientX;
-			}else{
-				$position.width = oldWidth;
 			}
 
 		}else if (moving) {
@@ -141,6 +138,8 @@
 		document.documentElement.style.setProperty('--captions-background-color', 'rgba(' + hexToRGB($settings.backgroundColor) + ', ' + $settings.backgroundOpacity/100 + ')');
 		document.documentElement.style.setProperty('--captions-background-opacity', ($settings.backgroundOpacity / 10) + 'px');
 	}
+
+	$: textHeight = oneLineHeight + "em *" + Math.round($position.maxLines);
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
@@ -151,7 +150,7 @@
 			style:top = { $position.top + '%' } 
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
-			style:height = "calc(0.5em + { oneLineHeight }em * { Math.round($position.maxLines) })"
+			style:height = "calc(0.5em + { textHeight })"
 			on:mousedown={ onMouseDown }
 			on:mouseenter={ onMouseEnter }
 			on:mouseleave={ onMouseLeave }
@@ -161,9 +160,9 @@
 			transition:fade={ { duration: 100 } }
 		>
 			<div class="caption-container-box">
-				<div class="caption-content-box" style="max-height: calc({ oneLineHeight }em * { Math.round($position.maxLines) });">
+				<div class="caption-content-box" style="max-height: calc({ textHeight });">
 					<!-- Resize control shown only on hover -->
-					{#if !$position.locked && captionHovered}
+					{#if !$position.locked && (captionHovered || resizing)}
 						<div class="resize-control"
 							on:mousedown = { startResize }
 							transition:fade={ { duration: 100 } }
@@ -176,7 +175,7 @@
 					<p>
 						{#if $transcript.length < maxLines && (resizing || settingsShown)}
 							{#each {length: maxLines - $transcript.length} as _}
-								This is a sample caption <br/>
+								This is a sample captions to show you how it looks like <br/>
 							{/each}
 						{/if}
 						
