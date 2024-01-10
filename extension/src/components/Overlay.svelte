@@ -17,6 +17,7 @@
 	function toggleCaptions(e: Event) {
 		e.preventDefault();
 		$showCaptions = !captionsShown;
+		settingsShown = !captionsShown && settingsShown;
 	}
 
 	function toggleSettings(e: Event) {

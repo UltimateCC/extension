@@ -6,7 +6,8 @@
 
 	export let settingsShown: boolean;
 	export let captionHovered: boolean = false;
-	export const oneLineHeight = 1.25; // Size of one line in em (same as line-height in css)
+	const oneLineHeight = 1.25; // Size of one line in em (same as line-height in css)
+	const maxLines = 50; // Max lines to show in captions
 
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
@@ -49,7 +50,7 @@
 		const minWidth = 15;
 		const maxWidth = 100;
 		const minHeight = 1;
-		const maxHeight = 20;
+		const maxHeight = maxLines;
 
 		// Round all values (except maxLines)
 		$position.top = Math.round($position.top * 1000) / 1000;
@@ -173,18 +174,19 @@
 						</div>
 					{/if}
 					<p>
-						{#if $transcript.length }
-							{#each $transcript as line, i }
-								{#if i!==0}
-									<br/>
-								{/if}
-								{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
-							{/each}
-						{:else if !$partialCaptions }
-							{#each {length: 30} as _}
+						{#if $transcript.length < maxLines && (resizing || settingsShown)}
+							{#each {length: maxLines - $transcript.length} as _}
 								This is a sample caption <br/>
 							{/each}
 						{/if}
+						
+						{#each $transcript as line, i }
+							{#if i!==0}
+								<br/>
+							{/if}
+							{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
+						{/each}
+						
 						{#if $partialCaptions}
 							{#if $transcript.length}
 								<br/>

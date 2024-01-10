@@ -40,7 +40,8 @@ body #ultimate-closed-caption {
 			border-radius: 0.1em;
 
 			transition: opacity 0.5s;
-			display: block;
+			display: flex;
+			flex-direction: column-reverse;
 
 			.caption-container-box {
 				padding: $caption-container-padding;
