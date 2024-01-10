@@ -132,13 +132,13 @@
 		captionHovered = false;
 	}
 
-	// Get style rule to apply to captions container
-	function getCaptionsStyle(settings: SettingsType) {
-		return 'color: ' + settings.textColor + ';'
-		+ 'font-size: ' + settings.fontSize + 'px;'
-		+ 'font-family: ' + settings.fontFamily + ';'
-		+ 'background-color: rgba(' + hexToRGB(settings.backgroundColor) + ', ' + settings.backgroundOpacity/100 + ');'
-		+ 'backdrop-filter: blur(' + (settings.backgroundOpacity / 10) + 'px) ;';
+	// Set style root variable to apply in css on settings change
+	$: {
+		document.documentElement.style.setProperty('--captions-text-color', $settings.textColor);
+		document.documentElement.style.setProperty('--captions-font-size', $settings.fontSize + 'px');
+		document.documentElement.style.setProperty('--captions-font-family', $settings.fontFamily);
+		document.documentElement.style.setProperty('--captions-background-color', 'rgba(' + hexToRGB($settings.backgroundColor) + ', ' + $settings.backgroundOpacity/100 + ')');
+		document.documentElement.style.setProperty('--captions-background-opacity', ($settings.backgroundOpacity / 10) + 'px');
 	}
 </script>
 
@@ -147,10 +147,10 @@
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container"
-			style={ getCaptionsStyle($settings) }
 			style:top = { $position.top + '%' } 
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
+			style:height = "calc(0.5em + { oneLineHeight }em * { Math.round($position.maxLines) })"
 			on:mousedown={ onMouseDown }
 			on:mouseenter={ onMouseEnter }
 			on:mouseleave={ onMouseLeave }
@@ -159,38 +159,40 @@
 			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
-			<div class="caption-content-box" style="max-height: calc({ oneLineHeight }em * { Math.round($position.maxLines) });">
-				<!-- Resize control shown only on hover -->
-				{#if !$position.locked && captionHovered}
-					<div class="resize-control"
-						on:mousedown = { startResize }
-						transition:fade={ { duration: 100 } }
-					>
-						<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</div>
-				{/if}
-				<p>
-					{#if $transcript.length }
-						{#each $transcript as line, i }
-							{#if i!==0}
+			<div class="caption-container-box">
+				<div class="caption-content-box" style="max-height: calc({ oneLineHeight }em * { Math.round($position.maxLines) });">
+					<!-- Resize control shown only on hover -->
+					{#if !$position.locked && captionHovered}
+						<div class="resize-control"
+							on:mousedown = { startResize }
+							transition:fade={ { duration: 100 } }
+						>
+							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+					{/if}
+					<p>
+						{#if $transcript.length }
+							{#each $transcript as line, i }
+								{#if i!==0}
+									<br/>
+								{/if}
+								{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
+							{/each}
+						{:else if !$partialCaptions }
+							{#each {length: 30} as _}
+								This is a sample caption <br/>
+							{/each}
+						{/if}
+						{#if $partialCaptions}
+							{#if $transcript.length}
 								<br/>
 							{/if}
-							{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
-						{/each}
-					{:else if !$partialCaptions }
-						{#each {length: 30} as _}
-							This is a sample caption <br/>
-						{/each}
-					{/if}
-					{#if $partialCaptions}
-						{#if $transcript.length}
-							<br/>
+							{ $partialCaptions }
 						{/if}
-						{ $partialCaptions }
-					{/if}
-				</p>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>

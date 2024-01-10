@@ -26,7 +26,11 @@ body #ultimate-closed-caption {
 		// Caption box container
 		#caption-container {
 			position: absolute; // To be able to move it
-			// width: 50%;
+			
+			// Use variables
+			color: var(--captions-text-color);
+			font-family: var(--captions-font-family);
+			font-size: var(--captions-font-size);
 			
 			&:not(.locked) {
 				cursor: move;
@@ -38,45 +42,51 @@ body #ultimate-closed-caption {
 			transition: opacity 0.5s;
 			display: block;
 
-			.caption-content-box {
-				display: flex;
-				flex-direction: column-reverse;
+			.caption-container-box {
+				padding: $caption-container-padding;
+				background-color: var(--captions-background-color);
+				backdrop-filter: blur(var(--captions-background-opacity));
 
-				margin: $caption-container-padding;
-				overflow: hidden; // Don't show the rest of the text
-				
-				text-align: left;
-				font-size: 1em;
-
-
-				.resize-control {
-					position: absolute;
-					right: 0.03em;
-					bottom: 0.03em;
-					font-size: 1.25em;
-					width: 1em;
-					height: 1em;
-					cursor: nwse-resize;
-					pointer-events: auto;
-					transition: transform 0.2s ease-in-out;
-					clip-path: polygon(100% 0, 100% 100%, 0 100%);
-
-					svg > * {
-						stroke: $settings-text-color;
-					}
-
-					&:hover {
-						transform: scale(1.1);
-					}
-				}
-
-				p { // Apply text settings
-					line-height: $caption-line-height;
+				.caption-content-box {
+					display: flex;
+					flex-direction: column-reverse;
+	
+					overflow: hidden; // Don't show the rest of the text
+					
+					text-align: left;
 					font-size: 1em;
-					color: inherit;
-					font-family: inherit;
+					max-height: 100%;
+	
+					.resize-control {
+						position: absolute;
+						right: 0.03em;
+						bottom: 0.03em;
+						font-size: 1.25em;
+						width: 1em;
+						height: 1em;
+						cursor: nwse-resize;
+						pointer-events: auto;
+						transition: transform 0.2s ease-in-out;
+						clip-path: polygon(100% 0, 100% 100%, 0 100%);
+	
+						svg > * {
+							stroke: $settings-text-color;
+						}
+	
+						&:hover {
+							transform: scale(1.1);
+						}
+					}
+	
+					p { // Apply text settings
+						line-height: $caption-line-height;
+						font-size: 1em;
+						color: inherit;
+						font-family: inherit;
+					}
 				}
 			}
+
 		}
 	}
 	
