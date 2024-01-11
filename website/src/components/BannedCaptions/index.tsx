@@ -1,9 +1,6 @@
 
 import { useState, useEffect, useRef, useContext } from 'react';
 
-import { styled } from '@mui/material/styles';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-
 import api from '../../services/api.ts';
 
 import FormResponse from '../../components/FormResponse';
@@ -25,22 +22,6 @@ interface BannedCaptionsProps {
 }
 
 const MAX_LANGUAGES_DISPLAYED = 3; // Maximum number of languages to display
-
-// Styled component for the tooltip style (from MUI)
-const ThemedTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: '#D9D9D9E0',
-      color: '#37373E',
-      boxShadow: theme.shadows[1],
-      fontSize: 16,
-      fontFamily: 'Baloo',
-    },
-    [`& .${tooltipClasses.arrow}`]: {
-        color: '#D9D9D9E0',
-    },
-  }));
 
 function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLanguageCode, languageCodeLoaded, LoadingImg }: BannedCaptionsProps) {
     const bannedCaptionInputRef = useRef<HTMLInputElement>(null);
@@ -188,12 +169,11 @@ function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLangua
     return (
         <>
             {/* Tooltip for the lightbulb icon */}
-            <ThemedTooltip
+            {/* <ThemedTooltip
                 title="You can add more than one word at a time by separated them with a comma."
                 placement="bottom-end"
                 arrow
             >
-                {/* Lighbulb from Font Awesome V*/}
                 <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" className="tips-img">
                     <path fill="#D9D9D9" d="M297.2 248.9C311.6 228.3 320 203.2 320 176c0-70.7-57.3-128-128-128S64 105.3 64 176c0 27.2 8.4 52.3 22.8 
                     72.9c3.7 5.3 8.1 11.3 12.8 17.7l0 0c12.9 17.7 28.3 38.9 39.8 59.8c10.4 19 15.7 38.8 18.3 57.5H109c-2.2-12-5.9-23.7-11.8-34.5c-9.9-18-22.2-34.9-34.5-51.8l0 
@@ -202,7 +182,7 @@ function BannedCaptions({ allBanCaptions, onAllBanCaptionsChange, selectedLangua
                     26.9-42.1 39.8-59.8l0 0 0 0 0 0c4.7-6.4 9-12.4 12.7-17.7zM192 128c-26.5 0-48 21.5-48 48c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-44.2 35.8-80 
                     80-80c8.8 0 16 7.2 16 16s-7.2 16-16 16zm0 384c-44.2 0-80-35.8-80-80V416H272v16c0 44.2-35.8 80-80 80z"/>
                 </svg>
-            </ThemedTooltip>
+            </ThemedTooltip> */}
 
             {/* Languages selection */}
             <div className="selectable-languages">
