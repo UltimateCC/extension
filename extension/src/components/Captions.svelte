@@ -6,8 +6,8 @@
 
 	export let settingsShown: boolean;
 	export let captionHovered: boolean = false;
-	const oneLineHeight = 1.25; // Size of one line in em (same as line-height in css)
-	const maxLines = 50; // Max lines to show in captions
+	const LINE_HEIGHT = 1.25; // Size of one line in em (same as line-height in css)
+	const MAX_LINES = 50; // Max lines to show in captions
 
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
@@ -37,10 +37,11 @@
 	$: if(movableArea?.offsetHeight && movableElem?.offsetHeight && $settings) clampCaptions();
 
 	function clampCaptions() {
-		// Half height/width in percent to calc limits
+		// Height/width in percent to calc limits
 		const height = movableElem.offsetHeight * 100 / movableArea.offsetHeight;
 		const width = movableElem.offsetWidth * 100 / movableArea.offsetWidth;
-		
+		const lineHeightPx = LINE_HEIGHT * $settings.fontSize;
+
 		// Limits
 		const minTop = 0;
 		const maxTop = 100 - height;
@@ -50,7 +51,7 @@
 		const minWidth = 15;
 		const maxWidth = 100;
 		const minHeight = 1;
-		const maxHeight = maxLines;
+		const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
 
 		// Round all values (except maxLines)
 		$position.top = Math.round($position.top * 1000) / 1000;
@@ -86,7 +87,7 @@
 
 			// Update sizes
 			$position.width -= (deltaX / movableArea.offsetWidth) * 100;
-			$position.maxLines -= deltaY / (oneLineHeight * $settings.fontSize);
+			$position.maxLines -= deltaY / (LINE_HEIGHT * $settings.fontSize);
 
 			// Limit to borders
 			const sides = clampCaptions();
@@ -139,7 +140,7 @@
 		document.documentElement.style.setProperty('--captions-background-opacity', ($settings.backgroundOpacity / 10) + 'px');
 	}
 
-	$: textHeight = oneLineHeight + "em *" + Math.round($position.maxLines);
+	$: textHeight = LINE_HEIGHT + "em *" + Math.round($position.maxLines);
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
@@ -173,8 +174,8 @@
 						</div>
 					{/if}
 					<p>
-						{#if $transcript.length < maxLines && (resizing || settingsShown)}
-							{#each {length: maxLines - $transcript.length} as _}
+						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
+							{#each {length: MAX_LINES - $transcript.length} as _}
 								This is a sample captions to show you how it looks like <br/>
 							{/each}
 						{/if}
