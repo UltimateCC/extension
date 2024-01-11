@@ -147,7 +147,7 @@
 	<div id="caption-movable-area" bind:this={movableArea}>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div id="caption-container"
+		<div id="caption-container" 
 			style:top = { $position.top + '%' } 
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
@@ -165,6 +165,7 @@
 					<!-- Resize control shown only on hover -->
 					{#if !$position.locked && (captionHovered || resizing)}
 						<div class="resize-control"
+							aria-label="Resize captions"
 							on:mousedown = { startResize }
 							transition:fade={ { duration: 100 } }
 						>

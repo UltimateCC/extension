@@ -41,7 +41,7 @@
 	<div id="settings-container" bind:this={settingsElem} transition:fade={ { duration: 100 } } data-simplebar>
 		<div class="caption-header-container">
 			<h2>Captions settings</h2>
-			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }}>
+			<button type="button" id="close-settings-button" on:click={()=>{ settingsShown = false; }} aria-label="Close settings">
 				<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960" width="1em">
 					<path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
 				</svg>
