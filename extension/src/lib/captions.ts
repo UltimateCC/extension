@@ -23,13 +23,14 @@ export const partialCaptions = writable<string>('');
 
 // Complete transcript
 export const transcript = writable<Caption[][]>([]);
-// Last line of the transcript
+
+// Last line of the transcript (used for language list)
 export const lastTranscript = writable<Caption[]>([]);
 
 // Handle received captions
 export function handleCaptions(data: CaptionsData) {
 	// Delay captions for stream latency minus accumulated processing delay
-	const delay = (( get(twitchContext).hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
+	const delay = (( get(twitchContext)?.hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
 	lastTranscript.set(data.captions);
 
 	setTimeout( ()=>{
