@@ -177,7 +177,7 @@
 					<p>
 						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
 							{#each {length: MAX_LINES - $transcript.length} as _}
-								This is a sample captions to show you how it looks like <br/>
+								This is a sample caption to show you how it looks like <br/>
 							{/each}
 						{/if}
 						

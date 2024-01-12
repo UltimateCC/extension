@@ -24,12 +24,13 @@ export const partialCaptions = writable<string>('');
 // Complete transcript
 export const transcript = writable<Caption[][]>([]);
 // Last line of the transcript
-export const lastTranscript = derived(transcript, ($t=> $t[$t.length-1] || [] ));
+export const lastTranscript = writable<Caption[]>([]);
 
 // Handle received captions
 export function handleCaptions(data: CaptionsData) {
 	// Delay captions for stream latency minus accumulated processing delay
 	const delay = (( get(twitchContext).hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
+	lastTranscript.set(data.captions);
 
 	setTimeout( ()=>{
 		const caption = data.captions.find(c => c.lang === get(language)) ?? data.captions[0];
