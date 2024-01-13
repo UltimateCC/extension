@@ -8,18 +8,24 @@
 	export let captionHovered: boolean = false;
 	const LINE_HEIGHT = 1.25; // Size of one line in em (same as line-height in css)
 	const MAX_LINES = 50; // Max lines to show in captions
+	
+	const lineHeightPx = LINE_HEIGHT * $settings.fontSize;
 
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
 
-	let resizing = false;
+	/** Resizing with size and angle <=>
+	 * t: top, b: bottom, l: left, r: right
+	 * tl: top left, tr: top right, bl: bottom left, br: bottom right
+	*/
+	let resizing = "";
 	let moving = false;
 	let mouseX: number;
 	let mouseY: number;
 
-	function startResizing(e: MouseEvent) {
+	function startResizing(sideOrAngle: string, e: MouseEvent) {
 		if(!$position.locked && !e.defaultPrevented) {
-			resizing = true;
+			resizing = sideOrAngle;
 			mouseX = e.clientX;
 			mouseY = e.clientY;
 		}
@@ -40,7 +46,6 @@
 		// Height/width in percent to calc limits
 		const height = movableElem.offsetHeight * 100 / movableArea.offsetHeight;
 		const width = movableElem.offsetWidth * 100 / movableArea.offsetWidth;
-		const lineHeightPx = LINE_HEIGHT * $settings.fontSize;
 
 		// Limits
 		const minTop = 0;
@@ -82,26 +87,37 @@
 		const deltaY = mouseY - e.clientY;
 
 		if(resizing) {
-			// Get sizes
-			const oldMaxLines = $position.maxLines;
-
 			// Update sizes
-			$position.width -= (deltaX / movableArea.offsetWidth) * 100;
-			$position.maxLines -= deltaY / (LINE_HEIGHT * $settings.fontSize);
+			if (resizing !== ("t" && "b")) { // Update width
+				let newWidth = (deltaX / movableArea.offsetWidth) * 100;
+				if (resizing.includes("l")) { // If we're resizing left side, we need to update left position and width
+					$position.left -= (deltaX * 100 / movableArea.offsetWidth);
+					newWidth *= -1; // Reverse delta
+				} 
+
+				$position.width -= newWidth;
+			}
+
+			if (resizing !== ("l" && "r")) { // Update height
+				let newHeight = deltaY / (LINE_HEIGHT * $settings.fontSize);
+				if (resizing.includes("t")) newHeight *= -1; // If we're resizing top side we reverse delta
+
+				const oldLines = Math.round($position.maxLines);
+				$position.maxLines -= newHeight;
+
+				// Only update top position if we're resizing top side and maxLines rounded changed
+				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines)) {
+					const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
+					$position.top -= Math.sign(deltaY) * lineHeightPercent; 
+				}
+			}
 
 			// Limit to borders
 			const sides = clampCaptions();
 
-			// Cancel update if on limits
-			if(!sides.minWidth && !sides.maxWidth) {
-				mouseX = e.clientX;
-			}
-			
-			if(!sides.maxHeight && !sides.minHeight) {
-				mouseY = e.clientY;
-			}else{
-				$position.maxLines = oldMaxLines;
-			}
+			// Ignore delta if on borders
+			if(!sides.minWidth && !sides.maxWidth) mouseX = e.clientX;
+			if(!sides.maxHeight && !sides.minHeight) mouseY = e.clientY;
 
 		}else if (moving) {
 			// Update position
@@ -119,7 +135,7 @@
 
 	function onMouseUp() {
 		moving = false;
-		resizing = false;
+		resizing = "";
 		$position.maxLines = Math.round($position.maxLines);
 	}
 
@@ -166,21 +182,21 @@
 					{#if !$position.locked && (captionHovered || resizing)}
 						<div class="resize-angle-br"
 							aria-label="Resize captions (bottom right)"
-							on:mousedown = { startResizing }
+							on:mousedown = { (e) => startResizing("br", e) }
 							transition:fade={ { duration: 200 } }
 						>
 							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
 						</div>
-						<div class="resize-angle-bl" aria-label="Resize captions (bottom left)" on:mousedown = { startResizing }></div>
-						<div class="resize-angle-tl" aria-label="Resize captions (top left)" on:mousedown = { startResizing } ></div>
-						<div class="resize-angle-tr" aria-label="Resize captions (top right)" on:mousedown = { startResizing }></div>
+						<div class="resize-angle-bl" aria-label="Resize captions (bottom left)" on:mousedown = { (e) => startResizing("bl", e) }></div>
+						<div class="resize-angle-tl" aria-label="Resize captions (top left)" on:mousedown = { (e) => startResizing("tl", e) } ></div>
+						<div class="resize-angle-tr" aria-label="Resize captions (top right)" on:mousedown = { (e) => startResizing("tr", e) }></div>
 					
-						<div class="resize-side-t" aria-label="Resize captions (top)" on:mousedown = { startResizing }></div>
-						<div class="resize-side-r" aria-label="Resize captions (right)" on:mousedown = { startResizing }></div>
-						<div class="resize-side-b" aria-label="Resize captions (bottom)" on:mousedown = { startResizing }></div>
-						<div class="resize-side-l" aria-label="Resize captions (left)" on:mousedown = { startResizing }></div>
+						<div class="resize-side-t" aria-label="Resize captions (top)" on:mousedown = { (e) => startResizing("t", e) }></div>
+						<div class="resize-side-r" aria-label="Resize captions (right)" on:mousedown = { (e) => startResizing("r", e) }></div>
+						<div class="resize-side-b" aria-label="Resize captions (bottom)" on:mousedown = { (e) => startResizing("b", e) }></div>
+						<div class="resize-side-l" aria-label="Resize captions (left)" on:mousedown = { (e) => startResizing("l", e) }></div>
 					{/if}
 					<p>
 						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
