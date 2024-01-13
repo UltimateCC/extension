@@ -17,7 +17,7 @@
 	let mouseX: number;
 	let mouseY: number;
 
-	function startResize(e: MouseEvent) {
+	function startResizing(e: MouseEvent) {
 		if(!$position.locked && !e.defaultPrevented) {
 			resizing = true;
 			mouseX = e.clientX;
@@ -25,7 +25,7 @@
 		}
 	}
 
-	function onMouseDown(e: MouseEvent) {
+	function startMoving(e: MouseEvent) {
 		if(!$position.locked && !e.defaultPrevented) {
 			moving = true;
 			mouseX = e.clientX;
@@ -152,7 +152,7 @@
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			style:height = "calc(0.5em + { textHeight })"
-			on:mousedown={ onMouseDown }
+			on:mousedown={ startMoving }
 			on:mouseenter={ onMouseEnter }
 			on:mouseleave={ onMouseLeave }
 			on:click|preventDefault
@@ -164,15 +164,23 @@
 				<div class="caption-content-box" style="max-height: calc({ textHeight });">
 					<!-- Resize control shown only on hover -->
 					{#if !$position.locked && (captionHovered || resizing)}
-						<div class="resize-control"
-							aria-label="Resize captions"
-							on:mousedown = { startResize }
-							transition:fade={ { duration: 100 } }
+						<div class="resize-angle-br"
+							aria-label="Resize captions (bottom right)"
+							on:mousedown = { startResizing }
+							transition:fade={ { duration: 200 } }
 						>
 							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
 						</div>
+						<div class="resize-angle-bl" aria-label="Resize captions (bottom left)" on:mousedown = { startResizing }></div>
+						<div class="resize-angle-tl" aria-label="Resize captions (top left)" on:mousedown = { startResizing } ></div>
+						<div class="resize-angle-tr" aria-label="Resize captions (top right)" on:mousedown = { startResizing }></div>
+					
+						<div class="resize-side-t" aria-label="Resize captions (top)" on:mousedown = { startResizing }></div>
+						<div class="resize-side-r" aria-label="Resize captions (right)" on:mousedown = { startResizing }></div>
+						<div class="resize-side-b" aria-label="Resize captions (bottom)" on:mousedown = { startResizing }></div>
+						<div class="resize-side-l" aria-label="Resize captions (left)" on:mousedown = { startResizing }></div>
 					{/if}
 					<p>
 						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
@@ -201,4 +209,105 @@
 	</div>
 {/if}
 
+<style lang="scss">
+	@import '../assets/vars.scss';
+
+	$angle-pos: -0.3em;
+	$angle-size: 1.5em;
+	$angle-polygon-size: 70%;
+
+	$square-pos: -0.3em;
+	$square-size: 0.5em;
+
+
+	div[class*="resize-"] {
+		position: absolute;
+		font-size: 1.25em;
+		
+		&[class*="resize-angle"] {
+			width: $angle-size;
+			height: $angle-size;
+			
+			&.resize-angle-br {
+				cursor: nwse-resize;
+				bottom: $angle-pos;
+				right: $angle-pos;
+				
+				clip-path: polygon($angle-polygon-size 0, 100% 0, 100% 100%, 0 100%, 0 $angle-polygon-size);
+				transition: transform 0.2s ease-in-out;
+
+				svg {
+					font-size: 0.95em;
+					clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+				}
+
+				svg > * {
+					stroke: $settings-text-color;
+				}
+			}
+
+			&.resize-angle-bl {
+				cursor: nesw-resize;
+				bottom: $angle-pos;
+				left: $angle-pos;
+				
+				clip-path: polygon((100% - $angle-polygon-size) 0, 100% $angle-polygon-size, 100% 100%, 0 100%, 0 0);
+			}
+
+			&.resize-angle-tl {
+				cursor: nwse-resize;
+				top: $angle-pos;
+				left: $angle-pos;
+				
+				clip-path: polygon(0 0, 100% 0, 100% (100% - $angle-polygon-size), (100% - $angle-polygon-size) 100%, 0 100%);
+			}
+
+			&.resize-angle-tr {
+				cursor: nesw-resize;
+				top: $angle-pos;
+				right: $angle-pos;
+				
+				clip-path: polygon(0 0, 100% 0, 100% 100%, $angle-polygon-size 100%, 0 (100% - $angle-polygon-size));
+			}
+		}
+
+		&[class*="resize-side"] {
+			width: $square-size;
+			height: $square-size;
+
+			&.resize-side-t, &.resize-side-b {
+				width: calc(100% - 2*$angle-size - 2*$angle-pos);
+				left: calc($angle-pos + $angle-size);
+			}
+
+			&.resize-side-t {
+				cursor: ns-resize;
+				top: $square-pos;
+			}
+
+			&.resize-side-b {
+				cursor: ns-resize;
+				bottom: $square-pos;
+			}
+
+
+			&.resize-side-r, &.resize-side-l {
+				height: calc(100% - 2*$angle-size - 2*$angle-pos);
+				top: calc($angle-pos + $angle-size);
+			}
+
+			&.resize-side-r {
+				cursor: ew-resize;
+				right: $square-pos;
+			}
+
+			&.resize-side-l {
+				cursor: ew-resize;
+				left: $square-pos;
+			}
+		}
+	}
+</style>
+
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
+

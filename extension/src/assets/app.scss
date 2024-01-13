@@ -58,27 +58,6 @@ body #ultimate-closed-caption {
 					font-size: 1em;
 					max-height: 100%;
 	
-					.resize-control {
-						position: absolute;
-						right: 0.03em;
-						bottom: 0.03em;
-						font-size: 1.25em;
-						width: 1em;
-						height: 1em;
-						cursor: nwse-resize;
-						pointer-events: auto;
-						transition: transform 0.2s ease-in-out;
-						clip-path: polygon(100% 0, 100% 100%, 0 100%);
-	
-						svg > * {
-							stroke: $settings-text-color;
-						}
-	
-						&:hover {
-							transform: scale(1.1);
-						}
-					}
-	
 					p { // Apply text settings
 						line-height: $caption-line-height;
 						font-size: 1em;
