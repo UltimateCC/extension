@@ -87,26 +87,27 @@
 		const deltaY = mouseY - e.clientY;
 
 		if(resizing) {
-			// Update sizes
-			if (resizing !== ("t" && "b")) { // Update width
-				let newWidth = (deltaX / movableArea.offsetWidth) * 100;
-				if (resizing.includes("l")) { // If we're resizing left side, we need to update left position and width
-					$position.left -= (deltaX * 100 / movableArea.offsetWidth);
-					newWidth *= -1; // Reverse delta
-				} 
+			// Update sizes (and position if needed)
+			if (resizing !== "t" && resizing !== "b") { // Update width
+				const sign = resizing.includes("l") ? -1 : 1; // Sign of delta
+				$position.width -= sign * deltaX * 100/ movableArea.offsetWidth;
 
-				$position.width -= newWidth;
+				const sides = clampCaptions(); // To check if position needs to be updated
+
+				if (resizing.includes("l") && !sides.minWidth && !sides.maxWidth) {
+					$position.left -= deltaX * 100 / movableArea.offsetWidth;
+				}
 			}
 
-			if (resizing !== ("l" && "r")) { // Update height
-				let newHeight = deltaY / (LINE_HEIGHT * $settings.fontSize);
-				if (resizing.includes("t")) newHeight *= -1; // If we're resizing top side we reverse delta
-
+			if (resizing !== "l" && resizing !== "r") { // Update height
 				const oldLines = Math.round($position.maxLines);
-				$position.maxLines -= newHeight;
+				
+				const sign = resizing.includes("t") ? -1 : 1; // Sign of delta
+				$position.maxLines -= sign * deltaY / (LINE_HEIGHT * $settings.fontSize);
 
-				// Only update top position if we're resizing top side and maxLines rounded changed
-				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines)) {
+				const sides = clampCaptions(); // To check if position needs to be updated
+
+				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines) && !sides.maxHeight && !sides.minHeight) {
 					const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
 					$position.top -= Math.sign(deltaY) * lineHeightPercent; 
 				}
@@ -156,6 +157,9 @@
 		document.documentElement.style.setProperty('--captions-background-opacity', ($settings.backgroundOpacity / 10) + 'px');
 	}
 
+	const ALL_SIDES = ["top", "bottom", "left", "right"];
+	const ALL_ANGLES = ["top left", "top right", "bottom left", "bottom right"];
+
 	$: textHeight = LINE_HEIGHT + "em *" + Math.round($position.maxLines);
 </script>
 
@@ -176,28 +180,33 @@
 			class:locked={ $position.locked }
 			transition:fade={ { duration: 100 } }
 		>
+			<!-- Resize control shown only on hover -->
+			{#if !$position.locked && (captionHovered || resizing)}
+				{#each ALL_ANGLES as side}
+					{@const acronym = side.match(/\b\w/g)?.join('') ?? "" }
+					<div 
+						class={"resize-angle-" + acronym}
+						aria-label={"Resize captions (" + side + ")"}
+						on:mousedown = { (e) => startResizing(acronym, e) }
+						transition:fade={ { duration: 1200 } }
+					>
+						<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+				{/each}
+
+				{#each ALL_SIDES as side}
+					<div 
+						class={"resize-side-" + side[0]}
+						aria-label={"Resize captions (" + side + ")"}
+						on:mousedown = { (e) => startResizing(side[0], e) }
+					>
+					</div>
+				{/each}
+			{/if}
 			<div class="caption-container-box">
 				<div class="caption-content-box" style="max-height: calc({ textHeight });">
-					<!-- Resize control shown only on hover -->
-					{#if !$position.locked && (captionHovered || resizing)}
-						<div class="resize-angle-br"
-							aria-label="Resize captions (bottom right)"
-							on:mousedown = { (e) => startResizing("br", e) }
-							transition:fade={ { duration: 200 } }
-						>
-							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</div>
-						<div class="resize-angle-bl" aria-label="Resize captions (bottom left)" on:mousedown = { (e) => startResizing("bl", e) }></div>
-						<div class="resize-angle-tl" aria-label="Resize captions (top left)" on:mousedown = { (e) => startResizing("tl", e) } ></div>
-						<div class="resize-angle-tr" aria-label="Resize captions (top right)" on:mousedown = { (e) => startResizing("tr", e) }></div>
-					
-						<div class="resize-side-t" aria-label="Resize captions (top)" on:mousedown = { (e) => startResizing("t", e) }></div>
-						<div class="resize-side-r" aria-label="Resize captions (right)" on:mousedown = { (e) => startResizing("r", e) }></div>
-						<div class="resize-side-b" aria-label="Resize captions (bottom)" on:mousedown = { (e) => startResizing("b", e) }></div>
-						<div class="resize-side-l" aria-label="Resize captions (left)" on:mousedown = { (e) => startResizing("l", e) }></div>
-					{/if}
 					<p>
 						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
 							{#each {length: MAX_LINES - $transcript.length} as _}
@@ -229,36 +238,47 @@
 	@import '../assets/vars.scss';
 
 	$angle-pos: -0.3em;
+	$angle-svg-pos: 0.25em;
 	$angle-size: 1.5em;
 	$angle-polygon-size: 70%;
 
 	$square-pos: -0.3em;
 	$square-size: 0.5em;
 
+	.caption-container-box {
+		z-index: 5;
+	}
 
 	div[class*="resize-"] {
 		position: absolute;
 		font-size: 1.25em;
+		z-index: 9;
 		
 		&[class*="resize-angle"] {
 			width: $angle-size;
 			height: $angle-size;
+			transition: transform 0.2s ease-in-out;
+
+			svg {
+				font-size: 0.95em;
+				position: absolute;
+				clip-path: polygon(100% 0, 0% 100%, 100% 100%);
 			
+				& > * {
+					stroke: $settings-text-color;
+				}
+			}
+
 			&.resize-angle-br {
 				cursor: nwse-resize;
 				bottom: $angle-pos;
 				right: $angle-pos;
 				
 				clip-path: polygon($angle-polygon-size 0, 100% 0, 100% 100%, 0 100%, 0 $angle-polygon-size);
-				transition: transform 0.2s ease-in-out;
-
+			
 				svg {
-					font-size: 0.95em;
-					clip-path: polygon(100% 0, 0% 100%, 100% 100%);
-				}
-
-				svg > * {
-					stroke: $settings-text-color;
+					top: $angle-svg-pos;
+					left: $angle-svg-pos;
 				}
 			}
 
@@ -268,6 +288,12 @@
 				left: $angle-pos;
 				
 				clip-path: polygon((100% - $angle-polygon-size) 0, 100% $angle-polygon-size, 100% 100%, 0 100%, 0 0);
+
+				svg {
+					transform: rotate(90deg);
+					top: $angle-svg-pos;
+					right: $angle-svg-pos;
+				}
 			}
 
 			&.resize-angle-tl {
@@ -276,6 +302,12 @@
 				left: $angle-pos;
 				
 				clip-path: polygon(0 0, 100% 0, 100% (100% - $angle-polygon-size), (100% - $angle-polygon-size) 100%, 0 100%);
+				
+				svg {
+					transform: rotate(180deg);
+					bottom: $angle-svg-pos;
+					right: $angle-svg-pos;
+				}
 			}
 
 			&.resize-angle-tr {
@@ -284,12 +316,19 @@
 				right: $angle-pos;
 				
 				clip-path: polygon(0 0, 100% 0, 100% 100%, $angle-polygon-size 100%, 0 (100% - $angle-polygon-size));
+				
+				svg {
+					transform: rotate(-90deg);
+					bottom: $angle-svg-pos;
+					left: $angle-svg-pos;
+				}
 			}
 		}
 
 		&[class*="resize-side"] {
 			width: $square-size;
 			height: $square-size;
+			// background-color: rgba(255,255,255,0.5);
 
 			&.resize-side-t, &.resize-side-b {
 				width: calc(100% - 2*$angle-size - 2*$angle-pos);
