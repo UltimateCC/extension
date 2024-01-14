@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
 	import { partialCaptions, transcript } from "../lib/captions";
-	import { position, settings, language, type SettingsType } from "../lib/settings";
+	import { position, settings, language } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
 	export let settingsShown: boolean;
@@ -182,28 +182,29 @@
 		>
 			<!-- Resize control shown only on hover -->
 			{#if !$position.locked && (captionHovered || resizing)}
-				{#each ALL_ANGLES as side}
-					{@const acronym = side.match(/\b\w/g)?.join('') ?? "" }
-					<div 
-						class={"resize-angle-" + acronym}
-						aria-label={"Resize captions (" + side + ")"}
-						on:mousedown = { (e) => startResizing(acronym, e) }
-						transition:fade={ { duration: 1200 } }
-					>
-						<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
-					</div>
-				{/each}
+				<div class="resize-container" transition:fade={ { duration: 100 } }>
+					{#each ALL_ANGLES as side}
+						{@const acronym = side.split(' ').map(s=>s[0]).join('') }
+						<div 
+							class={"resize-angle-" + acronym}
+							aria-label={"Resize captions (" + side + ")"}
+							on:mousedown = { (e) => startResizing(acronym, e) }
+						>
+							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+					{/each}
 
-				{#each ALL_SIDES as side}
-					<div 
-						class={"resize-side-" + side[0]}
-						aria-label={"Resize captions (" + side + ")"}
-						on:mousedown = { (e) => startResizing(side[0], e) }
-					>
-					</div>
-				{/each}
+					{#each ALL_SIDES as side}
+						<div 
+							class={"resize-side-" + side[0]}
+							aria-label={"Resize captions (" + side + ")"}
+							on:mousedown = { (e) => startResizing(side[0], e) }
+						>
+						</div>
+					{/each}
+				</div>
 			{/if}
 			<div class="caption-container-box">
 				<div class="caption-content-box" style="max-height: calc({ textHeight });">
@@ -249,119 +250,122 @@
 		z-index: 5;
 	}
 
-	div[class*="resize-"] {
-		position: absolute;
-		font-size: 1.25em;
+	.resize-container {
 		z-index: 9;
-		
-		&[class*="resize-angle"] {
-			width: $angle-size;
-			height: $angle-size;
-			transition: transform 0.2s ease-in-out;
 
-			svg {
-				font-size: 0.95em;
-				position: absolute;
-				clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+		div[class*="resize-"] {
+			position: absolute;
+			font-size: 1.25em;
 			
-				& > * {
-					stroke: $settings-text-color;
-				}
-			}
-
-			&.resize-angle-br {
-				cursor: nwse-resize;
-				bottom: $angle-pos;
-				right: $angle-pos;
-				
-				clip-path: polygon($angle-polygon-size 0, 100% 0, 100% 100%, 0 100%, 0 $angle-polygon-size);
-			
-				svg {
-					top: $angle-svg-pos;
-					left: $angle-svg-pos;
-				}
-			}
-
-			&.resize-angle-bl {
-				cursor: nesw-resize;
-				bottom: $angle-pos;
-				left: $angle-pos;
-				
-				clip-path: polygon((100% - $angle-polygon-size) 0, 100% $angle-polygon-size, 100% 100%, 0 100%, 0 0);
+			&[class*="resize-angle"] {
+				width: $angle-size;
+				height: $angle-size;
 
 				svg {
-					transform: rotate(90deg);
-					top: $angle-svg-pos;
-					right: $angle-svg-pos;
+					font-size: 0.95em;
+					position: absolute;
+					clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+				
+					& > * {
+						stroke: $settings-text-color;
+					}
+				}
+
+				&.resize-angle-br {
+					cursor: nwse-resize;
+					bottom: $angle-pos;
+					right: $angle-pos;
+					
+					clip-path: polygon($angle-polygon-size 0, 100% 0, 100% 100%, 0 100%, 0 $angle-polygon-size);
+				
+					svg {
+						top: $angle-svg-pos;
+						left: $angle-svg-pos;
+					}
+				}
+
+				&.resize-angle-bl {
+					cursor: nesw-resize;
+					bottom: $angle-pos;
+					left: $angle-pos;
+					
+					clip-path: polygon((100% - $angle-polygon-size) 0, 100% $angle-polygon-size, 100% 100%, 0 100%, 0 0);
+
+					svg {
+						transform: rotate(90deg);
+						top: $angle-svg-pos;
+						right: $angle-svg-pos;
+					}
+				}
+
+				&.resize-angle-tl {
+					cursor: nwse-resize;
+					top: $angle-pos;
+					left: $angle-pos;
+					
+					clip-path: polygon(0 0, 100% 0, 100% (100% - $angle-polygon-size), (100% - $angle-polygon-size) 100%, 0 100%);
+					
+					svg {
+						transform: rotate(180deg);
+						bottom: $angle-svg-pos;
+						right: $angle-svg-pos;
+					}
+				}
+
+				&.resize-angle-tr {
+					cursor: nesw-resize;
+					top: $angle-pos;
+					right: $angle-pos;
+					
+					clip-path: polygon(0 0, 100% 0, 100% 100%, $angle-polygon-size 100%, 0 (100% - $angle-polygon-size));
+					
+					svg {
+						transform: rotate(-90deg);
+						bottom: $angle-svg-pos;
+						left: $angle-svg-pos;
+					}
 				}
 			}
 
-			&.resize-angle-tl {
-				cursor: nwse-resize;
-				top: $angle-pos;
-				left: $angle-pos;
-				
-				clip-path: polygon(0 0, 100% 0, 100% (100% - $angle-polygon-size), (100% - $angle-polygon-size) 100%, 0 100%);
-				
-				svg {
-					transform: rotate(180deg);
-					bottom: $angle-svg-pos;
-					right: $angle-svg-pos;
+			&[class*="resize-side"] {
+				width: $square-size;
+				height: $square-size;
+				// background-color: rgba(255,255,255,0.5);
+
+				&.resize-side-t, &.resize-side-b {
+					width: calc(100% - 2*$angle-size - 2*$angle-pos);
+					left: calc($angle-pos + $angle-size);
+				}
+
+				&.resize-side-t {
+					cursor: ns-resize;
+					top: $square-pos;
+				}
+
+				&.resize-side-b {
+					cursor: ns-resize;
+					bottom: $square-pos;
+				}
+
+
+				&.resize-side-r, &.resize-side-l {
+					height: calc(100% - 2*$angle-size - 2*$angle-pos);
+					top: calc($angle-pos + $angle-size);
+				}
+
+				&.resize-side-r {
+					cursor: ew-resize;
+					right: $square-pos;
+				}
+
+				&.resize-side-l {
+					cursor: ew-resize;
+					left: $square-pos;
 				}
 			}
-
-			&.resize-angle-tr {
-				cursor: nesw-resize;
-				top: $angle-pos;
-				right: $angle-pos;
-				
-				clip-path: polygon(0 0, 100% 0, 100% 100%, $angle-polygon-size 100%, 0 (100% - $angle-polygon-size));
-				
-				svg {
-					transform: rotate(-90deg);
-					bottom: $angle-svg-pos;
-					left: $angle-svg-pos;
-				}
-			}
-		}
-
-		&[class*="resize-side"] {
-			width: $square-size;
-			height: $square-size;
-			// background-color: rgba(255,255,255,0.5);
-
-			&.resize-side-t, &.resize-side-b {
-				width: calc(100% - 2*$angle-size - 2*$angle-pos);
-				left: calc($angle-pos + $angle-size);
-			}
-
-			&.resize-side-t {
-				cursor: ns-resize;
-				top: $square-pos;
-			}
-
-			&.resize-side-b {
-				cursor: ns-resize;
-				bottom: $square-pos;
-			}
-
-
-			&.resize-side-r, &.resize-side-l {
-				height: calc(100% - 2*$angle-size - 2*$angle-pos);
-				top: calc($angle-pos + $angle-size);
-			}
-
-			&.resize-side-r {
-				cursor: ew-resize;
-				right: $square-pos;
-			}
-
-			&.resize-side-l {
-				cursor: ew-resize;
-				left: $square-pos;
-			}
-		}
+		}		
 	}
+
 </style>
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
