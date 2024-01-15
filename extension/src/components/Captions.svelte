@@ -165,7 +165,7 @@
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
-	<div id="caption-movable-area" bind:this={movableArea}>
+	<div id="caption-movable-area" bind:this={movableArea} data-resize-side={ resizing }>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container" 
@@ -173,13 +173,13 @@
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			style:height = "calc(0.5em + { textHeight })"
-			class:hovered={ captionHovered }
 			on:mousedown={ startMoving }
 			on:mouseenter={ onMouseEnter }
 			on:mouseleave={ onMouseLeave }
 			on:click|preventDefault
 			bind:this={ movableElem }
 			class:locked={ $position.locked }
+			class:no-have-content={ captionHovered || resizing || moving }
 			transition:fade={ { duration: 100 } }
 		>
 			<!-- Resize control shown only on hover -->
@@ -235,13 +235,14 @@
 					</p>
 				</div>
 			</div>
+			{#if captionHovered || resizing || moving}
+				<div class="caption-no-content" transition:fade={ { duration: 200 } }></div>
+			{/if}
 		</div>
 	</div>
 {/if}
 
 <style lang="scss">
-	@import '../assets/vars.scss';
-
 	$angle-pos: -0.3em;
 	$angle-svg-pos: 0.25em;
 	$angle-size: 1.5em;
@@ -249,6 +250,33 @@
 
 	$square-pos: -0.3em;
 	$square-size: 0.5em;
+
+	$side-cursor: (
+		t: ns-resize,
+		b: ns-resize,
+		l: ew-resize,
+		r: ew-resize,
+		tl: nwse-resize,
+		tr: nesw-resize,
+		bl: nesw-resize,
+		br: nwse-resize,
+	);
+
+	#caption-movable-area {
+		@each $side, $cursor in $side-cursor {
+			&[data-resize-side="#{$side}"] {
+				cursor: $cursor !important;
+			}
+		}
+
+		&:not([data-resize-side=""]) #caption-container  {
+			cursor: inherit !important;
+			
+			.resize-container div[class*="resize-"] {
+				cursor: inherit !important;
+			}
+		}
+	}
 
 	.caption-container-box {
 		z-index: 5;
@@ -271,7 +299,7 @@
 					clip-path: polygon(100% 0, 0% 100%, 100% 100%);
 				
 					& > * {
-						stroke: $settings-text-color;
+						stroke: var(--captions-text-color);
 					}
 				}
 

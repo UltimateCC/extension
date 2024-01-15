@@ -136,15 +136,11 @@
 		<div class="caption-button-container">
 			<!-- Reset -->
 			<div>
-				<button type="button" on:click={ resetSettings }>
-					Reset settings
-				</button>
-				<button type="button" on:click={ resetPosition }>
-					Reset position
-				</button>
+				<button type="button" on:click={ resetSettings }>Reset settings</button>
+				<button type="button" on:click={ resetPosition }>Reset layout</button>
 			</div>
 			<button type="button" class="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
-				{ $position.locked ? 'Unlock' : 'Lock' } position
+				{ $position.locked ? 'Unlock' : 'Lock' } layout
 			</button>
 		</div>
 	</div>

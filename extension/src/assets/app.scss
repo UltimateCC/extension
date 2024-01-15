@@ -31,7 +31,7 @@ body #ultimate-closed-caption {
 			color: var(--captions-text-color);
 			font-family: var(--captions-font-family);
 			font-size: var(--captions-font-size);
-			
+
 			&:not(.locked) {
 				cursor: move;
 				user-select: none;
@@ -42,16 +42,23 @@ body #ultimate-closed-caption {
 			display: flex;
 			flex-direction: column-reverse;
 
-			&.hovered {
-				// transition: background-color 0.25s, backdrop-filter 0.25s;
-				background-color: var(--captions-background-color);
+			// Transition for all border radius
+			transition: border-top-left-radius 2.2s ease-in-out;
+			&.no-have-content {
 				backdrop-filter: blur(var(--captions-background-opacity));
-
+				
 				.caption-container-box {
-					// Reset background
-					background-color: transparent;
 					backdrop-filter: none;
+					border-top-left-radius: initial;
+					border-top-right-radius: initial; 
 				}
+			}
+
+			.caption-no-content {
+				background-color: var(--captions-background-color);
+				height: 100%;
+				border-top-left-radius: inherit;
+				border-top-right-radius: inherit; 
 			}
 
 			.caption-container-box {
@@ -78,7 +85,6 @@ body #ultimate-closed-caption {
 					}
 				}
 			}
-
 		}
 	}
 
