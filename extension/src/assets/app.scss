@@ -39,14 +39,26 @@ body #ultimate-closed-caption {
 
 			border-radius: 0.1em;
 
-			transition: opacity 0.5s;
 			display: flex;
 			flex-direction: column-reverse;
+
+			&.hovered {
+				// transition: background-color 0.25s, backdrop-filter 0.25s;
+				background-color: var(--captions-background-color);
+				backdrop-filter: blur(var(--captions-background-opacity));
+
+				.caption-container-box {
+					// Reset background
+					background-color: transparent;
+					backdrop-filter: none;
+				}
+			}
 
 			.caption-container-box {
 				padding: $caption-container-padding;
 				background-color: var(--captions-background-color);
 				backdrop-filter: blur(var(--captions-background-opacity));
+				border-radius: inherit;
 
 				.caption-content-box {
 					display: flex;

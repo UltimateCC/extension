@@ -161,6 +161,7 @@
 	const ALL_ANGLES = ["top left", "top right", "bottom left", "bottom right"];
 
 	$: textHeight = LINE_HEIGHT + "em *" + Math.round($position.maxLines);
+
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
@@ -172,6 +173,7 @@
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			style:height = "calc(0.5em + { textHeight })"
+			class:hovered={ captionHovered }
 			on:mousedown={ startMoving }
 			on:mouseenter={ onMouseEnter }
 			on:mouseleave={ onMouseLeave }
@@ -190,9 +192,11 @@
 							aria-label={"Resize captions (" + side + ")"}
 							on:mousedown = { (e) => startResizing(acronym, e) }
 						>
-							<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
+							{#if acronym === "br"}
+								<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M21 15L15 21M21 8L8 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							{/if}
 						</div>
 					{/each}
 
