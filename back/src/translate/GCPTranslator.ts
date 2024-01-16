@@ -1,4 +1,4 @@
-
+import { Secret } from "../entity/Secret";
 import { logger } from "../logger";
 import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
@@ -7,8 +7,10 @@ import { Translator } from "./Translator";
 
 export class GCPTranslator extends Translator {
 
+	private key: string;
+
 	ready() {
-		return !!this.secrets.gcpKey;
+		return !!this.user.secrets.gcpKey;
 	}
 
 	/** Check if API key is working by translating an empty string */
@@ -29,6 +31,12 @@ export class GCPTranslator extends Translator {
 		}
 	}
 
+	async init() {
+		// this.key = this.user.secrets.gcpKey!;
+		const secret = await Secret.findOneByOrFail({ twitchId: this.user.twitchId, type: 'gcpKey' });
+		this.key = await secret.getValue();
+	}
+
 	async getLangs() {
 		return Object.entries(langs).map(([code, name])=>{ return { code, name } });
 	}
@@ -40,7 +48,7 @@ export class GCPTranslator extends Translator {
 			source: transcript.lang,
 			format: 'text',
 			target: target,
-			key: this.secrets.gcpKey!
+			key: this.key
 		});
 
 		const res = await fetch('https://translation.googleapis.com/language/translate/v2?'+params, {

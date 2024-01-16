@@ -24,7 +24,6 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
     const [isLoadingRemove, setIsLoadingRemove] = useState<boolean>(false);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
-
     const sendApiKey = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const newApiKey = apiKeyInputRef.current?.value;
@@ -35,7 +34,7 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
 
         DelayedDisplay({
             requestFn: async () => {
-                await api('secrets', { method: 'POST', body: { gcpKey: newApiKey } });
+                await api('secrets', { method: 'POST', body: { type: 'gcpKey', value: newApiKey } });
                 await updateConfig({translateService: 'gcp'});
                 await new Promise((res)=>setTimeout(res, 100));
                 reloadConfig();
@@ -57,7 +56,7 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
         DelayedDisplay({
             requestFn: async () => {
                 await Promise.all([
-                    api('secrets', { method: 'POST', body: { gcpKey: '' } }),
+                    api('secrets', { method: 'POST', body: { type: 'gcpKey' } }),
                     updateConfig({translateService: ''})
                 ]);
                 await new Promise((res)=>setTimeout(res, 100));

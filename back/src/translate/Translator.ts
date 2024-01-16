@@ -1,4 +1,4 @@
-import { UserConfig, UserSecrets } from "../entity/User";
+import { User, UserConfig, UserSecrets } from "../entity/User";
 import { logger } from "../logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
@@ -22,7 +22,7 @@ export abstract class Translator {
 	protected translatedChars = 0;
 	protected errorCount = 0;
 
-	constructor(protected config: UserConfig, protected secrets: UserSecrets) {}
+	constructor(protected user: User) {}
 
 	getTranslatedChars() {
 		return this.translatedChars;
@@ -35,6 +35,8 @@ export abstract class Translator {
 	isWorking() {
 		return !!this.translatedChars;
 	}
+
+	async init() {}
 
 	abstract ready(): boolean;
 
@@ -85,7 +87,7 @@ export abstract class Translator {
 			const translated = await this.translateAll(
 				{ text: data.text, lang },
 				// Exclude source language
-				this.config.translateLangs.filter(t=>t!==lang)
+				this.user.config.translateLangs.filter(t=>t!==lang)
 			);
 			if(translated.isError) {
 				return translated;

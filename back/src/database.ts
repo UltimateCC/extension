@@ -4,12 +4,13 @@ import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
 import { environment } from "./environment";
 import { logger } from "./logger";
+import { Secret } from "./entity/Secret";
 
 
 export const dataSource = new DataSource({
 	type: "mongodb",
 	url: environment.DB_URL,
-	entities: [User, Stats],
+	entities: [User, Stats, Secret],
 	connectTimeoutMS: 5000,
 });
 

@@ -11,13 +11,13 @@ export function getTranslator(u: User) {
 
 		/*
 		case 'azure':
-			return new AzureTranslator(u.config, u.secrets);
+			return new AzureTranslator(u);
 		*/
 		case 'gcp':
-			return new GCPTranslator(u.config, u.secrets);
+			return new GCPTranslator(u);
 
 		default:
-			return new NullTranslator(u.config, u.secrets);
+			return new NullTranslator(u);
 	}
 
 }

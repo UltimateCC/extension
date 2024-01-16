@@ -1,15 +1,10 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, ObjectId, ObjectIdColumn } from "typeorm";
-import { User, UserConfig } from "./User";
-
+import { BaseEntity, Column, CreateDateColumn, Entity, ObjectId, ObjectIdColumn } from "typeorm";
+import { UserConfig } from "./User";
 
 @Entity()
 export class Stats extends BaseEntity {
 	@ObjectIdColumn()
 	id: ObjectId;
-
-	// Relations
-	@ManyToOne(() => User, (user) => user.stats)
-	user: User;
 
 	// Properties
 	@CreateDateColumn()

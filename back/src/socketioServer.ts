@@ -71,7 +71,6 @@ async function loadConfig(socket: TypedSocket) {
 
 	//Init statistics
 	socket.data.stats = new Stats();
-	socket.data.stats.user = u;
 	socket.data.stats.twitchId = u.twitchId;
 	socket.data.stats.config = socket.data.config;
 
@@ -88,6 +87,7 @@ async function loadConfig(socket: TypedSocket) {
 
 	// Translation
 	socket.data.translator = getTranslator(u);
+	await socket.data.translator.init();
 
 	// Send available translation languages
 	const langs = await socket.data.translator.getLangs();

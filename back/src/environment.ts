@@ -16,6 +16,9 @@ export const envSchema = z.object({
 	// Session redis URL
 	SESSION_REDIS: z.string().min(1),
 
+	// Secret for encrypting user's api keys
+	ENCRYPTION_SECRET: z.string().min(1),
+
 	// List of admins twitch id separated with ","
 	// Admins are allowed to fetch global stats
 	ADMINS_TWITCHID: z.string().default(''),
