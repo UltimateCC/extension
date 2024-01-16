@@ -10,7 +10,7 @@ export class GCPTranslator extends Translator {
 	private key: string;
 
 	ready() {
-		return !!this.user.secrets.gcpKey;
+		return !!this.key;
 	}
 
 	/** Check if API key is working by translating an empty string */

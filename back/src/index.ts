@@ -10,7 +10,7 @@ import { Secret } from "./entity/Secret";
 (async ()=>{
 	try{
 		await initDatabase();
-		await encryptKeys();
+		// await encryptKeys();
 		await startServer();
 		logger.info('Server started on port '+environment.PORT);
 	}catch(e){
