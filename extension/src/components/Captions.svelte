@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
 	import { partialCaptions, transcript } from "../lib/captions";
-	import { position, settings, language, type PositionType } from "../lib/settings";
+	import { position, settings, language } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
 	export let settingsShown: boolean;
@@ -91,10 +91,10 @@
 				// Width limits
 				const minWidth = 15;
 				let maxWidth;
-				if(resizing.includes('r')) {
-					maxWidth = 100 - $position.left;
-				}else{
+				if(resizing.includes('l')) {
 					maxWidth = $position.left + oldWidth;
+				}else{
+					maxWidth = 100 - $position.left;
 				}
 				const sign = resizing.includes("l") ? -1 : 1; // Sign of delta
 				$position.width -= sign * deltaX * 100 / movableArea.offsetWidth;
@@ -104,7 +104,7 @@
 					mouseX = e.clientX;
 				}
 
-				// If resizing from left, move position accordingly
+				// If resizing from left, adapt position accordingly
 				if (resizing.includes("l")) {
 					$position.left += oldWidth - $position.width;
 				}
@@ -119,7 +119,13 @@
 
 				// Height limits
 				const minHeight = 1;
-				const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
+				// const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
+				let maxHeight;
+				if(resizing.includes('t')) {
+					maxHeight = Math.floor($position.top / 100 * movableArea.offsetHeight / lineHeightPx + oldLines);
+				}else{
+					maxHeight = Math.floor((100 - $position.top) / 100 * movableArea.offsetHeight / lineHeightPx);
+				}
 
 				$position.maxLines = Math.max(minHeight, Math.min($position.maxLines, maxHeight));
 				
@@ -127,9 +133,14 @@
 					mouseY = e.clientY;
 				}
 
-				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines) ) {
-					const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
-					$position.top -= Math.sign(deltaY) * lineHeightPercent; 
+				// If resizing from top: Adapt position
+				if(resizing.includes("t")) {
+					const linesDelta = oldLines - Math.round($position.maxLines);
+					// Move position only if actually changed
+					if(linesDelta !== 0) {
+						const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
+						$position.top += linesDelta * lineHeightPercent;						
+					}
 				}
 			}
 		}else if (moving) {
