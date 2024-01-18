@@ -8,8 +8,7 @@
 	export let captionHovered: boolean = false;
 	const LINE_HEIGHT = 1.25; // Size of one line in em (same as line-height in css)
 	const MAX_LINES = 50; // Max lines to show in captions
-	
-	const lineHeightPx = LINE_HEIGHT * $settings.fontSize;
+	$: lineHeightPx = LINE_HEIGHT * $settings.fontSize;
 
 	let movableArea: HTMLElement;
 	let movableElem: HTMLElement;
@@ -59,11 +58,15 @@
 		const maxTop = 100 - height;
 		const minLeft = 0;
 		const maxLeft = 100 - width;
+		const maxHeight = Math.floor(movableArea.offsetHeight / lineHeightPx - .25);
 
 		// Round all values (except maxLines)
 		$position.bottom = Math.round($position.bottom * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
 		$position.width = Math.round($position.width * 1000) / 1000;
+
+		// Height limit
+		$position.maxLines = Math.min($position.maxLines, maxHeight);
 
 		// Position limits
 		$position.bottom = Math.max(minTop, Math.min($position.bottom, maxTop));
@@ -124,6 +127,7 @@
 				}else{
 					maxHeight = Math.floor((100 - $position.bottom) / 100 * movableArea.offsetHeight / lineHeightPx - .25);
 				}
+				maxHeight = Math.min(maxHeight, MAX_LINES);
 				
 				// Calc new height
 				const sign = resizing.includes("t") ? -1 : 1; // Sign of delta
