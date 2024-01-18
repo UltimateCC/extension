@@ -122,7 +122,7 @@
 				if(resizing.includes('b')) {
 					maxHeight = Math.floor($position.bottom / 100 * movableArea.offsetHeight / lineHeightPx + oldLines);
 				}else{
-					maxHeight = Math.floor((100 - $position.bottom) / 100 * movableArea.offsetHeight / lineHeightPx);
+					maxHeight = Math.floor((100 - $position.bottom) / 100 * movableArea.offsetHeight / lineHeightPx - .25);
 				}
 				
 				// Calc new height
