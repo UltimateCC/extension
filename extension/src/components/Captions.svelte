@@ -61,18 +61,18 @@
 		const maxLeft = 100 - width;
 
 		// Round all values (except maxLines)
-		$position.top = Math.round($position.top * 1000) / 1000;
+		$position.bottom = Math.round($position.bottom * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
 		$position.width = Math.round($position.width * 1000) / 1000;
 
 		// Position limits
-		$position.top = Math.max(minTop, Math.min($position.top, maxTop));
+		$position.bottom = Math.max(minTop, Math.min($position.bottom, maxTop));
 		$position.left = Math.max(minLeft, Math.min($position.left, maxLeft));
 
 		// Return true for each side where captions are at limit
 		return {
-			top: $position.top === minTop,
-			bottom: $position.top === maxTop,
+			top: $position.bottom === minTop,
+			bottom: $position.bottom === maxTop,
 			left: $position.left === minLeft,
 			right: $position.left === maxLeft,
 		}
@@ -96,6 +96,8 @@
 				}else{
 					maxWidth = 100 - $position.left;
 				}
+
+				// Calc new width
 				const sign = resizing.includes("l") ? -1 : 1; // Sign of delta
 				$position.width -= sign * deltaX * 100 / movableArea.offsetWidth;
 				$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
@@ -113,39 +115,38 @@
 			// Update height
 			if (resizing !== "l" && resizing !== "r") { 
 				const oldLines = Math.round($position.maxLines);
-				
-				const sign = resizing.includes("t") ? -1 : 1; // Sign of delta
-				$position.maxLines -= sign * deltaY / (LINE_HEIGHT * $settings.fontSize);
 
 				// Height limits
 				const minHeight = 1;
-				// const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
 				let maxHeight;
-				if(resizing.includes('t')) {
-					maxHeight = Math.floor($position.top / 100 * movableArea.offsetHeight / lineHeightPx + oldLines);
+				if(resizing.includes('b')) {
+					maxHeight = Math.floor($position.bottom / 100 * movableArea.offsetHeight / lineHeightPx + oldLines);
 				}else{
-					maxHeight = Math.floor((100 - $position.top) / 100 * movableArea.offsetHeight / lineHeightPx);
+					maxHeight = Math.floor((100 - $position.bottom) / 100 * movableArea.offsetHeight / lineHeightPx);
 				}
-
+				
+				// Calc new height
+				const sign = resizing.includes("t") ? -1 : 1; // Sign of delta
+				$position.maxLines -= sign * deltaY / (LINE_HEIGHT * $settings.fontSize);
 				$position.maxLines = Math.max(minHeight, Math.min($position.maxLines, maxHeight));
 				
 				if($position.maxLines !== minHeight && $position.maxLines !== maxHeight) {
 					mouseY = e.clientY;
 				}
 
-				// If resizing from top: Adapt position
-				if(resizing.includes("t")) {
+				// If resizing from bottom: Adapt position from line count difference
+				if(resizing.includes("b")) {
 					const linesDelta = oldLines - Math.round($position.maxLines);
 					// Move position only if actually changed
 					if(linesDelta !== 0) {
 						const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
-						$position.top += linesDelta * lineHeightPercent;						
+						$position.bottom += linesDelta * lineHeightPercent;						
 					}
 				}
 			}
 		}else if (moving) {
 			// Update position
-			$position.top -= (deltaY * 100 / movableArea.offsetHeight);
+			$position.bottom += (deltaY * 100 / movableArea.offsetHeight);
 			$position.left -= (deltaX * 100 / movableArea.offsetWidth);
 
 			// Clamp captions into area
@@ -192,7 +193,7 @@
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container" 
-			style:top = { $position.top + '%' } 
+			style:bottom = { $position.bottom + '%' } 
 			style:left = { $position.left + '%' }
 			style:width = { $position.width + '%' }
 			style:height = "calc(0.5em + { textHeight })"

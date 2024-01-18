@@ -20,7 +20,7 @@ export function resetSettings() {
 }
 
 const defaultPosition = {
-	top: 85, // %
+	bottom: 8, // %
 	left: 25, // %
 	width: 50, // %
 	maxLines: 2, // lines
@@ -33,8 +33,8 @@ export type PositionType = typeof defaultPosition;
 export const position = persisted<PositionType>('ucc_position', {...defaultPosition});
 
 // Reset position if format from old version is found
-position.subscribe((val)=>{
-	if((val as any).bottom !== undefined) {
+position.subscribe((val: any)=>{
+	if(val.width === undefined || val.top !== undefined) {
 		resetPosition();
 	}
 });
