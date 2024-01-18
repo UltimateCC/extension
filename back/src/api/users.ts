@@ -1,11 +1,20 @@
 import { Router } from "express";
 import { User } from "../entity/User";
+import { FindOptionsWhere } from "typeorm";
 
 export const usersRouter = Router();
 
 usersRouter.get('', async (req, res, next)=>{
 	try{
-		const users: Partial<User>[] = await User.find({where: {},  order: { created: 'DESC' }});
+		const where: FindOptionsWhere<User> = {};
+
+		// Filter users with config to use GCP
+		if(req.query.gcp) {
+			// @ts-ignore
+			where['config.translateService'] = 'gcp';
+		}
+
+		const users: Partial<User>[] = await User.find({where,  order: { created: 'DESC' }});
 
 		users.forEach(u=>{
 			delete u.secrets;
