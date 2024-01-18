@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
 	import { partialCaptions, transcript } from "../lib/captions";
-	import { position, settings, language } from "../lib/settings";
+	import { position, settings, language, type PositionType } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
 	export let settingsShown: boolean;
@@ -18,31 +18,38 @@
 	 * t: top, b: bottom, l: left, r: right
 	 * tl: top left, tr: top right, bl: bottom left, br: bottom right
 	*/
-	let resizing = "";
+	let resizing: string;
 	let moving = false;
 	let mouseX: number;
 	let mouseY: number;
 
 	function startResizing(sideOrAngle: string, e: MouseEvent) {
-		if(!$position.locked && !e.defaultPrevented) {
+		if(startMoveResize(e)) {
 			resizing = sideOrAngle;
-			mouseX = e.clientX;
-			mouseY = e.clientY;
 		}
 	}
 
 	function startMoving(e: MouseEvent) {
-		if(!$position.locked && !e.defaultPrevented) {
+		if(startMoveResize(e)) {
 			moving = true;
-			mouseX = e.clientX;
-			mouseY = e.clientY;
 		}
 	}
 
-	// Ensure captions are in view after settings are changed
-	$: if(movableArea?.offsetHeight && movableElem?.offsetHeight && $settings) clampCaptions();
+	function startMoveResize(e: MouseEvent) {
+		if(!$position.locked && !e.defaultPrevented) {
+			mouseX = e.clientX;
+			mouseY = e.clientY;
+			return true;
+		}
+		return false;
+	}
 
-	function clampCaptions() {
+	// Ensure captions are in view after settings are changed
+	$: if(movableArea?.offsetHeight && movableElem?.offsetHeight && $settings) {
+		clampPosition();
+	}
+
+	function clampPosition() {
 		// Height/width in percent to calc limits
 		const height = movableElem.offsetHeight * 100 / movableArea.offsetHeight;
 		const width = movableElem.offsetWidth * 100 / movableArea.offsetWidth;
@@ -53,11 +60,6 @@
 		const minLeft = 0;
 		const maxLeft = 100 - width;
 
-		const minWidth = 15;
-		const maxWidth = 100;
-		const minHeight = 1;
-		const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
-
 		// Round all values (except maxLines)
 		$position.top = Math.round($position.top * 1000) / 1000;
 		$position.left = Math.round($position.left * 1000) / 1000;
@@ -66,8 +68,6 @@
 		// Position limits
 		$position.top = Math.max(minTop, Math.min($position.top, maxTop));
 		$position.left = Math.max(minLeft, Math.min($position.left, maxLeft));
-		$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
-		$position.maxLines = Math.max(minHeight, Math.min($position.maxLines, maxHeight));
 
 		// Return true for each side where captions are at limit
 		return {
@@ -75,10 +75,6 @@
 			bottom: $position.top === maxTop,
 			left: $position.left === minLeft,
 			right: $position.left === maxLeft,
-			minWidth: $position.width === minWidth,
-			maxWidth: $position.width === maxWidth,
-			minHeight: $position.maxLines === minHeight,
-			maxHeight: $position.maxLines === maxHeight,
 		}
 	}
 
@@ -86,47 +82,63 @@
 		const deltaX = mouseX - e.clientX;
 		const deltaY = mouseY - e.clientY;
 
+		// Update sizes
 		if(resizing) {
-			// Update sizes (and position if needed)
-			if (resizing !== "t" && resizing !== "b") { // Update width
+			// Update width
+			if (resizing !== "t" && resizing !== "b") {
+				const oldWidth = $position.width;
+
+				// Width limits
+				const minWidth = 15;
+				let maxWidth;
+				if(resizing.includes('r')) {
+					maxWidth = 100 - $position.left;
+				}else{
+					maxWidth = $position.left + oldWidth;
+				}
 				const sign = resizing.includes("l") ? -1 : 1; // Sign of delta
-				$position.width -= sign * deltaX * 100/ movableArea.offsetWidth;
+				$position.width -= sign * deltaX * 100 / movableArea.offsetWidth;
+				$position.width = Math.max(minWidth, Math.min($position.width, maxWidth));
 
-				const sides = clampCaptions(); // To check if position needs to be updated
+				if($position.width !== minWidth && $position.width !== maxWidth) {
+					mouseX = e.clientX;
+				}
 
-				if (resizing.includes("l") && !sides.minWidth && !sides.maxWidth) {
-					$position.left -= deltaX * 100 / movableArea.offsetWidth;
+				// If resizing from left, move position accordingly
+				if (resizing.includes("l")) {
+					$position.left += oldWidth - $position.width;
 				}
 			}
 
-			if (resizing !== "l" && resizing !== "r") { // Update height
+			// Update height
+			if (resizing !== "l" && resizing !== "r") { 
 				const oldLines = Math.round($position.maxLines);
 				
 				const sign = resizing.includes("t") ? -1 : 1; // Sign of delta
 				$position.maxLines -= sign * deltaY / (LINE_HEIGHT * $settings.fontSize);
 
-				const sides = clampCaptions(); // To check if position needs to be updated
+				// Height limits
+				const minHeight = 1;
+				const maxHeight = Math.min(Math.floor(movableArea.offsetHeight / lineHeightPx) - 4, MAX_LINES);
 
-				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines) && !sides.maxHeight && !sides.minHeight) {
+				$position.maxLines = Math.max(minHeight, Math.min($position.maxLines, maxHeight));
+				
+				if($position.maxLines !== minHeight && $position.maxLines !== maxHeight) {
+					mouseY = e.clientY;
+				}
+
+				if(resizing.includes("t") && oldLines !== Math.round($position.maxLines) ) {
 					const lineHeightPercent = lineHeightPx * 100 / movableArea.offsetHeight;
 					$position.top -= Math.sign(deltaY) * lineHeightPercent; 
 				}
 			}
-
-			// Limit to borders
-			const sides = clampCaptions();
-
-			// Ignore delta if on borders
-			if(!sides.minWidth && !sides.maxWidth) mouseX = e.clientX;
-			if(!sides.maxHeight && !sides.minHeight) mouseY = e.clientY;
-
 		}else if (moving) {
 			// Update position
 			$position.top -= (deltaY * 100 / movableArea.offsetHeight);
 			$position.left -= (deltaX * 100 / movableArea.offsetWidth);
 
 			// Clamp captions into area
-			const sides = clampCaptions();
+			const sides = clampPosition();
 
 			// Ignore delta if on borders
 			if(!sides.top && !sides.bottom) mouseY = e.clientY;
@@ -136,7 +148,7 @@
 
 	function onMouseUp() {
 		moving = false;
-		resizing = "";
+		resizing = '';
 		$position.maxLines = Math.round($position.maxLines);
 	}
 
