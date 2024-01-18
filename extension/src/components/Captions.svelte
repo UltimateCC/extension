@@ -193,7 +193,7 @@
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
-	<div id="caption-movable-area" bind:this={movableArea} data-resize-side={ resizing }>
+	<div id="caption-movable-area" bind:this={movableArea} data-resize-side={ resizing ?? "" }>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div id="caption-container" 
@@ -207,7 +207,7 @@
 			on:click|preventDefault
 			bind:this={ movableElem }
 			class:locked={ $position.locked }
-			class:no-have-content={ captionHovered || resizing || moving }
+			class:have-empty-box={ captionHovered || moving }
 			transition:fade={ { duration: 100 } }
 		>
 			<!-- Resize control shown only on hover -->
@@ -263,8 +263,8 @@
 					</p>
 				</div>
 			</div>
-			{#if captionHovered || resizing || moving}
-				<div class="caption-no-content" transition:fade={ { duration: 200 } }></div>
+			{#if captionHovered || moving}
+				<div class="empty-box" transition:fade={ { duration: 200 } }></div>
 			{/if}
 		</div>
 	</div>
@@ -297,7 +297,7 @@
 			}
 		}
 
-		&:not([data-resize-side=""]) #caption-container  {
+		&:not([data-resize-side=""]) #caption-container.have-empty-box {
 			cursor: inherit !important;
 			
 			.resize-container div[class*="resize-"] {

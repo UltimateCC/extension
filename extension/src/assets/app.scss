@@ -44,7 +44,7 @@ body #ultimate-closed-caption {
 
 			// Transition for all border radius
 			transition: border-top-left-radius 2.2s ease-in-out;
-			&.no-have-content {
+			&.have-empty-box {
 				backdrop-filter: blur(var(--captions-background-opacity));
 				
 				.caption-container-box {
@@ -54,7 +54,7 @@ body #ultimate-closed-caption {
 				}
 			}
 
-			.caption-no-content {
+			.empty-box {
 				background-color: var(--captions-background-color);
 				height: 100%;
 				border-top-left-radius: inherit;
@@ -576,7 +576,7 @@ body #ultimate-closed-caption {
 	
 		border-top-color: $theme-text-color;
 		
-		bottom: calc(100% - (0.5em - 1px));
+		bottom: calc(100% - (0.5em - 5px));
 		left: 50%;
 		z-index: 30;
 	}
