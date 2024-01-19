@@ -10,7 +10,7 @@ usersRouter.get('', async (req, res, next)=>{
 
 		// Filter users with config to use GCP
 		if(req.query.gcp) {
-			// @ts-ignore
+			// @ts-expect-error Typeorm lack mongodb support
 			where['config.translateService'] = 'gcp';
 		}
 

@@ -5,4 +5,5 @@ secrets
 .env
 docker-compose.override.yml
 dist
+build
 extension*.zip

@@ -9,7 +9,7 @@ export type Result<T> = {
 	data: T
 }
 
-export type CaptionsStatus = {
+export interface CaptionsStatus {
 	stt?: boolean,
 	translation?: boolean,
 	twitch?: boolean
@@ -20,12 +20,12 @@ export type LangList = {
 	name: string
 }[]
 
-export type TranscriptAlt = {
+export interface TranscriptAlt {
 	text: string
 	lang: string
 }
 
-type Metadata = {
+interface Metadata {
 	delay: number
 	duration: number
 	final: boolean
@@ -37,12 +37,12 @@ export type CaptionsData = Metadata & {
 	captions: TranscriptAlt[]
 }
 
-export type Info = {
+export interface Info {
 	type: 'warn' | 'error' ,
 	message: string
 }
 
-export type Action = {
+export interface Action {
 	type: 'setlang' | 'start' | 'stop',
 	lang?: string
 }

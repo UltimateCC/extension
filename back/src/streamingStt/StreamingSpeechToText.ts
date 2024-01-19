@@ -20,7 +20,7 @@ export abstract class StreamingSpeechToText extends EventEmitter {
 	}
 
 	abstract ready(): boolean;
-	async start() {};
-	async handleData(data: Buffer) {};
-	async stop() {};
+	async start() {}
+	async handleData(data: Buffer) {}
+	async stop() {}
 }

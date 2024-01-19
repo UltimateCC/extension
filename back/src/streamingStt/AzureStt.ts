@@ -1,3 +1,4 @@
+/*
 import { AudioConfig, AudioInputStream, AutoDetectSourceLanguageConfig, CancellationErrorCode, CancellationReason, LanguageIdMode, PushAudioInputStream, ResultReason, SpeechConfig, SpeechRecognizer } from "microsoft-cognitiveservices-speech-sdk";
 import { StreamingSpeechToText } from "./StreamingSpeechToText";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
@@ -16,7 +17,6 @@ export class AzureStt extends StreamingSpeechToText {
 	async start() {
 		this.stop();
 		try {
-			/*
 			if( !this.ready() || !this.config.spokenLangs?.length ) {
 				this.emit('info', {
 					type: 'error',
@@ -34,7 +34,7 @@ export class AzureStt extends StreamingSpeechToText {
 			const audioConfig = AudioConfig.fromStreamInput(this.pushStream);
 
 			this.speechRecognizer = SpeechRecognizer.FromConfig(speechConfig, langsConfig, audioConfig);
-			*/
+
 			this.ffmpeg = spawn('ffmpeg', [
 				'-i', '-',
 				'-ar', '16000',
@@ -47,7 +47,7 @@ export class AzureStt extends StreamingSpeechToText {
 			/*
 			this.ffmpeg.stderr.on('data', data=> {
 				logger.debug('ffmpeg err', data.toString("utf8"));
-			});*/
+			});*//*
 			
 			this.ffmpeg.stdout.on('data', (arrayBuffer) => {
 				this.pushStream.write(arrayBuffer.slice());
@@ -119,3 +119,4 @@ export class AzureStt extends StreamingSpeechToText {
 		}
 	}
 }
+*/

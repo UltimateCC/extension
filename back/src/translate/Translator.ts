@@ -1,4 +1,4 @@
-import { User, UserConfig, UserSecrets } from "../entity/User";
+import { User } from "../entity/User";
 import { logger } from "../logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
@@ -133,11 +133,11 @@ export abstract class Translator {
 			errors,
 			data: out
 		}
-	};
+	}
 
 	/** This function will be called for each of the languages to translate, unless translateAll method is overriden */
 	protected translateOne(transcript: TranscriptAlt, target: string): Promise<Result<TranscriptAlt>> {
 		throw new Error('Not implemented');
-	};
+	}
 
 }

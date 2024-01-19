@@ -25,7 +25,7 @@ export class AzureTranslator extends Translator {
 				const json = await res.json();
 				
 				for(const [k, v] of Object.entries(json.translation)) {
-					AzureTranslator.langList.push({code: k, name: (v as any).name });
+					AzureTranslator.langList.push({code: k, name: (v as {name: string}).name });
 				}		
 			}			
 		}

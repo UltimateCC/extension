@@ -17,7 +17,10 @@
     "@types/jsonwebtoken": "^9.0.3",
     "@types/node": "^20.8.2",
     "@types/session-file-store": "^1.2.3",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
     "dotenv": "^16.3.1",
+    "eslint": "^8.56.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"

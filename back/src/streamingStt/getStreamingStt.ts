@@ -1,6 +1,5 @@
 
 import { User } from "../entity/User";
-import { AzureStt } from "./AzureStt";
 import { StreamingSpeechToText } from "./StreamingSpeechToText";
 
 

@@ -1,6 +1,5 @@
 
 import { User } from "../entity/User";
-//import { AzureTranslator } from "./AzureTranslator";
 import { GCPTranslator } from "./GCPTranslator";
 import { NullTranslator } from "./NullTranslator";
 
