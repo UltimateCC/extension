@@ -497,7 +497,7 @@ body #ultimate-closed-caption {
 			border: none;
 			background-color: transparent;
 			cursor: pointer;
-			transition: transform 0.2s ease-in-out;
+			
 			padding: 0.12em 0.15em;
 			font-size: 1em;
 			
@@ -505,11 +505,15 @@ body #ultimate-closed-caption {
 				font-size: 0.75em;
 			}
 
-			svg > * {
-				fill: $settings-text-color;
+			svg {
+				transition: transform 0.2s ease-in-out;
+				
+				& > * {
+					fill: $settings-text-color;
+				}
 			}
 
-			&:hover {
+			&:hover svg {
 				transform: scale(1.1);
 			}
 

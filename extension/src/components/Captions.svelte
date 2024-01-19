@@ -193,6 +193,7 @@
 </script>
 
 {#if settingsShown || $partialCaptions || $transcript.length }
+	{@const mustShowEmptyBox = $transcript.length < $position.maxLines && !resizing && !settingsShown && (captionHovered || moving) }
 	<div id="caption-movable-area" bind:this={movableArea} data-resize-side={ resizing ?? "" }>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -207,7 +208,7 @@
 			on:click|preventDefault
 			bind:this={ movableElem }
 			class:locked={ $position.locked }
-			class:have-empty-box={ captionHovered || moving }
+			class:have-empty-box={ mustShowEmptyBox }
 			transition:fade={ { duration: 100 } }
 		>
 			<!-- Resize control shown only on hover -->
@@ -263,8 +264,8 @@
 					</p>
 				</div>
 			</div>
-			{#if captionHovered || moving}
-				<div class="empty-box" transition:fade={ { duration: 200 } }></div>
+			{#if mustShowEmptyBox}
+				<div class="empty-box" transition:fade={ { duration: 150 } }></div>
 			{/if}
 		</div>
 	</div>
