@@ -16,12 +16,17 @@
 
 	function toggleCaptions(e: Event) {
 		e.preventDefault();
+		if(captionsShown && settingsShown) {
+			settingsShown = false;
+		}
 		$showCaptions = !captionsShown;
-		settingsShown = !captionsShown && settingsShown;
 	}
 
 	function toggleSettings(e: Event) {
 		e.preventDefault();
+		if(!settingsShown && !captionsShown) {
+			$showCaptions = true;
+		}
 		settingsShown = !settingsShown;
 	}
 
