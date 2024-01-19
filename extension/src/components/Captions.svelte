@@ -298,7 +298,7 @@
 			}
 		}
 
-		&:not([data-resize-side=""]) #caption-container.have-empty-box {
+		&:not([data-resize-side=""]) #caption-container {
 			cursor: inherit !important;
 			
 			.resize-container div[class*="resize-"] {
