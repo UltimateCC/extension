@@ -129,3 +129,17 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+#channels .streamer-name {
+    overflow: hidden;
+}
+
+#channels .streamer-name > * {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#channels .card-first-line {
+    gap: calc(var(--gap) * 0.15);
+}
