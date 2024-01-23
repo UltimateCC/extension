@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useSavedConfig } from '../../hooks/useSavedConfig';
 import ConfigSwitch from '../ConfigSwitch';
 
 interface TwitchProps {
@@ -5,49 +7,46 @@ interface TwitchProps {
     updateConfig: (config: {twitchAutoStop: boolean}) => Promise<void>
 }
 
+interface TwitchConfig {
+    showCaptions: boolean
+}
+
 function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
-    /*
-    const [showCaptions, setShowCaptions] = useState<boolean>(true);
+    // Twitch config
+    const {
+        config: twitchConfig,
+        loadConfig: loadTwitchConfig,
+        updateConfig: updateTwitchConfig
+    } = useSavedConfig<TwitchConfig>({apiPath: 'twitchconfig'});
 
     useEffect(()=>{
-        api('twitchconfig')
-        .then(response => {
-            setShowCaptions(response.showCaptions ?? true);
-        })
+        loadTwitchConfig()
         .catch(err => {
             console.error('Error loading twitch config', err);
         });
-    }, []);
+    }, [loadTwitchConfig]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const showCaptions = event.target.checked;
-        setShowCaptions(showCaptions);
-        api('twitchconfig', {
-            method: 'POST',
-            body: { showCaptions }
-        })
+    const handleShowCaptionsChange = (val: boolean) => {
+        updateTwitchConfig({ showCaptions: val })
         .catch(err => {
-            console.error('Error updating twitch config', err);
+            console.error('Error updating Twitch config', err);
         });
-    };
-    */
+    }
 
     const handleAutoStopChange = (val: boolean) => {
         updateConfig({ twitchAutoStop: val })
         .catch(err => {
-            console.error('Error updating autostop', err);
+            console.error('Error updating autoStop', err);
         });
     }
 
     return (
         <div className="twitch">
-            {/*
             <ConfigSwitch
-                checked={showCaptions}
-                onChange={handleChange}
+                checked={ twitchConfig.showCaptions ?? true }
+                onChange={handleShowCaptionsChange}
                 label="Show captions to viewers by default (Available soon)"
             />
-            */}
             <ConfigSwitch
                 checked={twitchAutoStop}
                 onChange={handleAutoStopChange}

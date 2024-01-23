@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { Stats } from "../entity/Stats";
-import { FindOptionsWhere, Not } from "typeorm";
+import { FindOptionsWhere } from "typeorm";
 
 export const statsRouter = Router();
 
 statsRouter.get('', async (req, res, next)=>{
 	try{
-		let stats: Stats[];
-
 		const where: FindOptionsWhere<Stats> = { twitchId: req.session.userid };
 
 		if(req.session.admin) {
@@ -22,11 +20,11 @@ statsRouter.get('', async (req, res, next)=>{
 
 		// Filter only stats with translation
 		if(req.query.translation) {
-			// @ts-ignore
+			// @ts-expect-error Typeorm lack mongodb support
 			where.translatedCharCount = { $gt: 0 };
 		}
 
-		stats = await Stats.find({where, order: { created: 'DESC' }});
+		const stats = await Stats.find({where, order: { created: 'DESC' }});
 		res.json(stats);
 	}catch(e) {
 		next(e);

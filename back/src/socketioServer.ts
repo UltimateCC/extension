@@ -39,8 +39,8 @@ export interface SocketData {
 	//streamingStt: StreamingSpeechToText | null;
 }
 
-type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, {}, SocketData>;
-type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, {}, SocketData>;
+type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+type TypedServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
 
 // Limit config reloads
 const loadRateLimiter = new RateLimiterMemory({
@@ -180,9 +180,7 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				logger.warn('Translation error for '+socket.data.twitchId+' : '+message);
 			}
 			try{
-				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
-
-				// If not in production, add fake translate for free to captions for testing
+				// If not in production, add fake translated text for testing
 				if(process.env.NODE_ENV !== 'production') {
 					const fakeTranslatorContent: TranscriptAlt[] = [
 						...out.data.captions,
@@ -193,18 +191,22 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 					]
 					out.data.captions = fakeTranslatorContent;
 				}
+				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
 
 				// todo for metrics:
 				// Get delay at this step
 				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
-			}catch(e: any) {
-				if(e?.statusCode === 422) {
-					logger.warn('Pubsub message too large for user '+socket.data.twitchId);
-				}else if(e?.statusCode === 500) {
-					logger.warn('Error 500 sending pubsub for user '+socket.data.twitchId);
-				}else{
-					throw e;
+			}catch(e) {
+				if(e && typeof e === 'object' && 'statusCode' in e) {
+					if(e?.statusCode === 422) {
+						logger.warn('Pubsub message too large for user '+socket.data.twitchId);
+					}else if(e?.statusCode === 500) {
+						logger.warn('Error 500 sending pubsub for user '+socket.data.twitchId);
+					}else{
+						throw e;
+					}
 				}
+
 			}
 		}
 	}catch(e) {
@@ -216,6 +218,7 @@ export const io: TypedServer = new Server();
 
 // Before actually accepting connection: auth + try loading config
 io.use((socket, next)=>{
+	// eslint-disable-next-line -- Access session object added by express-session
 	const session = (socket.request as any).session;
 
 	if(session.userid) {

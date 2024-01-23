@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { User, UserConfigSchema } from "../entity/User";
 

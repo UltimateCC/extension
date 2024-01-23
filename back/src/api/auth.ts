@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response, Router } from "express";
 import { authURL } from "../twitch/twitch";
 import { User } from "../entity/User";

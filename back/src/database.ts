@@ -17,12 +17,13 @@ export const dataSource = new DataSource({
 /** Retry multiple times connecting to database */
 export async function initDatabase() {
 	let tries = 0;
+	let success = false;
 
-	while(true) {
+	while(!success) {
 		try {
 			await dataSource.initialize();
 			await dataSource.synchronize();
-			break;
+			success = true;
 		}catch(e) {
 			tries++;
 			if(tries<10) {
