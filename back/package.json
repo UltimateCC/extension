@@ -38,6 +38,7 @@
     "log4js": "^6.9.1",
     "microsoft-cognitiveservices-speech-sdk": "^1.32.0",
     "mongodb": "^5.9.1",
+    "prom-client": "^15.1.0",
     "rate-limiter-flexible": "^3.0.4",
     "redis": "^4.6.11",
     "reflect-metadata": "^0.1.13",

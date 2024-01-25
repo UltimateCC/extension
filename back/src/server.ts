@@ -1,5 +1,5 @@
 import express from 'express';
-import { createServer } from 'http';
+import { createServer } from 'node:http';
 import { endSocketSessions, io } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';

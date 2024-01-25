@@ -7,6 +7,8 @@ export const envSchema = z.object({
 
 	// Server listen port
 	PORT: z.string().min(1),
+	// Metrics listen port
+	METRICS_PORT: z.string().default('9000'),
 
 	// Logger log level
 	LOGLEVEL: z.string().default('info'),

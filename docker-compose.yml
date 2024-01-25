@@ -27,6 +27,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8001
+      - METRICS_PORT=9000
       - DB_URL=mongodb://captions:${DB_PASSWORD}@captionsdb:27017/
       - SESSION_REDIS=redis://captionsredis
       - SESSION_SECRET=${SESSION_SECRET}

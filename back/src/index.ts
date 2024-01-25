@@ -3,12 +3,16 @@ import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
 import { environment } from "./environment";
 import { logger } from "./logger";
+import { startMetricsServer } from "./metrics";
 
 
 (async ()=>{
 	try{
 		await initDatabase();
-		await startServer();
+		await Promise.all([
+			startServer(),
+			startMetricsServer()
+		]);
 		logger.info(`Server started on port ${ environment.PORT }`);
 	}catch(e){
 		logger.error('Error during init', e);

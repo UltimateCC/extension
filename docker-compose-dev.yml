@@ -17,6 +17,7 @@ services:
       - ./back/nodemon.json:/app/nodemon.json
     ports:
       - 8001:8001
+      - 9000:9000
     environment:
       - NODE_ENV=
       - LOGLEVEL=debug
