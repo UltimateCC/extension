@@ -21,11 +21,11 @@ export class GCPTranslator extends Translator {
 			source: 'en',
 			target: 'fr'
 		});
-		const res = await fetch("https://translation.googleapis.com/language/translate/v2?" + params );
+		const res = await fetch(`https://translation.googleapis.com/language/translate/v2?${params}`);
 		if(!res.ok) {
 			const text = await res.text();
 			return {
-				message: res.status + ' ' + res.statusText,
+				message: `${res.status} ${res.statusText}`,
 				text
 			}
 		}
@@ -51,7 +51,7 @@ export class GCPTranslator extends Translator {
 			key: this.key
 		});
 
-		const res = await fetch('https://translation.googleapis.com/language/translate/v2?'+params, {
+		const res = await fetch(`https://translation.googleapis.com/language/translate/v2?${params}`, {
 			method: 'POST'
 		});
 
@@ -62,7 +62,7 @@ export class GCPTranslator extends Translator {
 				data: { text: json?.data?.translations[0]?.translatedText ?? '' , lang: target }
 			};
 		}else{
-			const status = res.status + ' ' + res.statusText;
+			const status = `${ res.status } ${ res.statusText }`;
 			const text = await res.text();
 			logger.debug('GCP translation error', status, text);
 
@@ -74,7 +74,7 @@ export class GCPTranslator extends Translator {
 			}
 			return {
 				isError: true,
-				message: 'Translation API error: ' + status
+				message: `Translation API error: ${ status }`
 			}
 		}
 	}

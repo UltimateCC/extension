@@ -8,9 +8,8 @@ import { logger } from "./logger";
 (async ()=>{
 	try{
 		await initDatabase();
-		// await encryptKeys();
 		await startServer();
-		logger.info('Server started on port '+environment.PORT);
+		logger.info(`Server started on port ${ environment.PORT }`);
 	}catch(e){
 		logger.error('Error during init', e);
 	}

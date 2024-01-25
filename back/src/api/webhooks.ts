@@ -10,7 +10,7 @@ async function getWebhookUrl(twitchId: string, regen: boolean) {
 	if(!user.webhookSecret || regen) {
 		await user.genWebhookSecret();
 	}
-	return '/api/webhooks/' + user.twitchId + '/' + user.webhookSecret;
+	return `/api/webhooks/${ user.twitchId }/${ user.webhookSecret }`;
 }
 
 export const webhooksRouter = Router();
@@ -62,7 +62,7 @@ webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 
 		// If action received, send it to user
 		if(action) {
-			io.to('twitch-'+user.twitchId).emit('action', action);
+			io.to(`twitch-${ user.twitchId }`).emit('action', action);
 			res.json({ success: true });
 		}else{
 			res.status(400).json({

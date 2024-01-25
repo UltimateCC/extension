@@ -27,4 +27,3 @@ configRouter.post('', async (req, res, next)=>{
 		next(e);
 	}
 });
-

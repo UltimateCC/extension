@@ -71,7 +71,7 @@ authRouter.post('', async (req, res, next)=>{
 		if(admins.includes(userId)) {
 			req.session.admin = true;
 		}
-		logger.info(name + ' authenticated');
+		logger.info(`${ name } authenticated`);
 		return res.json({login: displayName, userid: userId, img, connected: true, url: authURL});
 	}catch(e) {
 		next(e);

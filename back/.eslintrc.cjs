@@ -10,5 +10,6 @@ module.exports = {
 	rules: {
 		"@typescript-eslint/no-unused-vars": ["warn", { args: "none" }],
 		"@typescript-eslint/no-unsafe-declaration-merging": "off",
+		"prefer-template": "error"
 	}
 };

@@ -21,12 +21,12 @@ secretsRouter.post('', async (req, res, next)=>{
 		if(data.value) {
 			// If new GCP API key is given, check if it works
 			if(data.type === 'gcpKey') {
-				logger.debug('Saving GCP key for '+req.session.userid);
+				logger.debug(`Saving GCP key for ${ req.session.userid }`);
 				const err = await GCPTranslator.checkKey(data.value);
 				if(err) {
-					logger.warn('Error saving GCP key for '+req.session.userid+ ' '+err.message, err.text);
+					logger.warn(`Error saving GCP key for ${ req.session.userid } : ${ err.message }`, err.text);
 					return res.status(400).json({
-						message: 'GCP API error: ' + err.message
+						message: `GCP API error: ${ err.message }`
 					});
 				}
 			}

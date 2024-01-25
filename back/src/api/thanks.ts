@@ -39,18 +39,18 @@ const others = ["Kranack", "Rem_x", "Theondrus", "Velie"];
 			return;
 		}
 		for(const c of contributors) {
-			const res = await fetch('https://discord.com/api/v10/users/'+c.discordId, {
+			const res = await fetch(`https://discord.com/api/v10/users/${c.discordId}`, {
 				headers: {
-					'Authorization': 'Bot ' + environment.DISCORD_BOT_TOKEN,
+					'Authorization': `Bot ${environment.DISCORD_BOT_TOKEN}`,
 					'Content-Type': 'application/json',
 				}
 			});
 			if(!res.ok) {
-				throw new Error('Discord API error: '+res.status+ ' '+res.statusText);
+				throw new Error(`Discord API error: ${res.status} ${res.statusText}`);
 			}
 			const data = await res.json();
 			if(data.avatar) {
-				c.img = 'https://cdn.discordapp.com/avatars/'+c.discordId+'/'+data.avatar+'?size=1024';
+				c.img = `https://cdn.discordapp.com/avatars/${c.discordId}/${data.avatar}?size=1024`;
 			}
 			if(data.global_name) {
 				c.name = data.global_name;

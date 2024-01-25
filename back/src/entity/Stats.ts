@@ -1,5 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 import { UserConfig } from "./User";
+import { TranscriptData } from "../types";
 
 @Entity()
 export class Stats extends BaseEntity {
@@ -36,5 +37,15 @@ export class Stats extends BaseEntity {
 
 	@Column()
 	translateErrorCount: number = 0;
+
+	countTranscript(transcript: TranscriptData) {
+		if(transcript.final) {
+			this.finalCount++;
+			this.finalCharCount += transcript.text.length;
+		}else{
+			this.partialCount++;
+			this.partialCharCount += transcript.text.length;
+		}
+	}
 
 }

@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Action, CaptionsStatus, Info, LangList, TranscriptData, TranscriptAlt } from "./types";
+import { Action, CaptionsStatus, Info, LangList, TranscriptData, CaptionsData } from "./types";
 import { User, UserConfig } from "./entity/User";
 import { getTranslator } from "./translate/getTranslator";
 import { Translator } from "./translate/Translator";
@@ -107,7 +107,7 @@ async function endSession(socket: TypedSocket) {
 		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
 		stats.translateErrorCount = socket.data.translator.getErrorCount();
 		await stats.save();
-		logger.debug('Saved stats for '+socket.data.twitchId);
+		logger.debug(`Saved stats for ${ socket.data.twitchId }`);
 	}
 }
 
@@ -119,26 +119,26 @@ async function sendStatus(socket: TypedSocket) {
 	});
 }
 
-async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) {
+async function handleTranscript(socket: TypedSocket, transcript: TranscriptData) {
 	try {
 		// Ratelimit
 		try {
 			await textRateLimiter.consume(socket.data.twitchId);
 		}catch(e) {
-			logger.warn('Transcript ratelimited for: '+socket.data.twitchId);
+			logger.warn(`Transcript ratelimited for: ${ socket.data.twitchId }`);
 			return;
 		}
 
 		// Ignore empty string (in theory should not happen)
 		if(transcript.text.length === 0) {
-			logger.warn('Received empty transcript for: '+socket.data.twitchId);
+			logger.warn(`Received empty transcript for: ${ socket.data.twitchId }`);
 			return;
 		}
 
 		// Limit too long text
 		// (Text shouldnt be this long because it is splitted clientside)
 		if(transcript.text.length > 250) {
-			logger.warn('Dropping too long transcript for: '+socket.data.twitchId);
+			logger.warn(`Dropping too long transcript for: ${ socket.data.twitchId }`);
 			return;
 		}
 
@@ -148,25 +148,18 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 
 		// Count statistics
 		if(socket.data.stats) {
+			socket.data.stats.countTranscript(transcript);
 			const now = Date.now();
 			if(!socket.data.firstText) {
 				socket.data.firstText = now - transcript.duration;
 			}
 			socket.data.lastText = now;
-
-			if(transcript.final) {
-				socket.data.stats.finalCount++;
-				socket.data.stats.finalCharCount += transcript.text.length;
-			}else{
-				socket.data.stats.partialCount++;
-				socket.data.stats.partialCharCount += transcript.text.length;
-			}
 		}
 
 		const out = await socket.data.translator.translate(transcript);
 		if(out.isError) {
 			socket.emit('info', { type: 'warn', message: out.message });
-			logger.error('Translation failed for '+socket.data.twitchId, out.message);
+			logger.error(`Translation failed for ${ socket.data.twitchId } : ${ out.message }`);
 		}else{
 			// If translation generated errors, warn user
 			if(out.errors?.length) {
@@ -177,40 +170,37 @@ async function handleCaptions(socket: TypedSocket, transcript: TranscriptData ) 
 				if(!message.startsWith('Translation API error: 50')) {
 					socket.emit('info', { type: 'warn', message });
 				}
-				logger.warn('Translation error for '+socket.data.twitchId+' : '+message);
+				logger.warn(`Translation error for ${ socket.data.twitchId } : ${ message }`);
 			}
-			try{
-				// If not in production, add fake translated text for testing
-				if(process.env.NODE_ENV !== 'production') {
-					const fakeTranslatorContent: TranscriptAlt[] = [
-						...out.data.captions,
-						{
-							text: transcript.text,
-							lang: "test"
-						}
-					]
-					out.data.captions = fakeTranslatorContent;
-				}
-				logger.debug('Sending pubsub for '+socket.data.twitchId, out.data);
-
-				// todo for metrics:
-				// Get delay at this step
-				await sendPubsub(socket.data.twitchId, JSON.stringify(out.data));
-			}catch(e) {
-				if(e && typeof e === 'object' && 'statusCode' in e) {
-					if(e?.statusCode === 422) {
-						logger.warn('Pubsub message too large for user '+socket.data.twitchId);
-					}else if(e?.statusCode === 500) {
-						logger.warn('Error 500 sending pubsub for user '+socket.data.twitchId);
-					}else{
-						throw e;
-					}
-				}
-
-			}
+			await sendCaptions(socket, out.data);
 		}
 	}catch(e) {
-		logger.error('Error handling captions for '+socket.data.twitchId, e);
+		logger.error(`Error handling transcript for ${ socket.data.twitchId }`, e);
+	}
+}
+
+async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
+	try{
+		// If not in production, add fake translated text for testing
+		if(process.env.NODE_ENV !== 'production') {
+			data.captions.push({
+				text: data.captions[0].text,
+				lang: "test"
+			});
+		}
+		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
+
+		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
+	}catch(e) {
+		if(e && typeof e === 'object' && 'statusCode' in e) {
+			if(e?.statusCode === 422) {
+				logger.warn(`Pubsub message too large for user ${ socket.data.twitchId }`);
+			}else if([500, 502, 503, 504].includes(e?.statusCode as number)) {
+				logger.warn(`Error 500 sending pubsub for user ${ socket.data.twitchId }`);
+			}else{
+				logger.error(`Unexpected error sending pubsub for user ${ socket.data.twitchId }`);
+			}
+		}
 	}
 }
 
@@ -230,7 +220,6 @@ io.use((socket, next)=>{
 			logger.error('Error loading user config', e);
 			next(new Error('error loading user config'));
 		}));
-
 	}else{
 		logger.warn('Unauthenticated socketio connection');
 		next(new Error('not authenticated'));
@@ -239,7 +228,7 @@ io.use((socket, next)=>{
 
 // When socket connected
 io.on('connect', (socket) => {
-	socket.join('twitch-'+socket.data.twitchId);
+	socket.join(`twitch-${ socket.data.twitchId }`);
 
 	socket.on('disconnect', ()=>{
 		endSession(socket).catch(e=>logger.error('Error ending session', e));
@@ -258,7 +247,7 @@ io.on('connect', (socket) => {
 		if(typeof captions.lang !== 'string') return;
 		if(typeof captions.final !== 'boolean') return;
 
-		handleCaptions(socket, captions);
+		handleTranscript(socket, captions);
 	});
 
 	// Streaming speech to text
@@ -287,7 +276,7 @@ export async function endSocketSessions() {
 export async function getUserSockets(twitchId: string) {
 	// Only local sockets are fetched
 	// -> socket type can be used
-	return await io.local.in('twitch-'+twitchId).fetchSockets() as unknown as TypedSocket[];
+	return await io.local.in(`twitch-${ twitchId }`).fetchSockets() as unknown as TypedSocket[];
 }
 
 export async function isConnected(twitchId: string) {
@@ -301,11 +290,11 @@ export function registerTwitchAutoStop(twitchId: string) {
 			const sockets = await getUserSockets(twitchId);
 			for(const socket of sockets) {
 				if(socket.data.config.twitchAutoStop !== false) {
-					socket.emit('action', { type:'stop' });
+					socket.emit('action', { type: 'stop' });
 				}
 			}
 		}catch(e) {
-			logger.warn('Error fetching sockets for twitch autostop ', e);
+			logger.warn('Error fetching sockets for twitch autostop', e);
 		}
 	});
 }
