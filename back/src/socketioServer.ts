@@ -8,6 +8,7 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { logger } from "./logger";
 import { eventsub } from "./twitch/events";
+import { z } from "zod";
 
 
 interface ServerToClientEvents {
@@ -53,6 +54,14 @@ const loadRateLimiter = new RateLimiterMemory({
 const textRateLimiter = new RateLimiterMemory({
 	points: 10,
 	duration: 5,
+});
+
+const transcriptDataSchema = z.object({
+	delay: z.number(),
+	duration: z.number().positive(),
+	final: z.boolean(),
+	text: z.string().min(1, {message: 'Empty transcript'}).max(250, {message: 'Transcript too long'}),
+	lang: z.string().min(1).max(6)
 });
 
 async function loadConfig(socket: TypedSocket) {
@@ -127,27 +136,6 @@ async function sendStatus(socket: TypedSocket) {
 
 async function handleTranscript(socket: TypedSocket, transcript: TranscriptData) {
 	try {
-		// Ratelimit
-		try {
-			await textRateLimiter.consume(socket.data.twitchId);
-		}catch(e) {
-			logger.warn(`Transcript ratelimited for: ${ socket.data.twitchId }`);
-			return;
-		}
-
-		// Ignore empty string (in theory should not happen)
-		if(transcript.text.length === 0) {
-			logger.warn(`Received empty transcript for: ${ socket.data.twitchId }`);
-			return;
-		}
-
-		// Limit too long text
-		// (Text shouldnt be this long because it is splitted clientside)
-		if(transcript.text.length > 250) {
-			logger.warn(`Dropping too long transcript for: ${ socket.data.twitchId }`);
-			return;
-		}
-
 		socket.emit('transcript', transcript );
 
 		socket.data.lastSpokenLang = transcript.lang;
@@ -236,18 +224,24 @@ io.on('connect', (socket) => {
 		loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
 	});
 
-	socket.on('text', captions =>{
+	socket.on('text', async (captions) =>{
 		if(!socket.data.ready) return;
 
-		// Ignore if data is invalid
-		if(typeof captions.text !== 'string') return;
-		if(typeof captions.delay !== 'number') return;
-		if(typeof captions.duration !== 'number') return;
-		if(captions.duration < 0) return;
-		if(typeof captions.lang !== 'string') return;
-		if(typeof captions.final !== 'boolean') return;
+		// Ratelimit
+		try {
+			await textRateLimiter.consume(socket.data.twitchId);
+		}catch(e) {
+			logger.warn(`Transcript ratelimited for: ${ socket.data.twitchId }`);
+			return;
+		}
 
-		handleTranscript(socket, captions);
+		// Check captions data format
+		const parsed = transcriptDataSchema.safeParse(captions);
+		if(parsed.success) {
+			handleTranscript(socket, parsed.data);
+		}else{
+			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId }`, parsed.error);
+		}
 	});
 
 	// Streaming speech to text
