@@ -25,16 +25,33 @@ export class GCPTranslator extends Translator {
 		if(!res.ok) {
 			const text = await res.text();
 			return {
-				message: `${res.status} ${res.statusText}`,
+				isError: true,
+				message: `GCP API returned error ${res.status} ${res.statusText}`,
 				text
 			}
+		}
+		return {
+			isError: false
 		}
 	}
 
 	async init() {
-		// this.key = this.user.secrets.gcpKey!;
-		const secret = await Secret.findOneByOrFail({ twitchId: this.user.twitchId, type: 'gcpKey' });
-		this.key = await secret.getValue();
+		const secret = await Secret.findOneBy({ twitchId: this.user.twitchId, type: 'gcpKey' });
+		if(!secret) {
+			return {
+				isError: false,
+				message: 'No API key found'
+			}
+		}
+		const key = await secret.getValue();
+		const check = await GCPTranslator.checkKey(key);
+		if(check.isError) {
+			return check;
+		}
+		this.key = key;
+		return {
+			isError: false
+		}
 	}
 
 	async getLangs() {

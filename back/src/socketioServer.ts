@@ -29,6 +29,7 @@ interface ClientToServerEvents {
 }
 
 export interface SocketData {
+	ready: boolean
 	firstText: number
 	lastText: number
 	lastSpokenLang: string
@@ -87,13 +88,18 @@ async function loadConfig(socket: TypedSocket) {
 
 	// Translation
 	socket.data.translator = getTranslator(u);
-	await socket.data.translator.init();
+	const init = await socket.data.translator.init();
+	if(init.isError) {
+		socket.emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
+		logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message}`);
+	}
 
 	// Send available translation languages
 	const langs = await socket.data.translator.getLangs();
 	socket.emit('translateLangs', langs);
 
 	sendStatus(socket);
+	socket.data.ready = true;
 }
 
 async function endSession(socket: TypedSocket) {
@@ -181,13 +187,6 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 
 async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
-		// If not in production, add fake translated text for testing
-		if(process.env.NODE_ENV !== 'production') {
-			data.captions.push({
-				text: data.captions[0].text,
-				lang: "test"
-			});
-		}
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
 
 		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
@@ -211,23 +210,22 @@ io.use((socket, next)=>{
 	// eslint-disable-next-line -- Access session object added by express-session
 	const session = (socket.request as any).session;
 
-	if(session.userid) {
-		socket.data.twitchId = session.userid;
-		loadConfig(socket).then(()=>{
-			next();
-		})
-		.catch((e=>{
-			logger.error('Error loading user config', e);
-			next(new Error('error loading user config'));
-		}));
-	}else{
+	if(!session.userid) {
 		logger.warn('Unauthenticated socketio connection');
 		next(new Error('not authenticated'));
+	}else{
+		socket.data.twitchId = session.userid;
+		next();
 	}
 });
 
 // When socket connected
 io.on('connect', (socket) => {
+	socket.data.ready = false;
+	loadConfig(socket).catch((e=>{
+		logger.error('Error loading user config', e);
+	}));
+
 	socket.join(`twitch-${ socket.data.twitchId }`);
 
 	socket.on('disconnect', ()=>{
@@ -239,6 +237,8 @@ io.on('connect', (socket) => {
 	});
 
 	socket.on('text', captions =>{
+		if(!socket.data.ready) return;
+
 		// Ignore if data is invalid
 		if(typeof captions.text !== 'string') return;
 		if(typeof captions.delay !== 'number') return;

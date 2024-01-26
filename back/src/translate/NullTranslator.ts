@@ -10,9 +10,17 @@ export class NullTranslator extends Translator {
 	}
 
 	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
+		const data = [transcript];
+		// If not in production, add fake translated text for testing
+		if(process.env.NODE_ENV !== 'production') {
+			data.push({
+				text: transcript.text,
+				lang: "test"
+			});
+		}
 		return {
 			isError: false,
-			data: [transcript]
+			data
 		}
 	}
 }

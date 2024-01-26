@@ -36,7 +36,11 @@ export abstract class Translator {
 		return !!this.translatedChars;
 	}
 
-	async init() {}
+	async init(): Promise<{isError: boolean, message?: string}> {
+		return {
+			isError: false
+		}
+	}
 
 	abstract ready(): boolean;
 

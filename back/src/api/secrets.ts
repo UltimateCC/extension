@@ -15,18 +15,18 @@ const PostBodyType = z.object({
 secretsRouter.post('', async (req, res, next)=>{
 	try{
 		const data = PostBodyType.parse(req.body);
-		const user = await User.findOneByOrFail({twitchId: req.session.userid});
+		const user = await User.findOneByOrFail({ twitchId: req.session.userid });
 
 		// Verify value
 		if(data.value) {
 			// If new GCP API key is given, check if it works
 			if(data.type === 'gcpKey') {
-				logger.debug(`Saving GCP key for ${ req.session.userid }`);
-				const err = await GCPTranslator.checkKey(data.value);
-				if(err) {
-					logger.warn(`Error saving GCP key for ${ req.session.userid } : ${ err.message }`, err.text);
+				logger.debug(`Saving GCP key for ${req.session.userid}`);
+				const check = await GCPTranslator.checkKey(data.value);
+				if(check.isError) {
+					logger.warn(`Error saving GCP key for ${req.session.userid} : ${check.message}`, check.text);
 					return res.status(400).json({
-						message: `GCP API error: ${ err.message }`
+						message: `GCP API error: ${check.message}`
 					});
 				}
 			}
