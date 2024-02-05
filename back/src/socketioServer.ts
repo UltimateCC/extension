@@ -60,7 +60,7 @@ const transcriptDataSchema = z.object({
 	delay: z.number(),
 	duration: z.number().positive(),
 	final: z.boolean(),
-	text: z.string().min(1, {message: 'Empty transcript'}).max(250, {message: 'Transcript too long'}),
+	text: z.string().min(1).max(250),
 	lang: z.string().min(1).max(6)
 });
 
@@ -240,7 +240,7 @@ io.on('connect', (socket) => {
 		if(parsed.success) {
 			handleTranscript(socket, parsed.data);
 		}else{
-			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId }`, parsed.error);
+			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId }`, parsed.error.message);
 		}
 	});
 
