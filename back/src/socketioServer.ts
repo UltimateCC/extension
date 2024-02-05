@@ -257,7 +257,7 @@ io.on('connect', (socket) => {
 	});*/
 });
 
-/** Gracefully disconnect all sockets (called at shutdown) */
+/** Gracefully end all sessions (called at shutdown) */
 export async function endSocketSessions() {
 	// Only local sockets are fetched
 	// -> socket type can be used

@@ -33,6 +33,7 @@ export async function startServer() {
 		});
 	});
 	await eventsub.markAsReady();
+	logger.info(`Server started on port ${ environment.PORT }`);
 }
 
 export async function stopServer() {

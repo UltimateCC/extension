@@ -20,7 +20,7 @@ statsRouter.get('', async (req, res, next)=>{
 
 		// Filter only stats with translation
 		if(req.query.translation) {
-			// @ts-expect-error Typeorm lack mongodb support
+			// @ts-expect-error Typeorm typings lack mongodb support
 			where.translatedCharCount = { $gt: 0 };
 		}
 

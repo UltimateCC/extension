@@ -37,8 +37,7 @@ export default async function api(
             const json = await res.json();
             if(json.message && typeof json.message === 'string') {
                 error = json.message;
-            }
-            if(json.error && typeof json.error === 'string') {
+            }else if(json.error && typeof json.error === 'string') {
                 error = json.error;
             }
         } catch (e) {

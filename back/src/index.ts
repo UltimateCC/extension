@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
-import { environment } from "./environment";
 import { logger } from "./logger";
 import { startMetricsServer } from "./metrics";
 
@@ -13,7 +12,6 @@ import { startMetricsServer } from "./metrics";
 			startServer(),
 			startMetricsServer()
 		]);
-		logger.info(`Server started on port ${ environment.PORT }`);
 	}catch(e){
 		logger.error('Error during init', e);
 	}
@@ -23,8 +21,8 @@ import { startMetricsServer } from "./metrics";
 process.on('SIGTERM', async() => {
 	try {
 		await stopServer();
+		logger.info('Server closed');
 		await disconnectDatabase();
-		logger.info('Database disconnected');
 	}catch(e) {
 		logger.error('Error stoping server', e)
 	}

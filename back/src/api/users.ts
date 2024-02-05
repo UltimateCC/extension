@@ -10,7 +10,7 @@ usersRouter.get('', async (req, res, next)=>{
 
 		// Filter users with config to use GCP
 		if(req.query.gcp) {
-			// @ts-expect-error Typeorm lack mongodb support
+			// @ts-expect-error Typeorm typings lack mongodb support
 			where['config.translateService'] = 'gcp';
 		}
 
@@ -20,7 +20,7 @@ usersRouter.get('', async (req, res, next)=>{
 			delete u.secrets;
 			delete u.twitchToken;
 		});
-		
+
 		res.json(users);
 	}catch(e) {
 		next(e);
@@ -37,7 +37,7 @@ usersRouter.get('/:twitchid', async (req, res, next)=>{
 
 		delete user.secrets;
 		delete user.twitchToken;
-		
+
 		res.json(user);
 	}catch(e) {
 		next(e);
