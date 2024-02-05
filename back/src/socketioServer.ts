@@ -240,7 +240,7 @@ io.on('connect', (socket) => {
 		if(parsed.success) {
 			handleTranscript(socket, parsed.data);
 		}else{
-			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId }`, parsed.error.message);
+			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId } ${parsed.error.errors[0].message}`);
 		}
 	});
 
