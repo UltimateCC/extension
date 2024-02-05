@@ -28,6 +28,6 @@ Join our discord: https://discord.gg/f8fUqHwtHx
 - for local backend dev, run `pnpm install` in back folder to get types working
 
 #### Website / extension
-- `cd website` / `cd sveltxtension`
+- `cd website` / `cd extension`
 - Install: `pnpm install`
 - Start local dev server: `pnpm dev`
