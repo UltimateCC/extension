@@ -58,7 +58,7 @@ const textRateLimiter = new RateLimiterMemory({
 
 const transcriptDataSchema = z.object({
 	delay: z.number(),
-	duration: z.number().positive(),
+	duration: z.number(),
 	final: z.boolean(),
 	text: z.string().min(1).max(250),
 	lang: z.string().min(1)
