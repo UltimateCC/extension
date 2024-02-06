@@ -61,7 +61,7 @@ const transcriptDataSchema = z.object({
 	duration: z.number().positive(),
 	final: z.boolean(),
 	text: z.string().min(1).max(250),
-	lang: z.string().min(1).max(6)
+	lang: z.string().min(1)
 });
 
 async function loadConfig(socket: TypedSocket) {
