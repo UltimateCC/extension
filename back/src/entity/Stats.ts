@@ -47,5 +47,4 @@ export class Stats extends BaseEntity {
 			this.partialCharCount += transcript.text.length;
 		}
 	}
-
 }

@@ -24,6 +24,16 @@ statsRouter.get('', async (req, res, next)=>{
 			where.translatedCharCount = { $gt: 0 };
 		}
 
+		if(typeof req.query.before === 'string') {
+			// @ts-expect-error Typeorm typings lack mongodb support
+			where.created = { $lte: new Date(req.query.before) }
+		}
+
+		if(typeof req.query.after === 'string') {
+			// @ts-expect-error Typeorm typings lack mongodb support
+			where.created = { $gte: new Date(req.query.after) }
+		}
+
 		const stats = await Stats.find({where, order: { created: 'DESC' }});
 		res.json(stats);
 	}catch(e) {

@@ -19,7 +19,7 @@ export class Secret extends BaseEntity {
 	// Properties
 	@CreateDateColumn()
 	created: Date;
-	
+
 	@UpdateDateColumn()
 	updated: Date;
 

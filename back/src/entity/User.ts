@@ -41,7 +41,7 @@ export class User extends BaseEntity {
 
 		translateService: '',
 		translateLangs: [],
-		
+
 		twitchAutoStop: true,
 
 		obsEnabled: false,
