@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { User } from "../entity/User";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { GCPTranslator } from "../translate/GCPTranslator";
 import { z } from "zod";
 import { Secret, SecretType } from "../entity/Secret";

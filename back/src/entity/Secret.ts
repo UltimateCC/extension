@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ObjectId, ObjectIdColumn, UpdateDateColumn } from "typeorm";
 import Cryptr from "cryptr";
-import { environment } from "../environment";
+import { environment } from "../utils/environment";
 import { z } from "zod";
 
 export const cryptr = new Cryptr(environment.ENCRYPTION_SECRET);

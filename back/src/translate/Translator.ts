@@ -1,5 +1,5 @@
 import { User } from "../entity/User";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 
 

@@ -2,8 +2,8 @@
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
-import { environment } from "./environment";
-import { logger } from "./logger";
+import { environment } from "./utils/environment";
+import { logger } from "./utils/logger";
 import { Secret } from "./entity/Secret";
 
 
@@ -28,7 +28,7 @@ export async function initDatabase() {
 			tries++;
 			if(tries<10) {
 				logger.error('Error connecting to database, retrying in 5 seconds', e);
-				await new Promise((res)=>{ setTimeout(res, 5000) });				
+				await new Promise((res)=>{ setTimeout(res, 5000) });
 			}else{
 				logger.error('Unable to connect to database', e);
 				process.exit(1);

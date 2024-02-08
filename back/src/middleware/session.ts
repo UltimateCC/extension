@@ -1,6 +1,6 @@
 import session from "express-session";
-import { environment } from "../environment";
-import { logger } from "../logger";
+import { environment } from "../utils/environment";
+import { logger } from "../utils/logger";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
 

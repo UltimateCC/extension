@@ -1,6 +1,6 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { getUserSockets } from "../socketioServer";
 
 // Check if user has installed extension
@@ -19,7 +19,7 @@ export async function isExtensionInstalled(user: string) {
 		for(const ext of exts.getAllExtensions()) {
 			if(ext.id === clientId) {
 				return true;
-			} 
+			}
 		}
 	}catch(e) {
 		logger.error('Error checking if extension is installed', e);
@@ -96,7 +96,7 @@ async function _getLiveChannels() {
 						spokenLang: socketData.lastSpokenLang.split('-')[0],
 						translation: socketData.translator?.isWorking() ?? false
 					});
-				}				
+				}
 			}
 		}
 	}));

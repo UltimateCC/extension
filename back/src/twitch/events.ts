@@ -1,7 +1,7 @@
 import { EventSubMiddleware } from "@twurple/eventsub-http";
 import { api } from "./twitch";
-import { environment } from "../environment";
-import { logger } from "../logger";
+import { environment } from "../utils/environment";
+import { logger } from "../utils/logger";
 
 
 export const eventsub = new EventSubMiddleware({

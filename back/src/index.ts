@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
-import { logger } from "./logger";
-import { startMetricsServer } from "./metrics";
+import { logger } from "./utils/logger";
+import { startMetricsServer, stopMetricsServer } from "./utils/metrics";
 
 
 (async ()=>{
@@ -22,6 +22,7 @@ process.on('SIGTERM', async() => {
 	try {
 		await stopServer();
 		logger.info('Server closed');
+		await stopMetricsServer();
 		await disconnectDatabase();
 	}catch(e) {
 		logger.error('Error stoping server', e)

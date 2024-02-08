@@ -6,7 +6,7 @@ import { Translator } from "./translate/Translator";
 import { Stats } from "./entity/Stats";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
-import { logger } from "./logger";
+import { logger } from "./utils/logger";
 import { eventsub } from "./twitch/events";
 import { z } from "zod";
 

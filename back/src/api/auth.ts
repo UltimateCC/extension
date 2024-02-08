@@ -2,8 +2,8 @@ import { NextFunction, Request, Response, Router } from "express";
 import { authURL } from "../twitch/twitch";
 import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
-import { logger } from "../logger";
-import { environment } from "../environment";
+import { logger } from "../utils/logger";
+import { environment } from "../utils/environment";
 
 
 declare module 'express-session' {
@@ -53,7 +53,7 @@ authRouter.post('', async (req, res, next)=>{
 			return res.status(400).send('Missing code');
 		}
 		const { name, displayName, userId, email, token, img } = await auth(req.body.code);
-		
+
 		let user = await User.findOneBy({ twitchId: userId });
 		if(!user) {
 			user = new User();

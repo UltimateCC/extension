@@ -3,8 +3,8 @@ import { createServer } from 'node:http';
 import { endSocketSessions, io } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
-import { environment } from './environment';
-import { logger } from './logger';
+import { environment } from './utils/environment';
+import { logger } from './utils/logger';
 import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
 import { eventsub } from './twitch/events';
 
@@ -41,7 +41,7 @@ export async function stopServer() {
 		new Promise<void>((resolve, reject)=>{
 			logger.info('Closing HTTP server');
 			server.close((err)=>{
-				if(err) reject();
+				if(err) reject(err);
 				else resolve();
 			});
 		}),

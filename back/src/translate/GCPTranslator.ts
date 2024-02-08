@@ -1,5 +1,5 @@
 import { Secret } from "../entity/Secret";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
