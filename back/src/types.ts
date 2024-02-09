@@ -10,7 +10,7 @@ export type Result<T> = {
 }
 
 export interface CaptionsStatus {
-	stt?: boolean,
+	//stt?: boolean,
 	translation?: boolean,
 	twitch?: boolean
 }

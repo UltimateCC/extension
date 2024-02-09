@@ -31,8 +31,8 @@ interface ClientToServerEvents {
 
 export interface SocketData {
 	ready: boolean
-	firstText: number
-	lastText: number
+	loading: boolean
+	shouldReload: boolean
 	lastSpokenLang: string
 	stats: Stats | null
 	config: UserConfig
@@ -65,6 +65,7 @@ const transcriptDataSchema = z.object({
 });
 
 async function loadConfig(socket: TypedSocket) {
+	socket.data.loading = true;
 	// End previous session if there was one
 	await endSession(socket);
 
@@ -100,7 +101,7 @@ async function loadConfig(socket: TypedSocket) {
 	const init = await socket.data.translator.init();
 	if(init.isError) {
 		socket.emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
-		logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message}`);
+		logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message} ${init.text??''}`);
 	}
 
 	// Send available translation languages
@@ -108,17 +109,24 @@ async function loadConfig(socket: TypedSocket) {
 	socket.emit('translateLangs', langs);
 
 	sendStatus(socket);
+
+	if(socket.data.shouldReload) {
+		socket.data.shouldReload = false;
+		await loadConfig(socket);
+	}
+	socket.data.loading = false;
 	socket.data.ready = true;
 }
 
 async function endSession(socket: TypedSocket) {
+	socket.data.ready = false;
 	//socket.data.streamingStt?.stop();
 	// Save statistics if necessary
 	if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
 		// Remove stats from socket data before to avoid race condition (double save)
 		const stats = socket.data.stats;
 		socket.data.stats = null;
-		stats.duration = socket.data.lastText - socket.data.firstText;
+		stats.duration = stats.lastText - stats.firstText;
 		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
 		stats.translateErrorCount = socket.data.translator.getErrorCount();
 		await stats.save();
@@ -128,7 +136,7 @@ async function endSession(socket: TypedSocket) {
 
 async function sendStatus(socket: TypedSocket) {
 	socket.emit('status', {
-		stt: /*socket.data.streamingStt?.ready() ??*/ false,
+		/*stt: socket.data.streamingStt?.ready() ?? false,*/
 		translation: socket.data.translator.ready(),
 		twitch: await isExtensionInstalled(socket.data.twitchId)
 	});
@@ -143,11 +151,6 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 		// Count statistics
 		if(socket.data.stats) {
 			socket.data.stats.countTranscript(transcript);
-			const now = Date.now();
-			if(!socket.data.firstText) {
-				socket.data.firstText = now - transcript.duration;
-			}
-			socket.data.lastText = now;
 		}
 
 		const out = await socket.data.translator.translate(transcript);
@@ -209,7 +212,6 @@ io.use((socket, next)=>{
 
 // When socket connected
 io.on('connect', (socket) => {
-	socket.data.ready = false;
 	loadConfig(socket).catch((e=>{
 		logger.error('Error loading user config', e);
 	}));
@@ -221,7 +223,11 @@ io.on('connect', (socket) => {
 	});
 
 	socket.on('reloadConfig', ()=>{
-		loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
+		if(socket.data.loading) {
+			socket.data.shouldReload = true;
+		}else{
+			loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
+		}
 	});
 
 	socket.on('text', async (captions) =>{

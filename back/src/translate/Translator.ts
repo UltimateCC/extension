@@ -36,7 +36,7 @@ export abstract class Translator {
 		return !!this.translatedChars;
 	}
 
-	async init(): Promise<{isError: boolean, message?: string}> {
+	async init(): Promise<{isError: boolean, message?: string, text?: string}> {
 		return {
 			isError: false
 		}
@@ -50,15 +50,9 @@ export abstract class Translator {
 	}
 
 	async translate(data: TranscriptData): Promise<Result<CaptionsData>> {
-		if(!this.ready()) {
-			return {
-				isError: true,
-				message: 'Translation service is not properly configured'
-			}
-		}
 
-		// Invalid credentials, do not try translation anymore
-		if(this.expired) {
+		if(!this.ready() || this.expired) {
+			// Invalid credentials, do not try translation anymore
 			return {
 				isError: false,
 				data: {

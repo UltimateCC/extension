@@ -38,6 +38,10 @@ export class Stats extends BaseEntity {
 	@Column()
 	translateErrorCount: number = 0;
 
+	// Date for first and last text used for calculating duration
+	firstText: number;
+	lastText: number;
+
 	countTranscript(transcript: TranscriptData) {
 		if(transcript.final) {
 			this.finalCount++;
@@ -46,5 +50,11 @@ export class Stats extends BaseEntity {
 			this.partialCount++;
 			this.partialCharCount += transcript.text.length;
 		}
+
+		const now = Date.now();
+		if(!this.firstText) {
+			this.firstText = now - transcript.duration;
+		}
+		this.lastText = now;
 	}
 }
