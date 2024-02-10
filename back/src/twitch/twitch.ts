@@ -47,5 +47,5 @@ export async function ensureUserReady(user: string) {
 	}
 }
 
-export const api = new ApiClient({authProvider});
+export const api = new ApiClient({authProvider, batchDelay: 50});
 

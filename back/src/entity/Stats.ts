@@ -52,7 +52,7 @@ export class Stats extends BaseEntity {
 			this.partialCharCount += transcript.text.length;
 		}
 		metrics.sentenceTotal.inc({ final: transcript.final ? 1 : 0 });
-		metrics.charTotal.inc({ final: transcript.final ? 1 : 0 });
+		metrics.charTotal.inc({ final: transcript.final ? 1 : 0 }, transcript.text.length);
 
 		const now = Date.now();
 		if(!this.firstText) {

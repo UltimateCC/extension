@@ -24,6 +24,7 @@ process.on('SIGTERM', async() => {
 		logger.info('Server closed');
 		await stopMetricsServer();
 		await disconnectDatabase();
+		process.exit(0);
 	}catch(e) {
 		logger.error('Error stoping server', e)
 	}

@@ -2,6 +2,7 @@ import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfigurati
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
 import { logger } from "../utils/logger";
 import { getUserSockets } from "../socketioServer";
+import { environment } from "../utils/environment";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -9,7 +10,7 @@ export async function isExtensionInstalled(user: string) {
 	// Dev version should be included, but they are not :/ bug ?
 
 	// Dont warn user in dev
-	if(process.env.NODE_ENV !== 'production') {
+	if(environment.NODE_ENV !== 'production') {
 		return true;
 	}
 
@@ -49,60 +50,57 @@ interface LiveChannel {
 	translation: boolean
 }
 
-// Do only one call of getLiveChannels at a time
+let liveChannels: LiveChannel[] = [];
+
+/** Get channels currently live with the extension activated */
 export async function getLiveChannels() {
-	if(p) {
-		return p;
-	}else{
-		p = _getLiveChannels();
-		try {
-			const channels = await p;
-			p = null;
-			return channels;
-		}catch(e) {
-			p = null;
-			throw e;
-		}
-	}
+	return liveChannels;
 }
 
-let p: Promise<LiveChannel[]> | null = null;
+// Load live channels only on prod as it's only working with a released extension
+if(environment.NODE_ENV === 'production') {
+	setInterval(loadLiveChannels, 15000);
+}
 
-// Get channels currently live with the extension activated
-async function _getLiveChannels() {
+async function loadLiveChannels() {
+	try{
+		// Get all channels live with extension
+		const channels = await api.withoutUser((client)=>{
+			return client.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
+		});
 
-	const channels = await api.withoutUser((client)=>{
-		return client.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
-	});
+		const out: LiveChannel[] = [];
 
-	const out: LiveChannel[] = [];
+		await Promise.all(channels.map(async (channel) => {
+			const sockets = await getUserSockets(channel.id);
 
-	await Promise.all(channels.map(async (channel) => {
-		const sockets = await getUserSockets(channel.id);
+			// Get a socket corresponding to a probably active session
+			const socket = sockets.find(s=>s.data.lastSpokenLang);
+			if(!socket) return;
 
-		if(sockets.length) {
-			const socketData = sockets[0].data;
-			if(socketData.lastSpokenLang) {
-				const stream = await api.streams.getStreamByUserId(channel.id);
-				if(stream) {
-					out.push({
-						id: stream.userId,
-						name: stream.userName,
-						displayName: stream.userDisplayName,
-						gameName: stream.gameName,
-						title: stream.title,
-						viewers: stream.viewers,
-						thumbnailUrl: stream.getThumbnailUrl(640, 360),
-						spokenLang: socketData.lastSpokenLang.split('-')[0],
-						translation: socketData.translator?.isWorking() ?? false
-					});
-				}
-			}
-		}
-	}));
+			const socketData = socket.data;
 
-	// Sort all fetched streams by descending viewer count
-	out.sort((a,b)=> b.viewers - a.viewers);
+			const stream = await api.streams.getStreamByUserIdBatched(channel.id);
+			if(!stream) return;
 
-	return out;
+			out.push({
+				id: stream.userId,
+				name: stream.userName,
+				displayName: stream.userDisplayName,
+				gameName: stream.gameName,
+				title: stream.title,
+				viewers: stream.viewers,
+				thumbnailUrl: stream.getThumbnailUrl(640, 360),
+				spokenLang: socketData.lastSpokenLang.split('-')[0],
+				translation: socketData.translator?.isWorking() ?? false
+			});
+		}));
+
+		// Sort all fetched streams by descending viewer count
+		out.sort((a,b)=> b.viewers - a.viewers);
+
+		liveChannels = out;
+	}catch(e) {
+		logger.error('Error getting live channels', e);
+	}
 }
