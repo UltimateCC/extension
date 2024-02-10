@@ -31,8 +31,9 @@ interface ClientToServerEvents {
 
 export interface SocketData {
 	ready: boolean
-	loading: boolean
+	loading?: Promise<void>
 	shouldReload: boolean
+	sessionTimeout: NodeJS.Timeout
 	lastSpokenLang: string
 	stats: Stats | null
 	config: UserConfig
@@ -65,72 +66,100 @@ const transcriptDataSchema = z.object({
 });
 
 async function loadConfig(socket: TypedSocket) {
-	socket.data.loading = true;
-	// End previous session if there was one
-	await endSession(socket);
+	try{
+		// End previous session if there was one
+		await endSession(socket);
 
-	// Ratelimit
-	await loadRateLimiter.consume(socket.data.twitchId);
+		// Ratelimit
+		await loadRateLimiter.consume(socket.data.twitchId);
 
-	// Fetch user
-	const u = await User.findOneOrFail({where: { twitchId: socket.data.twitchId }, cache: false});
-	socket.data.config = u.config;
+		// Fetch user
+		const u = await User.findOneOrFail({where: { twitchId: socket.data.twitchId }, cache: false });
+		socket.data.config = u.config;
 
-	if(socket.data.config.twitchAutoStop !== false) {
-		registerTwitchAutoStop(u.twitchId);
+		if(socket.data.config.twitchAutoStop !== false) {
+			registerTwitchAutoStop(u.twitchId);
+		}
+
+		//Init statistics
+		socket.data.stats = new Stats();
+		socket.data.stats.twitchId = u.twitchId;
+		socket.data.stats.config = socket.data.config;
+
+		// Streaming speech to text
+		/*
+		await socket.data.streamingStt?.stop();
+		socket.data.streamingStt = getStreamingStt(u);
+		socket.data.streamingStt?.on('transcript', transcript=>{
+			handleCaptions(socket, transcript);
+		});
+		socket.data.streamingStt?.on('info', info => {
+			socket.emit('info', info);
+		});*/
+
+		// Translation
+		socket.data.translator = getTranslator(u);
+		const init = await socket.data.translator.init();
+		if(init.isError) {
+			socket.emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
+			logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message} ${init.text??''}`);
+		}
+
+		// Send available translation languages
+		const langs = await socket.data.translator.getLangs();
+		socket.emit('translateLangs', langs);
+
+		sendStatus(socket);
+
+		rescheduleSessionEnd(socket);
+	}catch(e) {
+		delete socket.data.loading;
+		throw e;
 	}
-
-	//Init statistics
-	socket.data.stats = new Stats();
-	socket.data.stats.twitchId = u.twitchId;
-	socket.data.stats.config = socket.data.config;
-
-	// Streaming speech to text
-	/*
-	await socket.data.streamingStt?.stop();
-	socket.data.streamingStt = getStreamingStt(u);
-	socket.data.streamingStt?.on('transcript', transcript=>{
-		handleCaptions(socket, transcript);
-	});
-	socket.data.streamingStt?.on('info', info => {
-		socket.emit('info', info);
-	});*/
-
-	// Translation
-	socket.data.translator = getTranslator(u);
-	const init = await socket.data.translator.init();
-	if(init.isError) {
-		socket.emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
-		logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message} ${init.text??''}`);
-	}
-
-	// Send available translation languages
-	const langs = await socket.data.translator.getLangs();
-	socket.emit('translateLangs', langs);
-
-	sendStatus(socket);
+	delete socket.data.loading;
 
 	if(socket.data.shouldReload) {
 		socket.data.shouldReload = false;
-		await loadConfig(socket);
+		socket.data.loading = loadConfig(socket);
+		await socket.data.loading;
 	}
-	socket.data.loading = false;
 	socket.data.ready = true;
 }
 
+async function ensureConfigLoaded(socket: TypedSocket) {
+	if(!socket.data.ready) {
+		if(!socket.data.loading) {
+			socket.data.loading = loadConfig(socket);
+		}
+		await socket.data.loading;
+	}
+}
+
+const SESSION_TIMEOUT = 1000 * 60 * 15
+
+function rescheduleSessionEnd(socket: TypedSocket) {
+	clearTimeout(socket.data.sessionTimeout);
+	socket.data.sessionTimeout = setTimeout(()=>{ endSession(socket) }, SESSION_TIMEOUT);
+}
+
 async function endSession(socket: TypedSocket) {
-	socket.data.ready = false;
-	//socket.data.streamingStt?.stop();
-	// Save statistics if necessary
-	if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
-		// Remove stats from socket data before to avoid race condition (double save)
-		const stats = socket.data.stats;
-		socket.data.stats = null;
-		stats.duration = stats.lastText - stats.firstText;
-		stats.translatedCharCount = socket.data.translator.getTranslatedChars();
-		stats.translateErrorCount = socket.data.translator.getErrorCount();
-		await stats.save();
-		logger.debug(`Saved stats for ${ socket.data.twitchId }`);
+	try {
+		clearTimeout(socket.data.sessionTimeout);
+		socket.data.ready = false;
+		//socket.data.streamingStt?.stop();
+		// Save statistics if necessary
+		if(socket.data.stats?.finalCount || socket.data.stats?.partialCount) {
+			// Remove stats from socket data before to avoid race condition (double save)
+			const stats = socket.data.stats;
+			socket.data.stats = null;
+			stats.duration = stats.lastText - stats.firstText;
+			stats.translatedCharCount = socket.data.translator.getTranslatedChars();
+			stats.translateErrorCount = socket.data.translator.getErrorCount();
+			await stats.save();
+			logger.debug(`Saved stats for ${ socket.data.twitchId }`);
+		}
+	}catch(e) {
+		logger.error('Error ending session', e);
 	}
 }
 
@@ -143,6 +172,8 @@ async function sendStatus(socket: TypedSocket) {
 }
 
 async function handleTranscript(socket: TypedSocket, transcript: TranscriptData) {
+	await ensureConfigLoaded(socket);
+	rescheduleSessionEnd(socket);
 	try {
 		socket.emit('transcript', transcript );
 
@@ -179,7 +210,6 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
-
 		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
 	}catch(e) {
 		if(e && typeof e === 'object' && 'statusCode' in e) {
@@ -212,27 +242,27 @@ io.use((socket, next)=>{
 
 // When socket connected
 io.on('connect', (socket) => {
-	loadConfig(socket).catch((e=>{
+	socket.data.loading = loadConfig(socket);
+	socket.data.loading.catch((e=>{
 		logger.error('Error loading user config', e);
 	}));
 
 	socket.join(`twitch-${ socket.data.twitchId }`);
 
 	socket.on('disconnect', ()=>{
-		endSession(socket).catch(e=>logger.error('Error ending session', e));
+		endSession(socket);
 	});
 
 	socket.on('reloadConfig', ()=>{
 		if(socket.data.loading) {
 			socket.data.shouldReload = true;
 		}else{
-			loadConfig(socket).catch(e=>logger.error('Error reloading config', e));
+			socket.data.loading = loadConfig(socket);
+			socket.data.loading.catch(e=>logger.error('Error reloading config', e));
 		}
 	});
 
 	socket.on('text', async (captions) =>{
-		if(!socket.data.ready) return;
-
 		// Ratelimit
 		try {
 			await textRateLimiter.consume(socket.data.twitchId);
