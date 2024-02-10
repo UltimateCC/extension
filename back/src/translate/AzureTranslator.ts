@@ -59,7 +59,7 @@ export class AzureTranslator extends Translator {
 					out.push({ text: l.text, lang: l.to });
 				}
 			}
-			this.translatedChars += (transcript.text.length * langs.length);
+			this.incrementTranslatedChars(transcript.text.length * langs.length);
 		}catch(e) {
 			logger.error('Azure translation error', e);
 		}

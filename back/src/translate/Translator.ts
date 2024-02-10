@@ -1,6 +1,7 @@
 import { User } from "../entity/User";
 import { logger } from "../utils/logger";
 import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
+import { metrics } from "../utils/metrics";
 
 
 /** Get delay to keep text cached */
@@ -19,13 +20,18 @@ export abstract class Translator {
 
 	private cache = new Map<string, TranscriptAlt[]>;
 
-	protected translatedChars = 0;
+	private translatedChars = 0;
 	protected errorCount = 0;
 
 	constructor(protected user: User) {}
 
 	getTranslatedChars() {
 		return this.translatedChars;
+	}
+
+	incrementTranslatedChars(count: number) {
+		this.translatedChars += count;
+		metrics.translatedCharTotal.inc(count);
 	}
 
 	getErrorCount() {
@@ -119,7 +125,7 @@ export abstract class Translator {
 					this.errorCount++;
 				}else{
 					out.push(result.data);
-					this.translatedChars += transcript.text.length;
+					this.incrementTranslatedChars(transcript.text.length);
 				}
 			}
 		}catch(e){

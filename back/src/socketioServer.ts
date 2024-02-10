@@ -9,6 +9,7 @@ import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { logger } from "./utils/logger";
 import { eventsub } from "./twitch/events";
 import { z } from "zod";
+import { metrics } from "./utils/metrics";
 
 
 interface ServerToClientEvents {
@@ -210,16 +211,15 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
+		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, data.delay/1000);
 		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
 	}catch(e) {
-		if(e && typeof e === 'object' && 'statusCode' in e) {
-			if(e?.statusCode === 422) {
-				logger.warn(`Pubsub message too large for user ${ socket.data.twitchId }`);
-			}else if([500, 502, 503, 504].includes(e?.statusCode as number)) {
-				logger.warn(`Error 500 sending pubsub for user ${ socket.data.twitchId }`);
-			}else{
-				logger.error(`Unexpected error sending pubsub for user ${ socket.data.twitchId }`);
-			}
+		if(e && typeof e === 'object' && 'statusCode' in e && typeof e.statusCode === 'number') {
+			const status = e?.statusCode;
+			metrics.pubsubErrors.inc({ status });
+			logger.warn(`Error ${status} sending pubsub for user ${ socket.data.twitchId }`);
+		}else{
+			logger.error(`Unexpected error sending pubsub for user ${ socket.data.twitchId }`, e);
 		}
 	}
 }
@@ -242,6 +242,8 @@ io.use((socket, next)=>{
 
 // When socket connected
 io.on('connect', (socket) => {
+	metrics.connectionCount.inc();
+
 	socket.data.loading = loadConfig(socket);
 	socket.data.loading.catch((e=>{
 		logger.error('Error loading user config', e);
@@ -251,6 +253,8 @@ io.on('connect', (socket) => {
 
 	socket.on('disconnect', ()=>{
 		endSession(socket);
+
+		metrics.connectionCount.dec();
 	});
 
 	socket.on('reloadConfig', ()=>{

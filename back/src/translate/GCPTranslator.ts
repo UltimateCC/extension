@@ -2,6 +2,7 @@ import { Secret } from "../entity/Secret";
 import { logger } from "../utils/logger";
 import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
+import { metrics } from "../utils/metrics";
 
 // https://cloud.google.com/translate/docs/reference/rest/v2/translate
 
@@ -71,6 +72,8 @@ export class GCPTranslator extends Translator {
 		const res = await fetch(`https://translation.googleapis.com/language/translate/v2?${params}`, {
 			method: 'POST'
 		});
+
+		metrics.gcpRequests.inc({ status: res.status });
 
 		if(res.ok) {
 			const json = await res.json();

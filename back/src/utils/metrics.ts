@@ -4,14 +4,14 @@ import { environment } from './environment';
 import { logger } from './logger';
 import { createServer } from 'http';
 
-const register = new client.Registry();
+const register = client.register;
 
 // Default label added to all metrics
 register.setDefaultLabels({
 	app: 'ultimatecc'
 });
 
-client.collectDefaultMetrics({ register });
+client.collectDefaultMetrics();
 
 const metricsApp = express();
 
@@ -37,4 +37,46 @@ export async function stopMetricsServer() {
 	await new Promise<void>((res)=>{
 		metricsServer.close(()=>res());
 	});
+}
+
+export const metrics = {
+	sentenceTotal: new client.Counter({
+		name: 'captions_sentence_total',
+		help: 'Total transcript sentence count',
+		labelNames: ["final"]
+	}),
+
+	charTotal: new client.Counter({
+		name: 'captions_char_total',
+		help: 'Total transcript character count',
+		labelNames: ["final"]
+	}),
+
+	translatedCharTotal: new client.Counter({
+		name: 'captions_translated_total',
+		help: 'Total translated caracters count',
+	}),
+
+	captionsDelay: new client.Histogram({
+		name: 'captions_delay_seconds',
+		help: 'Captions delay just before being sent',
+		buckets: client.linearBuckets(-2, .5, 12),
+		labelNames: ["final"]
+	}),
+
+	connectionCount: new client.Gauge({
+		name: 'captions_connections_count',
+		help: 'Current count of socketio clients',
+	}),
+
+	gcpRequests: new client.Counter({
+		name: 'captions_gcp_requests_total',
+		help: 'Total count of Google API requests',
+		labelNames: ['status']
+	}),
+
+	pubsubErrors: new client.Counter({
+		name: 'captions_pubsub_errors_total',
+		help: 'Total count of Twitch pubsub API errors',
+	})
 }

@@ -1,6 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 import { UserConfig } from "./User";
 import { TranscriptData } from "../types";
+import { metrics } from "../utils/metrics";
 
 @Entity()
 export class Stats extends BaseEntity {
@@ -50,6 +51,8 @@ export class Stats extends BaseEntity {
 			this.partialCount++;
 			this.partialCharCount += transcript.text.length;
 		}
+		metrics.sentenceTotal.inc({ final: transcript.final ? 1 : 0 });
+		metrics.charTotal.inc({ final: transcript.final ? 1 : 0 });
 
 		const now = Date.now();
 		if(!this.firstText) {
