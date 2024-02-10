@@ -2,6 +2,9 @@ import { z } from "zod";
 
 
 export const envSchema = z.object({
+	// Environnement
+	NODE_ENV: z.enum(['production','']).default(''),
+
 	// Database url
 	DB_URL: z.string().min(1),
 
