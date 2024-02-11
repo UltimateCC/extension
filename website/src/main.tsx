@@ -34,7 +34,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                             <Route path="/verify" element={<Verify />} />
                             <Route path="/logout" element={<Logout />} />
                             <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/thank-you" element={<Thanks />} />
+                            <Route path="/thanks" element={<Thanks />} />
                             <Route path="/channels" element={<Channels />} />
                             <Route path="/privacy" element={<Privacy />} />
                             <Route path="*" element={<Error />} />

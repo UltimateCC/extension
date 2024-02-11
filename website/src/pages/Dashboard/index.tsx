@@ -206,7 +206,7 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'Webhooks']}
+                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'HTTP']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
@@ -244,7 +244,7 @@ function Dashboard() {
                                     userConfig={config}
                                     updateConfig={updateConfig}
                                 />)}
-                            { currentTab === 'Webhooks' && (<Webhooks/>) }
+                            { currentTab === 'HTTP' && (<Webhooks/>) }
                         </div>
                     </div>
 

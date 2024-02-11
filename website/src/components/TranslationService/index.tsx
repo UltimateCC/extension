@@ -80,7 +80,7 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
         <img src={loadingImg} alt="loading" className="loading-img" />
     );
 
-    if(translateService && captionsStatus?.translation && !isEditing) return (
+    if(translateService && !isEditing) return (
         <>
             {response && (
                 <FormResponse

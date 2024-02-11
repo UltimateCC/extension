@@ -5,7 +5,7 @@ import '../../webroot/style/footer.css'
 function Footer() {
     return (
         <footer>
-            <h6>Made with ❤️ by the <Link to="/thank-you">aypierre community</Link></h6>
+            <h6>Made with ❤️ by the <Link to="/thanks">aypierre community</Link></h6>
         </footer>
     )
 }
