@@ -39,7 +39,7 @@ export abstract class Translator {
 	}
 
 	isWorking() {
-		return !!this.translatedChars;
+		return !!this.translatedChars && !this.expired;
 	}
 
 	async init(): Promise<{isError: boolean, message?: string, text?: string}> {
