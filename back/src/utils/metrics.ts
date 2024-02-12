@@ -78,6 +78,7 @@ export const metrics = {
 	pubsubErrors: new client.Counter({
 		name: 'captions_pubsub_errors_total',
 		help: 'Total count of Twitch pubsub API errors',
+		labelNames: ['status']
 	}),
 
 	liveChannels: new client.Gauge({
