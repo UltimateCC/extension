@@ -5,6 +5,7 @@ services:
   website:
     build: ./website
     container_name: captions-website
+    restart: unless-stopped
     depends_on:
       - back
     networks:
@@ -17,6 +18,7 @@ services:
   back:
     build: ./back
     container_name: captions-back
+    restart: unless-stopped
     depends_on:
       - captionsdb
       - captionsredis
@@ -45,12 +47,14 @@ services:
   captionsredis:
     image: redis:7
     container_name: captions-redis
+    restart: unless-stopped
     networks:
       - default
 
   captionsdb:
     image: mongo
     container_name: captions-db
+    restart: unless-stopped
     networks:
       - default
     environment:
