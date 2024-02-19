@@ -60,7 +60,7 @@ export const metrics = {
 	captionsDelay: new client.Histogram({
 		name: 'captions_delay_seconds',
 		help: 'Captions delay just before being sent',
-		buckets: client.linearBuckets(-2, .5, 12),
+		buckets: client.linearBuckets(0, .5, 12),
 		labelNames: ["final"]
 	}),
 

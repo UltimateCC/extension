@@ -32,8 +32,8 @@ export async function startServer() {
 			res();
 		});
 	});
-	await eventsub.markAsReady();
 	logger.info(`Server started on port ${ environment.PORT }`);
+	await eventsub.markAsReady();
 }
 
 export async function stopServer() {

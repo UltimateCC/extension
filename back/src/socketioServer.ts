@@ -211,7 +211,7 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
-		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, data.delay/1000);
+		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, (data.delay / 1000) + 1);
 		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
 	}catch(e) {
 		if(e && typeof e === 'object' && 'statusCode' in e && typeof e.statusCode === 'number') {
