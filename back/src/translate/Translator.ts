@@ -1,6 +1,6 @@
 import { User } from "../entity/User";
 import { logger } from "../utils/logger";
-import { CaptionsData, LangList, Result, TranscriptAlt, TranscriptData } from "../types";
+import { LangList, Result, TranscriptAlt, TranscriptData } from "../types";
 import { metrics } from "../utils/metrics";
 
 
@@ -55,40 +55,26 @@ export abstract class Translator {
 		return [];
 	}
 
-	async translate(data: TranscriptData): Promise<Result<CaptionsData>> {
+	async translate(data: TranscriptData): Promise<Result<TranscriptAlt[]>> {
+		const lang = data.lang.split('-')[0];
 
 		if(!this.ready() || this.expired) {
 			// Invalid credentials, do not try translation anymore
 			return {
 				isError: false,
-				data: {
-					delay: data.delay,
-					duration: data.duration,
-					final: data.final,
-					lineEnd: data.lineEnd,
-					captions: [
-						{lang: data.lang, text: data.text}
-					]
-				}
+				data: [
+					{ lang: data.lang, text: data.text }
+				]
 			}
-		}
-
-		const start = Date.now();
-		const lang = data.lang.split('-')[0];
-		let errors: string[] | undefined = [];
-
-		const result: CaptionsData = {
-			delay: data.delay + ( Date.now() - start ),
-			duration: data.duration,
-			captions: [],
-			final: data.final,
-			lineEnd: data.lineEnd
 		}
 
 		// If translations already in cache, get it
 		const cached = this.cache.get(data.text+data.lang);
 		if(cached) {
-			result.captions = cached;
+			return {
+				isError: false,
+				data: cached
+			}
 		}else {
 			const translated = await this.translateAll(
 				{ text: data.text, lang },
@@ -98,19 +84,14 @@ export abstract class Translator {
 			if(translated.isError) {
 				return translated;
 			}
-			result.captions = translated.data;
-			errors = translated.errors;
 
 			this.cache.set(data.text+data.lang, translated.data);
 			// Cache translation results a small time
 			setTimeout(()=>{
 				this.cache.delete(data.text+data.lang);
 			}, getCacheDelay(data.text));
-		}
-		return {
-			isError: false,
-			data: result,
-			errors
+
+			return translated;
 		}
 	}
 

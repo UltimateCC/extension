@@ -174,6 +174,8 @@ async function sendStatus(socket: TypedSocket) {
 }
 
 async function handleTranscript(socket: TypedSocket, transcript: TranscriptData) {
+	const start = Date.now();
+
 	await ensureConfigLoaded(socket);
 	rescheduleSessionEnd(socket);
 	try {
@@ -202,7 +204,13 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 				}
 				logger.warn(`Translation error for ${ socket.data.twitchId } : ${ message }`);
 			}
-			await sendCaptions(socket, out.data);
+			await sendCaptions(socket, {
+				captions: out.data,
+				delay: transcript.delay + (Date.now() - start),
+				duration: transcript.duration,
+				final: transcript.final,
+				lineEnd: transcript.lineEnd
+			});
 		}
 	}catch(e) {
 		logger.error(`Error handling transcript for ${ socket.data.twitchId }`, e);
