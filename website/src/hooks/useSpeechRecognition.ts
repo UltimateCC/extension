@@ -108,6 +108,7 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 						// Send first sentence part as final
 						handleText({
 							final: true,
+							lineEnd: false,
 							lang,
 							duration: 0,
 							text: part,
@@ -120,6 +121,7 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 						// Send next part as partial
 						handleText({
 							final: false,
+							lineEnd: false,
 							lang,
 							duration,
 							text: currentPart,
@@ -133,7 +135,8 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 							lang,
 							duration,
 							delay: duration - delay,
-							final: result.isFinal
+							final: result.isFinal,
+							lineEnd: result.isFinal
 						});
 					}
 

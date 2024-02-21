@@ -65,6 +65,7 @@ export abstract class Translator {
 					delay: data.delay,
 					duration: data.duration,
 					final: data.final,
+					lineEnd: data.lineEnd,
 					captions: [
 						{lang: data.lang, text: data.text}
 					]
@@ -80,7 +81,8 @@ export abstract class Translator {
 			delay: data.delay + ( Date.now() - start ),
 			duration: data.duration,
 			captions: [],
-			final: data.final
+			final: data.final,
+			lineEnd: data.lineEnd
 		}
 
 		// If translations already in cache, get it

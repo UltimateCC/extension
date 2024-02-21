@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { lastTranscript, partialCaptions } from "../lib/captions";
+	import { lastReceivedCaptions, partialCaptions } from "../lib/captions";
 	import { settings, resetSettings, position, resetPosition, language } from "../lib/settings";
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
@@ -48,10 +48,10 @@
 			</button>
 		</div>
 		<div class="caption-settings-container">
-			{#if $lastTranscript.length !== 1}
+			{#if $lastReceivedCaptions.length !== 1}
 				<!-- Language -->
 				<div class="caption-group" id="language">
-					{#if $lastTranscript.length === 0}
+					{#if $lastReceivedCaptions.length === 0}
 						<Warning>Waiting for broadcaster speech</Warning>
 					{:else}
 						<div class="caption-group-header">

@@ -27,6 +27,7 @@ type Metadata = {
 	delay: number
 	duration: number
     final: boolean
+	lineEnd: boolean
 }
 
 export type TranscriptData = Metadata & TranscriptAlt

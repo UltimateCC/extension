@@ -62,6 +62,7 @@ const transcriptDataSchema = z.object({
 	delay: z.number(),
 	duration: z.number(),
 	final: z.boolean(),
+	lineEnd: z.boolean().optional(),
 	text: z.string().min(1).max(250),
 	lang: z.string().min(1)
 });

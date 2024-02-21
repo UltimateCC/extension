@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { partialCaptions, transcript, lastTranscript } from "../lib/captions";
+	import { partialCaptions, transcript, lastReceivedCaptions } from "../lib/captions";
     import { language } from "../lib/settings";
     import LanguageSelect from "./LanguageSelect.svelte";
     import Warning from "./Warning.svelte";
@@ -19,7 +19,7 @@
 <div class="container">
 	<div class="top">
 		<h2>Live transcript</h2>
-		{#if $lastTranscript.length > 1}
+		{#if $lastReceivedCaptions.length > 1}
 			<div class="language">
 				<label for="language-input">Language:</label>
 				<div class="language-select">
