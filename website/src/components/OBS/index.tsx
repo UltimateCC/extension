@@ -3,6 +3,7 @@ import ConfigSwitch from "../ConfigSwitch";
 import { config } from "../../config";
 
 interface OBSConfig {
+	customDelay?: number,
 	obsEnabled?: boolean,
 	obsPort?: number,
 	obsPassword?: string,
@@ -18,6 +19,7 @@ interface OBSProps {
 export default function OBS({ userConfig, updateConfig }: OBSProps) {
 	const portInput = useRef<HTMLInputElement>(null);
 	const passwordInput = useRef<HTMLInputElement>(null);
+	const timeoutCustomDelay = useRef<ReturnType<typeof setTimeout>>();
 
 	const handleSwitch = (key: 'obsEnabled'|'obsSendCaptions'|'obsAutoStop', val: boolean) => {
         updateConfig({ [key]: val })
@@ -47,8 +49,35 @@ export default function OBS({ userConfig, updateConfig }: OBSProps) {
 		}
 	}
 
+	const updateCustomDelay = (event: React.ChangeEvent<HTMLInputElement>) => {
+		// Max 1s per update
+		clearTimeout(timeoutCustomDelay.current);
+		timeoutCustomDelay.current = setTimeout(()=>{
+			const customDelay = Number.parseFloat(event.target.value);
+			if(!Number.isNaN(customDelay) && customDelay !== userConfig.customDelay && customDelay >= -5 && customDelay <= 1800) {
+				updateConfig({ customDelay })
+				.catch(err => {
+					console.error('Error updating config', err);
+				});
+			} else {
+				if (customDelay < -5) event.target.value = "-5";
+				else if (customDelay > 1800) event.target.value = "1800";
+			}
+
+		}, 500);
+	};
+
 	return (
 		<div className="obs">
+			<p>
+				Add delay to your captions to match your stream delay.
+			</p>
+			<div className="customDelay">
+				<label>
+					Custom delay (in secondes)
+					<input className="theme-input" type="number" min="-5" max="1800" defaultValue={userConfig.customDelay??0} onChange={updateCustomDelay} step=".1" />
+				</label>
+			</div>
 			<p>
 				Connect to OBS via websocket to send closed captions with your video stream, making them available on most streaming platforms
 			</p>

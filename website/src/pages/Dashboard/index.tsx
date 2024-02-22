@@ -36,10 +36,11 @@ interface UserConfig {
 	translateService: '' | 'gcp'
 	translateLangs?: string[]
     twitchAutoStop?: boolean
-    obsEnabled?: boolean,
-    obsPort?: number,
-    obsPassword?: string,
-    obsSendCaptions?: boolean,
+    customDelay?: number
+    obsEnabled?: boolean
+    obsPort?: number
+    obsPassword?: string
+    obsSendCaptions?: boolean
     obsAutoStop?: boolean
 }
 
@@ -63,10 +64,10 @@ function Dashboard() {
     
     // Speech recognition
     const [listening, setListening] = useState<boolean>(false);
-    // Delay between each partial captions
-    const splitDelay = 2700;
     // Additional delay added to captions
-    const delay = 1000;
+    const delay = 1000 + (config.customDelay??0);
+    // Delay between each partial captions
+    const splitDelay = Math.max(2700, delay);
     const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
 
     // OBS websocket
@@ -206,7 +207,7 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /*'OBS',*/ 'HTTP']}
+                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /* 'OBS', */ 'HTTP']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />

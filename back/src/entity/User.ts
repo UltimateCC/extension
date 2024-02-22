@@ -44,6 +44,7 @@ export class User extends BaseEntity {
 
 		twitchAutoStop: true,
 
+		customDelay: 0,
 		obsEnabled: false,
 		obsPort: 4455,
 		obsPassword: '',
@@ -88,6 +89,7 @@ export const UserConfigSchema = z.object({
 		text: z.string()
 	}))*/
 
+	customDelay: z.number().min(-5).max(1800).default(0),
 	obsEnabled: z.boolean(),
 	obsPort: z.number(),
 	obsPassword: z.string(),

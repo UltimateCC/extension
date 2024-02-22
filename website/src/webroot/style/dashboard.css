@@ -495,6 +495,20 @@
     width: 100%;
 }
 
+#dashboard .obs .customDelay {
+    margin-bottom: 3em;
+}
+
+#dashboard .obs .customDelay label {
+    min-width: 0;
+}
+
+#dashboard .obs .customDelay input {
+    display: block;
+    height: 2.25em;
+    width: 100%;
+}
+
 #dashboard .webhooks p {
     line-height: 1em;
 }

@@ -8,7 +8,7 @@
 
 	function check() {
 		if(value<min) value=min;
-		if(value>max) value=max;
+		else if(value>max) value=max;
 	}
 </script>
 
