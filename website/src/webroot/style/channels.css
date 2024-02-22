@@ -22,7 +22,7 @@
 }
 
 #channels h4 {
-    font-size: 1.7em;
+    font-size: 1.5em;
     color: var(--text);
 }
 
@@ -139,4 +139,5 @@
 
 #channels .card-first-line {
     gap: calc(var(--gap) * 0.15);
+    margin-bottom: .25em;
 }

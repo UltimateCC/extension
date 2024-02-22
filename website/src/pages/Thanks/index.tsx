@@ -50,7 +50,7 @@ function Thanks() {
                     ))}
                 </p>
                 <p>Thanks to everyone who helped us !</p>
-                <p>Thanks to Aypierre and Vartac for the first tests in real conditions !</p>
+                <p>Thanks to <b>aypierre</b> and <b>Vartac</b> for the first tests in real conditions !</p>
             </div>
         </section>
     );

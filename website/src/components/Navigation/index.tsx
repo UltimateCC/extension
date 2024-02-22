@@ -49,14 +49,14 @@ function Navigation({ logo } : { logo: string }) {
                     <img src={logo} alt="Logo" />
                     <div className='secret' onClick={toggleSecretMode}></div>
                 </div>
-                <NavLink to="/" className="main-title"><h1>Ultimate Closed Captions</h1></NavLink>
+                <NavLink to="/" className="main-title" onClick={hideNavbar}><h1>Ultimate Closed Captions</h1></NavLink>
                 <div className="spacer"></div>
-                <nav className="main-links">
+                <nav className="main-links" onClick={hideNavbar}>
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/dashboard">Dashboard</NavLink>
                     <NavLink to="/channels">Channels</NavLink>
                 </nav>
-                <div className="secondary-links">
+                <div className="secondary-links" onClick={hideNavbar}>
                     {
                         //<NavLink to="/tos">Terms of Service</NavLink>
                     }

@@ -9,7 +9,7 @@
 }
 
 html {
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -17,6 +17,7 @@ body {
     font-family: 'Raleway', sans-serif;
     font-style: normal;
     font-weight: 500;
+    font-variant-numeric: lining-nums;
     color: var(--text);
     text-align: center;
     overflow-x: hidden;
@@ -90,8 +91,6 @@ h5 {
 h6 {
     font-weight: 900;
 }
-
-
 
 strong {
     color: var(--button);

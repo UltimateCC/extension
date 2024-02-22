@@ -13,6 +13,7 @@
 
 #dashboard h3 {
     font-size: 2em;
+    margin-bottom: .25em;
     color: var(--title)
 }
 
@@ -86,7 +87,7 @@
 
 #dashboard .setting h4 {
     font-size: 1.5em;
-    margin-top: .5em;
+    margin-top: 1em;
     text-decoration: underline;
 }
 
@@ -119,7 +120,7 @@
     color: var(--square);
     font-size: 1.2em;
     padding: 0.5em 1em;
-    height: 5em;
+    height: 5.5em;
     overflow-y: auto;
 }
 
@@ -158,14 +159,14 @@
 }
 
 #dashboard .guide h4 {
-    font-size: 1.5em;
+    font-size: 1.6em;
     color: var(--title);
 }
 
 #dashboard .guide ul {
-    font-size: 1.1em;
+    font-size: 1.25em;
     max-width: 32em;
-    margin: 0 auto;
+    margin: .5em auto;
     text-align: left;
 }
 
@@ -175,7 +176,7 @@
 
 #dashboard .guide .help {
     margin-top: 1em;
-    font-size: 1.5em;
+    font-size: 1.6em;
 }
 
 #dashboard .languages {
@@ -208,6 +209,7 @@
 
 #dashboard .languages .lang-list * {
     font-family: 'Raleway', sans-serif;
+    font-weight: 600;
     overflow: hidden;
 }
 

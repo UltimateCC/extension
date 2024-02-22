@@ -5,7 +5,7 @@ function Guide() {
 		<div className="guide">
 			<h4>To setup captions on your stream, follow the instructions below</h4>
 			<ul>
-				<li>Install the <a href={config.twitch}>Twitch extension</a> (We recommend overlay)</li>
+				<li>Install the <a href={config.twitch}>Twitch extension</a> (We recommend overlay slot)</li>
 				<li>Select your spoken language</li>
 				<li>Start captions by clicking "Start listening"</li>
 				<li>Accept microphone permission if necessary, and check if correct microphone is selected</li>

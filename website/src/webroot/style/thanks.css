@@ -91,5 +91,10 @@
 
 
 #thanks .thanks-container > p.others {
-    font-size: 1.1em;
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+#thanks .thanks-container > p {
+    margin-top: .25em;
 }
