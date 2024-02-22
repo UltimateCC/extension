@@ -14,9 +14,9 @@ interface TwitchConfig {
 function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
     // Twitch config
     const {
-        config: twitchConfig,
+        // config: twitchConfig,
         loadConfig: loadTwitchConfig,
-        updateConfig: updateTwitchConfig
+        // updateConfig: updateTwitchConfig
     } = useSavedConfig<TwitchConfig>({apiPath: 'twitchconfig'});
 
     useEffect(()=>{
@@ -26,12 +26,12 @@ function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
         });
     }, [loadTwitchConfig]);
 
-    const handleShowCaptionsChange = (val: boolean) => {
-        updateTwitchConfig({ showCaptions: val })
-        .catch(err => {
-            console.error('Error updating Twitch config', err);
-        });
-    }
+    // const handleShowCaptionsChange = (val: boolean) => {
+    //     updateTwitchConfig({ showCaptions: val })
+    //     .catch(err => {
+    //         console.error('Error updating Twitch config', err);
+    //     });
+    // }
 
     const handleAutoStopChange = (val: boolean) => {
         updateConfig({ twitchAutoStop: val })
@@ -42,15 +42,15 @@ function Twitch({ updateConfig, twitchAutoStop }: TwitchProps) {
 
     return (
         <div className="twitch">
-            <ConfigSwitch
+            {/* <ConfigSwitch
                 checked={ twitchConfig.showCaptions ?? true }
                 onChange={handleShowCaptionsChange}
-                label="Show captions to viewers by default (Available soon)"
-            />
+                label="Show captions to viewers by default"
+            /> */}
             <ConfigSwitch
                 checked={twitchAutoStop}
                 onChange={handleAutoStopChange}
-                label="Stop captions when your stream ends (Experimental)"
+                label="Stop captions when your stream ends"
             />
         </div>
     );
