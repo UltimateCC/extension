@@ -12,7 +12,6 @@
 
 #thanks h2 {
     font-size: 2em;
-    font-weight: 400;
     text-align: center;
 }
 
@@ -32,7 +31,6 @@
 
 #thanks .thanks-container h3 {
     font-size: 2em;
-    font-weight: 400;
 }
 
 #thanks .thanks-container ul.main {
@@ -81,13 +79,11 @@
 
 #thanks .thanks-container .thanks-card h4 {
     font-size: 1.25em;
-    font-weight: 400;
     line-height: 1em;
 }
 
 #thanks .thanks-container .thanks-card p {
     font-size: 1em;
-    font-weight: 300;
     text-align: center;
     width: 100%;
     color: var(--button);

@@ -12,26 +12,22 @@
 
 #channels h2 {
     font-size: 2em;
-    font-weight: 400;
     text-align: center;
 }
 
 #channels h3 {
     font-size: 1.8em;
-    font-weight: 400;
     color: var(--text);
     line-height: 1em;
 }
 
 #channels h4 {
     font-size: 1.7em;
-    font-weight: 400;
     color: var(--text);
 }
 
 #channels p {
     font-size: 1em;
-    font-weight: 300;
     color: var(--text);
 }
 
@@ -72,6 +68,7 @@
     background-color: var(--square);
     min-width: 0;
     aspect-ratio: 16/9;
+    font-weight: 700;
 }
 
 #channels .channels-container .card-container svg {

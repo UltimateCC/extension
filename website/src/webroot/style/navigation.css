@@ -84,10 +84,11 @@
 }
 
 #navbar .main-links a {
-    font-size: 2em;
+    font-size: 1.7em;
     margin-bottom: .4em;
     text-decoration: none;
     transition: all 0.5s;
+    font-weight: 800;
 }
 
 #navbar .secondary-links a {

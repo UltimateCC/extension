@@ -2,6 +2,7 @@
 
 section.legal {
 	text-align: left;
+	padding: 2em 3em;
 }
 
 section.legal h2 {
@@ -11,6 +12,7 @@ section.legal h2 {
 
 section.legal h3 {
 	color: var(--title);
+	margin-top: 1em;
 }
 
 section.legal ul {

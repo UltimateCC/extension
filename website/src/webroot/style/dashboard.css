@@ -8,6 +8,7 @@
 
 #dashboard h2 {
     font-size: 2.1em;
+    line-height: 1.5em;
 }
 
 #dashboard h3 {
@@ -40,10 +41,10 @@
 }
 
 #dashboard .welcome .profile-container {
-    margin: .25em;
     height: 2em;
-    top: 0;
-    right: .5em;
+    top: 50%;
+    transform: translateY(-50%);
+    right: .75em;
     position: absolute;
     cursor: pointer;
 }
@@ -136,10 +137,11 @@
 
 #dashboard .tab {
     font-size: 1.5em;
+    font-weight: 700;
     display: block;
     min-width: 0;
     padding: .25em .5em;
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     background-color: var(--square);
     color: var(--text);
     border: none;
@@ -205,7 +207,7 @@
 }
 
 #dashboard .languages .lang-list * {
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     overflow: hidden;
 }
 
@@ -226,12 +228,12 @@
 
 #dashboard .languages .search-input input {
     color: var(--button);
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
 }
 
 /* For a question of selector weight I don't call #dashboard .languages */
 .search-input label {
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: #5F5F68;
     background-image: linear-gradient(180deg, var(--text) 65%, transparent);
     border-radius: 10px;
@@ -360,7 +362,7 @@
     font-size: 50px;
     line-height: 32px;
     height: 32px;
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: var(--title);
     cursor: pointer;
     transition: all .5s;

@@ -14,9 +14,9 @@ html {
 
 body {
     background-image: linear-gradient(#934FCE, #C388F9);
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--text);
     text-align: center;
     overflow-x: hidden;
@@ -75,12 +75,27 @@ button {
     user-select: none;
 }
 
-h4 {
-    font-weight: 400;
+h2 {
+    font-weight: 800;
 }
+
+h4 {
+    font-weight: 800;
+}
+
+h5 {
+    font-weight: 600;
+}
+
+h6 {
+    font-weight: 900;
+}
+
+
 
 strong {
     color: var(--button);
+    font-weight: 900;
 }
 
 .theme-btn span {
@@ -146,7 +161,7 @@ strong {
     border: none;
     border-radius: 10px;
     padding: 0 0.5em;
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     color: var(--square);
     /*font-size: 1.55vw;*/
     transition: all 0.2s;
@@ -165,7 +180,7 @@ strong {
     border-radius: 10px;
     background: var(--text);
     color: var(--square);
-    font-family: 'Baloo', sans-serif;
+    font-family: 'Raleway', sans-serif;
     /*font-size: 24px;*/
     padding: 0.5em 1em;
     padding-right: 10%;
