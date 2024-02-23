@@ -43,6 +43,7 @@
 
 #dashboard .welcome .profile-container {
     height: 2em;
+    width: 2em;
     top: 50%;
     transform: translateY(-50%);
     right: .75em;
