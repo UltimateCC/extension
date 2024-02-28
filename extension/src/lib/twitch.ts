@@ -47,6 +47,9 @@ Twitch.ext.listen('broadcast', (_: string, contentType: string, message: string)
 
 	const obj: CaptionsData = JSON.parse(message);
 	if(Array.isArray(obj.captions) && obj.captions.length) {
-		handleCaptions(obj);
+		handleCaptions(obj)
+			.catch(e => {
+				console.error('Ultimate CC : Error handling captions', e);
+			});
 	}
 });

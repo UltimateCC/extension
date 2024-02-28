@@ -31,47 +31,51 @@ let currentFinal: Caption[] = [];
 export const lastReceivedCaptions = writable<Caption[]>([]);
 
 // Handle received captions
-export function handleCaptions(data: CaptionsData) {
-	// Delay captions for stream latency minus accumulated processing delay
-	const delay = (( get(twitchContext)?.hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
+export async function handleCaptions(data: CaptionsData) {
 	lastReceivedCaptions.set(data.captions);
 
-	setTimeout(()=>{
-		const currentLang = get(language);
+	// Delay captions for stream latency minus accumulated processing delay
+	const delay = (( get(twitchContext)?.hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
+	await new Promise(res => setTimeout(res, delay));
 
-		const caption = data.captions.find(c => c.lang === currentLang) ?? data.captions[0];
-		const finalText = (currentFinal.find(c => c.lang === currentLang) ?? currentFinal[0])?.text;
+	// Get actiual text to show depending on selected language
+	const currentLang = get(language);
+	const caption = data.captions.find(c => c.lang === currentLang) ?? data.captions[0];
+	const finalText = (currentFinal.find(c => c.lang === currentLang) ?? currentFinal[0])?.text;
 
-		const text = (finalText ? `${finalText} ` : '') + caption.text;
+	const text = (finalText ? `${finalText} ` : '') + caption.text;
 
-		if(data.final) {
-			// Merge current final text
-			data.captions.forEach((newCaption) => {
-				const current = currentFinal.find(c=>c.lang===newCaption.lang)
-				if(current) {
-					current.text += ` ${caption.text}`;
-				}else{
-					currentFinal.push({...newCaption});
-				}
-			});
-		}
-
-		partialCaptions.setText(text, data.duration, ()=>{
-
-			// When a final text is completed, clear line and push it to transcript
-			if(data.final) {
-
-				if(data.lineEnd ?? true) {
-					partialCaptions.clear();
-
-					transcript.update((array)=>{
-						array.push(currentFinal);
-						currentFinal = [];
-						if(array.length > 50) array.shift();
-						return array;
-					});
-				}
+	// Merge final texts
+	let finalToPush: Caption[] | null = null;
+	if(data.final) {
+		// Merge current final text
+		data.captions.forEach((newCaption) => {
+			const current = currentFinal.find(c=>c.lang===newCaption.lang);
+			if(current) {
+				current.text += ` ${caption.text}`;
+			}else{
+				currentFinal.push({...newCaption});
 			}
 		});
-	}, delay);
+
+		// If end of line, put final text aside for pushing to transcript
+		if(data.lineEnd ?? true) {
+			finalToPush = currentFinal;
+			currentFinal = [];
+		}
+	}
+
+	partialCaptions.setText(text, data.duration, ()=>{
+		
+		// Push final text to transcript
+		if(finalToPush) {
+			partialCaptions.clear();
+
+			transcript.update((array)=>{
+				array.push(finalToPush!);
+				if(array.length > 50) array.shift();
+				return array;
+			});			
+		}
+	});
 }
