@@ -113,7 +113,7 @@ async function loadConfig(socket: TypedSocket) {
 
 		sendStatus(socket);
 
-		rescheduleSessionEnd(socket);
+		keepAliveSession(socket);
 	}catch(e) {
 		delete socket.data.loading;
 		throw e;
@@ -139,7 +139,7 @@ async function ensureConfigLoaded(socket: TypedSocket) {
 
 const SESSION_TIMEOUT = 1000 * 60 * 15
 
-function rescheduleSessionEnd(socket: TypedSocket) {
+function keepAliveSession(socket: TypedSocket) {
 	clearTimeout(socket.data.sessionTimeout);
 	socket.data.sessionTimeout = setTimeout(()=>{ endSession(socket) }, SESSION_TIMEOUT);
 }
@@ -177,7 +177,7 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 	const start = Date.now();
 
 	await ensureConfigLoaded(socket);
-	rescheduleSessionEnd(socket);
+	keepAliveSession(socket);
 	try {
 		socket.emit('transcript', transcript );
 

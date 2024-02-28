@@ -1,6 +1,6 @@
 import { User } from "../entity/User";
 import { logger } from "../utils/logger";
-import { LangList, Result, TranscriptAlt, TranscriptData } from "../types";
+import { LangList, Result, TranscriptAlt } from "../types";
 import { metrics } from "../utils/metrics";
 
 
@@ -55,7 +55,7 @@ export abstract class Translator {
 		return [];
 	}
 
-	async translate(data: TranscriptData): Promise<Result<TranscriptAlt[]>> {
+	async translate(data: TranscriptAlt): Promise<Result<TranscriptAlt[]>> {
 		const lang = data.lang.split('-')[0];
 
 		if(!this.ready() || this.expired) {

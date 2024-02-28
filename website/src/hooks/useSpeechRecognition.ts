@@ -68,8 +68,12 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 				}
 			}
 
-			// Timestamp for last partial caption
+			// Timestamp for last handled partial caption
 			let lastCaptions: number | null = null;
+			// Last received partial caption
+			let lastReceivedPartialTimestamp: number | null = null;
+			let lastReceivedPartial: string | null = null;
+
 			// Last text
 			let lastText = '';
 			// Length of text to ignore (When start of text as already been sent as final)
@@ -77,10 +81,13 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 
 			recognition.onresult = (event) => {
 				const result = event.results[event.resultIndex];
-
 				const text = normalizeTranscript(result[0].transcript);
-
 				setText(text);
+
+				if(text !== lastReceivedPartial && !result.isFinal) {
+					lastReceivedPartial = text;
+					lastReceivedPartialTimestamp = Date.now();
+				}
 
 				// Ignore partials between each partial caption
 				if(!result.isFinal && lastCaptions && ( (lastCaptions + splitDelay) > Date.now() ) ) {
@@ -93,8 +100,13 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 					// Duration/delay is time since last partial sent
 					// Default duration is split delay ( happens mostly when results received in wrong order )
 					let duration = splitDelay;
-					if(lastCaptions) {
-						duration = Date.now() - lastCaptions;
+					if(lastCaptions && lastReceivedPartialTimestamp) {
+						duration = lastReceivedPartialTimestamp - lastCaptions;
+					}
+					// Accumulated delay from start time
+					let calcDelay = duration - delay;
+					if(lastReceivedPartialTimestamp) {
+						calcDelay += (Date.now() - lastReceivedPartialTimestamp);
 					}
 
 					let currentPart = text.slice(ignoreLength).trim();
@@ -112,33 +124,21 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 							lang,
 							duration: 0,
 							text: part,
-							delay: duration - (delay - 500)
+							delay: calcDelay + 500
 						});
 
 						ignoreLength = lastText.length;
 						currentPart = text.slice(ignoreLength).trim();
-
-						// Send next part as partial
-						handleText({
-							final: false,
-							lineEnd: false,
-							lang,
-							duration,
-							text: currentPart,
-							delay: duration - (delay + 250)
-						});
-					}else{
-						// Text not splitted
-						// Send it normally
-						handleText({
-							text: currentPart,
-							lang,
-							duration,
-							delay: duration - delay,
-							final: result.isFinal,
-							lineEnd: result.isFinal
-						});
 					}
+					// Send current text part
+					handleText({
+						text: currentPart,
+						lang,
+						duration,
+						delay: calcDelay,
+						final: result.isFinal,
+						lineEnd: result.isFinal
+					});
 
 					if(!result.isFinal) {
 						// Store partial text to compare it with next version
