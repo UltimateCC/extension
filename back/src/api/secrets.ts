@@ -24,9 +24,9 @@ secretsRouter.post('', async (req, res, next)=>{
 				logger.debug(`Saving GCP key for ${req.session.userid}`);
 				const check = await GCPTranslator.checkKey(data.value);
 				if(check.isError) {
-					logger.warn(`Error saving GCP key for ${req.session.userid} : ${check.message}`, check.text);
+					logger.warn(`Error saving GCP key for ${req.session.userid} : ${check.message}`);
 					return res.status(400).json({
-						message: `GCP API error: ${check.message}`
+						message: `${check.message}`
 					});
 				}
 			}

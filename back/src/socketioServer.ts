@@ -34,7 +34,7 @@ export interface SocketData {
 	ready: boolean
 	loading?: Promise<void>
 	shouldReload: boolean
-	sessionTimeout: NodeJS.Timeout
+	sessionTimeout: ReturnType<typeof setTimeout>
 	lastSpokenLang: string
 	stats: Stats | null
 	config: UserConfig
@@ -104,7 +104,7 @@ async function loadConfig(socket: TypedSocket) {
 		const init = await socket.data.translator.init();
 		if(init.isError) {
 			socket.emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
-			logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message} ${init.text??''}`);
+			logger.warn(`Translation API initialization error for user ${socket.data.twitchId}: ${init.message}`);
 		}
 
 		// Send available translation languages

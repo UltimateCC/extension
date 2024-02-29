@@ -24,11 +24,12 @@ export class GCPTranslator extends Translator {
 		});
 		const res = await fetch(`https://translation.googleapis.com/language/translate/v2?${params}`);
 		if(!res.ok) {
-			const text = await res.text();
+			const json = await res.json();
+			const message = json?.error?.message;
+
 			return {
 				isError: true,
-				message: `GCP API returned error ${res.status} ${res.statusText}`,
-				text
+				message: `GCP API returned error ${res.status} ${res.statusText}${message? ` : ${message}` : ''}`
 			}
 		}
 		return {

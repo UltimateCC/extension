@@ -1,4 +1,3 @@
-
 import { RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "../entity/User";
