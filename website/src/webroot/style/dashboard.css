@@ -101,6 +101,7 @@
 
 #dashboard .setting .setting-options .theme-select {
     min-width: 0;
+    padding-right: 10%;
 }
 
 #dashboard .theme-btn.listening {
@@ -554,6 +555,10 @@
     gap: 1em;
 }
 
+#dashboard .browser-source .optional-styling .styling-inputs {
+    max-width: 30%;
+}
+
 #dashboard .browser-source .optional-styling .styling-inputs > div {
     display: flex;
     justify-content: space-between;
@@ -565,6 +570,10 @@
     display: flex;
     flex-direction: column;
     gap: 0.25em;
+}
+
+#dashboard .browser-source .optional-styling .styling-inputs label .theme-select {
+    font-size: 1em;
 }
 
 #dashboard .browser-source .optional-styling .styling-inputs label .theme-select,

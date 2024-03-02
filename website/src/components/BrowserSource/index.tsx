@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import loadingImg from '../../assets/loading.svg';
 import { config } from "../../config";
-import {speechLanguages} from '../MicrophoneApp/speechLanguages';
+import { langList } from "../../services/langs";
 
 interface BrowserSourceProps {
     selectedLanguageCode?: string[];
 	spokenLang?: string
     configLoaded: boolean;
 }
-
-import { LangList } from '../../context/SocketContext.tsx';
 
 
 function BrowserSource({ selectedLanguageCode, spokenLang, configLoaded }: BrowserSourceProps) {
@@ -21,9 +19,7 @@ function BrowserSource({ selectedLanguageCode, spokenLang, configLoaded }: Brows
 	const [fontFamily, setFontFamily] = useState<string>('Arial, Helvetica, sans-serif');
 	const [fontColor, setFontColor] = useState<string>('#E0E0E0');
 	const [bgColor, setBgColor] = useState<string>('#37373E');
-	const [browserSrcLang, setBrowserSrcLang] = useState<string>(spokenLang ?? "");
-	
-	const [translateLangs, setTranslateLangs] = useState<LangList>([]);
+	const [browserSrcLang, setBrowserSrcLang] = useState<string>("");
 
 	function loadUrl(regen?: boolean) {
 		api('browsersource/url', {method: regen ? 'POST' : 'GET'})
@@ -54,16 +50,8 @@ function BrowserSource({ selectedLanguageCode, spokenLang, configLoaded }: Brows
 		loadUrl(true);
 	}
 
-	useEffect(()=>{
-		const langListAvailable: LangList = speechLanguages.filter((lang) => {
-			return selectedLanguageCode?.some((code) => code.includes(lang.code.substring(0, 2)));
-		});
-		setTranslateLangs(langListAvailable);
-		console.log('langListAvailable', langListAvailable);
-	}, [selectedLanguageCode]);
-
 	if(!url || !configLoaded) {
-		return (<img src={loadingImg} alt="loading" className="loading-img" />);
+		// return (<img src={loadingImg} alt="loading" className="loading-img" />);
 	}
 	
 	return (
@@ -79,7 +67,8 @@ function BrowserSource({ selectedLanguageCode, spokenLang, configLoaded }: Brows
 						<label>
 							Choose language
 							<select className="theme-select" value={browserSrcLang} onChange={e=>setBrowserSrcLang(e.target.value)}>
-								{ translateLangs.map(lang => ( <option value={lang.code} key={lang.code}>{lang.name}</option> ) ) }
+								<option value="">Spoken language { (spokenLang && langList[spokenLang.substring(0, 2)]) ? "(" + langList[spokenLang.substring(0, 2)] + ")" : "" }</option>
+								{ selectedLanguageCode?.map(code => ( <option value={code} key={code}>{langList[code]}</option> ) ) }
 							</select>
 						</label>
 
