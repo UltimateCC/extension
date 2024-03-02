@@ -8,6 +8,7 @@ import FormResponse from '../../components/FormResponse';
 import Twitch from '../../components/Twitch';
 
 // import BannedCaptions from '../../components/BannedCaptions';
+import BrowserSource from '../../components/BrowserSource';
 
 import Footer from '../../components/Footer';
 
@@ -207,7 +208,7 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /* 'OBS', */ 'HTTP']}
+                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
@@ -246,6 +247,13 @@ function Dashboard() {
                                     updateConfig={updateConfig}
                                 />)}
                             { currentTab === 'HTTP' && (<Webhooks/>) }
+                            { currentTab === 'Browser source' && (
+                                <BrowserSource
+                                    selectedLanguageCode={config.translateLangs}
+                                    spokenLang={config.spokenLang}
+                                    configLoaded={configLoaded}
+                                />
+                            ) }
                         </div>
                     </div>
 

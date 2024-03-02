@@ -524,3 +524,65 @@
     gap: 1em;
     margin-top: 2em;
 }
+
+#dashboard .browser-source p {
+    line-height: 1em;
+}
+
+#dashboard .browser-source .buttons {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1em;
+    margin-top: 3cap;
+}
+
+#dashboard .browser-source {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#dashboard .browser-source .optional-styling {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+#dashboard .browser-source .optional-styling > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#dashboard .browser-source .optional-styling .styling-inputs > div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+}
+
+#dashboard .browser-source .optional-styling .styling-inputs label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+#dashboard .browser-source .optional-styling .styling-inputs label .theme-select,
+#dashboard .browser-source .optional-styling .styling-inputs label .theme-color {
+    height: 2.5em;
+}
+
+
+#dashboard .browser-source .optional-styling .preview {
+    width: 100%;
+}
+
+#dashboard .browser-source .optional-styling .preview .preview-content {
+    background-image: url(../../assets/browser_preview.webp);
+    background-size: cover;
+    padding: 1em;
+    width: 80%;
+    height: 20em;
+    border-radius: 1em;
+    margin: 0 auto;
+}
