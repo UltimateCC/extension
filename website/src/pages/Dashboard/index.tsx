@@ -23,6 +23,7 @@ import { Action, SocketContext } from '../../context/SocketContext';
 import Webhooks from '../../components/Webhooks';
 import DashboardTabs from '../../components/DashboardTabs';
 import Guide from '../../components/Guide';
+import BanWords from '../../components/BanWords';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { useSavedConfig } from '../../hooks/useSavedConfig';
 import { useAuthCheck } from '../../hooks/useAuthCheck';
@@ -36,6 +37,7 @@ interface UserConfig {
 	spokenLangs?: string[]
 	translateService: '' | 'gcp'
 	translateLangs?: string[]
+    banWords?: string[]
     twitchAutoStop?: boolean
     customDelay?: number
     obsEnabled?: boolean
@@ -208,7 +210,7 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', /*'Banned words',*/ 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
+                        tabs={['Guide', 'Translation', 'Ban words', 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
@@ -236,6 +238,12 @@ function Dashboard() {
                                     ) }
                                 </div>
                             )}
+                            { currentTab === 'Ban words' && (
+                                <BanWords
+                                    banWords={config.banWords??[]}
+                                    updateConfig={updateConfig}
+                                    configLoaded={configLoaded}
+                                />)}
                             { currentTab === 'Twitch' && (
                                 <Twitch
                                     twitchAutoStop={config.twitchAutoStop ?? true}

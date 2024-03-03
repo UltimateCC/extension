@@ -269,160 +269,70 @@
 #dashboard .languages .switch-btn:not(:disabled):hover {
     background-color: var(--button);
 }
-/*
-#dashboard .banned .tips-img {
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    font-size: 38px;
-    cursor: pointer;
+
+#dashboard .ban-words {
+    padding: 0 3em;
 }
 
-#dashboard .banned svg {
-    fill: var(--text);
-}
-
-#dashboard .banned svg:hover path {
-    fill: var(--title);
-    transition: all 0.4s
-}
-
-#dashboard .banned .ban-captions {
+#dashboard .ban-words .ban-words-container {
     border-radius: 10px;
     background: var(--text);
     box-shadow: 10px -10px 20px 5px rgba(0, 0, 0, 0.25) inset;
     list-style: none;
     text-align: left;
-    padding: 20px;
-    font-size: 1.75rem;
+    padding: 1em;
+    font-size: 1.25em;
 }
 
-#dashboard .banned h4 {
-    font-size: 20px;
-}
-
-#dashboard .banned .selectable-languages {
-    display: flex;
-    align-items: center;
-    margin-top: 5px;
-    margin-bottom: 25px;
-    gap: 1em;
-}
-
-#dashboard .banned .selectable-languages .languages-list {
-    display: flex;
-    align-items: center;
-    gap: max(0.75em, 5px);
-    list-style: none;
-    width: fit-content;
-}
-
-#dashboard .banned .selectable-languages .languages-list .language-btn {
-    color: var(--text);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    padding: 0.5em 1em;
-    border: none;
-    cursor: pointer;
-    transition: all .5s;
-    background-color: #751CC2;
-}
-
-#dashboard .banned .selectable-languages .languages-list .language-btn:hover {
-    background-color: var(--title);
-    background-image: none;
-}
-
-#dashboard .banned .selectable-languages .languages-list .language-btn.active {
-    background-color: #1C40C2;
-    cursor: default;
-}
-
-#dashboard .banned .selectable-languages .languages-list .more-btn-container {
-    display: flex;
-    align-items: center;
-}
-
-#dashboard .banned .selectable-languages .responsive-text {
-    display: flex;
-    column-gap: 0.2em;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: fit-content;
-}
-
-#dashboard .banned .selectable-languages .responsive-text p {
-    width: max-content;
-}
-
-#dashboard .banned .selectable-languages .languages-list.must-wrap {
-    flex-wrap: wrap;
-    max-width: 70%;
-}
-
-#dashboard .banned .more-btn {
-    background: transparent;
-    border: none;
-    font-size: 50px;
-    line-height: 32px;
-    height: 32px;
-    font-family: 'Raleway', sans-serif;
-    color: var(--title);
-    cursor: pointer;
-    transition: all .5s;
-    overflow: hidden; /* To hide the hover not needed, todo solve with a better way *//*
-}
-
-#dashboard .banned .more-btn:hover {
-    color: #751CC2;
-}
-
-#dashboard .banned .ban-captions p {
-    color: var(--placeholder);
-    text-align: center;
-}
-
-#dashboard .banned .ban-captions ul {
+#dashboard .ban-words .ban-words-container ul {
     overflow-y: auto;
-    max-height: 6.5em; /* 5 lines * 1.2em (line-height) *//*
+    max-height: 7em; /* 5 lines */
     color: var(--square);
-}
-
-#dashboard .banned .ban-captions li {
     display: flex;
-    align-items: center;
-    column-gap: 0.75em;
-    height: 1.3em;
+    flex-direction: column;
+    gap: 0.5em;
 }
 
-#dashboard .banned .ban-captions li p {
+#dashboard .ban-words .ban-words-container li {
+    display: flex;
+    align-items: end;
+    column-gap: 0.75em;
+}
+
+#dashboard .ban-words .ban-words-container li p {
     color: var(--square);
-    line-height: 100%;
+    line-height: 1em;
     overflow: hidden
 }
 
-#dashboard .banned .ban-captions li p.removing {
+#dashboard .ban-words .ban-words-container li p.removing {
     color: var(--placeholder);
 }
 
-#dashboard .banned .ban-captions li button {
+#dashboard .ban-words .ban-words-container li button.cross {
     background: transparent;
     border: none;
     cursor: pointer;
-}
-
-#dashboard .banned .ban-captions .cross {
     color: #7643A4;
     font-family: "Press Start 2P", sans-serif;
     font-size: 0.75em;
 }
-*/
+
+#dashboard .ban-words form {
+    margin-bottom: 1.5em;
+}
+
+#dashboard .ban-words form input {
+    width: 100%;
+    font-size: 1.5em;
+}
 
 #dashboard .api .api-form {
     margin-top: 1.5em;
 }
 
 #dashboard .api form > .api-input,
+#dashboard .ban-words form,
 #dashboard .api .api-connected {
     margin-top: .5em;
     display: flex;
@@ -431,13 +341,12 @@
     gap: 1em;
 }
 
-#dashboard .banned form input,
 #dashboard .api form input,
 #dashboard .api .api-connected h4 {
     width: 100%;
 }
 
-#dashboard .banned form button,
+#dashboard .ban-words form button,
 #dashboard .api form button,
 #dashboard .api .api-connected button {
     min-width: fit-content;
