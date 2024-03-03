@@ -332,6 +332,11 @@
 #dashboard .ban-words form input {
     width: 100%;
     font-size: 1.5em;
+    text-transform: lowercase;
+}
+
+#dashboard .ban-words form input::placeholder {
+    text-transform: initial;
 }
 
 #dashboard .api .api-form {

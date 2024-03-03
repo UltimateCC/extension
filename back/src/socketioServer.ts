@@ -179,7 +179,19 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 	await ensureConfigLoaded(socket);
 	keepAliveSession(socket);
 	try {
-		socket.emit('transcript', transcript );
+		socket.emit('transcript', transcript);
+
+		// Apply ban words
+		for(const word of socket.data.config.banWords) {
+			if(transcript.text.toLowerCase().includes(word)) {
+				const censoredWord = word.substring(0, 1) + '*'.repeat(word.length - 1);
+				const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+				const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+				transcript.text = transcript.text.replace(regex, censoredWord);
+			}
+		}
+
+		console.log(transcript.text);
 
 		socket.data.lastSpokenLang = transcript.lang;
 

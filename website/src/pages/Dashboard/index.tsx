@@ -73,9 +73,26 @@ function Dashboard() {
     const splitDelay = Math.max(2700, delay);
     const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
 
+    function censor(inputText: string, banWords: string[]): string {
+        // Apply ban words
+		for(const word of banWords) {
+			if(inputText.toLowerCase().includes(word)) {
+				const censoredWord = word.substring(0, 1) + '*'.repeat(word.length - 1);
+				const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+				const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+				inputText = inputText.replace(regex, censoredWord);
+			}
+		}
+
+        return inputText;
+    }
+
+    const censoredText: string = censor(text, config.banWords??[]);
+
+
     // OBS websocket
     const { obs } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
-    useObsSendCaptions({obs, text, enabled: (config.obsSendCaptions??true)});
+    useObsSendCaptions({obs, text: censoredText, enabled: (config.obsSendCaptions??true)});
 
     // Function to set spoken lang, and save it
     const setSpoken = useCallback((lang: string | undefined) => {
@@ -198,7 +215,7 @@ function Dashboard() {
                         <MicrophoneApp 
                             listening={listening}
                             setListening={setListening}
-                            text={text}
+                            text={censoredText}
                             spokenLang={config.spokenLang}
                             setSpokenLang={setSpoken}
                             configLoaded={configLoaded}

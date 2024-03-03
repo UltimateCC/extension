@@ -1,7 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import loadingImg from '../../assets/loading.svg';
 
 import FormResponse from "../FormResponse";
+
+import { SocketContext } from '../../context/SocketContext.tsx';
+
 
 interface BanWordsProps {
     banWords: string[]
@@ -15,6 +18,8 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
     const [removeWordIsLoading, setRemoveWordIsLoading] = useState<boolean>(false);
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string; } | null>(null);
 
+    const { reloadConfig } = useContext(SocketContext);
+
     if(!configLoaded) {
 		return (<img src={loadingImg} alt="loading" className="loading-img" />);
 	}
@@ -22,7 +27,7 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
     const addWord = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         
-        const newWord = addWordInputRef.current?.value;
+        const newWord = addWordInputRef.current?.value.toLowerCase();
         if (!newWord) return;
 
         if(banWords.includes(newWord)) {
@@ -30,15 +35,29 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
         }
 
         setAddWordIsLoading(true);
-        updateConfig({banWords: [newWord, ...banWords]});
+        updateConfig({banWords: [newWord, ...banWords]})
+        .then(() => {
+            reloadConfig();
+        })
+        .catch(err => {
+            console.error('Error updating ban words', err);
+            setResponse({ isSuccess: false, message: 'Error updating ban words' });
+        });
         addWordInputRef.current!.value = '';
         setAddWordIsLoading(false);
     }
 
     const removeWord = (word: string) => {
         setRemoveWordIsLoading(true);
-        const newBanWords = banWords.filter(w => w !== word);
-        updateConfig({banWords: newBanWords});
+        const newBanWords = banWords.filter(w => w !== word.toLowerCase());
+        updateConfig({banWords: newBanWords})
+        .then(() => {
+            reloadConfig();
+        })
+        .catch(err => {
+            console.error('Error updating ban words', err);
+            setResponse({ isSuccess: false, message: 'Error updating ban words' });
+        });
         setRemoveWordIsLoading(false);
     }
 
