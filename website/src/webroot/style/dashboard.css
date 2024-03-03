@@ -284,6 +284,13 @@
     font-size: 1.25em;
 }
 
+#dashboard .ban-words .ban-words-container > p {
+    color: var(--square);
+    text-align: center;
+    margin: 3em 0;
+    user-select: none;
+}
+
 #dashboard .ban-words .ban-words-container ul {
     overflow-y: auto;
     max-height: 7em; /* 5 lines */

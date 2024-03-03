@@ -13,13 +13,7 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
     const addWordInputRef = useRef<HTMLInputElement>(null);
     const [addWordIsLoading, setAddWordIsLoading] = useState<boolean>(false);
     const [removeWordIsLoading, setRemoveWordIsLoading] = useState<boolean>(false);
-    const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
-
-	if(banWords.length === 0) {
-        for(let i = 1; i <= 10; i++) {
-            banWords.push('word ' + i);
-        }
-    }
+    const [response, setResponse] = useState<{ isSuccess: boolean; message: string; } | null>(null);
 
     if(!configLoaded) {
 		return (<img src={loadingImg} alt="loading" className="loading-img" />);
