@@ -42,6 +42,8 @@ export class User extends BaseEntity {
 		translateService: '',
 		translateLangs: [],
 
+		banWords: [],
+
 		twitchAutoStop: true,
 
 		customDelay: 0,
@@ -83,11 +85,8 @@ export const UserConfigSchema = z.object({
 	translateLangs: z.array(z.string()),
 
 	twitchAutoStop: z.boolean(),
-	/*
-	banWords: z.array(z.object({
-		lang: z.string(),
-		text: z.string()
-	}))*/
+	
+	banWords: z.array(z.string()),
 
 	customDelay: z.number().min(-5).max(1800).default(0),
 	obsEnabled: z.boolean(),
