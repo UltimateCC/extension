@@ -206,8 +206,15 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 				}
 				logger.warn(`Translation error for ${ socket.data.twitchId } : ${ message }`);
 			}
+
+			// For each translated text, apply banwords
+			const censoredText = out.data.map(t => ({
+				...t,
+				text: applyBanwords(socket.data.config.banWords ?? [], t.text)
+			}));
+
 			await sendCaptions(socket, {
-				captions: out.data,
+				captions: censoredText,
 				delay: transcript.delay + (Date.now() - start),
 				duration: transcript.duration,
 				final: transcript.final,
