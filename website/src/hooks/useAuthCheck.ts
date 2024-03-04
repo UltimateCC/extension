@@ -7,16 +7,15 @@ export function useAuthCheck() {
 
 	const authRefreshed = useRef<boolean>(false);
     useEffect(() => {
-        if(!user?.connected) {
-            // If not connected, redirect to auth url
-            if(user?.url) {
-                window.location.replace(user.url);
+        // Refresh auth when loading page (only once to avoid loop)
+        if(!loading && !authRefreshed.current) {
+            authRefreshed.current = true;
+            refreshAuth();
+        }
 
-            // If url, try refreshing auth (only once to avoid loop)
-            }else if(!loading && !authRefreshed.current) {
-                authRefreshed.current = true;
-                refreshAuth();
-            }
+        // If not connected, and url loaded, redirect to it
+        if(!loading && !user?.connected && user?.url) {
+            window.location.replace(user.url);
         }
     }, [error, user, loading, refreshAuth]);
 }
