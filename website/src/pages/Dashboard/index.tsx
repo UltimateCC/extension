@@ -33,7 +33,7 @@ import OBS from '../../components/OBS';
 
 interface UserConfig {
 	spokenLang: string
-	lastSpokenLang: string
+	lastSpokenLang?: string
 	spokenLangs?: string[]
 	translateService: '' | 'gcp'
 	translateLangs?: string[]

@@ -34,25 +34,7 @@ export class User extends BaseEntity {
 	webhookSecret: string;
 
 	@Column('json')
-	config: UserConfig = {
-		transcribe: '',
-		lastSpokenLang: 'fr-FR',
-		spokenLang: 'en-US',
-
-		translateService: '',
-		translateLangs: [],
-
-		banWords: [],
-
-		twitchAutoStop: true,
-
-		customDelay: 0,
-		obsEnabled: false,
-		obsPort: 4455,
-		obsPassword: '',
-		obsSendCaptions: true,
-		obsAutoStop: true
-	};
+	config: UserConfig = UserConfigSchema.parse({});
 
 	@Column()
 	twitchConfig: TwitchConfig = {};
@@ -69,33 +51,27 @@ export class User extends BaseEntity {
 }
 
 export const UserConfigSchema = z.object({
-	transcribe: /*z.union([*/
-		z.literal(''),/*
-		z.literal('azure'),
-	]),*/
-	lastSpokenLang: z.string(),
-	spokenLang: z.string(),
+	transcribe: z.enum([''/*, 'azure'*/]).default(''),
+	spokenLang: z.string().default('en-US'),
+	lastSpokenLang: z.string().optional(),
 	/*spokenLangs: z.array(z.string()).optional(),*/
 
-	translateService: z.union([
-		z.literal(''),
-		//z.literal('azure'),
-		z.literal('gcp')
-	]),
-	translateLangs: z.array(z.string()),
+	translateService: z.enum(['', 'gcp']).default(''),
+	translateLangs: z.array(z.string()).default([]),
 
-	twitchAutoStop: z.boolean(),
+	twitchAutoStop: z.boolean().default(true),
 
 	banWords: z.array(
 		z.string().max(50).refine(s => [...'.*+?^${}()|[]\\'].every(c => !s.includes(c)))
-	).max(20),
+	).max(20).default([]),
 
 	customDelay: z.number().min(-5).max(1800).default(0),
-	obsEnabled: z.boolean(),
-	obsPort: z.number(),
-	obsPassword: z.string(),
-	obsSendCaptions: z.boolean(),
-	obsAutoStop: z.boolean()
+
+	obsEnabled: z.boolean().default(false),
+	obsPort: z.number().default(4455),
+	obsPassword: z.string().default(''),
+	obsSendCaptions: z.boolean().default(true),
+	obsAutoStop: z.boolean().default(true)
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;
