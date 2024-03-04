@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { lastReceivedCaptions, partialCaptions } from "../lib/captions";
-	import { settings, resetSettings, position, resetPosition, language } from "../lib/settings";
+	import { lastReceivedCaptions } from "../lib/captions";
+	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
 	import LanguageSelect from "./LanguageSelect.svelte";
     import { fade } from "svelte/transition";
     import NumberInput from "./NumberInput.svelte";
@@ -16,14 +16,6 @@
 		}else{
 			current = id;
 		}
-	}
-
-	// Clear partial captions each time language changes
-	$: clearCaptions($language);
-
-	function clearCaptions(lang: string) {
-		// Reset partial captions when lang changed
-		$partialCaptions = '';
 	}
 
 	// Close on click outside

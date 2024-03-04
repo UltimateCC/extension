@@ -9,6 +9,14 @@
 	// Selected language name
 	$: currentLangName = languages[$language as LangCode] ?? $language;
 
+	// Clear partial captions each time language changes
+	$: clearCaptions($language);
+
+	function clearCaptions(lang: string) {
+		// Reset partial captions when lang changed
+		partialCaptions.clear();
+	}
+
 </script>
 
 
