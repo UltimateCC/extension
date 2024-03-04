@@ -35,6 +35,17 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
         const newWord = addWordInputRef.current?.value.toLowerCase();
         if (!newWord) return;
 
+        if(banWords.length >= 20) {
+            setResponse({ isSuccess: false, message: 'Max 20 words' });
+            return;
+        }
+
+        const forbiddenCharacters = /[*+?^${}()|[\]\\]/;
+        if(forbiddenCharacters.test(newWord)) {
+            setResponse({ isSuccess: false, message: 'Forbidden characters' });
+            return;
+        }
+
         if(banWords.includes(newWord)) {
             setResponse({ isSuccess: false, message: 'This word is already banned' });
             return;
@@ -83,7 +94,7 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
             )}
 
             <form className="input-word">
-                <input ref={addWordInputRef} className="theme-input" type="text" placeholder="Add your word..." />
+                <input ref={addWordInputRef} className="theme-input" type="text" placeholder="Add your word..." maxLength={50} />
                 <button className="theme-btn" onClick={addWord} disabled={addWordIsLoading} type="submit"><span>{addWordIsLoading ? 'Adding...' : 'Add'}</span></button>
             </form>
 
