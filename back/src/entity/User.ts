@@ -85,8 +85,10 @@ export const UserConfigSchema = z.object({
 	translateLangs: z.array(z.string()),
 
 	twitchAutoStop: z.boolean(),
-	
-	banWords: z.array(z.string()),
+
+	banWords: z.array(
+		z.string().max(50).refine(s => [...'.*+?^${}()|[]\\'].every(c => !s.includes(c)))
+	).max(20),
 
 	customDelay: z.number().min(-5).max(1800).default(0),
 	obsEnabled: z.boolean(),

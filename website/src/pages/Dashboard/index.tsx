@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import LanguageOutSelector from '../../components/LanguageOutSelector';
@@ -73,21 +73,21 @@ function Dashboard() {
     const splitDelay = Math.max(2700, delay);
     const { error: recognitionErrror, text } = useSpeechRecognition({handleText: socketCtx.handleText, lang: config.spokenLang, listening, splitDelay, delay});
 
-    function censor(inputText: string, banWords: string[]): string {
+    const censor = useCallback((inputText: string, banWords: string[]) => {
         // Apply ban words
-		for(const word of banWords) {
-			if(inputText.toLowerCase().includes(word)) {
-				const censoredWord = word.substring(0, 1) + '*'.repeat(word.length - 1);
-				const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-				const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
-				inputText = inputText.replace(regex, censoredWord);
-			}
-		}
-
+        for(const word of banWords) {
+            if(inputText.toLowerCase().includes(word)) {
+                const censoredWord = word.substring(0, 1) + '*'.repeat(word.length - 1);
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                inputText = inputText.replace(regex, censoredWord);
+            }
+        }
         return inputText;
-    }
+    }, []);
 
-    const censoredText: string = censor(text, config.banWords??[]);
+    const censoredText = useMemo(() => {
+        return censor(text, config.banWords??[]);
+    }, [censor, text, config.banWords]);
 
 
     // OBS websocket
@@ -102,7 +102,6 @@ function Dashboard() {
             spokenLang: newLang,
             lastSpokenLang: config.spokenLang
         })
-        /*.then(socketCtx.reloadConfig)*/
         .catch((error) => {
             console.error('Error updating spoken language', error);
             setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });
@@ -227,7 +226,7 @@ function Dashboard() {
 
                 <div>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', 'Ban words', 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
+                        tabs={['Guide', 'Translation', /*'Ban words',*/ 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
@@ -281,17 +280,6 @@ function Dashboard() {
                             ) }
                         </div>
                     </div>
-
-                    {/* <div className="banned theme-box">
-                        <h3>Banned captions</h3>
-                        <BannedCaptions
-                            allBanCaptions={allBanCaptions}
-                            onAllBanCaptionsChange={handleAllBanCaptionsChange}
-                            selectedLanguageCode={translationLangs}
-                            languageCodeLoaded={languageCodeLoaded}
-                            LoadingImg={LoadingImg}
-                        />
-                    </div> */}
                 </div>
                 <Footer />
             </section>

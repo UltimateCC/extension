@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import loadingImg from '../../assets/loading.svg';
 import { config } from "../../config";
 import { langList } from "../../services/langs";
 

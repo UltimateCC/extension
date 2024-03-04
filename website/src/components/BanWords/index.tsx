@@ -21,17 +21,23 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
     const { reloadConfig } = useContext(SocketContext);
 
     if(!configLoaded) {
-		return (<img src={loadingImg} alt="loading" className="loading-img" />);
-	}
+        return (<img src={loadingImg} alt="loading" className="loading-img" />);
+    }
+
+    const closeResponse = () => {
+        setResponse(null);
+    };
     
     const addWord = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        closeResponse();
         
         const newWord = addWordInputRef.current?.value.toLowerCase();
         if (!newWord) return;
 
         if(banWords.includes(newWord)) {
-            return setResponse({ isSuccess: false, message: 'This word is already banned' });
+            setResponse({ isSuccess: false, message: 'This word is already banned' });
+            return;
         }
 
         setAddWordIsLoading(true);
@@ -42,12 +48,15 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
         .catch(err => {
             console.error('Error updating ban words', err);
             setResponse({ isSuccess: false, message: 'Error updating ban words' });
+        })
+        .finally(() => {
+            setAddWordIsLoading(false);
         });
         addWordInputRef.current!.value = '';
-        setAddWordIsLoading(false);
     }
 
     const removeWord = (word: string) => {
+        closeResponse();
         setRemoveWordIsLoading(true);
         const newBanWords = banWords.filter(w => w !== word.toLowerCase());
         updateConfig({banWords: newBanWords})
@@ -57,13 +66,11 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
         .catch(err => {
             console.error('Error updating ban words', err);
             setResponse({ isSuccess: false, message: 'Error updating ban words' });
+        })
+        .finally(() => {
+            setRemoveWordIsLoading(false);
         });
-        setRemoveWordIsLoading(false);
     }
-
-    const closeResponse = () => {
-        setResponse(null);
-    };  
 
     return (
         <div className="ban-words">
