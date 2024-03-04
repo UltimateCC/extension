@@ -11,25 +11,20 @@
 
 </script>
 
-{#if $lastReceivedCaptions.length > 1}
-	<select id="language-input" bind:value={$language}>
-		<option value="">Spoken language{ spokenLang ? ` (${spokenLang})` : '' }</option>
 
-		<!-- Show current selected lang if not available -->
-		{#if $language && !$lastReceivedCaptions.some(alt=>alt.lang===$language) }
-			<option value={$language}>{ currentLangName } (unavailable)</option>
-		{/if}
+<select id="language-input" bind:value={$language}>
+	<option value="">Spoken language{ spokenLang ? ` (${spokenLang})` : '' }</option>
 
-		<!-- List all available langs -->
-		{#each $lastReceivedCaptions as l }
-			<option value={l.lang}>{ languages[l.lang] || l.lang }</option>
-		{/each}
-	</select>
-{:else}
-	<select id="language-input" disabled >
-		<option selected>Translations unavailable</option>
-	</select>
-{/if}
+	<!-- Show current selected lang if not available -->
+	{#if $language && !$lastReceivedCaptions.some(alt=>alt.lang===$language) }
+		<option value={$language}>{ currentLangName } (unavailable)</option>
+	{/if}
+
+	<!-- List all available langs -->
+	{#each $lastReceivedCaptions as l }
+		<option value={l.lang}>{ languages[l.lang] || l.lang }</option>
+	{/each}
+</select>
 
 <style lang="scss">
 	@import '../assets/vars.scss';

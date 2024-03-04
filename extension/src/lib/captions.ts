@@ -38,7 +38,7 @@ export async function handleCaptions(data: CaptionsData) {
 	const delay = (( get(twitchContext)?.hlsLatencyBroadcaster || 4 ) * 1000) - data.delay;
 	await new Promise(res => setTimeout(res, delay));
 
-	// Get actiual text to show depending on selected language
+	// Get actual text to show depending on selected language
 	const currentLang = get(language);
 	const caption = data.captions.find(c => c.lang === currentLang) ?? data.captions[0];
 	const finalText = (currentFinal.find(c => c.lang === currentLang) ?? currentFinal[0])?.text;

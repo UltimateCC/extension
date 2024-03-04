@@ -30,10 +30,10 @@
 	</div>
 	<!-- When transcript, partialCaptions or language change, execute autoScroll function -->
 	<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $language } } > 
-		{#if !$transcript.length && !$partialCaptions}
-		<div class="warning-container">
-			<Warning>Waiting for broadcaster speech</Warning>
-		</div>	
+		{#if $lastReceivedCaptions.length === 0}
+			<div class="warning-container">
+				<Warning>Waiting for broadcaster speech</Warning>
+			</div>	
 		{/if}
 
 		{#each $transcript as line }
