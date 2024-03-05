@@ -32,46 +32,26 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 		.catch(e=>console.error('Error writing to clipboard', e));
 	}
 
-	function buildUrl() {
-		const url = new URL(location.origin + '/browsersource/' + userId);
-		if(browserSrcLang) url.searchParams.set('lang', browserSrcLang);
-		if(fontFamily) url.searchParams.set('font', fontFamily);
-		if(fontColor) url.searchParams.set('color', fontColor);
-		if(bgColor) url.searchParams.set('bg', bgColor);
-		return url.toString();
-	}
-
-	function resetSettings() {
-		setFontFamily('Arial, Helvetica, sans-serif');
-		setFontColor('#E0E0E0');
-		setBgColor('#37373E');
-		setBrowserSrcLang("");
-		
-		setUrl(buildUrl());
-	}
-
 	function handleBrowserSourceChange(val: boolean) {
 		updateConfig({ browserSourceEnabled: val })
-		.then(()=>{
-			if(val) {
-				resetSettings();
-			}
-		})
 		.catch(err => {
 			console.error('Error updating browser source', err);
 		});
 	}
 
 	useEffect(() => {
-		setUrl(buildUrl());
-	}, [fontFamily, fontColor, bgColor, browserSrcLang, buildUrl]);
+		const url = new URL(location.origin + '/browsersource/' + userId);
+		if(browserSrcLang) url.searchParams.set('lang', browserSrcLang);
+		if(fontFamily) url.searchParams.set('font', fontFamily);
+		if(fontColor) url.searchParams.set('color', fontColor);
+		if(bgColor) url.searchParams.set('bg', bgColor);
+		setUrl(url.toString());
+	}, [fontFamily, fontColor, bgColor, browserSrcLang, userId]);
 
-	if(!configLoaded || userId === "") {
+	if(!configLoaded || userId === "" || (browserSourceEnabled && !url)) {
 		return (<img src={loadingImg} alt="loading" className="loading-img" />);
 	}
 
-	if(browserSourceEnabled && !url) resetSettings();
-	
 	return (
 		<div className="browser-source">
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, laudantium tempora? Laudantium cum dolores nisi minima, perspiciatis, illum fuga, cupiditate praesentium reprehenderit voluptates expedita molestiae? Dolor consectetur et voluptas eaque!</p>
@@ -87,7 +67,6 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 					<div className="optional-styling">
 						<div className="styling-inputs">
 							<h4>Settings (optional)</h4>
-							
 							<div>
 								<label>
 									Choose language

@@ -264,7 +264,7 @@ function Dashboard() {
                             )}
                             { currentTab === 'Blocked terms' && (
                                 <BanWords
-                                    banWords={config.banWords??[]}
+                                    banWords={config.banWords ?? []}
                                     updateConfig={updateConfig}
                                     configLoaded={configLoaded}
                                 />)}
