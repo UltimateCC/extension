@@ -145,8 +145,8 @@
     flex-direction: column;
     align-items: center;
     gap: .25em;
-    padding: .25em .5em;
-    font-family: 'Raleway', sans-serif;
+    padding: 0.5em .5em .25em ;
+    font-family: "Raleway", sans-serif;
     background-color: #4C4C5A;
     color: var(--text);
     border: none;
@@ -473,21 +473,32 @@
     margin-top: 2em;
 }
 
-#dashboard .browser-source p {
+
+#dashboard .browser-source > p {
     line-height: 1em;
 }
 
-#dashboard .browser-source .buttons {
+#dashboard .browser-source p.url-preview {
+    font-size: 1.25em;
+    width: 70%;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+#dashboard .browser-source .url-container {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    align-items: center;
     gap: 1em;
-    margin-top: 3cap;
+    margin-top: 3em;
+    width: 100%;
 }
 
 #dashboard .browser-source {
     display: flex;
     flex-direction: column;
     gap: 1em;
+    align-items: center;
 }
 
 #dashboard .browser-source .optional-styling {
@@ -530,15 +541,42 @@
 
 
 #dashboard .browser-source .optional-styling .preview {
-    width: 100%;
+    width: 60%;
 }
 
 #dashboard .browser-source .optional-styling .preview .preview-content {
     background-image: url(../../assets/browser_preview.webp);
     background-size: cover;
     padding: 1em;
-    width: 80%;
+    width: 100%;
     height: 20em;
     border-radius: 1em;
-    margin: 0 auto;
+}
+
+#dashboard .browser-source select option[value="Arial"] {
+    font-family: Arial;
+}
+
+#dashboard .browser-source select option[value="Calibri"] {
+    font-family: Calibri
+}
+
+#dashboard .browser-source select option[value="Courier New"] {
+    font-family: "Courier New";
+}
+
+#dashboard .browser-source select option[value="OpenDyslexic"] {
+    font-family: OpenDyslexic;
+}
+
+#dashboard .browser-source select option[value="Roboto"] {
+    font-family: Roboto;
+}
+
+#dashboard .browser-source select option[value="Times New Roman"] {
+    font-family: "Times New Roman";
+}
+
+#dashboard .browser-source select option[value="Verdana"] {
+    font-family: Verdana;
 }

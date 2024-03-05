@@ -44,6 +44,7 @@ interface UserConfig {
     obsPassword?: string
     obsSendCaptions?: boolean
     obsAutoStop?: boolean
+    browserSourceEnabled?: boolean
 }
 
 function Dashboard() {
@@ -282,7 +283,10 @@ function Dashboard() {
                                 <BrowserSource
                                     selectedLanguageCode={config.translateLangs}
                                     spokenLang={config.spokenLang}
+                                    browserSourceEnabled={config.browserSourceEnabled ?? false}
+                                    updateConfig={updateConfig}
                                     configLoaded={configLoaded}
+                                    userId={user?.userid ?? ''}
                                 />
                             ) }
                         </div>
