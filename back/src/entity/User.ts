@@ -63,7 +63,7 @@ export const UserConfigSchema = z.object({
 
 	banWords: z.array(
 		z.string().max(50).refine(s => [...'.*+?^${}()|[]\\'].every(c => !s.includes(c)))
-	).max(20).default([]),
+	).max(100).default([]),
 
 	customDelay: z.number().min(-5).max(1800).default(0),
 
@@ -71,7 +71,9 @@ export const UserConfigSchema = z.object({
 	obsPort: z.number().default(4455),
 	obsPassword: z.string().default(''),
 	obsSendCaptions: z.boolean().default(true),
-	obsAutoStop: z.boolean().default(true)
+	obsAutoStop: z.boolean().default(true),
+
+	browserSourceEnabled: z.boolean().default(false)
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;

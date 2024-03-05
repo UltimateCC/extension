@@ -15,10 +15,11 @@ import { applyBanwords } from "./utils/functions";
 
 interface ServerToClientEvents {
 	translateLangs: (langs: LangList) => void;
-	status: ( status: CaptionsStatus ) => void;
-	info: ( info: Info )=>void;
-	transcript: ( transcript: TranscriptData )=>void;
-	action: (action: Action)=>void;
+	status: (status: CaptionsStatus) => void;
+	info: (info: Info) => void;
+	transcript: (transcript: TranscriptData) => void;
+	captions: (captions: CaptionsData) => void;
+	action: (action: Action) => void;
 }
 
 interface ClientToServerEvents {
@@ -181,9 +182,11 @@ async function handleTranscript(socket: TypedSocket, transcript: TranscriptData)
 	keepAliveSession(socket);
 	socket.data.lastSpokenLang = transcript.lang;
 	try {
-		socket.emit('transcript', transcript);
-
 		transcript.text = applyBanwords(socket.data.config.banWords ?? [], transcript.text);
+
+		if(socket.data.config.browserSourceEnabled) {
+			io.to(`browserSource-${ socket.data.twitchId }`).emit('transcript', transcript);
+		}
 
 		// Count statistics
 		if(socket.data.stats) {
@@ -230,6 +233,9 @@ async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
 		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, (data.delay / 1000) + 1);
+		if(socket.data.config.browserSourceEnabled) {
+			io.to(`browserSource-${ socket.data.twitchId }`).emit('captions', data);
+		}
 		await sendPubsub(socket.data.twitchId, JSON.stringify(data));
 	}catch(e) {
 		if(e && typeof e === 'object' && 'statusCode' in e && typeof e.statusCode === 'number') {
@@ -246,73 +252,74 @@ export const io: TypedServer = new Server();
 
 // Before actually accepting connection: auth + try loading config
 io.use((socket, next)=>{
-	// eslint-disable-next-line -- Access session object added by express-session
-	const session = (socket.request as any).session;
 
-	if(!session.userid) {
-		logger.warn('Unauthenticated socketio connection');
-		next(new Error('not authenticated'));
-	}else{
-		socket.data.twitchId = session.userid;
+	if(typeof socket.handshake.auth.browserSource === 'string') {
 		next();
+	}else{
+		// eslint-disable-next-line -- Access session object added by express-session
+		const session = (socket.request as any).session;
+
+		if(!session.userid) {
+			logger.warn('Unauthenticated socketio connection');
+			next(new Error('not authenticated'));
+		}else{
+			socket.data.twitchId = session.userid;
+			next();
+		}
 	}
 });
 
 // When socket connected
 io.on('connect', (socket) => {
 	metrics.connectionCount.inc();
-
-	socket.data.loading = loadConfig(socket);
-	socket.data.loading.catch((e=>{
-		logger.error('Error loading user config', e);
-	}));
-
-	socket.join(`twitch-${ socket.data.twitchId }`);
-
 	socket.on('disconnect', ()=>{
-		endSession(socket);
-
 		metrics.connectionCount.dec();
 	});
 
-	socket.on('reloadConfig', ()=>{
-		if(socket.data.loading) {
-			socket.data.shouldReload = true;
-		}else{
-			socket.data.loading = loadConfig(socket);
-			socket.data.loading.catch(e=>logger.error('Error reloading config', e));
-		}
-	});
+	if(socket.handshake.auth.browserSource) {
+		socket.join(`browserSource-${socket.handshake.auth.browserSource}`);
+	}
 
-	socket.on('text', async (captions) =>{
-		// Ratelimit
-		try {
-			await textRateLimiter.consume(socket.data.twitchId);
-		}catch(e) {
-			logger.warn(`Transcript ratelimited for: ${ socket.data.twitchId }`);
-			return;
-		}
+	// Socket connections from dashboard
+	if(socket.data.twitchId) {
+		socket.join(`twitch-${ socket.data.twitchId }`);
 
-		// Check captions data format
-		const parsed = transcriptDataSchema.safeParse(captions);
-		if(parsed.success) {
-			handleTranscript(socket, parsed.data);
-		}else{
-			logger.warn(`Invalid transcript format for: ${ socket.data.twitchId } ${parsed.error.errors[0].message}`);
-		}
-	});
+		socket.data.loading = loadConfig(socket);
+		socket.data.loading.catch((e=>{
+			logger.error('Error loading user config', e);
+		}));
 
-	// Streaming speech to text
-	/*
-	socket.on('audioStart', ()=>{
-		socket.data.streamingStt?.start();
-	});
-	socket.on('audioEnd', ()=>{
-		socket.data.streamingStt?.stop();
-	});
-	socket.on('audioData', (data)=>{
-		socket.data.streamingStt?.handleData(data);
-	});*/
+		socket.on('disconnect', ()=>{
+			endSession(socket);
+		});
+
+		socket.on('reloadConfig', ()=>{
+			if(socket.data.loading) {
+				socket.data.shouldReload = true;
+			}else{
+				socket.data.loading = loadConfig(socket);
+				socket.data.loading.catch(e=>logger.error('Error reloading config', e));
+			}
+		});
+
+		socket.on('text', async (captions) =>{
+			// Ratelimit
+			try {
+				await textRateLimiter.consume(socket.data.twitchId);
+			}catch(e) {
+				logger.warn(`Transcript ratelimited for: ${ socket.data.twitchId }`);
+				return;
+			}
+
+			// Check captions data format
+			const parsed = transcriptDataSchema.safeParse(captions);
+			if(parsed.success) {
+				handleTranscript(socket, parsed.data);
+			}else{
+				logger.warn(`Invalid transcript format for: ${ socket.data.twitchId } ${parsed.error.errors[0].message}`);
+			}
+		});
+	}
 });
 
 /** Gracefully end all sessions (called at shutdown) */
