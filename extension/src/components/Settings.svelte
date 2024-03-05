@@ -2,10 +2,10 @@
 	import { lastReceivedCaptions } from "../lib/captions";
 	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
 	import LanguageSelect from "./LanguageSelect.svelte";
-    import { fade } from "svelte/transition";
-    import NumberInput from "./NumberInput.svelte";
-    import Warning from "./Warning.svelte";
-    import Chevron from "./Chevron.svelte";
+	import { fade } from "svelte/transition";
+	import NumberInput from "./NumberInput.svelte";
+	import Warning from "./Warning.svelte";
+	import Chevron from "./Chevron.svelte";
 
 	export let settingsShown = false;
 

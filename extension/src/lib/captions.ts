@@ -24,6 +24,12 @@ export const transcript = writable<Caption[][]>([]);
 
 // Last line visible (written smoothly)
 export const partialCaptions = smoothText();
+
+// Reset smooth text when language changes
+language.subscribe(()=>{
+	partialCaptions.clear();
+});
+
 // Final part of the last line visible
 let currentFinal: Caption[] = [];
 
@@ -65,17 +71,17 @@ export async function handleCaptions(data: CaptionsData) {
 		}
 	}
 
-	partialCaptions.setText(text, data.duration, ()=>{
-		
-		// Push final text to transcript
-		if(finalToPush) {
-			partialCaptions.clear();
+	// Set the text along the duration
+	await partialCaptions.setText(text, data.duration);
 
-			transcript.update((array)=>{
-				array.push(finalToPush!);
-				if(array.length > 50) array.shift();
-				return array;
-			});			
-		}
-	});
+	// Push final text to transcript
+	if(finalToPush) {
+		partialCaptions.clear();
+
+		transcript.update((array)=>{
+			array.push(finalToPush!);
+			if(array.length > 50) array.shift();
+			return array;
+		});			
+	}
 }

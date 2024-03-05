@@ -7,7 +7,6 @@ import TranslationService from '../../components/TranslationService';
 import FormResponse from '../../components/FormResponse';
 import Twitch from '../../components/Twitch';
 
-// import BannedCaptions from '../../components/BannedCaptions';
 import BrowserSource from '../../components/BrowserSource';
 
 import Footer from '../../components/Footer';

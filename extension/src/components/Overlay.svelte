@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Settings from "./Settings.svelte";
-    import { broadcasterConfig, twitchContext } from "../lib/twitch";
-    import { fade } from "svelte/transition";
-    import Captions from "./Captions.svelte";
-    import { showCaptions } from "../lib/settings";
+	import Settings from "./Settings.svelte";
+	import { broadcasterConfig, twitchContext } from "../lib/twitch";
+	import { fade } from "svelte/transition";
+	import Captions from "./Captions.svelte";
+	import { showCaptions } from "../lib/settings";
 
 	let settingsShown = false;
 	

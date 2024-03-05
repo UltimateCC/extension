@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { partialCaptions, transcript, lastReceivedCaptions } from "../lib/captions";
-    import { language } from "../lib/settings";
-    import LanguageSelect from "./LanguageSelect.svelte";
-    import Warning from "./Warning.svelte";
+	import { language } from "../lib/settings";
+	import LanguageSelect from "./LanguageSelect.svelte";
+	import Warning from "./Warning.svelte";
 
 	/** Scroll to bottom each time one of the parameters changes */
 	const autoScroll = (node: HTMLElement, parameters: any) => {

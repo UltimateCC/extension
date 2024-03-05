@@ -50,10 +50,9 @@ export function smoothText() {
 			current = '';
 			store.set(current);
 		},
-		setText: (text: string, duration: number, onEnd?: ()=>void) => {
+		setText: (text: string, duration: number) => {
 			end();
 			active = true;
-			callback = onEnd;
 			const oldLength = current.length;
 			
 			if(text.length < oldLength || !duration) {
@@ -70,6 +69,10 @@ export function smoothText() {
 				interval = duration / parts.length;
 				x = setTimeout(tick, interval);
 			}
+
+			return new Promise<void>((res) => {
+				callback = res;
+			});
 		}
 	}
 

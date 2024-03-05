@@ -1,21 +1,13 @@
 <script lang="ts">
-    import { type LangCode, lastReceivedCaptions, partialCaptions } from "../lib/captions";
+	import { type LangCode, lastReceivedCaptions, partialCaptions } from "../lib/captions";
 	import languages from "../assets/languages.json";
-    import { language } from "../lib/settings";
+	import { language } from "../lib/settings";
 
 	// Spoken language name
 	$: spokenLang = languages[$lastReceivedCaptions[0]?.lang] || $lastReceivedCaptions[0]?.lang || '';
 
 	// Selected language name
 	$: currentLangName = languages[$language as LangCode] ?? $language;
-
-	// Clear partial captions each time language changes
-	$: clearCaptions($language);
-
-	function clearCaptions(lang: string) {
-		// Reset partial captions when lang changed
-		partialCaptions.clear();
-	}
 
 </script>
 

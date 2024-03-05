@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	const url = "https://ultimatecc.net";
 	const dashboardUrl = url + "/dashboard";
