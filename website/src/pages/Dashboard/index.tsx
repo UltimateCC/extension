@@ -223,9 +223,17 @@ function Dashboard() {
                     </div>
                 </div>
 
-                <div>
+                <div className='dashboard-main-content'>
                     <DashboardTabs
-                        tabs={['Guide', 'Translation', /*'Ban words',*/ 'Twitch', /* 'OBS', */ 'HTTP', 'Browser source']}
+                        tabs={[
+                            {title: 'Guide', icon: 'book'},
+                            {title: 'Translation', icon: 'translate'},
+                            {title: 'Blocked terms', icon: 'blocked'},
+                            {title: 'Twitch', icon: 'twitch'},
+                            {title: 'OBS', icon: 'obs'},
+                            {title: 'HTTP', icon: 'internet'},
+                            {title: 'Browser source', icon: 'camera'},
+                        ]}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
@@ -253,7 +261,7 @@ function Dashboard() {
                                     ) }
                                 </div>
                             )}
-                            { currentTab === 'Ban words' && (
+                            { currentTab === 'Blocked terms' && (
                                 <BanWords
                                     banWords={config.banWords??[]}
                                     updateConfig={updateConfig}

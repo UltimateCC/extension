@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import '../../webroot/style/thanks.css';
 import api from '../../services/api';
 import { langList } from '../../services/langs';
+import Icons from '../../components/Icons';
 
 interface LiveChannel {
     id: string
@@ -83,9 +84,7 @@ function Channels() {
                                                 <h4>{channel.displayName}</h4>
                                             </div>
                                             <div className="spoken-language">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 -960 960 960">
-                                                    <path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z"/>
-                                                </svg>
+                                                <Icons name="mic" />
                                                 <p>{channel.spokenLang}</p>
                                             </div>
                                         </div>
@@ -94,11 +93,7 @@ function Channels() {
                                     </div>
                                     <div className="card-bottom">
                                         <p>{channel.viewersText}</p>
-                                        {channel.translation && (
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 -960 960 960">
-                                                <path d="m476-80 182-480h84L924-80h-84l-43-122H603L560-80h-84ZM160-200l-56-56 202-202q-35-35-63.5-80T190-640h84q20 39 40 68t48 58q33-33 68.5-92.5T484-720H40v-80h280v-80h80v80h280v80H564q-21 72-63 148t-83 116l96 98-30 82-122-125-202 201Zm468-72h144l-72-204-72 204Z"/>
-                                            </svg>
-                                        )}
+                                        {channel.translation && <Icons name="translate" />}
                                     </div>
                                 </a>
                             </div>
@@ -106,8 +101,6 @@ function Channels() {
                     </div>
                 </div>                
             ) }
-
-
         </section>
     );
 }

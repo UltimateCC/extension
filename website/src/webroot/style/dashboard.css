@@ -139,25 +139,51 @@
 }
 
 #dashboard .tab {
-    font-size: 1.5em;
+    font-size: 1em;
     font-weight: 700;
-    display: block;
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25em;
     padding: .25em .5em;
     font-family: 'Raleway', sans-serif;
-    background-color: var(--square);
+    background-color: #4C4C5A;
     color: var(--text);
     border: none;
     border-top-left-radius: .5em;
     border-top-right-radius: .5em;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+    width: 100%;
+}
+
+#dashboard .tab span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: auto;
+}
+
+#dashboard .tab svg {
+    font-size: 1.75em;
+    fill: var(--text);
+    margin-bottom: auto;
 }
 
 #dashboard .tab.active {
     color: var(--title);
+    background-color: var(--square);
+}
+
+#dashboard .tab.active svg {
+    fill: var(--title);
+}
+
+@media only screen and (max-width: 40rem) {
+    #dashboard .tab span {
+        display: none;
+    }
 }
 
 #dashboard .guide h4 {
