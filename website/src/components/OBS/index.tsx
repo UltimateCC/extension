@@ -83,6 +83,7 @@ export default function OBS({ obsIsConnected, userConfig, updateConfig }: OBSPro
                 <Alert
                     type={response.type}
                     message={response.message}
+					onReload={()=>{ setResponse(null) }}
                 />
             )}
 

@@ -217,7 +217,7 @@ strong {
     color: var(--button);
 }
 
-.close {
+.close, .reset-btn {
     color: var(--text);
     font-size: 8rem;
     background: transparent;
@@ -226,6 +226,12 @@ strong {
     width: fit-content;
     margin-left: auto;
     cursor: pointer;
+}
+
+.reset-btn {
+    font-size: 1.5em;
+    border-radius: 10px;
+    color: inherit;
 }
 
 .form-response {
@@ -263,13 +269,17 @@ strong {
     color: var(--text);
 }
 
-.form-response p {
+.form-response {
     color: var(--square);
+}
+
+.form-response svg > * {
+    fill: var(--square);
 }
 
 .form-response .close {
     font-size: 3em;
-    color: var(--square);
+    
 }
 
 .loading-img {

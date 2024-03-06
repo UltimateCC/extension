@@ -1,12 +1,15 @@
 import { useMemo } from "react";
 
+import Icons from "../Icons";
+
 interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
     message: string;
     onClose?: () => void;
+    onReload?: () => void;
 }
 
-function Alert({ type, message, onClose }: AlertProps) {
+function Alert({ type, message, onClose, onReload }: AlertProps) {
     const title = useMemo(() => {
         switch (type) {
             case 'success':
@@ -25,6 +28,9 @@ function Alert({ type, message, onClose }: AlertProps) {
             <p><strong>{title}</strong>{message}</p>
             { onClose && (  
                 <button className='close' onClick={onClose}>&times;</button>
+            )}
+            { onReload && (  
+                <button className='reset-btn' onClick={onReload}><Icons name='refresh' /></button>
             )}
         </div>
     )
