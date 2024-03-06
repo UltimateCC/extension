@@ -14,7 +14,6 @@ interface BrowserSourceProps {
 	userId: string;
 }
 
-
 function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled, updateConfig, configLoaded, userId }: BrowserSourceProps) {
 	const [url, setUrl] = useState<string>('');
     const [copied, setCopied] = useState<boolean>(false);
@@ -55,8 +54,14 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 
 	return (
 		<div className="browser-source">
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, laudantium tempora? Laudantium cum dolores nisi minima, perspiciatis, illum fuga, cupiditate praesentium reprehenderit voluptates expedita molestiae? Dolor consectetur et voluptas eaque!</p>
-			<a href={ config.github + '/wiki/Streamdeck-configuration' } target="_blank" rel="noreferrer">Read more</a>
+			<p>
+				Integrate your closed captions in your stream scenes via a browser source.
+				While this allows your subtitles to be visible on other streaming platforms or VODs,
+				viewers won't be able to customize or hide them like when using the Twitch extension.
+				<br/>
+				This method also introduces some delay especially when using translation.
+			</p>
+			<a href={ config.github + '/wiki/Browser-source' } target="_blank" rel="noreferrer">Read more</a>
             <ConfigSwitch
                 checked={browserSourceEnabled}
                 onChange={handleBrowserSourceChange}
