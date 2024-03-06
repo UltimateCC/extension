@@ -1,5 +1,5 @@
 import OBSWebSocket from "obs-websocket-js"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 
 interface ObsWebsocketParams {
@@ -16,26 +16,26 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 	const connecting = useRef<boolean>(false);
 	const shouldConnect = useRef<boolean>(false);
 
-	useEffect(()=>{
-		function connect() {
-			connecting.current = true;
-			obs.connect(url, password)
-				.then(()=>{
-					setIsConnected(true);
-				})
-				.catch(e=>{
-					console.error('Error connecting OBS websocket',e);
-					setIsConnected(false);
-					if(shouldConnect.current) {
-						connect();
-					}
-				})
-				.finally(()=>{
-					connecting.current = false;
-					shouldConnect.current = false;
-				});
-		}
+	const connect = useCallback(()=>{
+		connecting.current = true;
+		obs.connect(url, password)
+			.then(()=>{
+				setIsConnected(true);
+			})
+			.catch(e=>{
+				console.error('Error connecting OBS websocket',e);
+				setIsConnected(false);
+				if(shouldConnect.current) {
+					connect();
+				}
+			})
+			.finally(()=>{
+				connecting.current = false;
+				shouldConnect.current = false;
+			});
+	}, [password, url]);
 
+	const refresh = useCallback(()=>{
 		if(url && password && enabled) {
 			if(!connecting.current) {
 				connect();
@@ -43,6 +43,10 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 				shouldConnect.current = true;
 			}
 		}
+	}, [connect, enabled, password, url]);
+
+	useEffect(()=>{
+		refresh();
 
 		return ()=>{
 			shouldConnect.current = false;
@@ -53,10 +57,11 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 				.catch(e=>console.error('Error disconnecting OBS websocket',e));
 		}
 
-	}, [url, password, enabled]);
+	}, [connect, refresh]);
 
 	return {
-		obs: obs,
-		obsIsConnected: isConnected
+		obs,
+		isConnected,
+		refresh
 	};
 }

@@ -89,9 +89,8 @@ function Dashboard() {
         return censor(text, config.banWords??[]);
     }, [censor, text, config.banWords]);
 
-
     // OBS websocket
-    const { obs, obsIsConnected } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
+    const { obs, isConnected: obsIsConnected, refresh: resfreshObs } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
     useObsSendCaptions({obs, text: censoredText, enabled: (config.obsSendCaptions??true)});
 
     // Function to set spoken lang, and save it
