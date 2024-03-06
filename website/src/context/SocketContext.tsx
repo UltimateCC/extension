@@ -61,8 +61,6 @@ export interface SocketContextType {
     socket: TypedSocket,
     info?: Info
     captionsStatus?: CaptionsStatus
-    recognized?: TranscriptAlt
-    recognizing?: TranscriptAlt
     translateLangs: LangList
     reloadConfig: () => void
     handleText: (transcript: TranscriptData ) => void

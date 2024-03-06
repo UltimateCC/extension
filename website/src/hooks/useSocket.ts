@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { CaptionsStatus, Info, LangList, TranscriptAlt, TranscriptData, TypedSocket } from "../context/SocketContext";
+import { CaptionsStatus, Info, LangList, TranscriptData, TypedSocket } from "../context/SocketContext";
 
 const socket: TypedSocket = io({autoConnect: false});
 
@@ -8,8 +8,6 @@ export function useSocket(connect: boolean) {
     const [info, setInfo] = useState<Info>();
     const [captionsStatus, setCaptionsStatus] = useState<CaptionsStatus>();
     const [translateLangs, setTranslateLangs] = useState<LangList>([]);
-    // Recognized text
-    const [recognized, setRecognized] = useState<TranscriptAlt>();
 
     useEffect(() => {
         function handleConnect() {
@@ -20,10 +18,6 @@ export function useSocket(connect: boolean) {
             console.error('socket.io error', error);
             setInfo({ type: 'warn', message: 'Connection error, you may need to refresh the page' });
         }
-
-        function handleTranscript(transcript: TranscriptData) {
-            setRecognized({ lang: transcript.lang, text: transcript.text });
-        }
         
         if(connect) {
             socket.connect();
@@ -33,7 +27,6 @@ export function useSocket(connect: boolean) {
             socket.on('info', setInfo);
             socket.on('status', setCaptionsStatus);
             socket.on('translateLangs', setTranslateLangs);
-            socket.on('transcript', handleTranscript);
 
             return () => {
                 socket.off('connect', handleConnect);
@@ -41,7 +34,6 @@ export function useSocket(connect: boolean) {
                 socket.off('info', setInfo);
                 socket.off('status', setCaptionsStatus);
                 socket.off('translateLangs', setTranslateLangs);
-                socket.off('transcript', handleTranscript);
                 socket.disconnect();
             }            
         }
@@ -82,7 +74,6 @@ export function useSocket(connect: boolean) {
             info,
             captionsStatus,
             translateLangs,
-            recognized,
             reloadConfig,
             handleText,
     };
