@@ -278,6 +278,7 @@ function Dashboard() {
                                     userConfig={config}
                                     updateConfig={updateConfig}
                                     obsIsConnected={obsIsConnected}
+                                    resfreshObs={resfreshObs}
                                 />)}
                             { currentTab === 'HTTP' && (<Webhooks/>) }
                             { currentTab === 'Browser source' && (

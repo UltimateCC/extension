@@ -15,10 +15,11 @@ interface OBSConfig {
 interface OBSProps {
 	obsIsConnected: boolean
     userConfig: OBSConfig
+	resfreshObs: () => void
     updateConfig: (config: Partial<OBSConfig>) => Promise<void>
 }
 
-export default function OBS({ obsIsConnected, userConfig, updateConfig }: OBSProps) {
+export default function OBS({ obsIsConnected, userConfig, updateConfig, resfreshObs }: OBSProps) {
 	const portInput = useRef<HTMLInputElement>(null);
 	const passwordInput = useRef<HTMLInputElement>(null);
 
@@ -83,7 +84,7 @@ export default function OBS({ obsIsConnected, userConfig, updateConfig }: OBSPro
                 <Alert
                     type={response.type}
                     message={response.message}
-					onReload={()=>{ setResponse(null) }}
+					onReload={resfreshObs}
                 />
             )}
 
