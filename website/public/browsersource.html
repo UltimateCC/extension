@@ -11,7 +11,8 @@
         <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
         <script>
             const PAGE_TITLE = "Ultimate Closed Captions - Widget";
-        
+            const LINE_HEIGHT = 1.25;
+
             function init() {
                 // Get params from url
                 const urlParams = new URLSearchParams(window.location.search);
@@ -24,47 +25,11 @@
                 const fontColor = urlParams.get('color');
                 const bgColor = urlParams.get('bg');
         
-                let lineHeight = "";
-                switch(fontFamily) {
-                    case "Arial":
-                        lineHeight = "1.1";
-                        break;
-        
-                    case "Calibri":
-                        lineHeight = "1.2";
-                        break;
-        
-                    case "Courier New":
-                        lineHeight = "1";
-                        break;
-        
-                    case "OpenDyslexic":
-                        lineHeight = "1.5";
-                        break;
-                    
-                    case "Roboto":
-                        lineHeight = "1.2";
-                        break;
-        
-                    case "Times New Roman":
-                        lineHeight = "1.1";
-                        break;
-        
-                    case "Verdana":
-                        lineHeight = "1.1";
-                        break;
-        
-                    default:
-                        lineHeight = "1";
-                        break;
-                }
-        
                 // Apply styling settings
                 const root = document.documentElement;
                 root.style.setProperty('--font-family', fontFamily);
                 root.style.setProperty('--text-color', fontColor);
                 root.style.setProperty('--background-color', bgColor);
-                root.style.setProperty('--line-height', lineHeight + "em");
         
                 // Get the font-size in px
                 const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "64";
@@ -73,15 +38,14 @@
                 // Get height of body
                 function setClampHeight() {
                     const captionContainer = document.getElementById('caption-container');
-                    const oneLineHeight = fontSizeInPx * lineHeight;
-                    const numberOfLines = Math.max(parseInt((root.offsetHeight - fontSizeInPx) / oneLineHeight - 1), 1);
-                    captionContainer.style.height = (numberOfLines * oneLineHeight) + "px";
-                    console.log(fontSizeInPx, oneLineHeight)
+                    const hidden = document.getElementById('hidden');
+                    const oneLineHeight = LINE_HEIGHT * fontSizeInPx;
+                    const numberOfLines = Math.max(Math.floor(root.offsetHeight / oneLineHeight), 1);
+                    captionContainer.style.height = numberOfLines * LINE_HEIGHT + "em";
                 }
         
                 setClampHeight();
                 window.addEventListener('resize', setClampHeight);
-        
         
                 // == Get and display captions ==
         
@@ -98,9 +62,7 @@
                     
                     if (isFinal) {
                         // If it's the final caption, we will replace the last span with the final content and add a new one
-                        if (captionContainer.childElementCount > 50) {
-                            captionContainer.removeChild(captionContainer.firstChild);
-                        }
+                        if (captionContainer.childElementCount > 50) captionContainer.removeChild(captionContainer.firstChild);
                         captionContainer.lastChild.innerHTML = content + ' ';
                         captionContainer.appendChild(document.createElement('span'));
                     } else {
@@ -123,6 +85,8 @@
                         displayCaption(data.text, data.lineEnd, data.final);
                     });
                 }
+
+                
             }
         </script>
         <style>
@@ -137,7 +101,7 @@
                 max-width: 100vw;
                 height: 100vh;
                 overflow: hidden;
-                
+
                 font-size: 4em;
             }
 
@@ -145,17 +109,18 @@
                 display: flex;
                 flex-direction: column-reverse;
                 overflow: hidden;
-                margin: 0.5em;
+                font-size: 1em;
             }
         
             p {
-                line-height: var(--line-height);
+                line-height: 1.25em;
+                font-size: 1em;
+                background-color: var(--background-color);
             }
         
             span {
                 font-family: var(--font-family);
                 color: var(--text-color);
-                background-color: var(--background-color);
             }
         
             @font-face {
