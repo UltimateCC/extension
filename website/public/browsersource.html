@@ -11,33 +11,33 @@
         <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
         <script>
             const PAGE_TITLE = "Ultimate Closed Captions - Widget";
-
+        
             function init() {
                 // Get params from url
                 const urlParams = new URLSearchParams(window.location.search);
                 
                 const userId = urlParams.get('userId');
                 const lang = urlParams.get('lang');
-
+        
                 // == Styling ==
                 const fontFamily = urlParams.get('font');
                 const fontColor = urlParams.get('color');
                 const bgColor = urlParams.get('bg');
-
+        
                 let lineHeight = "";
                 switch(fontFamily) {
                     case "Arial":
                         lineHeight = "1.1";
                         break;
-
+        
                     case "Calibri":
                         lineHeight = "1.2";
                         break;
-
+        
                     case "Courier New":
-                        lineHeight = "1.1";
+                        lineHeight = "1";
                         break;
-
+        
                     case "OpenDyslexic":
                         lineHeight = "1.5";
                         break;
@@ -45,50 +45,50 @@
                     case "Roboto":
                         lineHeight = "1.2";
                         break;
-
+        
                     case "Times New Roman":
                         lineHeight = "1.1";
                         break;
-
+        
                     case "Verdana":
-                        lineHeight = "1.2";
+                        lineHeight = "1.1";
                         break;
-
+        
                     default:
                         lineHeight = "1";
                         break;
                 }
-
+        
                 // Apply styling settings
                 const root = document.documentElement;
                 root.style.setProperty('--font-family', fontFamily);
                 root.style.setProperty('--text-color', fontColor);
                 root.style.setProperty('--background-color', bgColor);
                 root.style.setProperty('--line-height', lineHeight + "em");
-
+        
                 // Get the font-size in px
                 const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "32";
                 const fontSizeInPx = parseInt(fontSizeWithUnit);
-
+        
                 // Get height of body
                 function setClampHeight() {
                     const oneLineHeight = fontSizeInPx * lineHeight;
-                    const numberOfLines = Math.max(parseInt(document.documentElement.scrollHeight / oneLineHeight), 1);
-                    document.body.style.height = (numberOfLines * oneLineHeight) + "px";
+                    const numberOfLines = Math.max(parseInt(document.documentElement.offsetHeight / oneLineHeight), 1);
+                    document.getElementById("caption-container").style.height = (numberOfLines * oneLineHeight) + "px";
                 }
-
+        
                 setClampHeight();
                 window.addEventListener('resize', setClampHeight);
-
-
+        
+        
                 // == Get and display captions ==
-
+        
                 // Connect to the server with the user id as auth to get the captions corresponding to the user
                 const socket = io({ auth: { browserSource: userId } });
-
+        
                 const captionContainer = document.getElementById('caption');
                 captionContainer.appendChild(document.createElement('span')); // Initial span
-
+        
                 function displayCaption(content, isLineEnd, isFinal, lang = undefined) {
                     if (document.title === PAGE_TITLE) document.title = PAGE_TITLE + ` (${lang ?? "spoken language"})`;
                     
@@ -106,13 +106,13 @@
                         captionContainer.lastChild.innerText += content + ' ';
                     }
                 }
-
+        
                 if(lang) {
                     // If a lang is specified, we will get the captions for this lang
                     socket.on('captions', (data) => {
                         // Get the caption corresponding to the lang and fallback to the first one
                         const caption = data.captions.find(caption => caption.lang === lang) ?? data.captions[0];
-
+        
                         displayCaption(caption.text, data.lineEnd, data.final, caption.lang)
                     });
                 } else {
@@ -123,11 +123,6 @@
                 }
             }
         </script>
-    </head>
-    <body onload="init()">
-        <p id="caption">
-            <!-- Here we will have multiple span with the text -->
-        </p>
         <style>
             * {
                 margin: 0;
@@ -138,17 +133,21 @@
             body {
                 display: flex;
                 flex-direction: column-reverse;
-                
-                width: 100%;
-                max-height: 100%;
-                overflow: hidden;
+
+                width: 100vw;
+                height: 100vh;
                 
                 font-size: 2em;
+            }
+
+            div {
+                display: flex;
+                flex-direction: column-reverse;
+                overflow: hidden;
             }
         
             p {
                 line-height: var(--line-height);
-                margin-bottom: 0.1em;
             }
         
             span {
@@ -172,5 +171,12 @@
                 src: url('fonts/Roboto-Regular.ttf') format('truetype');
             }
         </style>
+    </head>
+    <body onload="init()">
+        <div id="caption-container">
+            <p id="caption">
+                <!-- Here we will have multiple span with the text -->
+            </p>
+        </div>
     </body>
 </html>
