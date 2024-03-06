@@ -37,11 +37,12 @@
         
                 // Get height of body
                 function setClampHeight() {
-                    const captionContainer = document.getElementById('caption-container');
                     const hidden = document.getElementById('hidden');
                     const oneLineHeight = LINE_HEIGHT * fontSizeInPx;
-                    const numberOfLines = Math.max(Math.floor(root.offsetHeight / oneLineHeight), 1);
-                    captionContainer.style.height = numberOfLines * LINE_HEIGHT + "em";
+                    const numberOfLines = Math.max(Math.floor(root.offsetHeight / oneLineHeight) - 1, 1);
+
+                    const captionContent = document.getElementById('caption-content');
+                    captionContent.style.maxHeight = (numberOfLines * LINE_HEIGHT) + "em";
                 }
         
                 setClampHeight();
@@ -52,22 +53,26 @@
                 // Connect to the server with the user id as auth to get the captions corresponding to the user
                 const socket = io({ auth: { browserSource: userId } });
         
-                const captionContainer = document.getElementById('caption');
-                captionContainer.appendChild(document.createElement('span')); // Initial span
+                const captionText = document.getElementById('caption');
+                captionText.appendChild(document.createElement('span')); // Initial span
         
                 function displayCaption(content, isLineEnd, isFinal, lang = undefined) {
-                    if (document.title === PAGE_TITLE) document.title = PAGE_TITLE + ` (${lang ?? "spoken language"})`;
+                    if (document.title === PAGE_TITLE) {
+                        document.title = PAGE_TITLE + ` (${lang ?? "spoken language"})`;
+                        const captionContainer = document.getElementById('caption-container');
+                        captionContainer.style.display = "block";
+                    }
                     
                     if (isLineEnd) content += '<br>';
                     
                     if (isFinal) {
                         // If it's the final caption, we will replace the last span with the final content and add a new one
-                        if (captionContainer.childElementCount > 50) captionContainer.removeChild(captionContainer.firstChild);
-                        captionContainer.lastChild.innerHTML = content + ' ';
-                        captionContainer.appendChild(document.createElement('span'));
+                        if (captionText.childElementCount > 50) captionText.removeChild(captionText.firstChild);
+                        captionText.lastChild.innerHTML = content + ' ';
+                        captionText.appendChild(document.createElement('span'));
                     } else {
                         // If it's the partial caption, we will add the content to the last span
-                        captionContainer.lastChild.innerText = content;
+                        captionText.lastChild.innerText = content;
                     }
                 }
         
@@ -105,21 +110,25 @@
                 font-size: 64px;
             }
 
-            div {
+            #caption-container {
+                padding: 0.25em 0.5em;
+                background-color: var(--background-color);
+                border-radius: 0.1em;
+                margin: 0.25em;
+            }
+        
+            #caption-content {
                 display: flex;
                 flex-direction: column-reverse;
                 overflow: hidden;
                 font-size: 1em;
             }
-        
+
             p {
                 line-height: 1.25em;
                 font-size: 1em;
                 font-family: var(--font-family);
                 color: var(--text-color);
-                padding: 0.25em 0.5em;
-                background-color: var(--background-color);
-                border-radius: 0.1em;
             }
         
             @font-face {
@@ -139,10 +148,12 @@
         </style>
     </head>
     <body onload="init()">
-        <div id="caption-container">
-            <p id="caption">
-                <!-- Here we will have multiple span with the text -->
-            </p>
+        <div id="caption-container" style="display: none;">
+            <div id="caption-content">
+                <p id="caption">
+                    <!-- Here we will have multiple span with the text -->
+                </p>
+            </div>
         </div>
     </body>
 </html>
