@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from "react";
 import loadingImg from '../../assets/loading.svg';
 
-import FormResponse from "../FormResponse";
+import Alert from "../Alert/index.tsx";
 
 import { SocketContext } from '../../context/SocketContext.tsx';
 
@@ -85,9 +85,9 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
 
     return (
         <div className="ban-words">
-             {response && (
-                <FormResponse
-                    isSucceed={response.isSuccess}
+            {response && (
+                <Alert
+                    type={(response.isSuccess) ? 'success' : 'error'}
                     message={response.message}
                     onClose={closeResponse}
                 />

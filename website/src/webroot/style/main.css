@@ -248,6 +248,16 @@ strong {
     border-color: #FE3E3E;
 }
 
+.form-response.warning {
+    background-color: #F39C12;
+    border-color: #D68910;
+}
+
+.form-response.info {
+    background-color: #3498DB;
+    border-color: #2E86C1;
+}
+
 .form-response strong {
     margin-right: 0.3em;
     color: var(--text);

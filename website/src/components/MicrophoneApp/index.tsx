@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { speechLanguages } from './speechLanguages';
 import { SocketContext } from '../../context/SocketContext';
 
-import FormResponse from '../FormResponse';
+import Alert from '../Alert';
 
 interface MicrophoneAppProps {
     spokenLang?: string
@@ -47,8 +47,8 @@ function MicrophoneApp({ spokenLang, setSpokenLang, setListening, listening, con
     return (
         <>
             {response && (
-                <FormResponse
-                    isSucceed={response.isSuccess}
+                <Alert
+                    type={(response.isSuccess) ? 'success' : 'error'}
                     message={response.message}
                     onClose={closeResponse}
                 />

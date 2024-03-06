@@ -422,13 +422,50 @@
     text-align: left;
 }
 
+#dashboard .twitch .twitch-switch-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+#dashboard .twitch .custom-delay {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#dashboard .twitch .custom-delay-input {
+    margin-top: 1em;
+}
+
+#dashboard .twitch .custom-delay-input label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+}
+
+#dashboard .twitch .custom-delay-input input {
+    display: block;
+    height: 2.25em;
+}
+
 #dashboard .obs {
     text-align: left;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 #dashboard .obs p {
     text-align: center;
+}
+
+#dashboard .obs .danger-btn {
+    padding: 1em 2em;
+    margin: 1em auto;
+    width: fit-content;
 }
 
 #dashboard .obs .url {
@@ -443,20 +480,6 @@
 }
 
 #dashboard .obs .url input {
-    display: block;
-    height: 2.25em;
-    width: 100%;
-}
-
-#dashboard .obs .customDelay {
-    margin-bottom: 3em;
-}
-
-#dashboard .obs .customDelay label {
-    min-width: 0;
-}
-
-#dashboard .obs .customDelay input {
     display: block;
     height: 2.25em;
     width: 100%;

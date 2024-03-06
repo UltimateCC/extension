@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 
 import api from '../../services/api';
 
-import FormResponse from '../FormResponse';
+import Alert from '../Alert';
 import DelayedDisplay from '../DelayedDisplay';
 
 import { SocketContext } from '../../context/SocketContext';
@@ -83,8 +83,8 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
     if(translateService && !isEditing) return (
         <>
             {response && (
-                <FormResponse
-                    isSucceed={response.isSuccess}
+                <Alert
+                    type={(response.isSuccess) ? 'success' : 'error'}
                     message={response.message}
                     onClose={closeResponse}
                 />
@@ -108,8 +108,8 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
             <form className='api-form'>
                 <p>Warning ! When using your own API keys, you are responsible for setting proper limits to avoid any unexpected billing</p>
                 {response && (
-                    <FormResponse
-                        isSucceed={response.isSuccess}
+                    <Alert
+                        type={(response.isSuccess) ? 'success' : 'error'}
                         message={response.message}
                         onClose={closeResponse}
                     />

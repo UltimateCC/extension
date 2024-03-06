@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import FormResponse from '../FormResponse';
+import Alert from '../Alert/index.tsx';
 import { LangList, SocketContext } from '../../context/SocketContext.tsx';
 
 interface LanguageOutSelectorProps {
@@ -151,8 +151,8 @@ export default function LanguageOutSelector({ selectedLanguageCode, updateConfig
     return (
         <>
             {response && (
-                <FormResponse
-                    isSucceed={response.isSuccess}
+                <Alert
+                    type={(response.isSuccess) ? 'success' : 'error'}
                     message={response.message}
                     onClose={closeResponse}
                 />

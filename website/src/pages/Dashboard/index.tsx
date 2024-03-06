@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import LanguageOutSelector from '../../components/LanguageOutSelector';
 import MicrophoneApp from '../../components/MicrophoneApp';
 import TranslationService from '../../components/TranslationService';
-import FormResponse from '../../components/FormResponse';
+import Alert from '../../components/Alert';
 import Twitch from '../../components/Twitch';
 
 import BrowserSource from '../../components/BrowserSource';
@@ -60,7 +60,7 @@ function Dashboard() {
     // Current dashboard state
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
-    const [response, setResponse] = useState<{ isSuccess: boolean; message: string; hideRestOfPage?: boolean; } | null>(null);
+    const [response, setResponse] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string; hideRestOfPage?: boolean; } | null>(null);
     
     // Selected settings tab
     const [currentTab, setCurrentTab] = useState<string>('Guide');
@@ -91,7 +91,7 @@ function Dashboard() {
 
 
     // OBS websocket
-    const { obs } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
+    const { obs, obsIsConnected } = useObsWebsocket({url:'ws://127.0.0.1:'+ (config.obsPort??4455), password: config.obsPassword, enabled: config.obsEnabled});
     useObsSendCaptions({obs, text: censoredText, enabled: (config.obsSendCaptions??true)});
 
     // Function to set spoken lang, and save it
@@ -104,7 +104,7 @@ function Dashboard() {
         })
         .catch((error) => {
             console.error('Error updating spoken language', error);
-            setResponse({ isSuccess: false, message: 'An error occurred while saving your spoken language' });
+            setResponse({ type: "error", message: 'An error occurred while saving your spoken language' });
         });
     }, [config.lastSpokenLang, config.spokenLang, updateConfig]);
 
@@ -124,17 +124,17 @@ function Dashboard() {
             setProfilePicture(user.img);
         }
         if(error) {
-            setResponse({ isSuccess: false, message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
+            setResponse({ type: "error", message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
         }
         if(socketCtx.captionsStatus?.twitch === false) {
-            setResponse({ isSuccess: false, message: "The Twitch extension is not installed on your channel." });
+            setResponse({ type: "warning", message: "The Twitch extension is not installed on your channel." });
         }
         if(user?.connected) {
             loadConfig()
                 .then(()=>setConfigLoaded(true))
                 .catch((e)=>{
                     console.error('Error loading user config', e);
-                    setResponse({ isSuccess: false, message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
+                    setResponse({ type: "error", message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
                 });
         }
     }, [ user, error, socketCtx.captionsStatus, loadConfig ]);
@@ -172,8 +172,8 @@ function Dashboard() {
 
     if(response?.hideRestOfPage) return (
         <div className="theme-box padtop">
-            <FormResponse
-                isSucceed={response.isSuccess}
+            <Alert
+                type={response.type}
                 message={response.message}
                 onClose={closeResponse}
             />
@@ -188,8 +188,8 @@ function Dashboard() {
     return (
         <SocketContext.Provider value={socketCtx}>
             {response && (
-                <FormResponse
-                    isSucceed={response.isSuccess}
+                <Alert
+                    type={response.type}
                     message={response.message}
                     onClose={closeResponse}
                 />
@@ -270,6 +270,7 @@ function Dashboard() {
                                 />)}
                             { currentTab === 'Twitch' && (
                                 <Twitch
+                                    customDelayConfig={config.customDelay ?? 0}
                                     twitchAutoStop={config.twitchAutoStop ?? true}
                                     updateConfig={updateConfig}
                                 />)}
@@ -277,6 +278,7 @@ function Dashboard() {
                                 <OBS
                                     userConfig={config}
                                     updateConfig={updateConfig}
+                                    obsIsConnected={obsIsConnected}
                                 />)}
                             { currentTab === 'HTTP' && (<Webhooks/>) }
                             { currentTab === 'Browser source' && (
