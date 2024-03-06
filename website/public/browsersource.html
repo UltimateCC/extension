@@ -67,14 +67,16 @@
                 root.style.setProperty('--line-height', lineHeight + "em");
         
                 // Get the font-size in px
-                const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "32";
+                const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "64";
                 const fontSizeInPx = parseInt(fontSizeWithUnit);
         
                 // Get height of body
                 function setClampHeight() {
+                    const captionContainer = document.getElementById('caption-container');
                     const oneLineHeight = fontSizeInPx * lineHeight;
-                    const numberOfLines = Math.max(parseInt(document.documentElement.offsetHeight / oneLineHeight), 1);
-                    document.getElementById("caption-container").style.height = (numberOfLines * oneLineHeight) + "px";
+                    const numberOfLines = Math.max(parseInt((root.offsetHeight - fontSizeInPx) / oneLineHeight - 1), 1);
+                    captionContainer.style.height = (numberOfLines * oneLineHeight) + "px";
+                    console.log(fontSizeInPx, oneLineHeight)
                 }
         
                 setClampHeight();
@@ -103,7 +105,7 @@
                         captionContainer.appendChild(document.createElement('span'));
                     } else {
                         // If it's the partial caption, we will add the content to the last span
-                        captionContainer.lastChild.innerText += content + ' ';
+                        captionContainer.lastChild.innerText = content;
                     }
                 }
         
@@ -131,19 +133,19 @@
             }
         
             body {
-                display: flex;
-                flex-direction: column-reverse;
-
                 width: 100vw;
+                max-width: 100vw;
                 height: 100vh;
+                overflow: hidden;
                 
-                font-size: 2em;
+                font-size: 4em;
             }
 
             div {
                 display: flex;
                 flex-direction: column-reverse;
                 overflow: hidden;
+                margin: 0.5em;
             }
         
             p {
