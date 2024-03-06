@@ -574,6 +574,16 @@
     width: 100%;
     height: 20em;
     border-radius: 1em;
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#dashboard .browser-source .optional-styling .preview .preview-content #caption-container {
+    padding: 0.25em 0.5em;
+    border-radius: 0.1em;
+    margin: 0.25em;
+    text-align: left;
 }
 
 #dashboard .browser-source select option[value="Arial"] {

@@ -18,7 +18,6 @@ interface BrowserSourceProps {
 function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled, updateConfig, configLoaded, userId }: BrowserSourceProps) {
 	const [url, setUrl] = useState<string>('');
     const [copied, setCopied] = useState<boolean>(false);
-	const [lineHeight, setLineHeight] = useState<string>("1em");
 
 	const [fontFamily, setFontFamily] = useState<string>('Arial');
 	const [fontColor, setFontColor] = useState<string>('#E0E0E0');
@@ -50,43 +49,6 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 		setUrl(url.toString());
 	}, [fontFamily, fontColor, bgColor, browserSrcLang, userId]);
 
-	function changeFontStyling(newFont: string) {
-		setFontFamily(newFont);
-		switch(newFont) {
-			case "Arial":
-				setLineHeight("1.1em");
-				break;
-
-			case "Calibri":
-				setLineHeight("1.2em");
-				break;
-
-			case "Courier New":
-				setLineHeight("1em");
-				break;
-
-			case "OpenDyslexic":
-				setLineHeight("1.5em");
-				break;
-			
-			case "Roboto":
-				setLineHeight("1.2em");
-				break;
-
-			case "Times New Roman":
-				setLineHeight("1.1em");
-				break;
-
-			case "Verdana":
-				setLineHeight("1.1em");
-				break;
-
-			default:
-				setLineHeight("1em");
-				break;
-		}
-	}
-
 	if(!configLoaded || userId === "" || (browserSourceEnabled && !url)) {
 		return (<img src={loadingImg} alt="loading" className="loading-img" />);
 	}
@@ -117,7 +79,7 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 
 								<label>
 									Select font
-									<select className="theme-select" value={fontFamily} onChange={e=>changeFontStyling(e.target.value)}>
+									<select className="theme-select" value={fontFamily} onChange={e=>setFontFamily(e.target.value)}>
 										<option value="Arial">Arial</option>
 										<option value="Calibri">Calibri</option>
 										<option value="Courier New">Courier New</option>
@@ -142,9 +104,13 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 						<div className="preview">
 							<h4>Preview</h4>
 							<div className="preview-content">
-								<p style={{lineHeight}}>
-									<span style={{fontFamily, color: fontColor, backgroundColor: bgColor}}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, error ipsam nemo suscipit quidem officiis magni quod dolore atque, ullam cupiditate eligendi similique dolorum porro? Provident voluptas laborum nulla atque.</span>
-								</p>
+								<div id="caption-container" style={{backgroundColor: bgColor}}>
+									<div id="caption-content">
+										<p id="caption" style={{fontFamily, color: fontColor}}>
+											<span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, error ipsam nemo suscipit quidem officiis magni quod dolore atque, ullam cupiditate eligendi similique dolorum porro? Provident voluptas laborum nulla atque.</span>
+										</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
