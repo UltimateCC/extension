@@ -502,9 +502,8 @@
 }
 
 #dashboard .browser-source p.url-preview {
-    font-size: 1.25em;
     width: 70%;
-    word-wrap: break-word;
+    word-break: break-all;
     text-align: left;
 }
 
