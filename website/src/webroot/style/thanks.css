@@ -35,7 +35,7 @@
 
 #thanks .thanks-container ul.main {
     width: 100%;
-    padding: 1em 2em;
+    padding: 1em 2em 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -80,6 +80,9 @@
 #thanks .thanks-container .thanks-card h4 {
     font-size: 1.25em;
     line-height: 1em;
+    height: 2em;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 #thanks .thanks-container .thanks-card p {
@@ -92,7 +95,11 @@
 
 #thanks .thanks-container > p.others {
     font-size: 1.25em;
-    font-weight: 600;
+    margin-top: 2em;
+}
+
+#thanks .thanks-container > p.others .other-contributors {
+    font-weight: bold;
 }
 
 #thanks .thanks-container > p {

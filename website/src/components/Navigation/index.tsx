@@ -67,11 +67,14 @@ function Navigation({ logo } : { logo: string }) {
                     <a href={config.twitch} target='_blank' rel='noreferrer'>
                         <Icons name='twitch' />
                     </a>
+                    <a href={config.discord} target='_blank' rel='noreferrer'>
+                        <Icons name='discord' />
+                    </a>
                     <a href={config.github} target='_blank' rel='noreferrer'>
                         <Icons name='github' />
                     </a>
-                    <a href={config.discord} target='_blank' rel='noreferrer'>
-                        <Icons name='discord' />
+                    <a href={config.kofi} target='_blank' rel='noreferrer'>
+                        <Icons name='kofi' />
                     </a>
                 </div>
             </div>

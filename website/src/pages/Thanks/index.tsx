@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ThanksCard from '../../components/ThanksCard';
+import Kofi from '../../components/Kofi';
 
 import '../../webroot/style/channels.css';
 import api from '../../services/api';
@@ -41,15 +42,17 @@ function Thanks() {
                     ))}
                 </ul>
 
+                <Kofi />
+
                 <p className="others">
-                    {thanksData?.others.map((member) => (
-                        <span key={member}>
-                            {member}
-                            {member !== thanksData.others[thanksData.others.length - 1] && ", "}
-                        </span>
-                    ))}
+                    <span>Special thanks to </span>
+                    <span className='other-contributors'>
+                        {thanksData?.others.map((member) => (
+                            member !== thanksData.others[thanksData.others.length - 1] ? `${member}, ` : member
+                        ))}
+                    </span>
                 </p>
-                <p>Thanks to everyone who helped us !</p>
+                <p>And everyone who helped us !</p>
                 <p>Thanks to <b>aypierre</b> and <b>Vartac</b> for the first tests in real conditions !</p>
             </div>
         </section>
