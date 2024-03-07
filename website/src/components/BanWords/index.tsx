@@ -85,7 +85,9 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
 
     return (
         <div className="ban-words">
-            <p className="ban-explication">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero quam eveniet nihil ut numquam? Soluta et libero labore sequi nihil, quisquam, eaque officiis similique, tenetur eligendi doloremque nisi architecto itaque?</p>
+            <p className="ban-explication">
+                Censor specific words that you don't want to appear in your streams. The censoring is applied before and after translation.
+            </p>
 
             {response && (
                 <Alert
