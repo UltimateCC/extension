@@ -112,7 +112,11 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 								<div id="caption-container" style={{backgroundColor: bgColor}}>
 									<div id="caption-content">
 										<p id="caption" style={{fontFamily, color: fontColor}}>
-											<span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, error ipsam nemo suscipit quidem officiis magni quod dolore atque, ullam cupiditate eligendi similique dolorum porro? Provident voluptas laborum nulla atque.</span>
+											<span>
+												Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+												Dicta, error ipsam nemo suscipit quidem officiis 
+												magni quod dolore atque
+											</span>
 										</p>
 									</div>
 								</div>

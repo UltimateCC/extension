@@ -77,6 +77,13 @@ function Icons({ name }: { name: string }) {
                 </svg>
             );
 
+        case 'chevron':
+            return (
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"  viewBox="0 -960 960 960">
+                    <path d="M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z"/>
+                </svg>
+            );
+
         default:
             return null;
     }
