@@ -35,8 +35,8 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
         const newWord = addWordInputRef.current?.value.toLowerCase();
         if (!newWord) return;
 
-        if(banWords.length >= 20) {
-            setResponse({ isSuccess: false, message: 'Max 20 words' });
+        if(banWords.length >= 100) {
+            setResponse({ isSuccess: false, message: 'Max 100 words' });
             return;
         }
 
@@ -85,6 +85,8 @@ function BanWords({ banWords, updateConfig, configLoaded }: BanWordsProps) {
 
     return (
         <div className="ban-words">
+            <p className="ban-explication">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero quam eveniet nihil ut numquam? Soluta et libero labore sequi nihil, quisquam, eaque officiis similique, tenetur eligendi doloremque nisi architecto itaque?</p>
+
             {response && (
                 <Alert
                     type={(response.isSuccess) ? 'success' : 'error'}

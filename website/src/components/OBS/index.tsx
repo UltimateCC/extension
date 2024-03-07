@@ -55,16 +55,18 @@ export default function OBS({ obsIsConnected, userConfig, updateConfig, resfresh
 			newConfig.obsPassword = obsPassword;
 			update = true;
 		}
-		if(update) {
-			newConfig.obsEnabled = true;
 
-			updateConfig(newConfig)
-			.catch(err => {
-				console.error('Error updating config', err);
-			});
-		} else {
-			setResponse({ type: "error", message: 'Invalid port or password' });
-		}
+		if(!update) return setResponse({ type: "error", message: 'Invalid port or password' });
+
+		newConfig.obsEnabled = true;
+
+		updateConfig(newConfig)
+		.then(()=>{
+			resfreshObs();
+		})
+		.catch(err => {
+			console.error('Error updating config', err);
+		});
 	}
 
 	const removeOBSSettings = () => {

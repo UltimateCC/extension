@@ -300,6 +300,10 @@
     padding: 0 3em;
 }
 
+#dashboard .ban-words p.ban-explication {
+    margin-bottom: 1.5em;
+}
+
 #dashboard .ban-words .ban-words-container {
     border-radius: 10px;
     background: var(--text);
@@ -583,6 +587,10 @@
     border-radius: 0.1em;
     margin: 0.25em;
     text-align: left;
+}
+
+#dashboard .browser-source .optional-styling .preview .preview-content #caption {
+    line-height: 1.25em;
 }
 
 #dashboard .browser-source select option[value="Arial"] {

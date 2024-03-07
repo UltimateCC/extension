@@ -84,7 +84,7 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 
 								<label>
 									Select font
-									<select className="theme-select" value={fontFamily} onChange={e=>setFontFamily(e.target.value)}>
+									<select className="theme-select" value={fontFamily} onChange={e=>{setFontFamily(e.target.value); setCopied(false)}} >
 										<option value="Arial">Arial</option>
 										<option value="Calibri">Calibri</option>
 										<option value="Courier New">Courier New</option>
@@ -97,12 +97,12 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 
 								<label>
 									Font color
-									<input className="theme-color" type="color" value={fontColor} onChange={e=>setFontColor(e.target.value)} />
+									<input className="theme-color" type="color" value={fontColor} onChange={e=>{setFontColor(e.target.value); setCopied(false)}} />
 								</label>
 
 								<label>
 									Background of text
-									<input className="theme-color" type="color" value={bgColor} onChange={e=>setBgColor(e.target.value)} />
+									<input className="theme-color" type="color" value={bgColor} onChange={e=>{setBgColor(e.target.value); setCopied(false)}} />
 								</label>
 							</div>
 						</div>

@@ -228,11 +228,11 @@ function Dashboard() {
                         tabs={[
                             {title: 'Guide', icon: 'book'},
                             {title: 'Translation', icon: 'translate'},
-                            /*{title: 'Blocked terms', icon: 'blocked'},*/
+                            {title: 'Blocked terms', icon: 'blocked'},
                             {title: 'Twitch', icon: 'twitch'},
-                            /*{title: 'OBS', icon: 'obs'},*/
+                            {title: 'OBS', icon: 'obs'},
                             {title: 'HTTP', icon: 'internet'},
-                            /*{title: 'Browser source', icon: 'camera'},*/
+                            {title: 'Browser source', icon: 'camera'},
                         ]}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
