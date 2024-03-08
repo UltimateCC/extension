@@ -32,7 +32,7 @@
                 root.style.setProperty('--background-color', bgColor);
         
                 // Get the font-size in px
-                const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "64";
+                const fontSizeWithUnit = window.getComputedStyle(document.body).getPropertyValue('font-size') ?? "48";
                 const fontSizeInPx = parseInt(fontSizeWithUnit);
         
                 // Get height of body
@@ -107,7 +107,7 @@
                 height: 100vh;
                 overflow: hidden;
 
-                font-size: 4em;
+                font-size: 3em;
                 display: flex;
                 flex-direction: column-reverse;
             }
