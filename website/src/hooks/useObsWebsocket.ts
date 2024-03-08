@@ -12,6 +12,7 @@ const obs = new OBSWebSocket();
 
 export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) {
     const [isConnected, setIsConnected] = useState<boolean>(false);
+	const [refreshing, setRefreshing] = useState<boolean>(false);
 
 	const urlRef = useRef<string>();
 	const passwordRef = useRef<string>();
@@ -39,6 +40,7 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 			.finally(()=>{
 				connecting.current = false;
 				shouldConnect.current = false;
+				setRefreshing(false);
 			});
 	}, []);
 
@@ -48,10 +50,14 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 			.then(()=>{
 				setIsConnected(false);
 			})
-			.catch(e=>console.error('Error disconnecting OBS websocket',e));
+			.catch(e=>console.error('Error disconnecting OBS websocket',e))
+			.finally(()=>{
+				setRefreshing(false);
+			});
 	}, []);
 
 	const refresh = useCallback(()=>{
+		setRefreshing(true);
 		if(urlRef.current && passwordRef.current && enabledRef.current) {
 			if(!connecting.current) {
 				connect();
@@ -66,12 +72,12 @@ export function useObsWebsocket({ url, password, enabled }: ObsWebsocketParams) 
 	useEffect(()=>{
 		refresh();
 		return disconnect
-
 	}, [connect, disconnect, refresh, url, enabled, password]);
 
 	return {
 		obs,
 		isConnected,
-		refresh
+		refresh,
+		refreshing
 	};
 }

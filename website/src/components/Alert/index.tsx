@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import Icons from "../Icons";
 
@@ -6,10 +6,12 @@ interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
     message: string;
     onClose?: () => void;
-    onReload?: () => void;
+    reload?: {runReload: () => void, stopReloading: boolean};
 }
 
-function Alert({ type, message, onClose, onReload }: AlertProps) {
+function Alert({ type, message, onClose, reload }: AlertProps) {
+    const [reloading, setReloading] = useState(false);
+    
     const title = useMemo(() => {
         switch (type) {
             case 'success':
@@ -23,14 +25,23 @@ function Alert({ type, message, onClose, onReload }: AlertProps) {
         }
     }, [type]);
 
+    const launchReload = () => {
+        setReloading(true);
+        reload?.runReload();
+    }
+
+    useEffect(() => {
+        if(reload?.stopReloading) setReloading(false);
+    }, [reload?.stopReloading]);
+
     return (
         <div className={`form-response ${type}`}>
             <p><strong>{title}</strong>{message}</p>
             { onClose && (  
                 <button className='close' onClick={onClose}>&times;</button>
             )}
-            { onReload && (  
-                <button className='reset-btn' onClick={onReload}><Icons name='refresh' /></button>
+            { reload && (  
+                <button className='reset-btn' onClick={launchReload}><Icons name={reloading ? 'loading' : 'refresh'} /></button>
             )}
         </div>
     )
