@@ -75,7 +75,7 @@ function Twitch({ /*customDelayConfig,*/ updateConfig, twitchAutoStop }: TwitchP
                 <ConfigSwitch
                     checked={twitchAutoStop}
                     onChange={handleAutoStopChange}
-                    label="Stop captions when your stream ends"
+                    label="Stop captions when your stream ends on Twitch"
                 />
             </div>
 
