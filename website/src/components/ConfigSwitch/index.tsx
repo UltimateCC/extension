@@ -25,7 +25,7 @@ const ThemedFormControlLabel = styled(FormControlLabel)(() => ({
     [`& .${formControlLabelClasses.label}`]: {
         color: "#D9D9D9",
         fontSize: '1em',
-        fontFamily: "Raleway",
+        fontFamily: "Raleway, sans-serif",
     },
 }));
 
