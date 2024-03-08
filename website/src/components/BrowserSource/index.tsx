@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { config } from "../../config";
 import { langList } from "../../services/langs";
 
 import ConfigSwitch from "../ConfigSwitch";
 import loadingImg from '../../assets/loading.svg';
+import { SocketContext } from "../../context/SocketContext";
 
 interface BrowserSourceProps {
     selectedLanguageCode?: string[];
@@ -15,6 +16,7 @@ interface BrowserSourceProps {
 }
 
 function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled, updateConfig, configLoaded, userId }: BrowserSourceProps) {
+	const { reloadConfig } = useContext(SocketContext);
 	const [url, setUrl] = useState<string>('');
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -33,6 +35,9 @@ function BrowserSource({ selectedLanguageCode, spokenLang, browserSourceEnabled,
 
 	function handleBrowserSourceChange(val: boolean) {
 		updateConfig({ browserSourceEnabled: val })
+		.then(() => {
+			reloadConfig();
+		})
 		.catch(err => {
 			console.error('Error updating browser source', err);
 		});
