@@ -278,11 +278,17 @@ io.on('connect', (socket) => {
 
 	if(socket.handshake.auth.browserSource) {
 		socket.join(`browserSource-${socket.handshake.auth.browserSource}`);
+
+		metrics.browsersourceConnectionCount.inc();
+		socket.on('disconnect', ()=>{
+			metrics.browsersourceConnectionCount.dec();
+		});
 	}
 
 	// Socket connections from dashboard
 	if(socket.data.twitchId) {
 		socket.join(`twitch-${ socket.data.twitchId }`);
+		metrics.dashboardConnectionCount.inc();
 
 		socket.data.loading = loadConfig(socket);
 		socket.data.loading.catch((e=>{
@@ -291,6 +297,7 @@ io.on('connect', (socket) => {
 
 		socket.on('disconnect', ()=>{
 			endSession(socket);
+			metrics.dashboardConnectionCount.dec();
 		});
 
 		socket.on('reloadConfig', ()=>{

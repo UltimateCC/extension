@@ -69,6 +69,16 @@ export const metrics = {
 		help: 'Count of connected socketio clients',
 	}),
 
+	dashboardConnectionCount: new client.Gauge({
+		name: 'captions_dashboard_connections_count',
+		help: 'Count of socketio clients from dashboard',
+	}),
+
+	browsersourceConnectionCount: new client.Gauge({
+		name: 'captions_browsersource_connections_count',
+		help: 'Count of socketio clients as browsersource',
+	}),
+
 	gcpRequests: new client.Counter({
 		name: 'captions_gcp_requests_total',
 		help: 'Total count of Google API requests',
