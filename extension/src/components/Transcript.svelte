@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { partialCaptions, transcript, lastReceivedCaptions } from "../lib/captions";
+	import { transcript, lastReceivedCaptions } from "../lib/captions";
 	import { language } from "../lib/settings";
 	import LanguageSelect from "./LanguageSelect.svelte";
 	import Warning from "./Warning.svelte";
@@ -28,26 +28,26 @@
 			</div>
 		{/if}
 	</div>
-	<!-- When transcript, partialCaptions or language change, execute autoScroll function -->
-	<div class="transcript" use:autoScroll={ { $transcript, $partialCaptions, $language } } > 
+	<!-- When transcript or language change, scroll to bottom -->
+	<div class="transcript" use:autoScroll={ { $transcript, $language } } > 
 		{#if $lastReceivedCaptions.length === 0}
 			<div class="warning-container">
 				<Warning>Waiting for broadcaster speech</Warning>
-			</div>	
+			</div>
 		{/if}
 
-		{#each $transcript as line }
+		{#each $transcript as line, i }
 			<div class="line">
-				{ (line.find(t=>t.lang === $language) || line[0]).text }
+				{#if line[0]?.speaker}
+					<b>{line[0].speaker}: </b>
+				{/if}
 			</div>
+			{#each line as part }
+				{ ( part.captions.find(alt=>alt.lang === $language) ?? part.captions[0] ).text }
+			{/each}
 		{/each}
-		{#if $partialCaptions }
-			<div class="line">
-				{ $partialCaptions }
-			</div>
-		{/if}
 	</div>
-</div>	
+</div>
 
 
 <style lang="scss">

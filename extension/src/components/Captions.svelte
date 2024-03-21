@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-	import { partialCaptions, transcript } from "../lib/captions";
+	import { transcript } from "../lib/captions";
 	import { position, settings, language } from "../lib/settings";
 	import { hexToRGB } from "../lib/utils";
 
@@ -192,7 +192,7 @@
 
 </script>
 
-{#if settingsShown || $partialCaptions || $transcript.length }
+{#if settingsShown || $transcript.length }
 	{@const mustShowEmptyBox = $transcript.length < $position.maxLines && !resizing && !settingsShown && (captionHovered || moving) }
 	<div id="caption-movable-area" bind:this={movableArea} data-resize-side={ resizing ?? "" }>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -247,20 +247,17 @@
 								This is a sample caption to show you how it looks like <br/>
 							{/each}
 						{/if}
-						
 						{#each $transcript as line, i }
 							{#if i!==0}
 								<br/>
 							{/if}
-							{ ( line.find(alt=>alt.lang === $language) ?? line[0] ).text } 
-						{/each}
-						
-						{#if $partialCaptions}
-							{#if $transcript.length}
-								<br/>
+							{#if line[0]?.speaker}
+								<b>{line[0].speaker}: </b>
 							{/if}
-							{ $partialCaptions }
-						{/if}
+							{#each line as part }
+								{ ( part.captions.find(alt=>alt.lang === $language) ?? part.captions[0] ).text }
+							{/each}
+						{/each}
 					</p>
 				</div>
 			</div>
