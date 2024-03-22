@@ -233,7 +233,7 @@ async function sendCaptions(socket: TypedSocket, data: CaptionsData) {
 	try{
 		logger.debug(`Sending pubsub for ${ socket.data.twitchId }`, data);
 
-		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, Math.min(0, (data.delay / 1000) + 1));
+		metrics.captionsDelay.observe({ final: data.final ? 1 : 0 }, Math.max(0, (data.delay / 1000) + 1));
 		if(socket.data.config.browserSourceEnabled) {
 			io.to(`browserSource-${ socket.data.twitchId }`).emit('captions', data);
 		}
