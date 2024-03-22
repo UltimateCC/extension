@@ -1,8 +1,12 @@
 <script lang="ts">
-    import { fade } from "svelte/transition";
-	import { transcript } from "../lib/captions";
-	import { position, settings, language } from "../lib/settings";
+	import { fade } from "svelte/transition";
+	import { transcript, type LangCode } from "../lib/captions";
 	import { hexToRGB } from "../lib/utils";
+	import { getContext } from "svelte";
+	import type { Resetable } from "../lib/stores/resetablePersisted";
+	import { settings, position } from "../lib/settings";
+
+	const language = getContext<Resetable<LangCode>>('language');
 
 	export let settingsShown: boolean;
 	export let captionHovered: boolean = false;

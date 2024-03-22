@@ -1,7 +1,10 @@
 <script lang="ts">
-	import { type LangCode, lastReceivedCaptions, partialCaptions } from "../lib/captions";
+	import { type LangCode, lastReceivedCaptions } from "../lib/captions";
 	import languages from "../assets/languages.json";
-	import { language } from "../lib/settings";
+	import { getContext } from "svelte";
+	import type { Resetable } from "../lib/stores/resetablePersisted";
+
+	const language = getContext<Resetable<LangCode>>('language');
 
 	// Spoken language name
 	$: spokenLang = languages[$lastReceivedCaptions[0]?.lang] || $lastReceivedCaptions[0]?.lang || '';

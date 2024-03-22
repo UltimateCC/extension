@@ -1,8 +1,11 @@
 <script lang="ts">
-	import { transcript, lastReceivedCaptions } from "../lib/captions";
-	import { language } from "../lib/settings";
+	import { getContext } from "svelte";
+	import { transcript, lastReceivedCaptions, type LangCode } from "../lib/captions";
 	import LanguageSelect from "./LanguageSelect.svelte";
 	import Warning from "./Warning.svelte";
+	import type { Resetable } from "../lib/stores/resetablePersisted";
+
+	const language = getContext<Resetable<LangCode>>('language');
 
 	/** Scroll to bottom each time one of the parameters changes */
 	const autoScroll = (node: HTMLElement, parameters: any) => {

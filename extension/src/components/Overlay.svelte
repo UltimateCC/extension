@@ -3,7 +3,10 @@
 	import { broadcasterConfig, twitchContext } from "../lib/twitch";
 	import { fade } from "svelte/transition";
 	import Captions from "./Captions.svelte";
-	import { showCaptions } from "../lib/settings";
+	import { getContext } from "svelte";
+	import type { Writable } from "svelte/store";
+
+	const showCaptions = getContext<Writable<boolean>>('showCaptions');
 
 	let settingsShown = false;
 	

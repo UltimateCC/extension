@@ -2,11 +2,11 @@ import { readable, writable } from "svelte/store";
 import { handleCaptions, type CaptionsData } from "./captions";
 
 
-Twitch.ext.onError(err=>{
+Twitch.ext.onError(err => {
 	console.error('Ultimate CC : Extension helper error', err);
 });
 
-Twitch.ext.onAuthorized(auth=>{
+Twitch.ext.onAuthorized(auth => {
 	twitchChannel.set(auth.channelId);
 });
 export const twitchChannel = writable<string>(undefined);

@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { lastReceivedCaptions } from "../lib/captions";
-	import { settings, resetSettings, position, resetPosition } from "../lib/settings";
+	import { lastReceivedCaptions, type LangCode } from "../lib/captions";
 	import LanguageSelect from "./LanguageSelect.svelte";
 	import { fade } from "svelte/transition";
 	import NumberInput from "./NumberInput.svelte";
 	import Warning from "./Warning.svelte";
 	import Chevron from "./Chevron.svelte";
+	import { getContext } from "svelte";
+	import type { Resetable } from "../lib/stores/resetablePersisted";
+    import { position, settings } from "../lib/settings";
+
+	const language = getContext<Resetable<LangCode>>('language');
 
 	export let settingsShown = false;
 
@@ -128,8 +132,8 @@
 		<div class="caption-button-container">
 			<!-- Reset -->
 			<div>
-				<button type="button" on:click={ resetSettings }>Reset settings</button>
-				<button type="button" on:click={ resetPosition }>Reset layout</button>
+				<button type="button" on:click={ ()=>{ settings.reset(); language.reset();} }>Reset settings</button>
+				<button type="button" on:click={ ()=>position.reset() }>Reset layout</button>
 			</div>
 			<button type="button" class="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
 				{ $position.locked ? 'Unlock' : 'Lock' } layout

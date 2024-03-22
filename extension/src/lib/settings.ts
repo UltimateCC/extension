@@ -1,6 +1,5 @@
-import { derived } from "svelte/store";
-import { persisted } from "./persistedStore";
-import { twitchChannel } from "./twitch";
+import { persisted } from "./stores/persistedStore";
+import { resetablePersisted } from "./stores/resetablePersisted";
 
 const defaultSettings = {
 	fontSize: 20,
@@ -12,13 +11,6 @@ const defaultSettings = {
 
 export type SettingsType = typeof defaultSettings;
 
-export const settings = persisted<SettingsType>('ucc_config', {...defaultSettings});
-
-export function resetSettings() {
-	settings.set({...defaultSettings}); // Reset settings
-	language.set(''); // Reset language
-}
-
 const defaultPosition = {
 	bottom: 8, // %
 	left: 25, // %
@@ -29,28 +21,28 @@ const defaultPosition = {
 
 export type PositionType = typeof defaultPosition;
 
-// == Position ==
-export const position = persisted<PositionType>('ucc_position', {...defaultPosition});
+// General settings
+export const settings = resetablePersisted<SettingsType>('ucc_config', () => { return {...defaultSettings}; });
+
+// Position/size
+export const position = resetablePersisted<PositionType>('ucc_position', () => { return {...defaultPosition}; });
 
 // Reset position if format from old version is found
 position.subscribe((val: any)=>{
 	if(val.width === undefined || val.top !== undefined) {
-		resetPosition();
+		position.reset();
 	}
 });
 
-export function resetPosition() {
-	position.set({...defaultPosition});
+export function initSettings(channelId: string) {
+	// Store setting for captions shown or not when user updated it
+	const showCaptions = persisted<boolean | undefined>(`ucc_showCaptions_${channelId}`, undefined);
+
+	// Store setting for captions language (different between streamers)
+	const language = resetablePersisted<string>(`ucc_language_${channelId}`, () => '');
+
+	return {
+		showCaptions,
+		language
+	}
 }
-
-// Store setting for captions shown or not when user updated it
-export const showCaptions = persisted<boolean | undefined>(
-	derived(twitchChannel, (id) => id ? 'ucc_showCaptions_'+id : ''),
-	undefined
-);
-
-// Store setting for captions language (different between streamers)
-export const language = persisted<string>(
-	derived(twitchChannel, (id) => id ? 'ucc_language_'+id : ''),
-	''
-);
