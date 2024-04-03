@@ -11,7 +11,7 @@ export function smoothText() {
 	let current = '';
 	let interval = 0;
 	let parts: string[] = [];
-	let x: NodeJS.Timeout;
+	let x: ReturnType<typeof setTimeout>;
 
 	let active = false;
 	let callback: (()=>void) | undefined;

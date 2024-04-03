@@ -1,9 +1,7 @@
 // Based on https://github.com/joshnuss/svelte-persisted-store
 // Writable store persisted to localstorage
-// localstorage key can be loaded at runtime using a store
 
-import {get, writable, type Readable, type Writable} from 'svelte/store';
-
+import {writable, type Writable} from 'svelte/store';
 
 type StoreDict = { [key: string]: Writable<any> }
 
@@ -40,78 +38,37 @@ if (storage) {
 
 const stores: StoreDict = {};
 
-export function persisted<T>(storageKey: string | Readable<string>, initialValue: T): Writable<T> {
-	let key = '';
-	// Get localstorage key if it already exists
-	if(typeof storageKey === 'string') {
-		key = storageKey;
-	}else{
-		const val = get(storageKey);
-		if(typeof val === 'string') {
-			key = val;
-		}
-	}
-	let store = stores[key];
+export function persisted<T>(storageKey: string, initialValue: T): Writable<T> {
+	let store = stores[storageKey];
 
 	if (!store) {
-		const baseStore = writable(key ? initialValue : undefined, (set) => {
-			if(key) {
-				const json = storage?.getItem(key);
-				if(json) set(JSON.parse(json));
-			}
+		const baseStore = writable(initialValue, (set) => {
+			const json = storage?.getItem(storageKey);
+			if(json) set(JSON.parse(json));
 		});
 
 		function updateStorage(key: string, value: T) {
-			if(key) {
-				storage?.setItem(key, JSON.stringify(value));
-			}
+			storage?.setItem(key, JSON.stringify(value));
 		}
 
 		const { subscribe } = baseStore;
 
 		store = {
 			set(value: T) {
-				updateStorage(key, value);
+				updateStorage(storageKey, value);
 				baseStore.set(value);
 			},
 			update(callback: (value: T) => T) {
 				return baseStore.update((last) => {
 					const value = callback(last);
-					updateStorage(key, value);
+					updateStorage(storageKey, value);
 					return value;
 				})
 			},
 			subscribe
 		}
 
-		if(key) {
-			stores[key] = store
-		}else if(typeof storageKey !== 'string'){
-			// Key is not known yet
-			// Subscribe to storageKey store and set everything when value is received
-			const unsubscribe = storageKey.subscribe((k)=>{
-				if(k) {
-					unsubscribe();
-					key = k;
-					// Get store current value
-					const value = get(baseStore);
-					if(value !== undefined) {
-						// Store has been updated: updated storage accordingly
-						updateStorage(key, value);
-					}else{
-						// Store not updated: Load localstorage value
-						const json = storage?.getItem(key);
-						if(json) {
-							baseStore.set(JSON.parse(json));
-						} 
-					}
-					if(stores[key]) {
-						console.warn('A store already exists with key: '+key);
-					}
-					stores[key] = store;
-				}
-			});
-		}
+		stores[storageKey] = store;
 	}
 	return store;
 }

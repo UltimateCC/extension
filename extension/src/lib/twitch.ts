@@ -27,7 +27,7 @@ export const broadcasterConfig = readable<BroadcasterConfig>(undefined, (set)=>{
 		try{
 			set(JSON.parse(Twitch.ext.configuration.broadcaster?.content || '{}' ));
 		}catch(e) {
-			console.error('Ultimate CC : Error parsing broadcaster configuration');
+			console.error('Ultimate CC : Error parsing broadcaster configuration', e);
 		}
 	});
 });
