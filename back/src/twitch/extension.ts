@@ -23,3 +23,20 @@ export async function sendPubsub(userId: string, message: string) {
 export async function saveTwitchConfig(userId: string, config: string) {
 	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
 }
+
+export async function getExtensionAnalytics() {
+	await ensureUserReady(ownerId);
+	const res = await api.callApi({
+		type: 'helix',
+		method: 'GET',
+		url: '/analytics/extensions',
+		forceType: 'user',
+		userId: ownerId,
+		auth: true,
+		query: {
+			extension_id: clientId
+		}
+	}) as { data: unknown[] };
+
+	return res.data[0];
+}

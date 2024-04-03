@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { authURL } from "../twitch/twitch";
+import { authURL, getAuthUrl, ownerId } from "../twitch/twitch";
 import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
 import { logger } from "../utils/logger";
 import { environment } from "../utils/environment";
+import { log } from "console";
 
 
 declare module 'express-session' {
@@ -60,8 +61,13 @@ authRouter.post('', async (req, res, next)=>{
 		}
 		user.twitchId = userId;
 		user.twitchLogin = name;
-		user.twitchToken = token;
 		user.email = email ?? '';
+
+		if(userId === ownerId && !token.scope.includes('analytics:read:extensions')) {
+			logger.info(`Owner authenticated without analytics:read:extensions scope, not saving token, use following url: ${getAuthUrl(['analytics:read:extensions'])}`);
+		}else{
+			user.twitchToken = token;
+		}
 
 		await user.save();
 		req.session.connected = true;
