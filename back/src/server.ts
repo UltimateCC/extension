@@ -7,6 +7,7 @@ import { environment } from './utils/environment';
 import { logger } from './utils/logger';
 import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
 import { eventsub } from './twitch/events';
+import { errorMiddleware } from './middleware/error';
 
 const app = express();
 app.set('trust proxy', true);
@@ -18,6 +19,9 @@ app.use(express.json());
 
 // API routes
 app.use('/api', apiRouter);
+
+// Handle errors
+app.use(errorMiddleware);
 
 // Create HTTP server and attach express app
 export const server = createServer(app);

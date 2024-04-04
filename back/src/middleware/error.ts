@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 
-export const errorMiddleware = (req: Request, res: Response, next: NextFunction, err: unknown) => {
+export const errorMiddleware = (err: unknown, req: Request, res: Response, next: NextFunction) => {
 	if(res.headersSent) {
 		return next(err);
 	}
