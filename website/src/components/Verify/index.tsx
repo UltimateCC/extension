@@ -3,7 +3,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 // Redirect url from twitch
 function Verify() {
-    const { login, error } = useContext(AuthContext);
+    const { login, error, user } = useContext(AuthContext);
     const ran = useRef<boolean>(false);
 
     useEffect(()=>{
@@ -21,6 +21,16 @@ function Verify() {
     return (
         <section id="error" className="theme-box padtop">
             <h2>{ error ? 'Error' : 'Redirecting' }</h2>
+            { error && (
+                <>
+                    <p>
+                        Error connecting with Twitch
+                    </p>
+                    { user?.url && (
+                        <p><a href={user?.url}>Try again</a></p>
+                    ) }
+                </>
+            ) }
         </section>
     );
 }
