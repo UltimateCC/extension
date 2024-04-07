@@ -38,5 +38,5 @@ export async function getExtensionAnalytics() {
 		}
 	}) as { data: unknown[] };
 
-	return res;
+	return res.data[0];
 }
