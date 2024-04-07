@@ -16,7 +16,7 @@ twitchRouter.get('/live', async (req, res, next)=>{
 
 twitchRouter.get('/analytics',  adminMiddleware, async (req, res, next)=>{
 	try{
-		const data = getExtensionAnalytics();
+		const data = await getExtensionAnalytics();
 		res.json(data);
 	}catch(e) {
 		next(e);
