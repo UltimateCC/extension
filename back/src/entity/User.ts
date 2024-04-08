@@ -40,7 +40,7 @@ export class User extends BaseEntity {
 	twitchConfig: TwitchConfig = {};
 
 	@Column('json')
-	secrets: UserSecrets = {};
+	secrets = null;
 
 	// Methods
 	async genWebhookSecret() {
@@ -77,13 +77,6 @@ export const UserConfigSchema = z.object({
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;
-
-export const UserSecretsSchema = z.object({
-	//GCP API key
-	gcpKey: z.string().max(128).optional(),
-});
-
-export type UserSecrets = z.infer<typeof UserSecretsSchema>;
 
 export const TwitchConfigSchema = z.object({
 	showCaptions: z.boolean()

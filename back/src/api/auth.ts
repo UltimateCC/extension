@@ -4,7 +4,6 @@ import { User } from "../entity/User";
 import { auth } from "../twitch/auth";
 import { logger } from "../utils/logger";
 import { environment } from "../utils/environment";
-import { log } from "console";
 
 
 declare module 'express-session' {
