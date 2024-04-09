@@ -39,9 +39,6 @@ export class User extends BaseEntity {
 	@Column()
 	twitchConfig: TwitchConfig = {};
 
-	@Column('json')
-	secrets = null;
-
 	// Methods
 	async genWebhookSecret() {
 		const bytes = await randBytes(32);

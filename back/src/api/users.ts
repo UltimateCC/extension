@@ -17,7 +17,6 @@ usersRouter.get('', async (req, res, next)=>{
 		const users: Partial<User>[] = await User.find({where,  order: { created: 'DESC' }});
 
 		users.forEach(u=>{
-			delete u.secrets;
 			delete u.twitchToken;
 		});
 
@@ -35,7 +34,6 @@ usersRouter.get('/:twitchid', async (req, res, next)=>{
 			return res.status(404).json({message: 'Not found'});
 		}
 
-		delete user.secrets;
 		delete user.twitchToken;
 
 		res.json(user);

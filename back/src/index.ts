@@ -3,18 +3,11 @@ import { disconnectDatabase, initDatabase } from './database';
 import { startServer, stopServer } from "./server";
 import { logger } from "./utils/logger";
 import { startMetricsServer, stopMetricsServer } from "./utils/metrics";
-import { User } from "./entity/User";
 
 
 (async ()=>{
 	try{
 		await initDatabase();
-
-		logger.info('Clearing legacy secrets');
-		// @ts-expect-error typeorm mongo types
-		const r = await User.update({ secrets: { $exists: true } }, { secrets: null });
-		logger.info(`Cleared legacy secrets`, r.raw);
-
 		await Promise.all([
 			startServer(),
 			startMetricsServer()
