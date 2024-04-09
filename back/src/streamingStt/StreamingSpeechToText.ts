@@ -1,5 +1,6 @@
+/*
 import { EventEmitter } from "stream";
-import { UserConfig, UserSecrets } from "../entity/User";
+import { UserConfig } from "../entity/User";
 import { Info, TranscriptData } from "../types";
 
 
@@ -15,7 +16,7 @@ export interface StreamingSpeechToText {
 
 
 export abstract class StreamingSpeechToText extends EventEmitter {
-	constructor(protected config: UserConfig, protected secrets: UserSecrets) {
+	constructor(protected config: UserConfig) {
 		super();
 	}
 
@@ -24,3 +25,4 @@ export abstract class StreamingSpeechToText extends EventEmitter {
 	async handleData(data: Buffer) {}
 	async stop() {}
 }
+*/
