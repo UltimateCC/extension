@@ -1,4 +1,4 @@
-import { getUserSockets } from "../socketioServer"
+import { getCaptionSessionIfExists } from "../CaptionSession"
 import { environment } from "../utils/environment"
 import { logger } from "../utils/logger"
 import { metrics } from "../utils/metrics"
@@ -39,18 +39,15 @@ async function loadLiveChannels() {
 		const out: LiveChannel[] = [];
 
 		await Promise.all(channels.map(async (channel) => {
-			const sockets = await getUserSockets(channel.id);
 
-			// Get a socket corresponding to a probably active session
-			const socket = sockets.find(s=>s.data.lastSpokenLang);
-			if(!socket) return;
-
-			const socketData = socket.data;
+			const sessionStatus = await getCaptionSessionIfExists(channel.id)?.getStatus();
+			if(!sessionStatus?.lastSpokenLang) return;
 
 			const stream = await api.streams.getStreamByUserIdBatched(channel.id);
 			if(!stream) return;
-			const spokenLang = socketData.lastSpokenLang.split('-')[0];
-			const translateLangs = (socketData.config.translateLangs ?? []).filter(l => l!==spokenLang);
+
+			const spokenLang = sessionStatus.lastSpokenLang.split('-')[0];
+			const translateLangs = (sessionStatus.translateLangs ?? []).filter(l => l!==spokenLang);
 
 			out.push({
 				id: stream.userId,
@@ -61,7 +58,7 @@ async function loadLiveChannels() {
 				viewers: stream.viewers,
 				thumbnailUrl: stream.getThumbnailUrl(640, 360),
 				spokenLang,
-				translation: socketData.translator?.isWorking() ?? false,
+				translation: sessionStatus.translationEnabled ?? false,
 				translateLangs
 			});
 		}));

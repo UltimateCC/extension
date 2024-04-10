@@ -1,4 +1,3 @@
-
 import { User } from "../entity/User";
 import { GCPTranslator } from "./GCPTranslator";
 import { NullTranslator } from "./NullTranslator";

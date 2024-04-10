@@ -1,6 +1,6 @@
 import express from 'express';
 import { createServer } from 'node:http';
-import { endSocketSessions, io } from './socketioServer';
+import { io } from './socketioServer';
 import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
 import { environment } from './utils/environment';
@@ -8,6 +8,7 @@ import { logger } from './utils/logger';
 import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
 import { eventsub } from './twitch/events';
 import { errorMiddleware } from './middleware/error';
+import { endSessions } from './CaptionSession';
 
 const app = express();
 app.set('trust proxy', true);
@@ -49,7 +50,7 @@ export async function stopServer() {
 				else resolve();
 			});
 		}),
-		endSocketSessions()
+		endSessions()
 	]);
 	logger.info('Server closed');
 	await stopSessionMiddleware();

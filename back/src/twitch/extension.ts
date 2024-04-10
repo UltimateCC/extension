@@ -1,6 +1,7 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
 import { logger } from "../utils/logger";
+import { metrics } from "../utils/metrics";
 
 // Check if user has installed extension
 export async function isExtensionInstalled(user: string) {
@@ -17,7 +18,17 @@ export async function isExtensionInstalled(user: string) {
 }
 
 export async function sendPubsub(userId: string, message: string) {
-	await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message);
+	try{
+		await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message);
+	}catch(e) {
+		if(e && typeof e === 'object' && 'statusCode' in e && typeof e.statusCode === 'number') {
+			const status = e?.statusCode;
+			metrics.pubsubErrors.inc({ status });
+			logger.warn(`Error ${status} sending pubsub for user ${userId}`);
+		}else{
+			logger.error(`Unexpected error sending pubsub for user ${userId}`, e);
+		}
+	}
 }
 
 export async function saveTwitchConfig(userId: string, config: string) {

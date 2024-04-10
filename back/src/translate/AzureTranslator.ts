@@ -1,4 +1,3 @@
-
 import { logger } from "../utils/logger";
 import { LangList, Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
