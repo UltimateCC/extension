@@ -16,7 +16,7 @@ interface TranslationServiceProps {
 }
 
 function TranslationService({ translateService, updateConfig, configLoaded, loadingImg }: TranslationServiceProps) {
-    const { captionsStatus, reloadConfig } = useContext(SocketContext);
+    const { reloadConfig } = useContext(SocketContext);
 
     const apiKeyInputRef = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -76,7 +76,7 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
         setResponse(null);
     };
 
-    if (!configLoaded || !captionsStatus) return (
+    if (!configLoaded) return (
         <img src={loadingImg} alt="loading" className="loading-img" />
     );
 

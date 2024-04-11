@@ -21,10 +21,6 @@ const loadRateLimiter = new RateLimiterMemory({
 
 const captionSessions = new Map<string, CaptionSession>();
 
-export function getCaptionSessionIfExists(twitchId: string) {
-	return captionSessions.get(twitchId);
-}
-
 export function getCaptionSession(twitchId: string) {
 	let s = captionSessions.get(twitchId);
 	if(!s) {
@@ -34,15 +30,14 @@ export function getCaptionSession(twitchId: string) {
 	return s;
 }
 
-export function getAllCaptionSessions() {
-	return [...captionSessions.values()];
+export async function getAllSessionsStatus() {
+	return Promise.all([...captionSessions.values()].map(s => s.getStatus()));
 }
 
 /** Gracefully end all sessions (called at shutdown) */
 export async function endSessions() {
-	const sessions = getAllCaptionSessions();
 	// End all sessions (triggers saving statistics)
-	await Promise.all(sessions.map(s => s.unload()));
+	await Promise.all([...captionSessions.values()].map(s => s.unload()));
 	logger.info('All sessions ended');
 }
 
@@ -56,9 +51,7 @@ export class CaptionSession {
 	private config: UserConfig;
 	private translator: Translator;
 
-	constructor(private twitchId: string) {
-		this.reload();
-	}
+	constructor(private twitchId: string) {}
 
 	reload() {
 		if(this.loading) {
@@ -102,7 +95,10 @@ export class CaptionSession {
 			const langs = await this.translator.getLangs();
 			io.to(`twitch-${this.twitchId}`).emit('translateLangs', langs);
 
-			this.sendStatus();
+			// Warn if extension is not installed
+			if((await isExtensionInstalled(this.twitchId)) === false) {
+				io.to(`twitch-${this.twitchId}`).emit('info', { type: "warn", message: 'The Twitch extension is not installed on your channel' });
+			}
 
 			this.keepAlive();
 		}catch(e) {
@@ -153,13 +149,6 @@ export class CaptionSession {
 			captionSessions.delete(this.twitchId);
 			this.unload();
 		}, SESSION_TIMEOUT);
-	}
-
-	async sendStatus() {
-		io.to(`twitch-${this.twitchId}`).emit('status', {
-			translation: this.translator.ready(),
-			twitch: await isExtensionInstalled(this.twitchId)
-		});
 	}
 
 	async handleTranscript(transcript: TranscriptData) {
@@ -232,6 +221,7 @@ export class CaptionSession {
 
 	async getStatus() {
 		return {
+			twitchId: this.twitchId,
 			lastSpokenLang: this.lastSpokenLang,
 			translationEnabled: this.translator.isWorking(),
 			translateLangs: this.config.translateLangs

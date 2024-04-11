@@ -7,8 +7,7 @@ export const twitchRouter = Router();
 
 twitchRouter.get('/live', async (req, res, next)=>{
 	try{
-		const channels = getLiveChannels();
-		res.json(channels);
+		res.json(getLiveChannels());
 	}catch(e) {
 		next(e);
 	}
@@ -16,8 +15,7 @@ twitchRouter.get('/live', async (req, res, next)=>{
 
 twitchRouter.get('/analytics',  adminMiddleware, async (req, res, next)=>{
 	try{
-		const data = await getExtensionAnalytics();
-		res.json(data);
+		res.json(await getExtensionAnalytics());
 	}catch(e) {
 		next(e);
 	}

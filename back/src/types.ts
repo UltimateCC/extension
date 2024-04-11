@@ -9,12 +9,6 @@ export type Result<T> = {
 	data: T
 }
 
-export interface CaptionsStatus {
-	//stt?: boolean,
-	translation?: boolean,
-	twitch?: boolean
-}
-
 export type LangList = {
 	code: string
 	name: string

@@ -1,11 +1,10 @@
-import { exchangeCode } from "@twurple/auth";
-import { api, authProvider, clientId, clientSecret, redirectUri } from "./twitch";
+import { api, authProvider } from "./twitch";
 
 
 export async function auth(code: string) {
-	const token = await exchangeCode(clientId, clientSecret, code, redirectUri);
-	const userId = await authProvider.addUserForToken(token);
+	const userId = await authProvider.addUserForCode(code);
 	const user = await api.users.getAuthenticatedUser(userId);
+	const token = await authProvider.getAccessTokenForUser(userId);
 	return {
 		userId,
 		name: user.name,

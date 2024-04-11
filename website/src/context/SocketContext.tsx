@@ -1,15 +1,8 @@
 import { createContext } from "react"
 import { Socket } from "socket.io-client"
 
-
-export type CaptionsStatus = {
-    stt?: boolean,
-    translation?: boolean,
-    twitch?: boolean
-}
-
 export type Info = {
-    type: 'warn' | 'error' ,
+    type: 'warn' | 'error'
     message: string
 }
 
@@ -38,29 +31,21 @@ export type Action = {
 }
 
 interface ServerToClientEvents {
-    translateLangs: (langs: LangList) => void;
-    info: ( info: Info ) => void;
-    status: ( status: CaptionsStatus ) => void;
-    transcript: ( transcript: TranscriptData )=>void;
-	action: (action: Action)=>void;
+    translateLangs: (langs: LangList) => void
+    info: (info: Info) => void
+    transcript: (transcript: TranscriptData) =>void
+	action: (action: Action)=>void
 }
 
 interface ClientToServerEvents {
-    reloadConfig: () => void;
-    text: (text: TranscriptData) => void;
-    /*
-    audioStart: () => void;
-    audioData: (data: Blob) => void;
-    audioEnd: () => void;
-    */
+    reloadConfig: () => void
+    text: (text: TranscriptData) => void
 }
 
 export type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 export interface SocketContextType {
-    socket: TypedSocket,
-    info?: Info
-    captionsStatus?: CaptionsStatus
+    socket: TypedSocket
     translateLangs: LangList
     reloadConfig: () => void
     handleText: (transcript: TranscriptData ) => void
@@ -68,4 +53,4 @@ export interface SocketContextType {
 
 export const SocketContext = createContext<SocketContextType>(
     {} as SocketContextType
-);
+)

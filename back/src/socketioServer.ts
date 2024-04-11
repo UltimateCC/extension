@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { Action, CaptionsStatus, Info, LangList, TranscriptData, CaptionsData } from "./types";
+import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { logger } from "./utils/logger";
 import { eventsub } from "./twitch/events";
@@ -10,7 +10,6 @@ import { getCaptionSession } from "./CaptionSession";
 
 interface ServerToClientEvents {
 	translateLangs: (langs: LangList) => void;
-	status: (status: CaptionsStatus) => void;
 	info: (info: Info) => void;
 	transcript: (transcript: TranscriptData) => void;
 	captions: (captions: CaptionsData) => void;
@@ -20,11 +19,6 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
 	reloadConfig: () => void;
 	text: (text: TranscriptData) => void;
-	/*
-	audioStart: ()  => void;
-	audioData: (data: Buffer)  => void;
-	audioEnd: ()  => void;
-	*/
 }
 
 export interface SocketData {
@@ -48,7 +42,7 @@ const transcriptDataSchema = z.object({
 
 export const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>();
 
-// Before actually accepting connection: auth + try loading config
+// Before actually accepting connection: auth
 io.use((socket, next)=>{
 
 	if(typeof socket.handshake.auth.browserSource === 'string') {
@@ -88,10 +82,7 @@ io.on('connect', (socket) => {
 		socket.join(`twitch-${socket.data.twitchId}`);
 		metrics.dashboardConnectionCount.inc();
 
-		getCaptionSession(socket.data.twitchId);
-
 		socket.on('disconnect', () => {
-			//getCaptionSession(socket.data.twitchId).unload();
 			metrics.dashboardConnectionCount.dec();
 		});
 

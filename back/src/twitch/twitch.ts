@@ -1,7 +1,6 @@
 import { RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "../entity/User";
-import { dataSource } from "../database";
 import { environment } from "../utils/environment";
 import { logger } from "../utils/logger";
 
@@ -11,36 +10,25 @@ export const ownerId = environment.TWITCH_OWNERID;
 export const secret = environment.TWITCH_SECRET;
 export const clientSecret = environment.TWITCH_CLIENTSECRET;
 export const redirectUri = environment.TWITCH_REDIRECT_URI;
+const baseScope = ['user:read:broadcast','user:read:email'];
 
 export function getAuthUrl(additionalScope: string[] = []) {
-	const scope = [
-		'user:read:broadcast',
-		'user:read:email'
-	];
-
-	for(const s of additionalScope) {
-		scope.push(s);
-	}
-
 	const authParams = new URLSearchParams({
 		response_type: 'code',
 		client_id: clientId,
 		redirect_uri: redirectUri,
-		scope: scope.join(' ')
+		scope: baseScope.concat(...additionalScope).join(' ')
 	});
 	return `https://id.twitch.tv/oauth2/authorize?${authParams}`;
 }
 
-export const authURL = getAuthUrl();
+export const authProvider = new RefreshingAuthProvider({clientId, clientSecret, redirectUri});
 
-export const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
-authProvider.onRefresh((user, token)=>{
-	dataSource.manager.update(User, {
-		twitchId: user
-	},{
-		twitchToken: token
-	});
+authProvider.onRefresh((twitchId, token)=>{
+	User.update({ twitchId }, { twitchToken: token })
+		.catch(e=>logger.error('Error saving refreshed Twitch token', e));
 });
+
 authProvider.onRefreshFailure((user)=>{
 	logger.error(`Twitch token refresh failure for user ${user}`);
 	try {
@@ -59,4 +47,3 @@ export async function ensureUserReady(user: string) {
 }
 
 export const api = new ApiClient({authProvider, batchDelay: 50});
-

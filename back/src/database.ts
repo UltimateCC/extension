@@ -1,4 +1,3 @@
-
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
@@ -24,6 +23,7 @@ export async function initDatabase() {
 			await dataSource.initialize();
 			await dataSource.synchronize();
 			success = true;
+			logger.info('Database ready');
 		}catch(e) {
 			tries++;
 			if(tries<10) {

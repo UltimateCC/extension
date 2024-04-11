@@ -60,7 +60,7 @@ export const metrics = {
 	captionsDelay: new client.Histogram({
 		name: 'captions_delay_seconds',
 		help: 'Captions delay just before being sent',
-		buckets: client.linearBuckets(0, .5, 12),
+		buckets: client.linearBuckets(0, .5, 16),
 		labelNames: ["final"]
 	}),
 
@@ -108,6 +108,6 @@ export const metrics = {
 
 	translateLangs: new client.Gauge({
 		name: 'captions_live_translate_langs_count',
-		help: 'Count of channels with translation enabled',
+		help: 'Count of languages currently translated to',
 	}),
 }

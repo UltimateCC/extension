@@ -1,8 +1,7 @@
-import { getCaptionSessionIfExists } from "../CaptionSession"
-import { environment } from "../utils/environment"
+import { getAllSessionsStatus } from "../CaptionSession"
 import { logger } from "../utils/logger"
 import { metrics } from "../utils/metrics"
-import { api, clientId } from "./twitch"
+import { api } from "./twitch"
 
 interface LiveChannel {
 	id: string
@@ -24,30 +23,21 @@ export function getLiveChannels() {
 	return liveChannels;
 }
 
-// Load live channels only on prod as it's only working with a released extension
-if(environment.NODE_ENV === 'production') {
-	setInterval(loadLiveChannels, 15000);
-}
+// Schedule live channel list loading each 15sec
+setInterval(loadLiveChannels, 15000);
 
 async function loadLiveChannels() {
 	try{
-		// Get all channels live with extension
-		const channels = await api.withoutUser((client)=>{
-			return client.extensions.getLiveChannelsWithExtensionPaginated(clientId).getAll();
-		});
-
 		const out: LiveChannel[] = [];
+		const sessions = await getAllSessionsStatus();
 
-		await Promise.all(channels.map(async (channel) => {
+		await Promise.all(sessions.filter(s=>s.lastSpokenLang).map(async (s) => {
 
-			const sessionStatus = await getCaptionSessionIfExists(channel.id)?.getStatus();
-			if(!sessionStatus?.lastSpokenLang) return;
-
-			const stream = await api.streams.getStreamByUserIdBatched(channel.id);
+			const stream = await api.streams.getStreamByUserIdBatched(s.twitchId);
 			if(!stream) return;
 
-			const spokenLang = sessionStatus.lastSpokenLang.split('-')[0];
-			const translateLangs = (sessionStatus.translateLangs ?? []).filter(l => l!==spokenLang);
+			const spokenLang = s.lastSpokenLang.split('-')[0];
+			const translateLangs = (s.translateLangs ?? []).filter(l => l!==spokenLang);
 
 			out.push({
 				id: stream.userId,
@@ -58,7 +48,7 @@ async function loadLiveChannels() {
 				viewers: stream.viewers,
 				thumbnailUrl: stream.getThumbnailUrl(640, 360),
 				spokenLang,
-				translation: sessionStatus.translationEnabled ?? false,
+				translation: s.translationEnabled ?? false,
 				translateLangs
 			});
 		}));

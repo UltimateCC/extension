@@ -19,3 +19,7 @@ eventsub.onSubscriptionCreateFailure( (subscription, error)=>{
 eventsub.onSubscriptionDeleteFailure( (subscription, error)=>{
 	logger.error('Eventsub subscription delete failure', error);
 });
+
+export async function cleanEventsub() {
+	await api.eventSub.deleteBrokenSubscriptions();
+}

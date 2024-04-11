@@ -12,8 +12,6 @@ export async function isExtensionInstalled(user: string) {
 		return exts.getAllExtensions().some(ext => ext.id === clientId);
 	}catch(e) {
 		logger.error('Error checking if extension is installed', e);
-		// In case of error return true to not disturb user
-		return true;
 	}
 }
 

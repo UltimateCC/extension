@@ -11,4 +11,3 @@ export function applyBanwords(words: string[], initialText: string) {
 	}
 	return text;
 }
-

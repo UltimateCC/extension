@@ -125,9 +125,6 @@ function Dashboard() {
         if(error) {
             setResponse({ type: "error", message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
         }
-        if(socketCtx.captionsStatus?.twitch === false) {
-            setResponse({ type: "warning", message: "The Twitch extension is not installed on your channel." });
-        }
         if(user?.connected) {
             loadConfig()
                 .then(()=>setConfigLoaded(true))
@@ -136,7 +133,7 @@ function Dashboard() {
                     setResponse({ type: "error", message: "An error occurred while loading your configuration, try refreshing page", hideRestOfPage: true });
                 });
         }
-    }, [ user, error, socketCtx.captionsStatus, loadConfig ]);
+    }, [ user, error, loadConfig ]);
 
     // Handle actions triggered from server via socket
     useEffect(()=>{

@@ -32,10 +32,8 @@ io.engine.use(sessionMiddleware);
 
 export async function startServer() {
 	await initSessionMiddleware();
-	await new Promise<void>((res)=>{
-		server.listen(environment.PORT, ()=>{
-			res();
-		});
+	await new Promise<void>((res) => {
+		server.listen(environment.PORT, res);
 	});
 	logger.info(`Server started on port ${ environment.PORT }`);
 	await eventsub.markAsReady();
