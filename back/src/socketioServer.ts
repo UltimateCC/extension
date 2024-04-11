@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { logger } from "./utils/logger";
-import { eventsub } from "./twitch/events";
 import { z } from "zod";
 import { metrics } from "./utils/metrics";
 import { getCaptionSession } from "./CaptionSession";
@@ -110,8 +109,3 @@ io.on('connect', (socket) => {
 	}
 });
 
-export function registerTwitchAutoStop(twitchId: string) {
-	eventsub.onStreamOffline(twitchId, async()=>{
-		io.to(`twitch-${twitchId}`).emit('action', { type: 'stop' });
-	});
-}

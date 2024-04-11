@@ -3,11 +3,12 @@ import { User, UserConfig } from "./entity/User";
 import { Translator } from "./translate/Translator";
 import { getTranslator } from "./translate/getTranslator";
 import { logger } from "./utils/logger";
-import { io, registerTwitchAutoStop } from "./socketioServer";
+import { io } from "./socketioServer";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { applyBanwords } from "./utils/functions";
 import { CaptionsData, TranscriptData } from "./types";
 import { metrics } from "./utils/metrics";
+import { registerTwitchAutoStop } from "./twitch/events";
 
 
 const SESSION_TIMEOUT = 1000 * 60 * 15;
