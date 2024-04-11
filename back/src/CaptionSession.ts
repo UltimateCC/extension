@@ -1,4 +1,3 @@
-import { RateLimiterMemory } from "rate-limiter-flexible";
 import { Stats } from "./entity/Stats";
 import { User, UserConfig } from "./entity/User";
 import { Translator } from "./translate/Translator";
@@ -12,12 +11,6 @@ import { metrics } from "./utils/metrics";
 
 
 const SESSION_TIMEOUT = 1000 * 60 * 15;
-
-// Limit config reloads
-const loadRateLimiter = new RateLimiterMemory({
-	points: 3,
-	duration: 1,
-});
 
 const captionSessions = new Map<string, CaptionSession>();
 
@@ -67,9 +60,6 @@ export class CaptionSession {
 			// End previous session if there was one
 			await this.unload();
 
-			// Ratelimit
-			await loadRateLimiter.consume(this.twitchId);
-
 			// Fetch user
 			const u = await User.findOneOrFail({where: { twitchId: this.twitchId }, cache: false });
 			this.config = u.config;
@@ -105,13 +95,14 @@ export class CaptionSession {
 			delete this.loading;
 			throw e;
 		}
-		delete this.loading;
 
 		if(this.shouldReload) {
+			await new Promise(res => setTimeout(res, 500));
 			this.shouldReload = false;
 			this.loading = this.load();
 			await this.loading;
 		}
+		delete this.loading;
 		this.ready = true;
 	}
 
@@ -145,7 +136,7 @@ export class CaptionSession {
 
 	keepAlive() {
 		clearTimeout(this.timeout);
-		this.timeout = setTimeout(()=>{
+		this.timeout = setTimeout(() => {
 			captionSessions.delete(this.twitchId);
 			this.unload();
 		}, SESSION_TIMEOUT);
