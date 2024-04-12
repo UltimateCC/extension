@@ -79,9 +79,10 @@ export const metrics = {
 		help: 'Count of socketio clients as browsersource',
 	}),
 
-	gcpRequests: new client.Counter({
-		name: 'captions_gcp_requests_total',
-		help: 'Total count of Google API requests',
+	gcpRequests: new client.Histogram({
+		name: 'captions_gcp_requests_seconds',
+		help: 'GCP Translation requests delay',
+		buckets: client.linearBuckets(0, .5, 8),
 		labelNames: ['status']
 	}),
 
