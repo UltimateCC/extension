@@ -39,7 +39,7 @@
 			</div>
 		{/if}
 
-		{#each $transcript as line, i }
+		{#each $transcript as line }
 			<div class="line">
 				{#if line[0]?.speaker}
 					<b>{line[0].speaker}: </b>
@@ -51,7 +51,6 @@
 		{/each}
 	</div>
 </div>
-
 
 <style lang="scss">
 	@import '../assets/vars.scss';

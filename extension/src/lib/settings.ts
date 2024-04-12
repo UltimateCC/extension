@@ -34,15 +34,14 @@ position.subscribe((val: any)=>{
 	}
 });
 
-export function initSettings(channelId: string) {
+export function initContext(channelId: string) {
+	const context = new Map();
+
 	// Store setting for captions shown or not when user updated it
-	const showCaptions = persisted<boolean | undefined>(`ucc_showCaptions_${channelId}`, undefined);
+	context.set('showCaptions', persisted<boolean | undefined>(`ucc_showCaptions_${channelId}`, undefined));
 
 	// Store setting for captions language (different between streamers)
-	const language = resetablePersisted<string>(`ucc_language_${channelId}`, () => '');
+	context.set('language', resetablePersisted<string>(`ucc_language_${channelId}`, () => ''));
 
-	return {
-		showCaptions,
-		language
-	}
+	return context;
 }

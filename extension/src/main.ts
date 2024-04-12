@@ -4,7 +4,7 @@ import Config from './components/Config.svelte'
 import Overlay from './components/Overlay.svelte'
 import 'simplebar'
 import 'simplebar/dist/simplebar.css'
-import { initSettings } from './lib/settings'
+import { initContext } from './lib/settings'
 import { twitchChannel } from './lib/twitch'
 
 // Channel id is needed to start extension
@@ -34,14 +34,14 @@ function init(channelId: string) {
 		component = Overlay;
 	}
 
+	const context = initContext(channelId);
+
 	app = new component({
 		target: document.getElementById('app'),
-		context: {
-			...initSettings(channelId)
-		}
+		context
 	});
 
 }
 
 let app;
-export default app
+export default app;
