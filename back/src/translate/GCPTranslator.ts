@@ -70,11 +70,13 @@ export class GCPTranslator extends Translator {
 			key: this.key
 		});
 
+		const end = metrics.gcpRequests.startTimer();
+
 		const res = await fetch(`https://translation.googleapis.com/language/translate/v2?${params}`, {
 			method: 'POST'
 		});
 
-		metrics.gcpRequests.inc({ status: res.status });
+		end({ status: res.status });
 
 		if(res.ok) {
 			const json = await res.json();
