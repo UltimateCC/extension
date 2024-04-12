@@ -69,7 +69,8 @@ export abstract class Translator {
 		}
 
 		// If translations already in cache, get it
-		const cached = this.cache.get(data.text+data.lang);
+		const cacheKey = `${data.lang}${data.text}`;
+		const cached = this.cache.get(cacheKey);
 		if(cached) {
 			return {
 				isError: false,
@@ -85,10 +86,10 @@ export abstract class Translator {
 				return translated;
 			}
 
-			this.cache.set(data.text+data.lang, translated.data);
+			this.cache.set(cacheKey, translated.data);
 			// Cache translation results a small time
 			setTimeout(()=>{
-				this.cache.delete(data.text+data.lang);
+				this.cache.delete(cacheKey);
 			}, getCacheDelay(data.text));
 
 			return translated;

@@ -42,35 +42,39 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 			// Log relevant errors
 			recognition.onerror = (event) => {
 				if(event.error !== 'aborted' && event.error !== 'no-speech' && event.error !== 'network') {
-					setError('Speech recognition error : '+event.error);
-					console.error('Speech recognition error', event.error);
+					setError(`Speech recognition error : ${event.error} ${event.message}`);
+					console.error('Speech recognition error', event.error, event.message);
 				}
 			}
 
+			// Restart recognition when it ends itself
 			let startTime: number = 0;
 			recognition.onstart = () => {
 				if(!startTime) startTime = Date.now();
 			}
 
-			//Restart recognition when it ends itself
 			recognition.onend = () => {
 				if(!stopped) {
-					// If stopping just after start: Probably not supported
+					// If stopping just after start: Probably not supported in this browser
 					if(startTime && ( (Date.now() - startTime) < 1000 ) ) {
 						setError('Couldn\'t start speech recognition, it may not be supported in your browser, try using Chrome or Edge');
 					}else{
-						recognition.start();
-						// Reset partial results
+						// Reset all current state when restarting
+						lastCaptions = null;
+						lastReceivedPartialTimestamp = null;
+						lastReceivedPartial = null;
 						lastText = '';
 						ignoreLength = 0;
-						lastCaptions = null;
+
+						recognition.start();
 					}
 				}
 			}
 
-			// Timestamp for last handled partial caption
+			// Timestamp of last handled partial text
 			let lastCaptions: number | null = null;
-			// Last received partial caption
+
+			// Timestamp+text of last received partial text
 			let lastReceivedPartialTimestamp: number | null = null;
 			let lastReceivedPartial: string | null = null;
 
@@ -89,7 +93,6 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 					lastReceivedPartialTimestamp = Date.now();
 				}
 
-				// Ignore partials between each partial caption
 				if(!result.isFinal && lastCaptions && ( (lastCaptions + splitDelay) > Date.now() ) ) {
 					return;
 				}
@@ -143,16 +146,16 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 					if(!result.isFinal) {
 						// Store partial text to compare it with next version
 						lastText = text;
-					}else{
-						// Clear partial text when finished
-						lastText = '';
-						ignoreLength = 0;
 					}
 				}
 
 				if(result.isFinal) {
-					// Reset timestamps when sentence ends
+					// Reset all current state after any final transcript
 					lastCaptions = null;
+					lastReceivedPartialTimestamp = null;
+					lastReceivedPartial = null;
+					lastText = '';
+					ignoreLength = 0;
 				}else{
 					// Setup timestamp for next partial time
 					lastCaptions = Date.now();
@@ -161,7 +164,7 @@ export function useSpeechRecognition( { handleText, lang, listening, splitDelay,
 
 			recognition.start();
 
-			stopFunc = () =>{
+			stopFunc = () => {
 				recognition.abort();
 			}
 		}else{
