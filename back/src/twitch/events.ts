@@ -23,7 +23,9 @@ eventsub.onSubscriptionDeleteFailure( (subscription, error) => {
 });
 
 export async function cleanEventsub() {
-	await api.eventSub.deleteAllSubscriptions();
+	logger.info('Clearing broken eventsub subscriptions');
+	await api.eventSub.deleteBrokenSubscriptions();
+	logger.info('Cleared broken eventsub subscriptions');
 }
 
 export function registerTwitchAutoStop(twitchId: string) {
