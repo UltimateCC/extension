@@ -82,7 +82,7 @@ export const metrics = {
 	gcpRequests: new client.Histogram({
 		name: 'captions_gcp_requests_seconds',
 		help: 'GCP Translation requests delay',
-		buckets: client.linearBuckets(0, .5, 8),
+		buckets: [.05, .1, .15, .25, .5, 1],
 		labelNames: ['status']
 	}),
 
