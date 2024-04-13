@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Alert from '../Alert/index.tsx';
 import { LangList, SocketContext } from '../../context/SocketContext.tsx';
+import { langList } from '../../services/langs.ts';
 
 interface LanguageOutSelectorProps {
     selectedLanguageCode?: string[];
@@ -32,6 +33,8 @@ const theme = createTheme({
     },
 });
 
+const translateLangs = Object.entries(langList).map(([k,v]) => { return { code: k, name: v }; } );
+
 export default function LanguageOutSelector({ selectedLanguageCode, updateConfig, configLoaded }: LanguageOutSelectorProps) {
     const [checked, setChecked] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -40,7 +43,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, updateConfig
 
     const [response, setResponse] = useState<{ isSuccess: boolean; message: string } | null>(null);
 
-    const { reloadConfig, translateLangs } = useContext(SocketContext);
+    const { reloadConfig } = useContext(SocketContext);
 
     // Get lists of available and selected languages
     const [ available, selected ] = useMemo(()=>{
@@ -56,7 +59,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, updateConfig
         }
         return [available, selected];
 
-    }, [ selectedLanguageCode, translateLangs ]);
+    }, [ selectedLanguageCode ]);
 
     // Search
     const searched = useMemo(()=>{
@@ -92,10 +95,6 @@ export default function LanguageOutSelector({ selectedLanguageCode, updateConfig
             setResponse({ isSuccess: false, message: 'An error occurred while updating your languages' });
             console.error('Language update error:', error);
         });
-    };
-
-    const closeResponse = () => {
-        setResponse(null);
     };
 
     const handleToggle = (value: string) => () => {
@@ -154,7 +153,7 @@ export default function LanguageOutSelector({ selectedLanguageCode, updateConfig
                 <Alert
                     type={(response.isSuccess) ? 'success' : 'error'}
                     message={response.message}
-                    onClose={closeResponse}
+                    onClose={() => setResponse(null)}
                 />
             )}        
             <Grid

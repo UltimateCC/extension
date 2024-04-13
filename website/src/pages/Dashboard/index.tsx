@@ -246,7 +246,7 @@ function Dashboard() {
                                         configLoaded={configLoaded}
                                         loadingImg={loadingImg}
                                     />
-                                    { (socketCtx?.translateLangs?.length > 0) && (
+                                    { ( !!config.translateService ) && (
                                         <div className='languages'>
                                             <h3>Translation languages</h3>
                                             <LanguageOutSelector

@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { LangList, TranscriptData, TypedSocket } from "../context/SocketContext";
+import { TranscriptData, TypedSocket } from "../context/SocketContext";
 
 const socket: TypedSocket = io({autoConnect: false});
 
 export function useSocket(connect: boolean) {
-    const [translateLangs, setTranslateLangs] = useState<LangList>([]);
     const [socketError, setSocketError] = useState<string|undefined>();
 
     useEffect(() => {
@@ -23,12 +22,10 @@ export function useSocket(connect: boolean) {
 
             socket.on('connect', handleConnect);
             socket.on('connect_error', handleError);
-            socket.on('translateLangs', setTranslateLangs);
 
             return () => {
                 socket.off('connect', handleConnect);
                 socket.off('connect_error', handleError);
-                socket.off('translateLangs', setTranslateLangs);
                 socket.disconnect();
             }            
         }
@@ -52,7 +49,6 @@ export function useSocket(connect: boolean) {
     return {
             socket,
             socketError,
-            translateLangs,
             reloadConfig,
             handleText,
     };

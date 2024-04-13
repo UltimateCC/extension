@@ -31,7 +31,6 @@ export type Action = {
 }
 
 interface ServerToClientEvents {
-    translateLangs: (langs: LangList) => void
     info: (info: Info) => void
     transcript: (transcript: TranscriptData) =>void
 	action: (action: Action)=>void
@@ -46,7 +45,6 @@ export type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 export interface SocketContextType {
     socket: TypedSocket
-    translateLangs: LangList
     reloadConfig: () => void
     handleText: (transcript: TranscriptData ) => void
 } 

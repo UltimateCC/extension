@@ -83,6 +83,7 @@ export class CaptionSession {
 			}
 
 			// Send available translation languages
+			// todo: remove (no longer used by last version of dashboard)
 			const langs = await this.translator.getLangs();
 			io.to(`twitch-${this.twitchId}`).emit('translateLangs', langs);
 

@@ -31,13 +31,15 @@ function TranslationService({ translateService, updateConfig, configLoaded, load
         if (isLoadingSend || !newApiKey) return;
         
         setIsLoadingSend(true);
-
         DelayedDisplay({
             requestFn: async () => {
                 await api('secrets', { method: 'POST', body: { type: 'gcpKey', value: newApiKey } });
                 await updateConfig({translateService: 'gcp'});
                 await new Promise((res)=>setTimeout(res, 100));
                 reloadConfig();
+                if(apiKeyInputRef.current?.value) {
+                    apiKeyInputRef.current.value = '';
+                }
             },
             successMessage: "The API key is working and has been saved", 
             errorMessage: "An error occurred",
