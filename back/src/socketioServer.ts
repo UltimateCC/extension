@@ -1,8 +1,9 @@
 import { Server } from "socket.io";
-import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
 import { RateLimiterMemory } from "rate-limiter-flexible";
-import { logger } from "./utils/logger";
+import { SessionData } from "express-session";
 import { z } from "zod";
+import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
+import { logger } from "./utils/logger";
 import { metrics } from "./utils/metrics";
 import { getCaptionSession } from "./CaptionSession";
 
@@ -47,8 +48,7 @@ io.use((socket, next)=>{
 	if(typeof socket.handshake.auth.browserSource === 'string') {
 		next();
 	}else{
-		// eslint-disable-next-line -- Access session object added by express-session
-		const session = (socket.request as any).session;
+		const session = (socket.request as unknown as { session: SessionData }).session;
 
 		if(!session.userid) {
 			logger.warn('Unauthenticated socketio connection');

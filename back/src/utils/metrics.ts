@@ -1,8 +1,8 @@
 import client from 'prom-client';
 import express from "express";
+import { createServer } from 'http';
 import { environment } from './environment';
 import { logger } from './logger';
-import { createServer } from 'http';
 
 const register = client.register;
 
