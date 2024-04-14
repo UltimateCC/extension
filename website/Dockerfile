@@ -1,5 +1,4 @@
-
-FROM node:18-alpine3.18 as build
+FROM node:18-alpine3.18 as base
 
 WORKDIR /app
 
@@ -13,6 +12,8 @@ RUN yarn install --frozen-lockfile
 COPY index.html ./
 COPY src ./src/
 COPY public ./public/
+
+FROM base as build
 
 RUN yarn build
 
