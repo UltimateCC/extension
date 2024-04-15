@@ -15,7 +15,7 @@
     "@tsconfig/svelte": "^5.0.0",
     "@types/node": "^20.8.1",
     "@types/twitch-ext": "^1.24.5",
-    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
     "npm-build-zip": "^1.0.4",
     "sass": "^1.69.5",
     "shx": "^0.3.4",

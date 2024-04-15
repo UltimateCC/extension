@@ -15,4 +15,4 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i --frozen-lockfile
 COPY index.html ./
 COPY src ./src/
 
-CMD [ "pnpm", "dev" ]
+CMD [ "pnpm", "dev", "--host" ]

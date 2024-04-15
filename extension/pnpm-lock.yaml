@@ -23,8 +23,8 @@ devDependencies:
     specifier: ^1.24.5
     version: 1.24.6
   '@vitejs/plugin-basic-ssl':
-    specifier: ^1.0.1
-    version: 1.0.1(vite@4.5.1)
+    specifier: ^1.1.0
+    version: 1.1.0(vite@4.5.1)
   npm-build-zip:
     specifier: ^1.0.4
     version: 1.0.4
@@ -380,11 +380,11 @@ packages:
     resolution: {integrity: sha512-1JgjjgtxJ51EtF0trsKpY9kACOPAE/K4Df8rHC6zPZ5abDeEJwqB8URGy4TiDaeezRhjwKIY1QrTiYwdytmn5A==}
     dev: true
 
-  /@vitejs/plugin-basic-ssl@1.0.1(vite@4.5.1):
-    resolution: {integrity: sha512-pcub+YbFtFhaGRTo1832FQHQSHvMrlb43974e2eS8EKleR3p1cDdkJFPci1UhwkEf1J9Bz+wKBSzqpKp7nNj2A==}
+  /@vitejs/plugin-basic-ssl@1.1.0(vite@4.5.1):
+    resolution: {integrity: sha512-wO4Dk/rm8u7RNhOf95ZzcEmC9rYOncYgvq4z3duaJrCgjN8BxAnDVyndanfcJZ0O6XZzHz6Q0hTimxTg8Y9g/A==}
     engines: {node: '>=14.6.0'}
     peerDependencies:
-      vite: ^3.0.0 || ^4.0.0
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
     dependencies:
       vite: 4.5.1(@types/node@20.8.10)(sass@1.69.5)
     dev: true
