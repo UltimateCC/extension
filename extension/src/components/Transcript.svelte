@@ -44,10 +44,10 @@
 				{#if line[0]?.speaker}
 					<b>{line[0].speaker}: </b>
 				{/if}
+				{#each line as part }
+					{ ( part.captions.find(alt=>alt.lang === $language) ?? part.captions[0] ).text }
+				{/each}
 			</div>
-			{#each line as part }
-				{ ( part.captions.find(alt=>alt.lang === $language) ?? part.captions[0] ).text }
-			{/each}
 		{/each}
 	</div>
 </div>
