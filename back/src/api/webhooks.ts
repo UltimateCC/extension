@@ -1,24 +1,25 @@
 import { Router } from "express";
-import { authMiddleware } from "./auth";
 import { User } from "../entity/User";
 import { Action } from "../types";
 import { io } from "../socketioServer";
+import { authMiddleware } from "../middleware/session";
+import { SessionRequest } from "supertokens-node/framework/express";
 
 
-async function getWebhookUrl(twitchId: string, regen: boolean) {
-	const user = await User.findOneByOrFail({ twitchId });
+async function getWebhookUrl(userId: string, regen: boolean) {
+	const user = await User.findOneByOrFail({ userId });
 	if(!user.webhookSecret || regen) {
 		await user.genWebhookSecret();
 	}
-	return `/api/webhooks/${ user.twitchId }/${ user.webhookSecret }`;
+	return `/api/webhooks/${user.twitchId}/${user.webhookSecret}`;
 }
 
 export const webhooksRouter = Router();
 
 // Get current webhook base url
-webhooksRouter.get('/url', authMiddleware, async (req, res, next)=>{
+webhooksRouter.get('/url', authMiddleware, async (req: SessionRequest, res, next)=>{
 	try {
-		const url = await getWebhookUrl(req.session.userid!, false);
+		const url = await getWebhookUrl(req.session!.getUserId(), false);
 		res.json({ url });
 	}catch(e) {
 		next(e);
@@ -26,9 +27,9 @@ webhooksRouter.get('/url', authMiddleware, async (req, res, next)=>{
 });
 
 // Generate a new webhook base url
-webhooksRouter.post('/url', authMiddleware, async (req, res, next)=>{
+webhooksRouter.post('/url', authMiddleware, async (req: SessionRequest, res, next)=>{
 	try {
-		const url = await getWebhookUrl(req.session.userid!, true);
+		const url = await getWebhookUrl(req.session!.getUserId(), true);
 		res.json({ url });
 	}catch(e) {
 		next(e);
@@ -62,7 +63,7 @@ webhooksRouter.get('/:id/:key', async (req, res, next)=>{
 
 		// If action received, send it to user
 		if(action) {
-			io.to(`twitch-${ user.twitchId }`).emit('action', action);
+			io.to(`twitch-${user.twitchId}`).emit('action', action);
 			res.json({ success: true });
 		}else{
 			res.status(400).json({

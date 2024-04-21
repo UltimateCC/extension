@@ -1,14 +1,19 @@
 import { Router } from "express";
 import { Stats } from "../entity/Stats";
 import { FindOptionsWhere } from "typeorm";
+import { SessionRequest } from "supertokens-node/framework/express";
+import { User } from "../entity/User";
+import { isAdminSession } from "../config/auth";
 
 export const statsRouter = Router();
 
-statsRouter.get('', async (req, res, next)=>{
+statsRouter.get('', async (req: SessionRequest, res, next)=>{
 	try{
-		const where: FindOptionsWhere<Stats> = { twitchId: req.session.userid };
+		const user = await User.findOneByOrFail({userId: req.session?.getUserId()});
 
-		if(req.session.admin) {
+		const where: FindOptionsWhere<Stats> = { twitchId: user.twitchId };
+
+		if(await isAdminSession(req.session!)) {
 			if(req.query.all) {
 				// Include all users
 				delete where.twitchId;

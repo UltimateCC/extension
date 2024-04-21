@@ -1,39 +1,22 @@
-import session from "express-session";
-import { environment } from "../utils/environment";
-import { logger } from "../utils/logger";
-import { createClient } from "redis";
-import RedisStore from "connect-redis";
+import { middleware, errorHandler } from "supertokens-node/framework/express";
+import { verifySession } from "supertokens-node/recipe/session/framework/express";
+import UserRoles from "supertokens-node/recipe/userroles";
 
-// Sessions are valid for 7 days
-const sessionTime = 60 * 60 * 24 * 7;
 
-const redisClient = createClient({
-	url: environment.SESSION_REDIS
+export const supertokenMiddleware = middleware();
+
+export const supertokenErrorHandler = errorHandler();
+
+/** Middleware to load session */
+export const loadSessionMiddleware = verifySession({sessionRequired: false});
+
+/** Middleware to require a user to be logged in */
+export const authMiddleware = verifySession();
+
+/** Middleware to require a user to be admin */
+export const adminMiddleware = verifySession({
+	overrideGlobalClaimValidators: async (globalValidators) => [
+		...globalValidators,
+		UserRoles.UserRoleClaim.validators.includes('admin')
+	]
 });
-redisClient.on('error', e=>{
-	logger.error('Redis client error', e);
-});
-
-export const sessionMiddleware = session({
-	proxy: true,
-	secret: environment.SESSION_SECRET,
-	saveUninitialized: false,
-	resave: false,
-	rolling: true,
-	cookie: {
-		//secure: true,
-		maxAge: sessionTime * 1000
-	},
-	store: new RedisStore({
-		client: redisClient,
-		prefix: "captions:",
-	})
-});
-
-export async function initSessionMiddleware() {
-	await redisClient.connect();
-}
-
-export async function stopSessionMiddleware() {
-	await redisClient.disconnect();
-}

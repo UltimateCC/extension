@@ -9,20 +9,8 @@ export const clientId = environment.TWITCH_CLIENTID;
 export const ownerId = environment.TWITCH_OWNERID;
 export const secret = environment.TWITCH_SECRET;
 export const clientSecret = environment.TWITCH_CLIENTSECRET;
-export const redirectUri = environment.TWITCH_REDIRECT_URI;
-const baseScope = ['user:read:broadcast','user:read:email'];
 
-export function getAuthUrl(additionalScope: string[] = []) {
-	const authParams = new URLSearchParams({
-		response_type: 'code',
-		client_id: clientId,
-		redirect_uri: redirectUri,
-		scope: baseScope.concat(...additionalScope).join(' ')
-	});
-	return `https://id.twitch.tv/oauth2/authorize?${authParams}`;
-}
-
-export const authProvider = new RefreshingAuthProvider({clientId, clientSecret, redirectUri});
+export const authProvider = new RefreshingAuthProvider({clientId, clientSecret});
 
 authProvider.onRefresh((twitchId, token)=>{
 	User.update({ twitchId }, { twitchToken: token })

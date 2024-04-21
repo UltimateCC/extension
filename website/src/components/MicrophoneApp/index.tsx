@@ -30,6 +30,18 @@ function MicrophoneApp({ spokenLang, setSpokenLang, setListening, listening, con
 
     // Show error messages received via socket
     useEffect(() => {
+        function handleConnect() {
+            setResponse(null);
+        }
+
+        function handleError(e: Error) {
+            setResponse({
+                type: 'warning',
+                message: 'Connection error, try refreshing the page'
+            });
+            console.error('Socketio error', e);
+        }
+
         function handleInfo(info: Info) {
             if(info.type === 'warn') {
                 setResponse({type: 'warning', message: info.message});
@@ -37,9 +49,14 @@ function MicrophoneApp({ spokenLang, setSpokenLang, setListening, listening, con
                 setResponse({type: 'error', message: info.message});
             }
         }
+        
+        socket.on('connect', handleConnect);
+        socket.on('connect_error', handleError);
         socket.on('info', handleInfo);
 
         return () => {
+            socket.off('connect', handleConnect);
+            socket.off('connect_error', handleError);
             socket.off('info', handleInfo);
         }
     }, [recognitionErrror, socket]);

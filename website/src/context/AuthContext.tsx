@@ -1,4 +1,3 @@
-
 import {
     createContext,
     ReactNode,
@@ -7,28 +6,39 @@ import {
     useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import SuperTokens from 'supertokens-web-js';
+import Session from 'supertokens-web-js/recipe/session';
+import ThirdParty, { getAuthorisationURLWithQueryParamsAndSetState, signInAndUp, signOut } from 'supertokens-web-js/recipe/thirdparty'
 import api from "../services/api";
 
 interface SessionData {
     connected?: boolean
-    /** Twitch user id */
-    userid?: string
-    /** Twitch login */
-    login?: string
-    /** Image */
+    displayName?: string
+    twitchId?: string
     img?: string
-    /** Auth url */
-    url?: string
 }
 
 interface AuthContextType {
     user?: SessionData
     loading: boolean
     error?: boolean
-    login: (code: string) => void
+    authWithTwitch: () => Promise<void>
+    login: () => void
     refreshAuth: () => void
     logout: () => void
 }
+
+SuperTokens.init({
+    appInfo: {
+        appName: "UltimateCC",
+        apiDomain: location.origin,
+        apiBasePath: "/api/auth",
+    },
+    recipeList: [
+        ThirdParty.init(),
+        Session.init()
+    ]
+});
 
 export const AuthContext = createContext<AuthContextType>(
     {} as AuthContextType
@@ -41,15 +51,32 @@ export function AuthProvider({ children }: { children: ReactNode; }) {
 
     const navigate = useNavigate();
 
+    async function authWithTwitch() {
+        try {
+            const url = await getAuthorisationURLWithQueryParamsAndSetState({
+                thirdPartyId: "twitch",
+                frontendRedirectURI: `${location.origin}/verify`,
+            });
+            window.location.replace(url);            
+        }catch(e) {
+            console.error('Twitch auth error');
+        }
+    }
+
     function refreshAuth() {
         setLoading(true);
         setError(false);
-        api('auth')
-            .then((data) => {
-                setUser(data);
-            })
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
+        return new Promise<void>((res) => {
+            api('me')
+                .then((data) => {
+                    setUser(data);
+                })
+                .catch(() => setError(true))
+                .finally(() => {
+                    setLoading(false);
+                    res();
+                });
+        });
     }
 
     const memoedValue = useMemo(
@@ -59,21 +86,28 @@ export function AuthProvider({ children }: { children: ReactNode; }) {
                 loading,
                 error,
                 refreshAuth,
-                login(code: string) {
+                authWithTwitch,
+                login() {
                     setLoading(true);
-                    api('auth', {method: 'POST', body: {code}})
-                        .then((data) => {
-                            setUser(data);
-                            setError(false);
-                            navigate('/dashboard', { replace: true } );
+                    signInAndUp()
+                        .then((data)=>{
+                            console.log('Auth', data);
+                            if(data.status === 'OK') {
+                                return refreshAuth();
+                            }else{
+                                setError(true);
+                            }
                         })
+                        .then(()=> { navigate('/dashboard', { replace: true } ); })
                         .catch(() => setError(true))
                         .finally(() => setLoading(false));
-                }, 
+                },
                 logout() {
-                    api('auth', { method: 'DELETE' })
+                    signOut()
+                        .then(()=>{
+                            return refreshAuth();
+                        })
                         .then(() => {
-                            refreshAuth();
                             navigate('/', { replace: true } );
                         })
                         .catch(() => setError(true));

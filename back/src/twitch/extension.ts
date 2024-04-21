@@ -4,10 +4,10 @@ import { logger } from "../utils/logger";
 import { metrics } from "../utils/metrics";
 
 // Check if user has installed extension
-export async function isExtensionInstalled(user: string) {
+export async function isExtensionInstalled(twitchId: string) {
 	try{
-		await ensureUserReady(user);
-		const exts = await api.asUser(user, (client) => client.users.getActiveExtensions(user, true));
+		await ensureUserReady(twitchId);
+		const exts = await api.asUser(twitchId, (client) => client.users.getActiveExtensions(twitchId, true));
 
 		return exts.getAllExtensions().some(ext => ext.id === clientId);
 	}catch(e) {
@@ -15,22 +15,22 @@ export async function isExtensionInstalled(user: string) {
 	}
 }
 
-export async function sendPubsub(userId: string, message: string) {
+export async function sendPubsub(twitchId: string, message: string) {
 	try{
-		await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, userId, message);
+		await sendExtensionPubSubBroadcastMessage({ clientId, secret, ownerId }, twitchId, message);
 	}catch(e) {
 		if(e && typeof e === 'object' && 'statusCode' in e && typeof e.statusCode === 'number') {
 			const status = e?.statusCode;
 			metrics.pubsubErrors.inc({ status });
-			logger.warn(`Error ${status} sending pubsub for user ${userId}`);
+			logger.warn(`Error ${status} sending pubsub for user ${twitchId}`);
 		}else{
-			logger.error(`Unexpected error sending pubsub for user ${userId}`, e);
+			logger.error(`Unexpected error sending pubsub for user ${twitchId}`, e);
 		}
 	}
 }
 
-export async function saveTwitchConfig(userId: string, config: string) {
-	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, userId, config);
+export async function saveTwitchConfig(twitchId: string, config: string) {
+	await setExtensionBroadcasterConfiguration({ clientId, secret, ownerId }, twitchId, config);
 }
 
 export async function getExtensionAnalytics() {

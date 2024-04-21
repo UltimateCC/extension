@@ -4,11 +4,13 @@ import { startServer, stopServer } from "./server";
 import { logger } from "./utils/logger";
 import { startMetricsServer, stopMetricsServer } from "./utils/metrics";
 import { cleanEventsub } from "./twitch/events";
+import { initSuperTokens } from "./config/auth";
 
 
 (async ()=>{
 	try{
 		logger.info('Starting');
+		initSuperTokens();
 		await initDatabase();
 		await cleanEventsub();
 		await Promise.all([

@@ -4,6 +4,7 @@ import { logger } from "../utils/logger";
 import { GCPTranslator } from "../translate/GCPTranslator";
 import { z } from "zod";
 import { Secret, SecretType } from "../entity/Secret";
+import { SessionRequest } from "supertokens-node/framework/express";
 
 export const secretsRouter = Router();
 
@@ -12,19 +13,19 @@ const PostBodyType = z.object({
 	value: z.string().min(1).max(128).optional()
 });
 
-secretsRouter.post('', async (req, res, next)=>{
+secretsRouter.post('', async (req: SessionRequest, res, next)=>{
 	try{
 		const data = PostBodyType.parse(req.body);
-		const user = await User.findOneByOrFail({ twitchId: req.session.userid });
+		const user = await User.findOneByOrFail({ userId: req.session?.getUserId() });
 
 		// Verify value
 		if(data.value) {
 			// If new GCP API key is given, check if it works
 			if(data.type === 'gcpKey') {
-				logger.debug(`Saving GCP key for ${req.session.userid}`);
+				logger.debug(`Saving GCP key for ${user.twitchId}`);
 				const check = await GCPTranslator.checkKey(data.value);
 				if(check.isError) {
-					logger.warn(`Error saving GCP key for ${req.session.userid} : ${check.message}`);
+					logger.warn(`Error saving GCP key for ${user.twitchId} : ${check.message}`);
 					return res.status(400).json({
 						message: `${check.message}`
 					});

@@ -5,33 +5,33 @@ import { apiRouter } from './api/apiRoutes';
 import { rateLimiterMiddleware } from './middleware/rateLimit';
 import { environment } from './utils/environment';
 import { logger } from './utils/logger';
-import { initSessionMiddleware, sessionMiddleware, stopSessionMiddleware } from './middleware/session';
 import { eventsub } from './twitch/events';
 import { errorMiddleware } from './middleware/error';
 import { endSessions } from './CaptionSession';
+import { loadSessionMiddleware, supertokenErrorHandler, supertokenMiddleware } from './middleware/session';
 
 const app = express();
 app.set('trust proxy', true);
 
 app.use(rateLimiterMiddleware);
 eventsub.apply(app);
-app.use(sessionMiddleware);
+app.use(supertokenMiddleware);
 app.use(express.json());
 
 // API routes
 app.use('/api', apiRouter);
 
 // Handle errors
+app.use(supertokenErrorHandler);
 app.use(errorMiddleware);
 
 // Create HTTP server and attach express app
 export const server = createServer(app);
 // Attach socketio to server
 io.attach(server);
-io.engine.use(sessionMiddleware);
+io.engine.use(loadSessionMiddleware);
 
 export async function startServer() {
-	await initSessionMiddleware();
 	await new Promise<void>((res) => {
 		server.listen(environment.PORT, res);
 	});
@@ -51,5 +51,4 @@ export async function stopServer() {
 		endSessions()
 	]);
 	logger.info('Server closed');
-	await stopSessionMiddleware();
 }

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { adminMiddleware, authMiddleware, authRouter } from "./auth";
 import { thanksRouter } from "./thanks";
 import { webhooksRouter } from "./webhooks";
 import { configRouter } from "./config";
@@ -8,13 +7,22 @@ import { twitchConfigRouter } from "./twitchConfig";
 import { statsRouter } from "./stats";
 import { twitchRouter } from "./twitch";
 import { usersRouter } from "./users";
+import { authRouter } from "./auth";
+import { adminMiddleware, authMiddleware } from "../middleware/session";
 
 
 export const apiRouter = Router();
 
 // Public routes
-// Auth
-apiRouter.use('/auth', authRouter);
+// Previous auth: Ensure users with old dashboard loaded are considered disconnected
+apiRouter.get('/auth', (req, res, next)=>{
+	res.json({
+		connected: false,
+	});
+});
+
+// Info about connected user
+apiRouter.use('/me', authRouter);
 
 // Thanks page
 apiRouter.use('/thanks', thanksRouter);
@@ -26,7 +34,7 @@ apiRouter.use('/twitch', twitchRouter);
 apiRouter.use('/webhooks', webhooksRouter);
 
 // Authenticated routes
-// User config (loaded when connected to websocket)
+// User configuration
 apiRouter.use('/config', authMiddleware, configRouter);
 
 // Secrets

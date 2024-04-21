@@ -19,10 +19,19 @@ export class User extends BaseEntity {
 	updated: Date
 
 	@Column({unique: true})
+	userId: string;
+
+	@Column({unique: true})
 	twitchId: string;
 
 	@Column()
 	twitchLogin: string;
+
+	@Column()
+	twitchName: string;
+
+	@Column()
+	img: string;
 
 	@Column('json')
 	twitchToken: AccessToken;

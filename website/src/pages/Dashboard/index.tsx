@@ -61,7 +61,7 @@ function Dashboard() {
     const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [profilePicture, setProfilePicture] = useState<string>(loadingImg);
     const [response, setResponse] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string; hideRestOfPage?: boolean; } | null>(null);
-    
+
     // Selected settings tab
     const [currentTab, setCurrentTab] = useState<string>('Guide');
     
@@ -123,7 +123,7 @@ function Dashboard() {
             setProfilePicture(user.img);
         }
         if(error) {
-            setResponse({ type: "error", message: "An error occurred while authenticating, try refreshing page", hideRestOfPage: true });
+            setResponse({ type: "error", message: "An error occurred, try refreshing the page", hideRestOfPage: true });
         }
         if(user?.connected) {
             loadConfig()
@@ -193,7 +193,7 @@ function Dashboard() {
             <section id="dashboard">
                 <div className="welcome theme-box">
                     <h2>
-                        Welcome, <strong>{user?.login ?? ''}</strong>
+                        Welcome, <strong>{user?.displayName ?? ''}</strong>
                         <Link to="/logout" className="profile-container">
                             {profilePicture !== loadingImg && (
                                 <div className='logout-box'>
@@ -286,7 +286,7 @@ function Dashboard() {
                                     browserSourceEnabled={config.browserSourceEnabled ?? false}
                                     updateConfig={updateConfig}
                                     configLoaded={configLoaded}
-                                    userId={user?.userid ?? ''}
+                                    userId={user?.twitchId ?? ''}
                                 />
                             ) }
                         </div>

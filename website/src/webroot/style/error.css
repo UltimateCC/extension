@@ -20,3 +20,7 @@
     left: 0;
     cursor: help;
 }
+
+#error button {
+    margin-top: 1em;
+}

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getLiveChannels } from "../twitch/liveChannels";
-import { adminMiddleware } from "./auth";
 import { getExtensionAnalytics } from "../twitch/extension";
+import { adminMiddleware } from "../middleware/session";
 
 export const twitchRouter = Router();
 
@@ -13,7 +13,7 @@ twitchRouter.get('/live', async (req, res, next)=>{
 	}
 });
 
-twitchRouter.get('/analytics',  adminMiddleware, async (req, res, next)=>{
+twitchRouter.get('/analytics', adminMiddleware, async (req, res, next)=>{
 	try{
 		res.json(await getExtensionAnalytics());
 	}catch(e) {

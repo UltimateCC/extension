@@ -17,7 +17,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "supertokens-web-js": "^0.10.1"
   },
   "devDependencies": {
     "@types/dom-speech-recognition": "^0.0.3",

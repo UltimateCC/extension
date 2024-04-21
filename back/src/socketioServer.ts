@@ -1,11 +1,12 @@
 import { Server } from "socket.io";
 import { RateLimiterMemory } from "rate-limiter-flexible";
-import { SessionData } from "express-session";
 import { z } from "zod";
 import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
 import { logger } from "./utils/logger";
 import { metrics } from "./utils/metrics";
 import { getCaptionSession } from "./CaptionSession";
+import { SessionRequest } from "supertokens-node/framework/express";
+import { User } from "./entity/User";
 
 
 interface ServerToClientEvents {
@@ -43,19 +44,26 @@ const transcriptDataSchema = z.object({
 export const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>();
 
 // Before actually accepting connection: auth
-io.use((socket, next)=>{
-
+io.use((socket, next) => {
 	if(typeof socket.handshake.auth.browserSource === 'string') {
 		next();
 	}else{
-		const session = (socket.request as unknown as { session: SessionData }).session;
-
-		if(!session.userid) {
+		const req = socket.request as SessionRequest;
+		const userId = req.session?.getUserId();
+		if(!userId) {
 			logger.warn('Unauthenticated socketio connection');
+			socket.emit('info', { type: 'error', message: 'Session expired, refresh page !' });
 			next(new Error('not authenticated'));
 		}else{
-			socket.data.twitchId = session.userid;
-			next();
+			User.findOneByOrFail({userId})
+			.then((u) => {
+				socket.data.twitchId = u.twitchId;
+				next();
+			})
+			.catch(e => {
+				logger.warn('Error loading user linked with session', e);
+				next(new Error('auth error'));
+			});
 		}
 	}
 });
