@@ -24,6 +24,7 @@ interface ClientToServerEvents {
 
 export interface SocketData {
 	twitchId: string
+	notAuth: boolean
 }
 
 // Limit received text
@@ -52,8 +53,9 @@ io.use((socket, next) => {
 		const userId = req.session?.getUserId();
 		if(!userId) {
 			logger.warn('Unauthenticated socketio connection');
-			socket.emit('info', { type: 'error', message: 'Session expired, refresh page !' });
-			next(new Error('not authenticated'));
+			socket.data.notAuth = true;
+			//next(new Error('not authenticated'));
+			next();
 		}else{
 			User.findOneByOrFail({userId})
 			.then((u) => {
@@ -70,6 +72,11 @@ io.use((socket, next) => {
 
 // When socket connected
 io.on('connect', (socket) => {
+	if(socket.data.notAuth) {
+		socket.emit('info', { type: 'error', message: 'Your session seems expired, try refreshing the page !' });
+		return;
+	}
+
 	metrics.connectionCount.inc();
 	socket.on('disconnect', ()=>{
 		metrics.connectionCount.dec();
