@@ -4,7 +4,7 @@ import ThirdParty from "supertokens-node/recipe/thirdparty";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
 import { environment } from "./environment";
-import { clientId, clientSecret } from "../twitch/twitch";
+import { clientId, clientSecret, ownerId } from "../twitch/twitch";
 import { logger } from "./logger";
 import { User } from "../entity/User";
 
@@ -96,9 +96,9 @@ export function initSuperTokens() {
 
 									const { scope, access_token: accessToken, refresh_token: refreshToken } = res.oAuthTokens;
 
-									// if(twitchInfo?.id === ownerId && scope?.includes('analytics:read:extensions')) {
-									// 	logger.info('Owner authenticated without analytics:read:extensions scope, not saving token');
-									// }else{
+									if(twitchInfo?.id === ownerId && scope?.includes('analytics:read:extensions')) {
+										logger.info('Owner authenticated without analytics:read:extensions scope, not saving token');
+									}else{
 										user.twitchToken = {
 											accessToken,
 											refreshToken,
@@ -106,7 +106,7 @@ export function initSuperTokens() {
 											expiresIn: 0,
 											obtainmentTimestamp: 0
 										};
-									//}
+									}
 									await user.save();
 									logger.info(`${user.twitchId} ${user.twitchLogin} authenticated`);
 								}
