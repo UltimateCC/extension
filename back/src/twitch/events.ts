@@ -1,7 +1,7 @@
 import { EventSubMiddleware } from "@twurple/eventsub-http";
 import { api } from "./twitch";
-import { environment } from "../utils/environment";
-import { logger } from "../utils/logger";
+import { environment } from "../config/environment";
+import { logger } from "../config/logger";
 import { User } from "../entity/User";
 import { io } from "../socketioServer";
 

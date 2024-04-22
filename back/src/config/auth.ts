@@ -3,9 +3,9 @@ import Session, { SessionContainer } from "supertokens-node/recipe/session";
 import ThirdParty from "supertokens-node/recipe/thirdparty";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
-import { environment } from "../utils/environment";
+import { environment } from "./environment";
 import { clientId, clientSecret } from "../twitch/twitch";
-import { logger } from "../utils/logger";
+import { logger } from "./logger";
 import { User } from "../entity/User";
 
 export function initSuperTokens() {
@@ -47,16 +47,22 @@ export function initSuperTokens() {
 										throw new Error('Twitch error getting user info');
 									}
 									const data = (await res.json()).data[0];
+									const email = {
+										id: data.email,
+										isVerified: true
+									}
+									if(!email.id) {
+										logger.warn(`User ${data.id} from Twitch is connecting without a verifed email, generating a fake one`);
+										email.id = `${data.id}@twitch.fake`;
+										email.isVerified = false;
+									}
 
 									return {
 										thirdPartyUserId: data.id,
-										email: {
-											id: data.email,
-											isVerified: true
-										},
+										email,
 										rawUserInfoFromProvider: {
 											fromUserInfoAPI: data,
-										}
+										},
 									}
 								}
 							}
@@ -102,6 +108,7 @@ export function initSuperTokens() {
 										};
 									//}
 									await user.save();
+									logger.info(`${user.twitchId} ${user.twitchLogin} authenticated`);
 								}
 								return res;
 							}

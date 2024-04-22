@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Stats } from "./entity/Stats";
-import { environment } from "./utils/environment";
-import { logger } from "./utils/logger";
+import { environment } from "./config/environment";
+import { logger } from "./config/logger";
 import { Secret } from "./entity/Secret";
 
 

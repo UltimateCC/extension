@@ -1,4 +1,4 @@
-import { logger } from "../utils/logger";
+import { logger } from "../config/logger";
 import { LangList, Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 

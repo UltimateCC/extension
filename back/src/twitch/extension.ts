@@ -1,6 +1,6 @@
 import { sendExtensionPubSubBroadcastMessage, setExtensionBroadcasterConfiguration } from "@twurple/ebs-helper";
 import { api, clientId, secret, ownerId, ensureUserReady } from "./twitch";
-import { logger } from "../utils/logger";
+import { logger } from "../config/logger";
 import { metrics } from "../utils/metrics";
 
 // Check if user has installed extension

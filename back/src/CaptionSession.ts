@@ -2,7 +2,7 @@ import { Stats } from "./entity/Stats";
 import { User, UserConfig } from "./entity/User";
 import { Translator } from "./translate/Translator";
 import { getTranslator } from "./translate/getTranslator";
-import { logger } from "./utils/logger";
+import { logger } from "./config/logger";
 import { io } from "./socketioServer";
 import { isExtensionInstalled, sendPubsub } from "./twitch/extension";
 import { applyBanwords } from "./utils/functions";

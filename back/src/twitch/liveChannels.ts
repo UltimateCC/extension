@@ -1,5 +1,5 @@
 import { getAllSessionsStatus } from "../CaptionSession"
-import { logger } from "../utils/logger"
+import { logger } from "../config/logger"
 import { metrics } from "../utils/metrics"
 import { api } from "./twitch"
 

@@ -1,8 +1,8 @@
 import { RefreshingAuthProvider } from "@twurple/auth";
 import { ApiClient } from "@twurple/api";
 import { User } from "../entity/User";
-import { environment } from "../utils/environment";
-import { logger } from "../utils/logger";
+import { environment } from "../config/environment";
+import { logger } from "../config/logger";
 
 
 export const clientId = environment.TWITCH_CLIENTID;

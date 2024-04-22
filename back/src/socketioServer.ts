@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { z } from "zod";
 import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
-import { logger } from "./utils/logger";
+import { logger } from "./config/logger";
 import { metrics } from "./utils/metrics";
 import { getCaptionSession } from "./CaptionSession";
 import { SessionRequest } from "supertokens-node/framework/express";

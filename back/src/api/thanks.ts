@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { environment } from "../utils/environment";
-import { logger } from "../utils/logger";
+import { environment } from "../config/environment";
+import { logger } from "../config/logger";
 
 type Contributor = {
 	discordId: string

@@ -1,5 +1,5 @@
 import { Result, TranscriptAlt } from "../types";
-import { environment } from "../utils/environment";
+import { environment } from "../config/environment";
 import { Translator } from "./Translator";
 
 /** Stub translator not doing any translation */

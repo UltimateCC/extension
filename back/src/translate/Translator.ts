@@ -1,5 +1,5 @@
 import { User } from "../entity/User";
-import { logger } from "../utils/logger";
+import { logger } from "../config/logger";
 import { LangList, Result, TranscriptAlt } from "../types";
 import { metrics } from "../utils/metrics";
 
