@@ -116,7 +116,9 @@ export function initSuperTokens() {
 					}
 				}
 			}),
-			Session.init(),
+			Session.init({
+				exposeAccessTokenToFrontendInCookieBasedAuth: true
+			}),
 			Dashboard.init(),
 			UserRoles.init(),
 		]

@@ -73,9 +73,10 @@ io.use((socket, next) => {
 // When socket connected
 io.on('connect', (socket) => {
 	if(socket.data.notAuth) {
-		socket.emit('info', { type: 'error', message: 'Your session seems expired, try refreshing the page !' });
+		socket.emit('info', { type: 'warn', message: 'Your session seems expired, try refreshing the page !' });
 		return;
 	}
+	logger.info(`${socket.data.twitchId} connected via socketio`);
 
 	metrics.connectionCount.inc();
 	socket.on('disconnect', ()=>{

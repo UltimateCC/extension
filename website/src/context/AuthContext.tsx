@@ -91,7 +91,6 @@ export function AuthProvider({ children }: { children: ReactNode; }) {
                     setLoading(true);
                     signInAndUp()
                         .then((data)=>{
-                            console.log('Auth', data);
                             if(data.status === 'OK') {
                                 return refreshAuth();
                             }else{

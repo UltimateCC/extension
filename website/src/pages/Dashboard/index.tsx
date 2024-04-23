@@ -48,11 +48,11 @@ interface UserConfig {
 }
 
 function Dashboard() {
-    const { user, error } = useContext(AuthContext);
-    const socketCtx = useSocket(user?.connected ?? false);
-    
     // Redirect if not connected
     useAuthCheck();
+
+    const { user, error } = useContext(AuthContext);
+    const socketCtx = useSocket(user?.connected ?? false);
 
     // User config
     const { config, loadConfig, updateConfig } = useSavedConfig<UserConfig>({apiPath: 'config'});
