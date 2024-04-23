@@ -82,11 +82,6 @@ export class CaptionSession {
 				logger.warn(`Translation API initialization error for user ${this.twitchId}: ${init.message}`);
 			}
 
-			// Send available translation languages
-			// todo: remove (no longer used by last version of dashboard)
-			const langs = await this.translator.getLangs();
-			io.to(`twitch-${this.twitchId}`).emit('translateLangs', langs);
-
 			// Warn if extension is not installed
 			if((await isExtensionInstalled(this.twitchId)) === false) {
 				io.to(`twitch-${this.twitchId}`).emit('info', { type: "warn", message: 'The Twitch extension is not installed on your channel' });

@@ -1,34 +1,13 @@
 import { logger } from "../config/logger";
-import { LangList, Result, TranscriptAlt } from "../types";
+import { Result, TranscriptAlt } from "../types";
 import { Translator } from "./Translator";
 
 
 export class AzureTranslator extends Translator {
-	private static langList: LangList = [];
 
 	ready() {
 		//return !!(this.secrets.azureKey && this.secrets.azureRegion);
 		return false;
-	}
-
-	async getLangs() {
-		if(!this.ready()) {
-			return [];
-		}
-
-		if(!AzureTranslator.langList.length) {
-			//Fetch language list only the first time, it shouldn't change
-			const res = await fetch('https://api.cognitive.microsofttranslator.com/languages?api-version=3.0');
-
-			if(res.ok) {
-				const json = await res.json();
-
-				for(const [k, v] of Object.entries(json.translation)) {
-					AzureTranslator.langList.push({code: k, name: (v as {name: string}).name });
-				}
-			}
-		}
-		return AzureTranslator.langList;
 	}
 
 	async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {

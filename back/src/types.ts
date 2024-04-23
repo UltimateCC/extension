@@ -9,11 +9,6 @@ export type Result<T> = {
 	data: T
 }
 
-export type LangList = {
-	code: string
-	name: string
-}[]
-
 export interface TranscriptAlt {
 	text: string
 	lang: string

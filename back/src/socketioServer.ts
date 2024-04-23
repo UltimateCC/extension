@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { z } from "zod";
-import { Action, Info, LangList, TranscriptData, CaptionsData } from "./types";
+import { Action, Info, TranscriptData, CaptionsData } from "./types";
 import { logger } from "./config/logger";
 import { metrics } from "./utils/metrics";
 import { getCaptionSession } from "./CaptionSession";
@@ -10,7 +10,6 @@ import { User } from "./entity/User";
 
 
 interface ServerToClientEvents {
-	translateLangs: (langs: LangList) => void;
 	info: (info: Info) => void;
 	transcript: (transcript: TranscriptData) => void;
 	captions: (captions: CaptionsData) => void;
@@ -76,10 +75,9 @@ io.on('connect', (socket) => {
 		socket.emit('info', { type: 'warn', message: 'Your session seems expired, try refreshing the page !' });
 		return;
 	}
-	logger.info(`${socket.data.twitchId} connected via socketio`);
 
 	metrics.connectionCount.inc();
-	socket.on('disconnect', ()=>{
+	socket.on('disconnect', () => {
 		metrics.connectionCount.dec();
 	});
 
@@ -87,13 +85,15 @@ io.on('connect', (socket) => {
 		socket.join(`browserSource-${socket.handshake.auth.browserSource}`);
 
 		metrics.browsersourceConnectionCount.inc();
-		socket.on('disconnect', ()=>{
+		socket.on('disconnect', () => {
 			metrics.browsersourceConnectionCount.dec();
 		});
 	}
 
 	// Socket connections from dashboard
 	if(socket.data.twitchId) {
+		logger.info(`${socket.data.twitchId} socketio dashboard connect`);
+
 		socket.join(`twitch-${socket.data.twitchId}`);
 		metrics.dashboardConnectionCount.inc();
 

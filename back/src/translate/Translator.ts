@@ -1,6 +1,6 @@
 import { User } from "../entity/User";
 import { logger } from "../config/logger";
-import { LangList, Result, TranscriptAlt } from "../types";
+import { Result, TranscriptAlt } from "../types";
 import { metrics } from "../utils/metrics";
 
 
@@ -49,11 +49,6 @@ export abstract class Translator {
 	}
 
 	abstract ready(): boolean;
-
-	/** Get list of supported languages */
-	async getLangs(): Promise<LangList> {
-		return [];
-	}
 
 	async translate(data: TranscriptAlt): Promise<Result<TranscriptAlt[]>> {
 		const lang = data.lang.split('-')[0];
