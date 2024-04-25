@@ -78,7 +78,7 @@ export class CaptionSession {
 			this.translator = getTranslator(u);
 			const init = await this.translator.init();
 			if(init.isError) {
-				io.to(`twitch-${this.twitchId}`).emit('info', {type: 'error', message: `Translation API initialization error: ${init.message}`});
+				io.to(`twitch-${this.twitchId}`).emit('info', {type: 'warn', message: `Translation API initialization error: ${init.message}`});
 				logger.warn(`Translation API initialization error for user ${this.twitchId}: ${init.message}`);
 			}
 

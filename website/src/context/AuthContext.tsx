@@ -95,6 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode; }) {
                                 return refreshAuth();
                             }else{
                                 setError(true);
+                                throw new Error('Error refreshing auth');
                             }
                         })
                         .then(()=> { navigate('/dashboard', { replace: true } ); })

@@ -31,6 +31,10 @@ export const server = createServer(app);
 io.attach(server);
 io.engine.use(loadSessionMiddleware);
 
+io.engine.on("connection_error", (err) => {
+	logger.debug('socketio connection error', err);
+});
+
 export async function startServer() {
 	await new Promise<void>((res) => {
 		server.listen(environment.PORT, res);
