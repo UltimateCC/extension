@@ -53,7 +53,6 @@ io.use((socket, next) => {
 		if(!userId) {
 			logger.warn('Unauthenticated socketio connection');
 			socket.data.notAuth = true;
-			//next(new Error('not authenticated'));
 			next();
 		}else{
 			User.findOneByOrFail({userId})
@@ -72,7 +71,7 @@ io.use((socket, next) => {
 // When socket connected
 io.on('connect', (socket) => {
 	if(socket.data.notAuth) {
-		socket.emit('info', { type: 'warn', message: 'Your session seems expired, try refreshing the page !' });
+		socket.emit('info', { type: 'warn', message: 'Your session has expired, try refreshing the page !' });
 		return;
 	}
 

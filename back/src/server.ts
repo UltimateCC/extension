@@ -8,7 +8,7 @@ import { logger } from './config/logger';
 import { eventsub } from './twitch/events';
 import { errorMiddleware } from './middleware/error';
 import { endSessions } from './CaptionSession';
-import { loadSessionMiddleware, supertokenErrorHandler, supertokenMiddleware } from './middleware/session';
+import { socketioSessionMiddleware, supertokenErrorHandler, supertokenMiddleware } from './middleware/session';
 
 const app = express();
 app.set('trust proxy', true);
@@ -29,7 +29,7 @@ app.use(errorMiddleware);
 export const server = createServer(app);
 // Attach socketio to server
 io.attach(server);
-io.engine.use(loadSessionMiddleware);
+io.engine.use(socketioSessionMiddleware);
 
 io.engine.on("connection_error", (err) => {
 	logger.debug('socketio connection error', err);
