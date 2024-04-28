@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { Stats } from "./entity/Stats";
 import { User, UserConfig } from "./entity/User";
 import { Translator } from "./translate/Translator";
@@ -36,6 +37,7 @@ export async function endSessions() {
 }
 
 export class CaptionSession {
+	private uuid: string;
 	private ready: boolean;
 	private loading?: Promise<void>;
 	private shouldReload: boolean;
@@ -64,6 +66,7 @@ export class CaptionSession {
 			// Fetch user
 			const u = await User.findOneOrFail({where: { twitchId: this.twitchId }, cache: false });
 			this.config = u.config;
+			this.uuid = randomUUID();
 
 			if(this.config.twitchAutoStop !== false) {
 				registerTwitchAutoStop(u.twitchId);
@@ -112,7 +115,6 @@ export class CaptionSession {
 				const stats = this.stats;
 				this.stats = null;
 				stats.duration = stats.lastText - stats.firstText;
-				stats.translatedCharCount = this.translator.getTranslatedChars();
 				stats.translateErrorCount = this.translator.getErrorCount();
 				await stats.save();
 				logger.debug(`Saved stats for ${this.twitchId}`);
@@ -162,6 +164,11 @@ export class CaptionSession {
 				io.to(`twitch-${this.twitchId}`).emit('info', { type: 'warn', message: out.message });
 				logger.error(`Translation failed for ${this.twitchId} : ${out.message}`);
 			}else{
+				// Count translated characters
+				if(this.stats) {
+					this.stats.translatedCharCount += (out.translations.length - 1) * out.translatedChars;
+				}
+
 				// If translation generated errors, warn user
 				if(out.errors?.length) {
 					// If multiple translation errors, it's probably multiple times the same
@@ -175,7 +182,7 @@ export class CaptionSession {
 				}
 
 				// For each translated text, apply banwords
-				const censoredText = out.data.map(t => ({
+				const censoredText = out.translations.map(t => ({
 					...t,
 					text: applyBanwords(this.config.banWords ?? [], t.text)
 				}));

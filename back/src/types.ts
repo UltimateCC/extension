@@ -1,13 +1,12 @@
 
 /** Utility type to allow returning an error without throwing it */
-export type Result<T> = {
+export type Result<T extends object> = {
 	isError: true
 	message: string
 } | {
 	isError: false
 	errors?: string[]
-	data: T
-}
+} & T
 
 export interface TranscriptAlt {
 	text: string

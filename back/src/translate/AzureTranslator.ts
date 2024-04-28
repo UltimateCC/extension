@@ -6,11 +6,10 @@ import { Translator } from "./Translator";
 export class AzureTranslator extends Translator {
 
 	ready() {
-		//return !!(this.secrets.azureKey && this.secrets.azureRegion);
-		return false;
+		return true;
 	}
 
-	async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
+	async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<{data: TranscriptAlt[]}>> {
 		const out = [transcript];
 
 		try {
@@ -46,5 +45,4 @@ export class AzureTranslator extends Translator {
 			data: out
 		};
 	}
-
 }

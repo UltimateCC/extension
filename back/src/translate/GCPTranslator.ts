@@ -51,12 +51,13 @@ export class GCPTranslator extends Translator {
 			return check;
 		}
 		this.key = key;
+		this.translating = true;
 		return {
 			isError: false
 		}
 	}
 
-	protected async translateOne(transcript: TranscriptAlt, target: string): Promise<Result<TranscriptAlt>> {
+	protected async translateOne(transcript: TranscriptAlt, target: string): Promise<Result<{data: TranscriptAlt}>> {
 
 		const params = new URLSearchParams({
 			q: transcript.text,
@@ -90,6 +91,7 @@ export class GCPTranslator extends Translator {
 			// Mark as expired to avoid calling API again in this case
 			if(res.status === 403 || res.status === 400) {
 				this.expired = true;
+				this.translating = false;
 			}
 			return {
 				isError: true,

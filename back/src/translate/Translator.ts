@@ -17,20 +17,15 @@ function getCacheDelay(text: string) {
 export abstract class Translator {
 
 	protected expired = false;
+	protected translating = false;
 
 	private cache = new Map<string, TranscriptAlt[]>;
 
-	private translatedChars = 0;
 	protected errorCount = 0;
 
 	constructor(protected user: User) {}
 
-	getTranslatedChars() {
-		return this.translatedChars;
-	}
-
 	incrementTranslatedChars(count: number) {
-		this.translatedChars += count;
 		metrics.translatedCharTotal.inc(count);
 	}
 
@@ -39,7 +34,7 @@ export abstract class Translator {
 	}
 
 	isWorking() {
-		return !!this.translatedChars && !this.expired;
+		return this.translating && !this.expired;
 	}
 
 	async init(): Promise<{isError: boolean, message?: string}> {
@@ -50,16 +45,17 @@ export abstract class Translator {
 
 	abstract ready(): boolean;
 
-	async translate(data: TranscriptAlt): Promise<Result<TranscriptAlt[]>> {
+	async translate(data: TranscriptAlt): Promise<Result<{ translations: TranscriptAlt[], translatedChars: number }>> {
 		const lang = data.lang.split('-')[0];
 
 		if(!this.ready() || this.expired) {
 			// Invalid credentials, do not try translation anymore
 			return {
 				isError: false,
-				data: [
+				translations: [
 					{ lang: data.lang, text: data.text }
-				]
+				],
+				translatedChars: 0
 			}
 		}
 
@@ -69,7 +65,8 @@ export abstract class Translator {
 		if(cached) {
 			return {
 				isError: false,
-				data: cached
+				translations: cached,
+				translatedChars: 0
 			}
 		}else {
 			const translated = await this.translateAll(
@@ -87,12 +84,16 @@ export abstract class Translator {
 				this.cache.delete(cacheKey);
 			}, getCacheDelay(data.text));
 
-			return translated;
+			return {
+				isError: false,
+				translations: translated.data,
+				translatedChars: data.text.length
+			};
 		}
 	}
 
 	/** Override this function to translate to all languages at once, source language is already excluded for target languages */
-	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
+	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<{ data: TranscriptAlt[]}>> {
 		const out = [transcript];
 		const errors = [];
 		//Translate in all required languages
@@ -119,7 +120,7 @@ export abstract class Translator {
 	}
 
 	/** This function will be called for each of the languages to translate, unless translateAll method is overriden */
-	protected translateOne(transcript: TranscriptAlt, target: string): Promise<Result<TranscriptAlt>> {
+	protected translateOne(transcript: TranscriptAlt, target: string): Promise<Result<{data: TranscriptAlt}>> {
 		throw new Error('Not implemented');
 	}
 

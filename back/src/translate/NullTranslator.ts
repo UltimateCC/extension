@@ -9,7 +9,7 @@ export class NullTranslator extends Translator {
 		return true;
 	}
 
-	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<TranscriptAlt[]>> {
+	protected async translateAll(transcript: TranscriptAlt, langs: string[]): Promise<Result<{data: TranscriptAlt[]}>> {
 		const data = [transcript];
 
 		// If not in production, add fake translated text for testing
