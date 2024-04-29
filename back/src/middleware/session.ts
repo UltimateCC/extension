@@ -1,8 +1,9 @@
-import { middleware, errorHandler, SessionRequest } from "supertokens-node/framework/express";
+import { middleware, errorHandler } from "supertokens-node/framework/express";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import UserRoles from "supertokens-node/recipe/userroles";
-import Session from "supertokens-node/recipe/session";
-import { NextFunction, Response } from "express";
+import Session, { SessionContainer } from "supertokens-node/recipe/session";
+import { IncomingMessage, ServerResponse } from "http";
+import { NextFunction } from "express";
 import { Error as SuperTokensError } from "supertokens-node";
 import { logger } from "../config/logger";
 
@@ -26,17 +27,17 @@ export const adminMiddleware = verifySession({
 });
 
 /** Socketio middleware to handle auth errors and trigger token refresh when necessary */
-export const socketioSessionMiddleware = async (req: SessionRequest, res: Response, next: NextFunction) => {
+export const socketioSessionMiddleware = async (req: IncomingMessage & { session?: SessionContainer }, res: ServerResponse, next: NextFunction) => {
 	try {
 		req.session = await Session.getSession(req, res, { sessionRequired: false });
 		next();
 	} catch (e) {
 		if(SuperTokensError.isErrorFromSuperTokens(e)) {
 			logger.warn('socketio supertokens error', e);
-			if(e.type === Session.Error.TRY_REFRESH_TOKEN) {
-				res.sendStatus(401);
+			if(e.type === Session.Error.INVALID_CLAIMS) {
+				res.writeHead(403).end();
 			}else{
-				supertokenErrorHandler(e, req, res, next);
+				res.writeHead(401).end();
 			}
 		}else{
 			next(e);
