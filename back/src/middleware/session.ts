@@ -33,7 +33,11 @@ export const socketioSessionMiddleware = async (req: SessionRequest, res: Respon
 	} catch (e) {
 		if(SuperTokensError.isErrorFromSuperTokens(e)) {
 			logger.warn('socketio supertokens error', e);
-			supertokenErrorHandler(e, req, res, next);
+			if(e.type === Session.Error.TRY_REFRESH_TOKEN) {
+				res.sendStatus(401);
+			}else{
+				supertokenErrorHandler(e, req, res, next);
+			}
 		}else{
 			next(e);
 		}
