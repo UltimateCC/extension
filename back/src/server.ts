@@ -32,7 +32,7 @@ io.attach(server);
 io.engine.use(socketioSessionMiddleware);
 
 io.engine.on("connection_error", (err) => {
-	logger.debug('socketio connection error', err);
+	logger.warn('socketio connection error', err);
 });
 
 export async function startServer() {

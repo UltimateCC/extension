@@ -3,6 +3,8 @@ import { verifySession } from "supertokens-node/recipe/session/framework/express
 import UserRoles from "supertokens-node/recipe/userroles";
 import Session from "supertokens-node/recipe/session";
 import { NextFunction, Response } from "express";
+import { Error as SuperTokensError } from "supertokens-node";
+import { logger } from "../config/logger";
 
 
 export const supertokenMiddleware = middleware();
@@ -28,7 +30,12 @@ export const socketioSessionMiddleware = async (req: SessionRequest, res: Respon
 	try {
 		req.session = await Session.getSession(req, res, { sessionRequired: false });
 		next();
-	} catch (err) {
-		errorHandler()(err, req, res, next);
+	} catch (e) {
+		if(SuperTokensError.isErrorFromSuperTokens(e)) {
+			logger.warn('socketio supertokens error', e);
+			supertokenErrorHandler(e, req, res, next);
+		}else{
+			next(e);
+		}
 	}
 }
