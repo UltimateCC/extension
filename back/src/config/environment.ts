@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-
 export const envSchema = z.object({
-	// Environnement
+	// Environment
 	NODE_ENV: z.enum(['production','']).default(''),
 
 	// Database url
@@ -16,7 +15,7 @@ export const envSchema = z.object({
 	// Logger log level
 	LOGLEVEL: z.string().default('info'),
 
-	// Supertokens server (auth)
+	// Supertokens (auth)
 	SUPERTOKENS_URL: z.string().min(1),
 	APP_DOMAIN: z.string().min(1),
 

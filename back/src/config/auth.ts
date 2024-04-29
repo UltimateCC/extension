@@ -1,6 +1,7 @@
 import SuperTokens from "supertokens-node";
 import Session, { SessionContainer } from "supertokens-node/recipe/session";
 import ThirdParty from "supertokens-node/recipe/thirdparty";
+import JWT from "supertokens-node/recipe/jwt";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
 import { environment } from "./environment";
@@ -96,7 +97,7 @@ export function initSuperTokens() {
 
 									const { scope, access_token: accessToken, refresh_token: refreshToken } = res.oAuthTokens;
 
-									if(twitchInfo?.id === ownerId && scope?.includes('analytics:read:extensions')) {
+									if(twitchInfo?.id === ownerId && !scope?.includes('analytics:read:extensions')) {
 										logger.info('Owner authenticated without analytics:read:extensions scope, not saving token');
 									}else{
 										user.twitchToken = {
@@ -119,6 +120,7 @@ export function initSuperTokens() {
 			Session.init(),
 			Dashboard.init(),
 			UserRoles.init(),
+			JWT.init()
 		]
 	});
 

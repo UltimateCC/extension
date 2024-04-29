@@ -26,6 +26,6 @@ COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
 
 # Run pnpm once to install (with corepack) and have it ready in image
-RUN pnpm
+RUN pnpm -h
 
 CMD [ "pnpm", "start" ]
