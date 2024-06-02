@@ -2,8 +2,12 @@
 // Ultimate CC theme
 $theme-font-family: Arial, Helvetica, sans-serif;
 $theme-font-size: 1.25em; /*clamp(1em, 2.25vh, 2em);*/
-$theme-text-color: #D9D9D9;
-$theme-background-color: #37373E;
+// $theme-text-color: #D9D9D9;
+// $theme-background-color: #37373E;
+
+
+$theme-text-color: #DFDCFF;
+$theme-background-color: #364FD9;
 
 // Caption variables
 $caption-line-height: 1.25em;
@@ -13,9 +17,10 @@ $caption-movable-X: 0;
 
 // Settings variables
 $settings-text-color: $theme-text-color;
-$settings-button-color: #4C4C5A;
-$settings-background-color: #1F1F23;
-$settings-background-opacity: 0.95;
+$settings-text-secondary: #1F1F23;
+$settings-background-color: $theme-background-color;
+$settings-background-opacity: 0.80;
+$settings-darken-area: #00000099;
 $settings-movable-top: 6rem;
 $settings-movable-bottom: 5rem;
 $settings-font-size: clamp(1em, 2vh, 1.75em);
@@ -23,10 +28,11 @@ $settings-width: 18em;
 $settings-font-family: $theme-font-family;
 $settings-inside-padding: 1em;
 $settings-gap-between-group: 0.75em;
-$settings-input-border-radius: 0.6em;
+$settings-input-border-radius: 0.25em;
 $settings-input-size: 7em;
 $settings-input-shadow: 0 3.3px 3.3px 0 rgba($settings-background-color, 0.25) inset;
 $settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
+$settings-inner-shadow: 0 0 5px 2px $settings-darken-area inset;
 $settings-disabled-color: #707075;
 
 // Transcript variables
@@ -39,3 +45,4 @@ $buttons-padding-X: .25em;
 $buttons-padding-Y: .2em;
 $buttons-min-gap: .1em;
 $buttons-settings-gap: 1em;
+$buttons-color: #121839;

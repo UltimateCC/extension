@@ -10,7 +10,8 @@
 	@import '../assets/vars.scss';	
 
 	.caption-wait-warning {
-		background-color: rgba($color: $settings-button-color, $alpha: .75);
+		// background-color: rgba($color: $settings-button-color, $alpha: .75);
+		background-color: red;
 		font-size: .9em;
 		padding: .5em;
 		margin: .75em .25em;

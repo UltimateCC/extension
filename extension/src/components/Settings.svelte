@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { lastReceivedCaptions, type LangCode } from "../lib/captions";
 	import LanguageSelect from "./LanguageSelect.svelte";
-	import { fade } from "svelte/transition";
+	import { fade, slide } from "svelte/transition";
 	import NumberInput from "./NumberInput.svelte";
 	import Warning from "./Warning.svelte";
-	import Chevron from "./Chevron.svelte";
+	import DropdownIcon from "./DropdownIcon.svelte";
 	import { getContext } from "svelte";
 	import type { Resetable } from "../lib/stores/resetablePersisted";
     import { position, settings } from "../lib/settings";
@@ -62,35 +62,45 @@
 			<div class="caption-group" class:isOpen={ current === 'text' } >
 				<button type="button" class="caption-group-header" on:click={()=>toggle('text')}>
 					<h3>Text</h3>
-					<Chevron/>
+					<DropdownIcon />
 				</button>
 				{#if current === 'text'}
-					<div class="caption-group-content">
-						<div class="caption-group-content-item">
-							<label for="font-color-input">Text Color</label>
-							<input type="color" id="font-color-input" bind:value={$settings.textColor}/>
-						</div>
-						<div class="caption-group-content-item group-font-size">
-							<div>
-								<label for="font-size-input">Text Size</label>
-								<NumberInput id="font-size-input"
-									bind:value={ $settings.fontSize } 
-									min={6} max={48} step=1
-								/>
+					<div class="caption-group-content-container" transition:slide={{duration: 200}}>
+						<div class="coco"></div>
+						<div class="caption-group-content">
+							<div class="caption-group-content-item">
+								<label for="font-color-input">Text Color</label>
+								<input type="color" id="font-color-input" bind:value={$settings.textColor}/>
 							</div>
-							<input type="range" bind:value={ $settings.fontSize } min="6" max="48" step="1" />
-						</div>
-						<div class="caption-group-content-item group-font-family">
-							<label for="font-family-input">Font family</label>
-							<select id="font-family-input" bind:value={ $settings.fontFamily }>
-								<option value="Arial, Helvetica, sans-serif">Arial</option>
-								<option value="Calibri, sans-serif">Calibri</option>
-								<option value="Courier New, Courier, monospace">Courier New</option>
-								<option value="OpenDyslexic, sans-serif">OpenDyslexic</option>
-								<option value="Roboto, sans-serif">Roboto</option>
-								<option value="Times New Roman, Times, serif">Times New Roman</option>
-								<option value="Verdana, sans-serif">Verdana</option>
-							</select>
+							<div class="caption-group-content-item group-font-size">
+								<div>
+									<label for="font-size-input">Text Size</label>
+									<div class="caption-number-container">
+										<NumberInput id="font-size-input"
+											bind:value={ $settings.fontSize } 
+											min={6} max={48} step=1
+										/>
+										<div class="units">
+											<span class="invisible">{ $settings.fontSize }</span>
+											<span class="caption-unit">px</span>
+										</div>
+									</div>
+									
+								</div>
+								<input type="range" bind:value={ $settings.fontSize } min="6" max="48" step="1" />
+							</div>
+							<div class="caption-group-content-item group-font-family">
+								<label for="font-family-input">Font family</label>
+								<select id="font-family-input" bind:value={ $settings.fontFamily }>
+									<option value="Arial, Helvetica, sans-serif">Arial</option>
+									<option value="Calibri, sans-serif">Calibri</option>
+									<option value="Courier New, Courier, monospace">Courier New</option>
+									<option value="OpenDyslexic, sans-serif">OpenDyslexic</option>
+									<option value="Roboto, sans-serif">Roboto</option>
+									<option value="Times New Roman, Times, serif">Times New Roman</option>
+									<option value="Verdana, sans-serif">Verdana</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				{/if}
@@ -100,31 +110,35 @@
 			<div class="caption-group" class:isOpen={ current === 'background' }>
 				<button type="button" class="caption-group-header" on:click={()=>toggle('background')}>
 					<h3>Background</h3>
-					<Chevron/>
+					<DropdownIcon />
 				</button>
 				{#if current === 'background'}
-					<div class="caption-group-content">
-						<div class="caption-group-content-item">
-							<label for="bg-color-input">Color</label>
-							<input type="color" id="bg-color-input" bind:value={ $settings.backgroundColor } />
-						</div>
-						<div class="caption-group-content-item group-opacity">
-							<div>
-								<label for="bg-opacity-number-input">Opacity</label>
-								<div class="caption-number-container">
-									<NumberInput id="bg-opacity-number-input"
-										bind:value={ $settings.backgroundOpacity } 
-										min={0} max={100} step=1
-									/>
-									<div class="units">
-										<span class="invisible">{ $settings.backgroundOpacity }</span>
-										<span class="caption-unit">%</span>
+					<div class="caption-group-content-container" transition:slide={{duration: 200}}>
+						<div class="coco"></div>
+						<div class="caption-group-content">
+							<div class="caption-group-content-item">
+								<label for="bg-color-input">Color</label>
+								<input type="color" id="bg-color-input" bind:value={ $settings.backgroundColor } />
+							</div>
+							<div class="caption-group-content-item group-opacity">
+								<div>
+									<label for="bg-opacity-number-input">Opacity</label>
+									<div class="caption-number-container">
+										<NumberInput id="bg-opacity-number-input"
+											bind:value={ $settings.backgroundOpacity } 
+											min={0} max={100} step=1
+										/>
+										<div class="units">
+											<span class="invisible">{ $settings.backgroundOpacity }</span>
+											<span class="caption-unit">%</span>
+										</div>
 									</div>
 								</div>
+								<input type="range" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
 							</div>
-							<input type="range" bind:value={ $settings.backgroundOpacity } min="0" max="100" step="1" />
-						</div>
-					</div>					
+						</div>	
+					</div>	
+
 				{/if}
 			</div>
 		</div>
@@ -132,8 +146,14 @@
 		<div class="caption-button-container">
 			<!-- Reset -->
 			<div>
-				<button type="button" on:click={ ()=>{ settings.reset(); language.reset();} }>Reset settings</button>
-				<button type="button" on:click={ ()=>position.reset() }>Reset layout</button>
+				<button type="button" on:click={ () =>{ settings.reset(); language.reset();} }>
+					<span>Reset</span>
+					<span>settings</span>
+				</button>
+				<button type="button" on:click={ () => position.reset() }>
+					<span>Reset</span>
+					<span>layout</span>
+				</button>
 			</div>
 			<button type="button" class="caption-lock-position" on:click={ ()=>{ $position.locked =! $position.locked } }>
 				{ $position.locked ? 'Unlock' : 'Lock' } layout
