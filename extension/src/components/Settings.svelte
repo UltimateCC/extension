@@ -46,7 +46,7 @@
 			{#if $lastReceivedCaptions.length !== 1}
 				<!-- Language -->
 				<div class="caption-group" id="language">
-					{#if $lastReceivedCaptions.length === 0 && false}
+					{#if $lastReceivedCaptions.length === 0}
 						<Warning>Waiting for broadcaster speech</Warning>
 					{:else}
 						<div class="caption-group-header">
