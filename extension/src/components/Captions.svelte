@@ -187,6 +187,10 @@
 		document.documentElement.style.setProperty('--captions-font-family', $settings.fontFamily);
 		document.documentElement.style.setProperty('--captions-background-color', 'rgba(' + hexToRGB($settings.backgroundColor) + ', ' + $settings.backgroundOpacity/100 + ')');
 		document.documentElement.style.setProperty('--captions-background-opacity', ($settings.backgroundOpacity / 10) + 'px');
+		document.documentElement.style.setProperty('--captions-stroke-color', $settings.strokeColor);
+		document.documentElement.style.setProperty('--captions-stroke-size', $settings.strokeSize + 'px');
+		document.documentElement.style.setProperty('--captions-text-align', $settings.textAlign);
+		document.documentElement.style.setProperty('--captions-text-transform', $settings.textTransform);
 	}
 
 	const ALL_SIDES = ["top", "bottom", "left", "right"];

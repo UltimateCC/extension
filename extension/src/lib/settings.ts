@@ -6,7 +6,11 @@ const defaultSettings = {
 	textColor: '#E0E0E0',
 	fontFamily: 'Arial, Helvetica, sans-serif',
 	backgroundColor: '#37373E',
-	backgroundOpacity: 50
+	backgroundOpacity: 50,
+	strokeColor: '#E0E0E0',
+	strokeSize: 0,
+	textAlign: 'left',
+	textTransform: 'none',
 }
 
 export type SettingsType = typeof defaultSettings;

@@ -2,7 +2,10 @@
 @import 'vars';
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+html, body { 
+	height: 100%;
+	font-family: $settings-font-family;
+}
 #app { height: 100%; }
 
 body #ultimate-closed-caption {
@@ -31,6 +34,9 @@ body #ultimate-closed-caption {
 			color: var(--captions-text-color);
 			font-family: var(--captions-font-family);
 			font-size: var(--captions-font-size);
+			text-align: var(--captions-text-align);
+			text-transform: var(--captions-text-transform);
+			-webkit-text-stroke: var(--captions-stroke-color) var(--captions-stroke-size);
 
 			&:not(.locked) {
 				cursor: move;
@@ -38,7 +44,6 @@ body #ultimate-closed-caption {
 			}
 
 			border-radius: 0.1em;
-
 			display: flex;
 			flex-direction: column-reverse;
 
@@ -73,7 +78,7 @@ body #ultimate-closed-caption {
 	
 					overflow: hidden; // Don't show the rest of the text
 					
-					text-align: left;
+					// text-align: left;
 					font-size: 1em;
 					max-height: 100%;
 	
@@ -90,6 +95,16 @@ body #ultimate-closed-caption {
 
 	// Settings box
 	#settings-container {
+		position: absolute;
+		left: 0;
+		top: $settings-movable-top;
+		z-index: 10;
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5em;
+
 		$button-container-height: calc($buttons-height * $buttons-font-size + $buttons-padding-Y*2);
 		/*
 			100vh = 100% of the height of the screen
@@ -99,349 +114,482 @@ body #ultimate-closed-caption {
 			- $buttons-settings-gap = the minimum gap between the settings wheel and the settings box
 		*/
 		max-height: calc(100vh - #{$settings-movable-top + $settings-movable-bottom} - #{$button-container-height} - #{$buttons-settings-gap});
-		width: $settings-width;
 
-		padding: 0.2em 0.5em 1em;
-
-		background-color: rgba($settings-background-color, $settings-background-opacity);
-		backdrop-filter: blur(7px);
-		color: $settings-text-color;
-		font-family: $settings-font-family;
-
-		border-top-right-radius: 0.2em;
-		border-bottom-right-radius: 0.2em;
-
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-
-		position: absolute;
-		left: 0;
-		top: $settings-movable-top;
-
-		z-index: 10;
-
-		overflow: hidden auto;
-
-		// Scrollbar with simplebar lib
-		.simplebar-scrollbar::before {
-			background-color: $settings-text-color;
+		.settings-box {
+			background-color: rgba($settings-background-color, $settings-background-opacity);
+			backdrop-filter: blur(7px);
+			color: $settings-text-color;
+			border-radius: 0.2em;
+			box-shadow: 0 0 2em 0.25em $settings-darken-area;
 		}
 
-		// Title and close button
-		.caption-header-container {
-			display: flex;
-			justify-content: space-between;
-			align-items: start;
-			position: relative;
+		#close-settings-button {
+			position: absolute;
+			top: -0.75em;
+			right: -0.75em;
+			border: none;
+			background-color: $theme-background-color;
 
-			h2 {
-				font-size: 1.5em;
-				line-height: 1.5em;
-				font-weight: normal;
-				width: 100%;
-				text-align: center;
-				margin: auto;
+			font-size: 1em;
+			padding: 0.5em;
+			border-radius: 50%;
+			line-height: 0.5em;
+			z-index: 11;
+			box-shadow: -0.1em 0.1em 10px 2px $settings-darken-area;
+
+			svg > * {
+				fill: $settings-text-color;
+			}
+			cursor: pointer;
+			transition: transform 0.2s ease-in-out;
+
+			&:hover {
+				transform: scale(1.1);
+			}
+		}
+
+		#settings-main {
+			width: $settings-width;
+			padding: 0.5em;
+
+			z-index: 1;
+
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+
+			overflow: hidden auto;
+
+			// Scrollbar with simplebar lib
+			.simplebar-scrollbar::before {
+				background-color: $settings-text-color;
 			}
 
-			button#close-settings-button {
-				position: absolute;
-				top: 0;
-				right: 0;
+			// Main content
+			.caption-settings-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-direction: column;
+				gap: $settings-main-gap;
+
+				.caption-group {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					flex-direction: column;
+					background-color: $settings-darken-area;
+					border-radius: $settings-border-radius;
+					box-shadow: 0 0 0.5em 0.1em $settings-darken-area inset;
+					
+					select {
+						height: 1.5em;
+						border: 0;
+						border-radius: $settings-input-border-radius;
+						padding-left: 1em;
+						padding-right: 2em;
+						font-family: inherit;
+						font-weight: lighter;
+						font-size: 1em;
+						line-height: 1.5em;
+						text-align: left;
+						color: $settings-text-secondary;
+						background-color: $settings-text-color;
+						box-shadow: $settings-input-shadow;
+
+						&:disabled {
+							background-color: $settings-disabled-color;
+						}
+
+						&:not(:disabled) {
+							cursor: pointer;
+
+							&:focus, &:active {
+								box-shadow: $settings-input-shadow-out;
+								transition: box-shadow 0.5s;
+							}
+						}
+
+						/* Remove arrow */
+						appearance: none;
+
+						/* Add my customisable arrow */
+						background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%231F1F23"/></svg>');
+						background-repeat: no-repeat;
+						background-position-x: 95%;
+						background-position-y: 50%;
+						background-size: 1.1rem;
+					}
+
+					// If it's open, change the rotation
+					&.isOpen {
+						.caption-group-header .dropdown-icon {
+							transform: rotate(90deg);
+						}
+					}
+
+					// If it's the language group, change the direction
+					&#language {
+						.caption-group-header {
+							// flex-direction: column;
+							justify-content: space-between;
+							align-items: center;
+							gap: 0.5em;
+
+							select {
+								background-color: $settings-button-color;
+								color: $settings-text-color;
+								
+								width: 100%;
+								height: 2.21em;
+								font-size: 0.85em;
+								padding-left: 0.3em;
+								border-radius: 0.75em;
+
+								background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%23DFDCFF"/></svg>');
+							}
+						}
+					}
+					&:not(#language) .caption-group-header { // Else
+						cursor: pointer;
+						justify-content: space-between;
+						align-items: center;
+					}
+
+					.caption-group-header {
+						display: flex;
+
+						width: 100%;
+						padding-top: .5em;
+						padding-bottom: .5em;
+						border: none;
+						background-color: transparent;
+						font-size: 1em;
+
+						h3 {
+							color: $settings-text-color;
+							text-align: left;
+						}
+
+						.dropdown-icon {
+							font-size: 1.25em;
+							background-color: $settings-button-color;
+							border-radius: 50%;
+							transition: transform 0.2s ease-in-out;
+							transform: rotate(0deg);
+							padding-left: 0.1em;
+							margin: 0;
+							width: 1.5em;
+							height: 1.5em;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+
+							svg {
+								width: 1em;
+								height: 1em;
+								fill: $settings-text-color;
+							}
+						}
+					}
+
+					> * {
+						padding-right: $settings-inside-padding;
+						padding-left: $settings-inside-padding;
+					}
+				}
+			}
+		}
+
+		#settings-details-navbar {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			width: 90%;
+
+			svg {
+				fill: $settings-text-color;
+				stroke: $settings-text-color;
+			}
+
+			.navbar-button-open {
+				font-size: 1.75em;
+				line-height: 0.75em;
+				margin-top: $settings-details-button-spacing - $settings-details-padding-top;
+				padding: $settings-details-padding-top 0.25em $settings-details-button-spacing;
+			}
+			
+			.navbar-button {
 				border: none;
 				background-color: transparent;
-				svg > * {
-					fill: $settings-text-color;
-				}
-				font-size: 2em;
 				cursor: pointer;
+				
+				font-size: 1em;
+				padding: 0.2em 0.4em;
+				line-height: 0.75em;
+
+				&#guide-link {
+					margin: $settings-details-button-spacing 0;
+					font-size: 1.75em;
+				}
+
 				transition: transform 0.2s ease-in-out;
 
 				&:hover {
 					transform: scale(1.1);
 				}
 			}
+			
+			.navbar-button-container.isOpen {
+				position: relative;
+
+				.navbar-button-open {
+					background-color: $settings-details-background;
+					border-top-left-radius: 0.5em;
+					border-top-right-radius: 0.5em;
+				}
+
+				.binder {
+					position: absolute;
+					width: 100%;
+					height: calc($settings-main-gap + 0.75px);
+					display: block;
+					background-color: $settings-details-background;
+					backdrop-filter: blur(7px);
+					box-shadow: -5px 0 0 0 $settings-details-shadow-color,
+					5px 0 0 0 $settings-details-shadow-color,
+					0 0 4em 2em $settings-darken-area;
+					z-index: -10;
+				}
+			}
 		}
 
-		// Main content
-		.caption-settings-container {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			flex-direction: column;
-			gap: 0.5em;
+		#settings-details {
+			width: 100%;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			padding: 0.5em;
+			background-color: rgba($settings-details-background, 0.9);
 
-			.caption-group {
-				width: 100%;
-				display: flex;
-				justify-content: space-between;
-				flex-direction: column;
+			.settings-details-container {
 				background-color: $settings-darken-area;
-				border-radius: 0.25em;
-				
-				select {
-					width: $settings-input-size;
-					height: 1.5em;
-					border: 0;
-					border-radius: $settings-input-border-radius;
-					padding-left: 1em;
-					padding-right: 2em;
-					font-size: 1em;
-					text-align: left;
-					color: $settings-text-secondary;
-					background-color: $settings-text-color;
-					box-shadow: $settings-input-shadow;
+				border-radius: $settings-border-radius;
 
-					&:disabled {
-						background-color: $settings-disabled-color;
+				.settings-details-header {
+					padding: 0.5em $settings-inside-padding;
+				}
+
+				.caption-group-content-container {
+					padding: 0 $settings-inside-padding 0.25em;
+					margin-bottom: 0.25em;
+
+					.caption-group-content {
+						padding-bottom: 0.25em;
+					}
+				}
+
+				.settings-details-selector-container {
+					display: flex;
+					justify-content: space-between;
+					padding: 0 2em 0.5em 0.8em;
+					margin-left: 0.2em;
+
+					.settings-details-selector {
+						display: flex;
+						gap: 0.3em;
 					}
 
-					&:not(:disabled) {
+					.input-button {
+						background-color: transparent;
+						border: none;
 						cursor: pointer;
+						font-size: 1.5em;
+						line-height: 0.75em;
+						
+						svg {
+							fill: $settings-text-color;
+						}
 
+						&.active {
+							background-color: $settings-text-color;
+							
+							svg {
+								fill: $settings-text-secondary;
+							}
+						}
+
+						padding: 0.1em;
+						border-radius: 0.1em;
+					}
+				}
+			}
+		}
+		
+		.caption-group-content-container {
+			display: flex;
+			align-items: stretch;
+			// margin-bottom: calc($settings-gap-between-group * 1.25);
+			padding-bottom: 0.5em;
+
+			.vertical-bar {
+				width: 0.2em;
+				background-color: $settings-text-color;
+				border-radius: 0.2em;
+			}
+			
+			.caption-group-content {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: $settings-gap-between-group;
+				padding: 0.5em 1em;
+
+				.caption-group-content-item {
+					display: flex;
+					justify-content: space-between;
+					width: 100%;
+					font-size: 0.9em;
+		
+					&.group-opacity, &.group-font-size, &.group-font-family {
+						flex-direction: column;
+
+						&:not(.group-font-family) {
+							gap: 0.25em;
+						}
+		
+						> div {
+							display: flex;
+							justify-content: space-between;
+						}
+		
+						> select {
+							width: 100%;
+							margin-top: calc($settings-gap-between-group / 2);
+							line-height: 1.1em;
+						}
+		
+						> input[type="range"] {
+							margin-top: $settings-gap-between-group;
+							margin-bottom: calc((1em - 0.3em)/2); // 1em = height of thumb, 0.3em = height of range
+							width: 100%;
+							appearance: none;
+							height: 0.3em;
+							box-shadow: none;
+							// background-color: blue;
+		
+							&::-webkit-slider-thumb {
+								appearance: none;
+								width: 1em;
+								height: 1em;
+								border-radius: 50%;
+								background-color: $settings-text-color;
+								// box-shadow: 0.5em 0 0.5em 0.1em #00000070, -0.5em 0 0.5em 0.1em #00000070;
+								box-shadow: 0 0 0.5em 0.5em #121839;
+							}
+						}
+					}
+		
+					.caption-number-container {
+						position: relative;
+						color: $settings-text-secondary;
+		
+						input {
+							padding-right: 1.2em;
+						}
+		
+						.units {
+							position: absolute;
+							right: 0;
+							top: 0;
+							font-size: 1em;
+							height: 1.5em;
+							width: $settings-input-size;
+							line-height: 1.5em;
+							display: inline-flex;
+							justify-content: center;
+							align-items: center;
+							gap: 0.1em;
+							pointer-events: none;
+		
+							.invisible {
+								visibility: hidden;
+							}
+						}
+					}
+		
+					label {
+						font-size: 1em;
+					}
+		
+					input {
+						height: 1.5em;
+						width: $settings-input-size;
+						border: 0;
+						border-radius: $settings-input-border-radius;
+						padding: 0;
+						margin: 0;
+						background-color: $settings-text-color;
+						
+						font-family: inherit;
+						font-weight: normal;
+						font-size: 1em;
+						line-height: 1em;
+						color: $settings-text-secondary;
+						text-align: center;
+						box-shadow: $settings-input-shadow;
+		
+						// Remove arrows on number input
+						&::-webkit-outer-spin-button,
+						&::-webkit-inner-spin-button {
+							-webkit-appearance: none;
+							margin: 0;
+						}
+		
+						// Remove arrows on Firefox
+						&[type=number] {
+							appearance: textfield;
+							-moz-appearance: textfield;
+						}
+		
+						// Border radius on color picker on Firefox
+						&[type=color] {
+							cursor: pointer;
+
+							&::-moz-color-swatch {
+								border-radius: $settings-input-border-radius;
+							}
+						}
+						
 						&:focus, &:active {
 							box-shadow: $settings-input-shadow-out;
 							transition: box-shadow 0.5s;
 						}
-					}
-
-					/* Remove arrow */
-					appearance: none;
-
-					/* Add my customisable arrow */
-					background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 40 44"><path d="M26.9155 17.9185C29.7314 19.911 29.7314 24.089 26.9155 26.0815L17.9298 32.4398C14.6183 34.7831 10.0417 32.415 10.0417 28.3583L10.0417 15.6417C10.0417 11.585 14.6183 9.21693 17.9298 11.5602L26.9155 17.9185Z" fill="%231F1F23"/></svg>');
-					background-repeat: no-repeat;
-					background-position-x: 97.5%;
-					background-position-y: 50%;
-					background-size: 1.25rem;
-				}
-
-				// If it's open, change the rotation
-				&.isOpen {
-					.caption-group-header .dropdown-icon {
-						transform: rotate(90deg);
-					}
-				}
-
-				// If it's the language group, change the direction
-				&#language {
-					.caption-group-header {
-						flex-direction: column;
-
-						select {
-							width: 100%;
-							margin-top: calc($settings-gap-between-group / 2);
-						}
-					}
-				}
-				&:not(#language) .caption-group-header { // Else
-					cursor: pointer;
-					justify-content: space-between;
-					align-items: center;
-				}
-
-				.caption-group-header {
-					display: flex;
-
-					width: 100%;
-					padding-top: .5em;
-					padding-bottom: .5em;
-					border: none;
-					background-color: transparent;
-					font-size: 1em;
-
-					h3 {
-						color: $settings-text-color;
-						font-weight: normal;
-						text-align: left;
-					}
-
-					.dropdown-icon {
-						font-size: 1.25em;
-						background-color: #00000080;
-						border-radius: 50%;
-						transition: transform 0.2s ease-in-out;
-						transform: rotate(0deg);
-						padding-left: 0.1em;
-						margin: 0;
-						width: 1.5em;
-						height: 1.5em;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-
-						svg {
-							width: 1em;
-							height: 1em;
-							fill: $settings-text-color;
-						}
-					}
-				}
-
-				> * {
-					padding-right: $settings-inside-padding;
-					padding-left: $settings-inside-padding;
-				}
-
-				.caption-group-content-container {
-					display: flex;
-					align-items: stretch;
-					margin-bottom: calc($settings-gap-between-group * 1.25);
-
-					.coco {
-						width: 0.2em;
-						background-color: $settings-text-color;
-						border-radius: 0.2em;
-					}
-				}
-
-				.caption-group-content {
-					display: flex;
-					justify-content: space-between;
-					flex-direction: column;
-					align-items: center;
-					width: 100%;
-					gap: $settings-gap-between-group;
-					padding: 0.5em 1em;
-
-					.caption-group-content-item {
-						display: flex;
-						justify-content: space-between;
-						width: 100%;
-						font-size: 0.9em;
-
-						&.group-opacity, &.group-font-size, &.group-font-family {
-							flex-direction: column;
-
-							> div {
-								display: flex;
-								justify-content: space-between;
-							}
-
-							> select {
-								width: 100%;
-								margin-top: calc($settings-gap-between-group / 2);
-								line-height: 1.1em;
-							}
-
-							> input[type="range"] {
-								margin-top: $settings-gap-between-group;
-								margin-bottom: calc((1em - 0.3em)/2); // 1em = height of thumb, 0.3em = height of range
-								width: 100%;
-								appearance: none;
-								height: 0.3em;
-								box-shadow: none;
-
-								&::-webkit-slider-thumb {
-									appearance: none;
-									width: 1em;
-									height: 1em;
-									border-radius: 50%;
-									background-color: $settings-text-color;
-									// background-color: $settings-text-secondary;
-									// border: 0.25em solid $settings-text-color;
-								}
-							}
-						}
-
-						.caption-number-container {
-							position: relative;
-							// color: rgba($settings-background-color, 0.85);
-							color: $settings-text-secondary;
-
-							input {
-								padding-right: 1.2em;
-							}
-
-							.units {
-								position: absolute;
-								right: 0;
-								top: 0;
-								font-size: 1em;
-								height: 1.5em;
-								width: $settings-input-size;
-								line-height: 1.5em;
-								display: inline-flex;
-								justify-content: center;
-								align-items: center;
-								gap: 0.1em;
-								pointer-events: none;
-
-								.invisible {
-									visibility: hidden;
-								}
-							}
-						}
-
-						label {
-							font-size: 1em;
-						}
-
-						input {
-							height: 1.5em;
-							width: $settings-input-size;
-							border: 0;
-							border-radius: $settings-input-border-radius;
-							padding: 0;
-							margin: 0;
-							background-color: $settings-text-color;
-							
-							font-family: inherit;
-							font-weight: normal;
-							font-size: 1em;
-							line-height: 1em;
-							// color: rgba($settings-background-color, 0.85);
-							color: $settings-text-secondary;
-							text-align: center;
-							box-shadow: $settings-input-shadow;
-							
-							cursor: pointer;
-
-							// Remove arrows on number input
-							&::-webkit-outer-spin-button,
-							&::-webkit-inner-spin-button {
-								-webkit-appearance: none;
-								margin: 0;
-							}
-
-							// Remove arrows on Firefox
-							&[type=number] {
-								appearance: textfield;
-								-moz-appearance: textfield;
-							}
-
-							// Border radius on color picker on Firefox
-							&[type=color]::-moz-color-swatch {
+		
+						&:not(input[type="range"]) {
+							&::-webkit-color-swatch {
+								border: none;
 								border-radius: $settings-input-border-radius;
 							}
-							
-							&:focus, &:active {
-								box-shadow: $settings-input-shadow-out;
-								transition: box-shadow 0.5s;
-							}
-
-							&:not(input[type="range"]) {
-								&::-webkit-color-swatch {
-									border: none;
-									border-radius: $settings-input-border-radius;
-								}
-
-								&::-webkit-color-swatch-wrapper {
-									padding: 0;
-								}
+		
+							&::-webkit-color-swatch-wrapper {
+								padding: 0;
 							}
 						}
-
-						@each $font in $font-families {
-							option[value="#{$font}"] {
-								font-family: #{$font};
-							}
+					}
+		
+					@each $font in $font-families {
+						option[value="#{$font}"] {
+							font-family: #{$font};
 						}
 					}
 				}
 			}
 		}
-
 	}
 
 	// Buttons
@@ -463,25 +611,25 @@ body #ultimate-closed-caption {
 		button {
 			padding: 0.5em 0.3em;
 			border: 0;
-			border-radius: 1.5em;
+			border-radius: 0.75em;
 			font-size: 1em;
 			font-family: inherit;
 			line-height: 1em;
-			background-color: $settings-darken-area;
+			background-color: $settings-button-color;
 			color: inherit;
 			cursor: pointer;
 			width: 100%;
-			box-shadow: $settings-inner-shadow;
+			box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
 
 			transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
 			&:hover, &:active {
 				background-color: $settings-text-color;
-				color: $settings-text-secondary;
+				color: $settings-button-color;	
 			}
 
 			&:active {
-				box-shadow: none;
+				box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5) inset;
 			}
 		}
 	}

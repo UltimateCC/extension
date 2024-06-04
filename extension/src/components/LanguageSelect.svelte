@@ -7,7 +7,7 @@
 	const language = getContext<Resetable<LangCode>>('language');
 
 	// Spoken language name
-	$: spokenLang = languages[$lastReceivedCaptions[0]?.lang] || $lastReceivedCaptions[0]?.lang || '';
+	$: spokenLang = languages[$lastReceivedCaptions[0]?.lang] || $lastReceivedCaptions[0]?.lang || 'Portugese';
 
 	// Selected language name
 	$: currentLangName = languages[$language as LangCode] ?? $language;
@@ -16,7 +16,7 @@
 
 
 <select id="language-input" bind:value={$language}>
-	<option value="">Spoken language{ spokenLang ? ` (${spokenLang})` : '' }</option>
+	<option value="">Default { spokenLang ? `(${spokenLang})` : '' }</option>
 
 	<!-- Show current selected lang if not available -->
 	{#if $language && !$lastReceivedCaptions.some(alt=>alt.lang===$language) }

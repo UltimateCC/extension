@@ -22,4 +22,29 @@
     font-style: normal;
 }
 
+//Lexend-Regular.ttf
+@font-face {
+    font-family: "Lexend";
+    src: url('fonts/Lexend-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// Lexend-SemiBold.ttf
+@font-face {
+    font-family: "Lexend";
+    src: url('fonts/Lexend-SemiBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+// Lexend-Light.ttf
+@font-face {
+    font-family: "Lexend";
+    src: url('fonts/Lexend-Light.ttf') format('truetype');
+    font-weight: lighter;
+    font-style: normal;
+}
+
+
 $font-families: "Arial, Helvetica, sans-serif", "Calibri, sans-serif", "Courier New, Courier, monospace", "OpenDyslexic, sans-serif", "Roboto, sans-serif", "Times New Roman, Times, serif", "Verdana, sans-serif";
