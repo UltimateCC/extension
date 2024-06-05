@@ -1,4 +1,4 @@
-//Calibri_Regular.ttf
+// Calibri_Regular.ttf
 @font-face {
     font-family: "Calibri";
     src: url('fonts/Calibri_Regular.ttf') format('truetype');
@@ -6,7 +6,7 @@
     font-style: normal;
 }
 
-//OpenDyslexic-Regular.otf
+// OpenDyslexic-Regular.otf
 @font-face {
     font-family: "OpenDyslexic";
     src: url('fonts/OpenDyslexic-Regular.otf') format('opentype');
@@ -14,7 +14,7 @@
     font-style: normal;
 }
 
-//Roboto-Regular.ttf
+// Roboto-Regular.ttf
 @font-face {
     font-family: "Roboto";
     src: url('fonts/Roboto-Regular.ttf') format('truetype');
@@ -22,7 +22,7 @@
     font-style: normal;
 }
 
-//Lexend-Regular.ttf
+// Lexend-Regular.ttf
 @font-face {
     font-family: "Lexend";
     src: url('fonts/Lexend-Regular.ttf') format('truetype');
@@ -45,6 +45,5 @@
     font-weight: lighter;
     font-style: normal;
 }
-
 
 $font-families: "Arial, Helvetica, sans-serif", "Calibri, sans-serif", "Courier New, Courier, monospace", "OpenDyslexic, sans-serif", "Roboto, sans-serif", "Times New Roman, Times, serif", "Verdana, sans-serif";

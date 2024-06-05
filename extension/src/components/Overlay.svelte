@@ -36,7 +36,6 @@
 </script>
 
 <div id="ultimate-closed-caption">
-
 	{#if captionsShown || settingsShown }
 		<Captions bind:settingsShown />
 	{/if}

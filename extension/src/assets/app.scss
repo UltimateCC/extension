@@ -78,7 +78,6 @@ body #ultimate-closed-caption {
 	
 					overflow: hidden; // Don't show the rest of the text
 					
-					// text-align: left;
 					font-size: 1em;
 					max-height: 100%;
 	
@@ -234,7 +233,6 @@ body #ultimate-closed-caption {
 					// If it's the language group, change the direction
 					&#language {
 						.caption-group-header {
-							// flex-direction: column;
 							justify-content: space-between;
 							align-items: center;
 							gap: 0.5em;
@@ -431,7 +429,6 @@ body #ultimate-closed-caption {
 		.caption-group-content-container {
 			display: flex;
 			align-items: stretch;
-			// margin-bottom: calc($settings-gap-between-group * 1.25);
 			padding-bottom: 0.5em;
 
 			.vertical-bar {
@@ -480,7 +477,7 @@ body #ultimate-closed-caption {
 							appearance: none;
 							height: 0.3em;
 							box-shadow: none;
-							// background-color: blue;
+							cursor: pointer;
 		
 							&::-webkit-slider-thumb {
 								appearance: none;
@@ -488,8 +485,7 @@ body #ultimate-closed-caption {
 								height: 1em;
 								border-radius: 50%;
 								background-color: $settings-text-color;
-								// box-shadow: 0.5em 0 0.5em 0.1em #00000070, -0.5em 0 0.5em 0.1em #00000070;
-								box-shadow: 0 0 0.5em 0.5em #121839;
+								box-shadow: 0 0 0.5em 0.5em $settings-button-color;
 							}
 						}
 					}
@@ -674,12 +670,6 @@ body #ultimate-closed-caption {
 
 			&:hover svg {
 				transform: scale(1.1);
-			}
-
-			&.isOpen {
-				svg > * {
-					fill: #999;
-				}
 			}
 		}
 	}
