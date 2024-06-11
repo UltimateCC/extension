@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { type LangCode, lastReceivedCaptions } from "../lib/captions";
-	import languages from "../assets/languages.json";
 	import { getContext } from "svelte";
+	import languages from "../assets/languages.json";
+	import { lastReceivedCaptions } from "../lib/captions";
 	import type { Resetable } from "../lib/stores/resetablePersisted";
+	import { type LangCode } from "../lib/utils";
 
 	const language = getContext<Resetable<LangCode>>('language');
 
@@ -12,14 +13,16 @@
 	// Selected language name
 	$: currentLangName = languages[$language as LangCode] ?? $language;
 
+	// Update text align if language changes
+	// TODO : Implement text align switch when language changes
+	// if ($settings.textAlign != "center") $settings.textAlign = isRTL($language) ? "right" : "left";
 </script>
-
 
 <select id="language-input" bind:value={$language}>
 	<option value="">Default { spokenLang ? `(${spokenLang})` : '' }</option>
 
 	<!-- Show current selected lang if not available -->
-	{#if $language && !$lastReceivedCaptions.some(alt=>alt.lang===$language) }
+	{#if $language && !$lastReceivedCaptions.some(alt=>alt.lang === $language) }
 		<option value={$language}>{ currentLangName } (unavailable)</option>
 	{/if}
 

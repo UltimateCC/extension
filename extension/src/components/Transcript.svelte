@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { getContext } from "svelte";
-	import { transcript, lastReceivedCaptions, type LangCode } from "../lib/captions";
+	import { lastReceivedCaptions, transcript } from "../lib/captions";
+	import type { Resetable } from "../lib/stores/resetablePersisted";
+	import { isRTL, type LangCode } from "../lib/utils";
 	import LanguageSelect from "./LanguageSelect.svelte";
 	import Warning from "./Warning.svelte";
-	import type { Resetable } from "../lib/stores/resetablePersisted";
 
 	const language = getContext<Resetable<LangCode>>('language');
 
@@ -32,7 +33,7 @@
 		{/if}
 	</div>
 	<!-- When transcript or language change, scroll to bottom -->
-	<div class="transcript" use:autoScroll={ { $transcript, $language } } > 
+	<div class="transcript" use:autoScroll={ { $transcript, $language } } dir={isRTL($language ?? "") ? 'rtl' : 'ltr'}>
 		{#if $lastReceivedCaptions.length === 0}
 			<div class="warning-container">
 				<Warning>Waiting for broadcaster speech</Warning>

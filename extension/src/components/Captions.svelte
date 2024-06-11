@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { fade } from "svelte/transition";
-	import { transcript, type LangCode } from "../lib/captions";
-	import { hexToRGB } from "../lib/utils";
 	import { getContext } from "svelte";
+	import { fade } from "svelte/transition";
+	import { transcript } from "../lib/captions";
+	import { position, settings } from "../lib/settings";
 	import type { Resetable } from "../lib/stores/resetablePersisted";
-	import { settings, position } from "../lib/settings";
+	import { hexToRGB, isRTL, type LangCode } from "../lib/utils";
 
 	const language = getContext<Resetable<LangCode>>('language');
 
@@ -197,7 +197,6 @@
 	const ALL_ANGLES = ["top left", "top right", "bottom left", "bottom right"];
 
 	$: textHeight = LINE_HEIGHT + "em *" + Math.round($position.maxLines);
-
 </script>
 
 {#if settingsShown || $transcript.length }
@@ -249,10 +248,10 @@
 			{/if}
 			<div class="caption-container-box">
 				<div class="caption-content-box" style="max-height: calc({ textHeight });">
-					<p>
+					<p dir={isRTL($language) ? 'rtl' : 'ltr'}>
 						{#if $transcript.length < MAX_LINES && (resizing || settingsShown)}
 							{#each {length: MAX_LINES - $transcript.length} as _}
-								This is a sample caption to show you how it looks like <br/>
+								This is a sample caption to show you how it looks like<br/>
 							{/each}
 						{/if}
 						{#each $transcript as line, i }

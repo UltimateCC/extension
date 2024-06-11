@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "vite build && pnpm copysource && npm-build-zip --source=dist/",
     "copysource": "shx mkdir -p dist/source-code && shx cp -r src index.html package.json pnpm-lock.yaml svelte.config.js tsconfig.json tsconfig.node.json vite.config.ts dist/source-code",
     "preview": "vite preview",

@@ -1,8 +1,6 @@
 import { get, writable } from "svelte/store";
 import { twitchContext } from "./twitch";
-import languages from "../assets/languages.json";
-
-export type LangCode = keyof typeof languages;
+import type { LangCode } from "./utils";
 
 export interface Caption {
 	lang: LangCode
