@@ -7,8 +7,7 @@ export function hexToRGB(hex: string) {
 	return parseInt(hex.substring(0, 2), 16) + ", " + parseInt(hex.substring(2, 4), 16) + ", " + parseInt(hex.substring(4, 6), 16);
 }
 
-export function isRTL(lang: string) {
-	if (lang == "") return false;
+export function isRTL(lang: LangCode) {
 	return rtl_languages.includes(lang);
 }
 
