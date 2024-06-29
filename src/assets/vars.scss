@@ -3,6 +3,9 @@ $theme-font-family: "Lexend", Arial, sans-serif;
 $theme-font-size: 1.25em; /*clamp(1em, 2.25vh, 2em);*/
 $theme-text-color: #DFDCFF;
 $theme-background-color: #364FD9;
+$theme-background-darken: #0A0D21;
+// $theme-background-darken: #202F82;
+// $theme-background-darken: transparent;
 
 // Caption variables
 $caption-line-height: 1.25em;
@@ -31,14 +34,15 @@ $settings-input-shadow-out: 0 0 3px 2px rgba($settings-text-color, 0.4);
 $settings-inner-shadow: 0 0 5px 2px $settings-darken-area inset;
 $settings-disabled-color: #707075;
 $settings-main-gap: 0.5em;
-$settings-button-color: #0A0D21;
+$settings-button-color: $theme-background-darken;
 $settings-details-background: $theme-background-color;
 $settings-details-shadow-color: rgba($settings-background-color, 0.5);
 $settings-details-button-spacing: 0.3em;
 $settings-details-padding-top: 0.1em;
 
 // Transcript variables
-$transcript-background-color: #1F1F23;
+$transcript-background-color: rgba($settings-background-color, $settings-background-opacity);
+$transcript-top-color: #00000099;
 
 // Buttons variables
 $buttons-font-size: 1.35rem;

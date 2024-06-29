@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { getContext } from "svelte";
-	import { fade, slide, fly } from "svelte/transition";
-	import { lastReceivedCaptions, type LangCode } from "../lib/captions";
+	import { fly, slide } from "svelte/transition";
+	import { lastReceivedCaptions } from "../lib/captions";
 	import { position, settings } from "../lib/settings";
 	import type { Resetable } from "../lib/stores/resetablePersisted";
+	import type { LangCode } from "../lib/utils";
 	import DropdownIcon from "./DropdownIcon.svelte";
 	import InputButton from "./InputButton.svelte";
 	import LanguageSelect from "./LanguageSelect.svelte";

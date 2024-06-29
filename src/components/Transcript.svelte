@@ -56,21 +56,54 @@
 <style lang="scss">
 	@import '../assets/vars.scss';
 
-	.container { height: 100%; width: 100%; }
-	.container { background-color: $theme-background-color; color: $theme-text-color; }
-	.container { font-size: $theme-font-size; font-family: $theme-font-family; }
 	.container {
+		height: 100%;
+		width: 100%;
+		background-color: $transcript-background-color;
+		color: $theme-text-color;
+		font-size: $theme-font-size;
+		font-family: $theme-font-family;
 		display: flex;
 		flex-direction: column;
 	}
 
-	.warning-container { display: flex; justify-content: center;}
+	.warning-container {
+		display: flex;
+		justify-content: center;
+		margin: 0.75em 0.5em;
+	}
 
-	.top { background-color: $settings-background-color; width: 100%; }
-	.top h2 { display: block; font-size: 1.25em; text-align: center; margin: 0 .5em; padding: .25em 0; font-weight: normal; }
-	.top .language { margin: 0 .5em .5em; display: flex; justify-content: flex-start; gap: .5em; }
-	.language-select { min-width: 0; }
+	.top {
+		background-color: $transcript-top-color;
+		width: 100%;
+	}
 
-	.transcript { overflow-y: auto; margin: 0;}
-	.transcript .line { padding: .25em .5em; }
+	.top h2 {
+		display: block;
+		font-size: 1.25em;
+		text-align: center;
+		margin: 0 .5em;
+		padding: .25em 0;
+		font-weight: normal;
+	}
+
+	.top .language {
+		margin: 0 .5em .5em;
+		display: flex;
+		justify-content: flex-start;
+		gap: .5em;
+	}
+
+	.language-select {
+		min-width: 0;
+	}
+
+	.transcript {
+		overflow-y: auto;
+		margin: 0;
+	}
+
+	.transcript .line {
+		padding: .25em .5em;
+	}
 </style>

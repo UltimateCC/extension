@@ -224,10 +224,8 @@ body #ultimate-closed-caption {
 					}
 
 					// If it's open, change the rotation
-					&.isOpen {
-						.caption-group-header .dropdown-icon {
-							transform: rotate(90deg);
-						}
+					&.isOpen .caption-group-header .dropdown-icon svg {
+						transform: rotate(90deg);
 					}
 
 					// If it's the language group, change the direction
@@ -276,9 +274,7 @@ body #ultimate-closed-caption {
 							font-size: 1.25em;
 							background-color: $settings-button-color;
 							border-radius: 50%;
-							transition: transform 0.2s ease-in-out;
-							transform: rotate(0deg);
-							padding-left: 0.1em;
+							padding-right: 0.1em;
 							margin: 0;
 							width: 1.5em;
 							height: 1.5em;
@@ -290,6 +286,8 @@ body #ultimate-closed-caption {
 								width: 1em;
 								height: 1em;
 								fill: $settings-text-color;
+								transform: rotate(180deg);
+								transition: transform 0.2s ease-in-out;
 							}
 						}
 					}
