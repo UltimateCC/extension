@@ -96,6 +96,7 @@
 
 	.language-select {
 		min-width: 0;
+		color: $transcript-background-color;
 	}
 
 	.transcript {
