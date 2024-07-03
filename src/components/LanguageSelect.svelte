@@ -39,24 +39,3 @@
 		<option value={l.lang}>{ languages[l.lang] || l.lang }</option>
 	{/each}
 </select>
-
-<style lang="scss">
-	@import '../assets/vars.scss';
-
-	select { 
-		border: 0;
-		color: inherit;
-		border-radius: $settings-input-border-radius;
-		box-shadow: $settings-input-shadow;
-		background-color: $settings-text-color;
-		height: 1.5em;
-		font-size: 0.9em;
-		overflow: hidden;
-		padding-left: 0.5em;
-		max-width: 100%;
-
-		&:disabled {
-			background-color: $settings-disabled-color;
-		}
-	}
-</style>

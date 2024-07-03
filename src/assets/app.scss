@@ -17,10 +17,8 @@ body #ultimate-closed-caption {
 	position: relative; // Not necessary, just to show what is the container of position: absolute
 	font-size: $settings-font-size;
 
-
 	// Caption container
 	#caption-movable-area {
-		
 		// Do calc only if needed
 		width: if($caption-movable-X == 0, 100vw, calc(100vw - #{$caption-movable-X} * 2));
 		height: if($caption-movable-Y == 0, 100vh, calc(100vh - #{$caption-movable-Y} * 2));
@@ -139,7 +137,6 @@ body #ultimate-closed-caption {
 			svg > * {
 				fill: $settings-text-color;
 			}
-			cursor: pointer;
 			transition: transform 0.2s ease-in-out;
 
 			&:hover {
@@ -183,87 +180,33 @@ body #ultimate-closed-caption {
 					background-color: $settings-darken-area;
 					border-radius: $settings-border-radius;
 					box-shadow: 0 0 0.5em 0.1em $settings-darken-area inset;
-					
-					select {
-						height: 1.5em;
-						border: 0;
-						border-radius: $settings-input-border-radius;
-						padding-left: 1em;
-						padding-right: 2em;
-						font-family: inherit;
-						font-weight: lighter;
-						font-size: 1em;
-						line-height: 1.5em;
-						text-align: left;
-						color: $settings-text-secondary;
-						background-color: $settings-text-color;
-						box-shadow: $settings-input-shadow;
-
-						&:disabled {
-							background-color: $settings-disabled-color;
-						}
-
-						&:not(:disabled) {
-							cursor: pointer;
-
-							&:focus, &:active {
-								box-shadow: $settings-input-shadow-out;
-								transition: box-shadow 0.5s;
-							}
-						}
-
-						/* Remove arrow */
-						appearance: none;
-
-						/* Add my customisable arrow */
-						background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%231F1F23"/></svg>');
-						background-repeat: no-repeat;
-						background-position-x: 95%;
-						background-position-y: 50%;
-						background-size: 1.1rem;
-					}
 
 					// If it's open, change the rotation
 					&.isOpen .caption-group-header .dropdown-icon svg {
 						transform: rotate(90deg);
 					}
 
-					// If it's the language group, change the direction
-					&#language {
-						.caption-group-header {
-							justify-content: space-between;
-							align-items: center;
-							gap: 0.5em;
-
-							select {
-								background-color: $settings-button-color;
-								color: $settings-text-color;
-								
-								width: 100%;
-								height: 2.21em;
-								font-size: 0.85em;
-								padding-left: 0.3em;
-								border-radius: 0.75em;
-
-								background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%23DFDCFF"/></svg>');
-							}
-						}
-					}
-					&:not(#language) .caption-group-header { // Else
-						cursor: pointer;
-						justify-content: space-between;
-						align-items: center;
-					}
-
 					.caption-group-header {
 						display: flex;
-
+						justify-content: space-between;
+						align-items: center;
+						gap: 0.5em;
 						width: 100%;
 						padding-top: .5em;
 						padding-bottom: .5em;
 						border: none;
 						background-color: transparent;
 						font-size: 1em;
+
+						#language-input {
+							font-size: 0.9em;
+							padding-left: 0.5em;
+							color: $settings-text-color;
+							height: 2.21em;
+							border-radius: 0.75em;
+							background-color: $settings-button-color;
+							background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%23DFDCFF"/></svg>');
+						}
 
 						h3 {
 							color: $settings-text-color;
@@ -274,7 +217,6 @@ body #ultimate-closed-caption {
 							font-size: 1.25em;
 							background-color: $settings-button-color;
 							border-radius: 50%;
-							padding-right: 0.1em;
 							margin: 0;
 							width: 1.5em;
 							height: 1.5em;
@@ -320,9 +262,7 @@ body #ultimate-closed-caption {
 			
 			.navbar-button {
 				border: none;
-				background-color: transparent;
-				cursor: pointer;
-				
+				background-color: transparent;				
 				font-size: 1em;
 				padding: 0.2em 0.4em;
 				line-height: 0.75em;
@@ -401,7 +341,6 @@ body #ultimate-closed-caption {
 					.input-button {
 						background-color: transparent;
 						border: none;
-						cursor: pointer;
 						font-size: 1.5em;
 						line-height: 0.75em;
 						
@@ -463,9 +402,7 @@ body #ultimate-closed-caption {
 						}
 		
 						> select {
-							width: 100%;
 							margin-top: calc($settings-gap-between-group / 2);
-							line-height: 1.1em;
 						}
 		
 						> input[type="range"] {
@@ -553,6 +490,7 @@ body #ultimate-closed-caption {
 						// Border radius on color picker on Firefox
 						&[type=color] {
 							cursor: pointer;
+							box-shadow: none;
 
 							&::-moz-color-swatch {
 								border-radius: $settings-input-border-radius;
@@ -611,7 +549,6 @@ body #ultimate-closed-caption {
 			line-height: 1em;
 			background-color: $settings-button-color;
 			color: inherit;
-			cursor: pointer;
 			width: 100%;
 			box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
 
@@ -649,7 +586,6 @@ body #ultimate-closed-caption {
 			height: #{$buttons-height}em;
 			border: none;
 			background-color: transparent;
-			cursor: pointer;
 			
 			padding: 0.12em 0.15em;
 			font-size: 1em;
@@ -671,6 +607,58 @@ body #ultimate-closed-caption {
 			}
 		}
 	}
+}
+
+// Button
+button {
+	cursor: pointer;
+}
+
+// Select
+select {
+	height: 1.5em;
+	border: 0;
+	border-radius: $settings-input-border-radius;
+	padding-left: 1em;
+	padding-right: 2em;
+	font-family: inherit;
+	font-weight: lighter;
+	font-size: 1em;
+	line-height: 1.5em;
+	text-align: left;
+	color: $settings-text-secondary;
+	background-color: $settings-text-color;
+	box-shadow: $settings-input-shadow;
+	width: 100%;
+	max-width: 100%;
+
+	&#language-input {
+		font-size: 0.9em;
+		padding-left: 0.5em;
+	}
+
+	&:disabled {
+		background-color: $settings-disabled-color;
+	}
+
+	&:not(:disabled) {
+		cursor: pointer;
+
+		&:focus, &:active {
+			box-shadow: $settings-input-shadow-out;
+			transition: box-shadow 0.5s;
+		}
+	}
+
+	/* Remove arrow */
+	appearance: none;
+
+	/* Add my customisable arrow */
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 500 500"><path d="M444.34,60.77H55.66c-22.15,0-36,23.98-24.92,43.17l194.34,336.6c11.08,19.19,38.77,19.19,49.84,0L469.26,103.94c11.08-19.19-2.77-43.17-24.92-43.17Z" fill="%231F1F23"/></svg>');
+	background-repeat: no-repeat;
+	background-position-x: 95%;
+	background-position-y: 50%;
+	background-size: 1rem;
 }
 
 // Tooltip

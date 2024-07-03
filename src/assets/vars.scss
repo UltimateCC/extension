@@ -3,7 +3,7 @@ $theme-font-family: "Lexend", Arial, sans-serif;
 $theme-font-size: 1.25em; /*clamp(1em, 2.25vh, 2em);*/
 $theme-text-color: #DFDCFF;
 $theme-background-color: #364FD9;
-$theme-background-darken: #0D1334;
+$theme-background-darken: #0A0D21;
 
 // Caption variables
 $caption-line-height: 1.25em;
@@ -39,7 +39,9 @@ $settings-details-button-spacing: 0.3em;
 $settings-details-padding-top: 0.1em;
 
 // Transcript variables
-$transcript-background-color: #222F75;
+// $transcript-background-color: #222F75;
+// $transcript-background-color: #0D1334;
+$transcript-background-color: $theme-background-darken;
 $transcript-top-color: #00000099;
 
 // Buttons variables

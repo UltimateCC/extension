@@ -46,7 +46,7 @@
 					<b>{line[0].speaker}: </b>
 				{/if}
 				{#each line as part }
-					{ ( part.captions.find(alt=>alt.lang === $language) ?? part.captions[0] ).text }
+					{(part.captions.find(alt => alt.lang === $language) ?? part.captions[0]).text}
 				{/each}
 			</div>
 		{/each}
@@ -96,7 +96,6 @@
 
 	.language-select {
 		min-width: 0;
-		color: $transcript-background-color;
 	}
 
 	.transcript {
