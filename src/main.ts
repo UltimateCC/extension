@@ -1,9 +1,9 @@
-import './assets/app.scss'
-import Transcript from './components/Transcript.svelte'
-import Config from './components/Config.svelte'
-import Overlay from './components/Overlay.svelte'
 import 'simplebar'
 import 'simplebar/dist/simplebar.css'
+import './assets/app.scss'
+import Config from './components/Config.svelte'
+import Overlay from './components/Overlay.svelte'
+import Transcript from './components/Transcript.svelte'
 import { initContext } from './lib/settings'
 import { twitchChannel } from './lib/twitch'
 

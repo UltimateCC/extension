@@ -16,7 +16,6 @@
 
 	// Update text align depending on the current text alignment
 	function updateTextAlign(newLanguage: LangCode) {
-		console.log(newLanguage);
 		if ($settings.textAlign == "left" && isRTL(newLanguage)) {
 			$settings.textAlign = "right";
 		} else if ($settings.textAlign == "right" && !isRTL(newLanguage)) {

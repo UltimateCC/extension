@@ -1,7 +1,7 @@
 // Based on https://github.com/joshnuss/svelte-persisted-store
 // Writable store persisted to localstorage
 
-import {writable, type Writable} from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 
 type StoreDict = { [key: string]: Writable<any> }
 
