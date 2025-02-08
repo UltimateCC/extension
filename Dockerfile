@@ -1,10 +1,11 @@
-FROM node:18-alpine3.18 as base
+FROM node:18-alpine3.18 AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 WORKDIR /app
 
+RUN npm install -g corepack@latest
 RUN corepack enable
 
 #copy config
