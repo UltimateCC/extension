@@ -473,27 +473,44 @@ body #ultimate-closed-caption {
 						color: $settings-text-secondary;
 						text-align: center;
 						box-shadow: $settings-input-shadow;
-		
+
 						// Remove arrows on number input
 						&::-webkit-outer-spin-button,
 						&::-webkit-inner-spin-button {
 							-webkit-appearance: none;
 							margin: 0;
 						}
-		
+
 						// Remove arrows on Firefox
 						&[type=number] {
 							appearance: textfield;
 							-moz-appearance: textfield;
 						}
-		
-						// Border radius on color picker on Firefox
+
+						// Color picker styles for cross-browser compatibility
 						&[type=color] {
 							cursor: pointer;
 							box-shadow: none;
+							padding: 0;
+							border: none;
+
+							&::-webkit-color-swatch {
+								border: none;
+								border-radius: $settings-input-border-radius;
+							}
+
+							&::-webkit-color-swatch-wrapper {
+								padding: 0;
+							}
 
 							&::-moz-color-swatch {
+								border: none;
 								border-radius: $settings-input-border-radius;
+							}
+
+							&::-moz-focus-inner {
+								border: 0;
+								padding: 0;
 							}
 						}
 						
@@ -501,15 +518,46 @@ body #ultimate-closed-caption {
 							box-shadow: $settings-input-shadow-out;
 							transition: box-shadow 0.5s;
 						}
-		
-						&:not(input[type="range"]) {
-							&::-webkit-color-swatch {
-								border: none;
-								border-radius: $settings-input-border-radius;
+
+						// Range input styles for cross-browser compatibility
+						&[type="range"] {
+							appearance: none;
+							-moz-appearance: none;
+							height: 0.3em;
+							box-shadow: none;
+							cursor: pointer;
+							background: $settings-button-color;
+							border-radius: 0.15em;
+
+							&::-webkit-slider-thumb {
+								appearance: none;
+								-webkit-appearance: none;
+								width: 1em;
+								height: 1em;
+								border-radius: 50%;
+								background-color: $settings-text-color;
+								box-shadow: 0 0 0.5em 0.5em $settings-button-color;
+								cursor: pointer;
 							}
-		
-							&::-webkit-color-swatch-wrapper {
-								padding: 0;
+
+							&::-moz-range-thumb {
+								width: 1em;
+								height: 1em;
+								border: none;
+								border-radius: 50%;
+								background-color: $settings-text-color;
+								box-shadow: 0 0 0.5em 0.5em $settings-button-color;
+								cursor: pointer;
+							}
+
+							&::-moz-range-track {
+								height: 0.3em;
+								background: $settings-button-color;
+								border-radius: 0.15em;
+							}
+
+							&::-moz-focus-outer {
+								border: 0;
 							}
 						}
 					}
